@@ -48,7 +48,7 @@ design-system/
 | WP-010 | 라이트 팔레트와 테마 결정 계약 | REL-002 | WP-006 | - | done |
 | WP-011 | `@conductor/react` 골격과 공통 계약 | REL-002 | WP-008 | - | done |
 | WP-012 | 액션·표면 컴포넌트군 | REL-002 | WP-011 | - | done |
-| WP-013 | 상태 표시 컴포넌트군 | REL-002 | WP-011 | - | todo |
+| WP-013 | 상태 표시 컴포넌트군 | REL-002 | WP-011 | - | done |
 | WP-014 | 데이터 표시 컴포넌트군 | REL-002 | WP-011 | - | todo |
 | WP-015 | 오버레이 컴포넌트군 | REL-002 | WP-011 | - | todo |
 | WP-016 | 폼 컴포넌트군 | REL-002 | WP-011 | - | todo |
@@ -388,12 +388,12 @@ design-system/
 - 구현 범위: C-020 Badge, C-021 StatusBadge, C-022 SeverityTag + `cdt-badge` 클래스군
 - 제외: `iconOnly` 모드(FR-CMP-004 예외 처리로 명시 금지)
 - 완료 기준(DoD):
-  - [ ] `StatusBadge status="running"`이 상태색·아이콘·텍스트를 모두 렌더한다 (FR-CMP-004 AC-1)
-  - [ ] 아이콘이 `aria-hidden="true"`이고 텍스트가 접근 가능한 이름을 제공한다 (FR-CMP-004 AC-2)
-  - [ ] `status` props가 7개 값으로 타입 제한되고 그 외 값은 컴파일 오류다 (FR-CMP-004 AC-3)
-  - [ ] `SeverityTag severity="destructive"`가 심각도색·경고 아이콘·텍스트를 렌더한다 (FR-CMP-004 AC-4)
-  - [ ] 그레이스케일 렌더 시 상태 7종이 텍스트로 구분된다 (FR-CMP-004 AC-5, FR-A11Y-003 AC-4)
-  - [ ] 공유 계약 스위트를 통과한다
+  - [x] `StatusBadge status="running"`이 상태색·아이콘·텍스트를 모두 렌더한다 (FR-CMP-004 AC-1)
+  - [x] 아이콘이 `aria-hidden="true"`이고 텍스트가 접근 가능한 이름을 제공한다 (FR-CMP-004 AC-2)
+  - [x] `status` props가 7개 값으로 타입 제한되고 그 외 값은 컴파일 오류다 (FR-CMP-004 AC-3)
+  - [x] `SeverityTag severity="destructive"`가 심각도색·경고 아이콘·텍스트를 렌더한다 (FR-CMP-004 AC-4)
+  - [x] 그레이스케일 렌더 시 상태 7종이 텍스트로 구분된다 (FR-CMP-004 AC-5, FR-A11Y-003 AC-4)
+  - [x] 공유 계약 스위트를 통과한다
 - 검증 방법: `pnpm --filter @conductor/react test -- status`
 - 기록: WP-013 행, FR-CMP-004·FR-A11Y-003 매핑 갱신
 

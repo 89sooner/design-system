@@ -119,6 +119,8 @@ const badge: TokenDefinition[] = [
   component("badge.marker.text", ref("text.primary"), "Marker-shape label. 15.77:1.", "body"),
   component("badge.marker.border", ref("border.strong"), "Marker-shape edge."),
   component("badge.marker.dotSize", value("9px"), "Status dot diameter."),
+  component("badge.marker.dotRing", ref("surface.raised"), "Marker dot ring."),
+  component("badge.marker.dotRingWidth", value("2px"), "Marker dot ring width."),
   component("badge.severity.text", ref("text.primary"), "Label on a severity fill. 4.67:1 to 9.32:1.", "body"),
 ];
 

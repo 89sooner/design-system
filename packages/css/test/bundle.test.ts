@@ -293,3 +293,24 @@ describe("FR-CSS-004 action and surface primitives", () => {
     expect(components.some((rule) => rule.selector.includes(":focus-visible"))).toBe(false);
   });
 });
+
+describe("FR-CMP-004 status display styles", () => {
+  const components = topLevelRules(index, "cdt.component");
+
+  test("FR-CMP-004 AC-1: running status uses its semantic fill and tokenised text", () => {
+    const running = components.find((rule) => rule.selector === ".cdt-status-badge--running");
+    expect(running?.decls.background).toBe("var(--cdt-status-running)");
+    expect(running?.decls.color).toBe("var(--cdt-badge-fill-text)");
+  });
+
+  test("FR-CMP-004 AC-4: destructive severity uses its semantic fill", () => {
+    const destructive = components.find((rule) => rule.selector === ".cdt-severity-tag--destructive");
+    expect(destructive?.decls.background).toBe("var(--cdt-severity-destructive)");
+  });
+
+  test("FR-A11Y-003: marker statuses retain a tokenised dot alongside their text", () => {
+    const marker = components.find((rule) => rule.selector === ".cdt-status-badge__marker");
+    expect(marker?.decls.background).toBe("var(--cdt-status-queued)");
+    expect(marker?.decls.border).toBe("var(--cdt-badge-marker-dot-ring-width) solid var(--cdt-badge-marker-dot-ring)");
+  });
+});

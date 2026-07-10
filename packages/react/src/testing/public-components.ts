@@ -7,6 +7,7 @@
 import { createElement, type ReactElement } from "react";
 import { Button, IconButton } from "../action";
 import { Card, CardGrid, Panel } from "../surface";
+import { Badge, SeverityTag, StatusBadge } from "../status";
 
 export interface PublicComponent {
   readonly name: string;
@@ -20,6 +21,9 @@ export const publicComponents: readonly PublicComponent[] = [
   { name: "Card", testFile: "testing/surface.test.tsx", render: () => createElement(Card, null, "Card") },
   { name: "CardGrid", testFile: "testing/surface.test.tsx", render: () => createElement(CardGrid) },
   { name: "Panel", testFile: "testing/surface.test.tsx", render: () => createElement(Panel) },
+  { name: "Badge", testFile: "testing/status.test.tsx", render: () => createElement(Badge, null, "Badge") },
+  { name: "StatusBadge", testFile: "testing/status.test.tsx", render: () => createElement(StatusBadge, { status: "running", icon: "●", label: "Running" }) },
+  { name: "SeverityTag", testFile: "testing/status.test.tsx", render: () => createElement(SeverityTag, { severity: "destructive", icon: "●", label: "Destructive" }) },
 ];
 
 export function missingComponentTests(

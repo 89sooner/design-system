@@ -135,9 +135,9 @@ FR-CMP-001은 공개 컴포넌트 전수가 ref 전달(AC-1), className 병합(A
 | Card | FR-CMP-003 | [x] QA-065 | [x] QA-066 | [x] QA-067 | [x] QA-068 |
 | CardGrid | FR-CMP-003 | [x] QA-069 | [x] QA-070 | [x] QA-071 | [x] QA-072 |
 | Panel | FR-CMP-003 | [x] QA-073 | [x] QA-074 | [x] QA-075 | [x] QA-076 |
-| Badge | FR-CMP-004 | [ ] QA-077 | [ ] QA-078 | [ ] QA-079 | [ ] QA-080 |
-| StatusBadge | FR-CMP-004 | [ ] QA-081 | [ ] QA-082 | [ ] QA-083 | [ ] QA-084 |
-| SeverityTag | FR-CMP-004 | [ ] QA-085 | [ ] QA-086 | [ ] QA-087 | [ ] QA-088 |
+| Badge | FR-CMP-004 | [x] QA-077 | [x] QA-078 | [x] QA-079 | [x] QA-080 |
+| StatusBadge | FR-CMP-004 | [x] QA-081 | [x] QA-082 | [x] QA-083 | [x] QA-084 |
+| SeverityTag | FR-CMP-004 | [x] QA-085 | [x] QA-086 | [x] QA-087 | [x] QA-088 |
 | Table | FR-CMP-005 | [ ] QA-089 | [ ] QA-090 | [ ] QA-091 | [ ] QA-092 |
 | Timeline | FR-CMP-005 | [ ] QA-093 | [ ] QA-094 | [ ] QA-095 | [ ] QA-096 |
 | CodeBlock | FR-CMP-005 | [ ] QA-097 | [ ] QA-098 | [ ] QA-099 | [ ] QA-100 |

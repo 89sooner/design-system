@@ -128,4 +128,71 @@
   .cdt-panel__body {
     padding: var(--cdt-space-3) var(--cdt-space-5);
   }
+
+  .cdt-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--cdt-badge-gap);
+    padding: var(--cdt-badge-padding-block) var(--cdt-badge-padding-inline);
+    border: 1px solid transparent; /* cdt-allow-literal: 토큰에 배지 선 두께가 없다 */
+    border-radius: var(--cdt-badge-radius);
+    font-size: var(--cdt-badge-font-size);
+    font-weight: 600;
+    line-height: var(--cdt-badge-line-height);
+    letter-spacing: 0.5px; /* cdt-allow-literal: source badge tracking */
+    text-transform: uppercase;
+  }
+
+  .cdt-badge__icon {
+    display: inline-flex;
+    inline-size: var(--cdt-badge-icon-size);
+    block-size: var(--cdt-badge-icon-size);
+  }
+
+  .cdt-badge--neutral {
+    border-color: var(--cdt-border-default);
+    background: var(--cdt-surface-raised);
+    color: var(--cdt-text-muted);
+  }
+
+  .cdt-badge--accent {
+    background: var(--cdt-accent);
+    color: var(--cdt-badge-fill-text);
+  }
+
+  .cdt-badge--info { background: var(--cdt-status-running); color: var(--cdt-badge-fill-text); }
+  .cdt-badge--success { background: var(--cdt-status-success); color: var(--cdt-badge-fill-text); }
+  .cdt-badge--warning { background: var(--cdt-status-waiting); color: var(--cdt-badge-fill-text); }
+  .cdt-badge--danger { background: var(--cdt-status-danger); color: var(--cdt-badge-fill-text); }
+
+  .cdt-status-badge--running { background: var(--cdt-status-running); color: var(--cdt-badge-fill-text); }
+  .cdt-status-badge--waiting { background: var(--cdt-status-waiting); color: var(--cdt-badge-fill-text); }
+  .cdt-status-badge--success { background: var(--cdt-status-success); color: var(--cdt-badge-fill-text); }
+  .cdt-status-badge--partial { background: var(--cdt-status-partial); color: var(--cdt-badge-fill-text); }
+  .cdt-status-badge--danger { background: var(--cdt-status-danger); color: var(--cdt-badge-fill-text); }
+
+  .cdt-status-badge--queued,
+  .cdt-status-badge--neutral-end {
+    border-color: var(--cdt-badge-marker-border);
+    background: var(--cdt-badge-marker-background);
+    color: var(--cdt-badge-marker-text);
+  }
+
+  .cdt-status-badge__marker {
+    inline-size: var(--cdt-badge-marker-dot-size);
+    block-size: var(--cdt-badge-marker-dot-size);
+    border: var(--cdt-badge-marker-dot-ring-width) solid var(--cdt-badge-marker-dot-ring);
+    border-radius: var(--cdt-radius-pill);
+    background: var(--cdt-status-queued);
+  }
+
+  .cdt-status-badge__marker--neutral-end {
+    background: var(--cdt-status-neutral-end);
+  }
+
+  .cdt-severity-tag { color: var(--cdt-badge-severity-text); }
+  .cdt-severity-tag--read { background: var(--cdt-severity-read); }
+  .cdt-severity-tag--write { background: var(--cdt-severity-write); }
+  .cdt-severity-tag--destructive { background: var(--cdt-severity-destructive); }
+  .cdt-severity-tag--blocked { background: var(--cdt-severity-blocked); }
 }
