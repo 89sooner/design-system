@@ -46,9 +46,11 @@ interface TokenDefinition {
 **불변식.**
 
 1. `tier === "primitive"`이면 `value`가 반드시 존재하고 `alias`는 존재하지 않는다(FR-TOK-002 AC-1).
-2. `tier === "semantic"`이면 `alias`가 존재할 때 그 대상은 반드시 `tier === "primitive"`인 키여야 한다(FR-TOK-002 AC-2). semantic 토큰이 다른 semantic 토큰의 값을 재사용해야 하는 경우(예: `surface.2`가 `surface.subtle`을 재사용) 그 토큰은 `component` 계층으로 정의한다(불변식 3 적용).
-3. `tier === "component"`이면 `alias`가 존재할 때 그 대상은 반드시 `tier === "semantic"`인 키여야 한다(FR-TOK-002 AC-3). `{ "surface.2": "{surface.subtle}" }`(FR-TOK-003 AC-1 예시)는 이 규칙에 따라 component 계층 토큰이 semantic 토큰을 참조하는 사례다.
-4. 위 방향을 벗어나는 참조(역방향 또는 동일 계층 간 참조 중 2·3에 해당하지 않는 경우)가 발견되면 빌드가 종료 코드 1로 실패하고 위반 토큰 키 쌍을 출력한다(AC-4).
+2. `tier === "semantic"`이면 `alias`의 대상은 `tier === "primitive"` 또는 `tier === "semantic"`인 키여야 한다(FR-TOK-002 AC-2, CR-008). `component` 대상은 빌드 오류다.
+3. `tier === "component"`이면 `alias`의 대상은 `tier === "semantic"` 또는 `tier === "component"`인 키여야 한다(FR-TOK-002 AC-3, CR-008). 상위 계층 대상은 빌드 오류다.
+4. 불변식 2·3을 하나의 문장으로 줄이면: **토큰은 자기 계층 또는 하위 계층의 토큰만 참조한다.** 상위 계층으로 올라가는 참조가 발견되면 빌드가 종료 코드 1로 실패하고 위반 토큰 키 쌍을 출력한다(AC-4). 동일 계층 참조가 순환을 이루면 FR-TOK-003 AC-3의 순환 검출이 잡는다(AC-6).
+
+> **CR-008 (DEV-001).** 이 문서의 이전 판은 불변식 2에서 "semantic 토큰이 다른 semantic 토큰을 재사용하면 그 토큰을 `component` 계층으로 정의한다"고 규정했다. 이 재분류 규칙은 성립하지 않는다. `elevation.overlay`(semantic)가 `{border.strong}`(semantic)을 포함하는데, `overlay.shadow`(component)가 `{elevation.overlay}`를 참조한다. 전자를 component로 재분류하면 후자가 component → component 참조가 되어 같은 규칙이 다시 금지한다. 재분류는 모순을 옮길 뿐 없애지 못한다. CR-008이 FR-TOK-002 AC-2·AC-3을 정정해 동일 계층 참조를 허용했고, 이 문서의 불변식을 그에 맞춰 갱신했다. `surface.2`와 `border`는 semantic 계층에 그대로 둔다.
 5. `tier === "primitive"`인 키는 `@conductor/tokens`의 공개 진입점(`API-PKG-001`)에서 export되지 않는다(AC-5). `tokens.js`/`tokens.d.ts`는 semantic·component 계층만 노출한다.
 6. `key`가 `status.*` 또는 `severity.*`로 시작하면 `icon`이 존재하고 빈 문자열이 아니어야 한다(FR-TOK-005 AC-5).
 7. `key`는 토큰 소스 전체에서 유일하다. 중복 키가 발견되면 빌드가 실패한다.

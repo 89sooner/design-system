@@ -1,6 +1,6 @@
 # Conductor Design System 토큰 명세
 
-> 상태: review | 버전: v0.3 | 갱신일: 2026-07-10
+> 상태: review | 버전: v0.4 | 갱신일: 2026-07-10
 
 ## 0. 문서 성격과 범위 경계
 
@@ -54,15 +54,17 @@
 
 ### 2.1 3계층
 
-FR-TOK-002는 토큰을 primitive, semantic, component 3계층으로 분류하고 참조를 **primitive ← semantic ← component** 방향으로만 허용한다.
+FR-TOK-002는 토큰을 primitive, semantic, component 3계층으로 분류하고, 토큰이 **자기 계층 또는 하위 계층**의 토큰만 참조하도록 강제한다. 상위 계층으로 올라가는 참조는 금지된다(CR-008).
 
 | 계층 | 값의 성격 | 참조 대상 | CSS 산출 | 공개 export |
 | --- | --- | --- | --- | --- |
 | primitive | 의미 없는 원시 색·수치 (`ink.900`, `indigo.500`) | 없음 (FR-TOK-002 AC-1) | 없음 (FR-TOK-004 AC-4) | 없음 (FR-TOK-002 AC-5) |
-| semantic | 제품 의미 (`surface.raised`, `status.danger`) | primitive만 (FR-TOK-002 AC-2) | `--cdt-*` | TS·JSON·CSS |
-| component | 컴포넌트 국소 규격 (`button.primary.background`) | semantic만 (FR-TOK-002 AC-3) | `--cdt-*` | TS·JSON·CSS |
+| semantic | 제품 의미 (`surface.raised`, `status.danger`) | primitive 또는 다른 semantic (FR-TOK-002 AC-2) | `--cdt-*` | TS·JSON·CSS |
+| component | 컴포넌트 국소 규격 (`button.primary.background`) | semantic 또는 다른 component (FR-TOK-002 AC-3) | `--cdt-*` | TS·JSON·CSS |
 
-역방향 참조가 하나라도 존재하면 토큰 빌드는 종료 코드 1로 실패하고 위반 토큰 키 쌍을 출력한다(FR-TOK-002 AC-4). 계층 분류 필드가 없는 토큰도 빌드 오류다.
+상위 계층으로의 역방향 참조가 하나라도 존재하면 토큰 빌드는 종료 코드 1로 실패하고 위반 토큰 키 쌍을 출력한다(FR-TOK-002 AC-4). 계층 분류 필드가 없는 토큰도 빌드 오류다. 동일 계층 내 참조는 허용되며, 순환을 이루면 FR-TOK-003 AC-3의 순환 검출이 잡는다(FR-TOK-002 AC-6).
+
+> **CR-008 (DEV-001).** 이전 판의 AC-2는 "semantic은 primitive만 참조한다"였다. 그러나 FR-THM-001 AC-2가 요구하는 별칭 2개(`surface.2`, `border`)는 정의상 semantic → semantic 참조다. 두 Must FR을 동시에 만족할 수 없어 WP-002 구현 착수 시 편차로 등록했다. 설계 의도는 참조 *방향*의 제약이지 동일 계층 별칭 금지가 아니었으므로, AC를 위와 같이 정정했다. 값과 범위는 바뀌지 않았다.
 
 ### 2.2 참조 해석 (FR-TOK-003)
 
@@ -75,14 +77,15 @@ FR-TOK-002는 토큰을 primitive, semantic, component 3계층으로 분류하�
 
 ### 2.3 이 문서에서 참조로 정의되는 semantic 토큰
 
-FR-THM-001 AC-2는 소스의 별칭 2개를 토큰 참조로 표현할 것을 요구한다. 소스 관찰에서 도출된 참조는 아래 4개다.
+FR-THM-001 AC-2는 소스의 별칭 2개를 토큰 참조로 표현할 것을 요구한다. 소스 관찰에서 도출된 참조는 아래 5개다. 앞의 4개는 semantic → semantic이며 CR-008이 정정한 AC-2에 따라 허용된다.
 
-| 토큰 키 | 참조 대상 | 근거 |
-| --- | --- | --- |
-| `surface.2` | `{surface.subtle}` | `tokens.css:8` `--surface-2: var(--surface-subtle)` |
-| `border` | `{border.default}` | `tokens.css:25` `--border: var(--border-default)` |
-| `status.running` | `{accent}` | `tokens.css:27,35` 두 선언의 값이 `#6d7cff`로 동일하고, `app.css`가 링크·스위치·내비 표시자에 `--status-running`을 강조 목적으로 사용한다 |
-| `meter.exceeded` | `{red.400}` (primitive) | `#f87171`. semantic 계층이 primitive를 참조하는 정상 방향이다 |
+| 토큰 키 | 참조 대상 | 참조 방향 | 근거 |
+| --- | --- | --- | --- |
+| `surface.2` | `{surface.subtle}` | semantic → semantic | `tokens.css:8` `--surface-2: var(--surface-subtle)`. FR-THM-001 AC-2가 요구 |
+| `border` | `{border.default}` | semantic → semantic | `tokens.css:25` `--border: var(--border-default)`. FR-THM-001 AC-2가 요구 |
+| `status.running` | `{accent}` | semantic → semantic | `tokens.css:27,35` 두 선언의 값이 `#6d7cff`로 동일하고, `app.css`가 링크·스위치·내비 표시자에 `--status-running`을 강조 목적으로 사용한다 |
+| `elevation.overlay` | `{border.strong}` | semantic → semantic | `tokens.css:74` 그림자의 1px 링이 경계 토큰을 재사용한다 |
+| `meter.exceeded` | `{red.400}` | semantic → primitive | `#f87171`. 하위 계층을 참조하는 정상 방향이다 |
 
 `status.running`을 `{accent}` 참조로 두는 결정은 값 변경이 아니다. 해석 결과는 `#6d7cff`로 소스와 1:1 일치한다(FR-THM-001 AC-1).
 
@@ -148,9 +151,7 @@ primitive 토큰은 CSS로 산출되지 않고 `@conductor/tokens` 공개 진입
 | `ink.300` | `#dce6f3` | 0.78280 | `tokens.css:20` `--text-mono-payload` |
 | `ink.350` | `#c5cfdd` | 0.61716 | `tokens.css:16` `--text-secondary` |
 | `ink.400` | `#8290a3` | 0.27337 | `tokens.css:17` `--text-muted` |
-| `ink.450` | `#77869b` | 0.23339 | 8절 권고값 |
 | `ink.500` | `#6b788c` | 0.18452 | 6절 파생 |
-| `ink.550` | `#657285` | 0.16495 | 8절 권고값 |
 | `ink.600` | `#5f6d80` | 0.14929 | `tokens.css:18` `--text-faint` |
 | `ink.650` | `#5b6879` | 0.13505 | 6절 파생 |
 | `ink.700` | `#4d5a6e` | 0.10016 | 6절 파생 |
@@ -182,9 +183,8 @@ primitive 토큰은 CSS로 산출되지 않고 `@conductor/tokens` 공개 진입
 
 | 키 | 값 | 소스 위치 |
 | --- | --- | --- |
-| `slate.400` | `#94a3b8` | `tokens.css:22-24` 경계 3종의 기저색, `app.css:57` 스크롤바 |
-| `slate.500` | `#64748b` | `tokens.css:33` `--status-queued` |
-| `slate.550` | `#616f85` | 8절 권고값 |
+| `slate.400` | `#94a3b8` | `tokens.css:22-24` 경계 3종의 기저색, `app.css:57` 스크롤바. `border.control`(alpha 0.60)의 기저색이기도 하다 |
+| `slate.500` | `#64748b` | `tokens.css:33` `--status-queued`. 라이트 `border.control`이 이 stop을 불투명하게 재사용한다 |
 | `slate.600` | `#475569` | `tokens.css:39` `--status-neutral-end` |
 | `slate.700` | `#3f4b5f` | 6절 파생 (라이트 `status.neutralEnd`) |
 | `slate.750` | `#52607a` | 6절 파생 (라이트 `status.queued`) |
@@ -195,13 +195,11 @@ primitive 토큰은 CSS로 산출되지 않고 `@conductor/tokens` 공개 진입
 | --- | --- | --- |
 | `emerald.400` | `#34d399` | `tokens.css:41` `--meter-normal` |
 | `emerald.500` | `#10b981` | `tokens.css:36` `--status-success` |
-| `emerald.600` | `#059669` | 6절 파생 |
-| `emerald.700` | `#047857` | 6절 파생 |
+| `emerald.700` | `#047857` | 6절 파생 (라이트 `status.success`, `meter.normal`) |
 | `green.700` | `#15803d` | `tokens.css:46` `--severity-read` |
 | `amber.400` | `#fbbf24` | `tokens.css:42` `--meter-warning` |
 | `amber.500` | `#f59e0b` | `tokens.css:35` `--status-waiting` |
-| `amber.600` | `#d97706` | 6절 파생 |
-| `amber.700` | `#b45309` | 6절 파생 |
+| `amber.700` | `#b45309` | 6절 파생 (라이트 `status.waiting`, `meter.warning`) |
 | `amber.100` | `#fef3c7` | 6절 파생 (라이트 `state.disabledPolicy`) |
 | `amber.950` | `#422006` | `tokens.css:81` `--state-disabled-policy` |
 | `yellow.500` | `#eab308` | `tokens.css:37` `--status-partial` |
@@ -313,13 +311,13 @@ FR-THM-002 AC-3은 세 경계 토큰이 라이트에서 비텍스트 3:1을 만�
 | `status.success` | body | `#10b981` | `#047857` | `check-circle-2` | FR-THM-005 |
 | `status.partial` | body | `#eab308` | `#a16207` | `alert-circle` | FR-THM-005 |
 | `status.danger` | body | `#ef4444` | `#c81e1e` | `x-circle` | FR-THM-005, FR-CMP-008 |
-| `status.neutralEnd` | nonText | `#475569` | `#3f4b5f` | `circle-slash` | FR-THM-005 AC-5 |
+| `status.neutralEnd` | decorative | `#475569` | `#3f4b5f` | `circle-slash` | FR-THM-005 AC-6 |
 
-상태 7종은 두 무리로 갈린다. `running`·`waiting`·`success`·`partial`·`danger` 다섯은 채도가 높아 `surface.raised` 위에서 본문 4.5:1을 넘는다(다크 4.50 ~ 8.84). `queued`와 `neutralEnd` 둘은 중립 회색이라 본문 기준에 이르지 못하고 `nonText`로 분류된다.
+상태 7종은 세 무리로 갈린다. `running`·`waiting`·`success`·`partial`·`danger` 다섯은 채도가 높아 `surface.raised` 위에서 본문 4.5:1을 넘으므로 `body`다(다크 4.50 ~ 8.84). `queued`는 중립 회색이지만 비텍스트 3:1을 넘으므로 `nonText`다(다크 `surface.raised` 3.56:1, `surface.elevated` 3.25:1). `neutralEnd`는 표면 6종 어디에서도 3:1에 이르지 못하므로 `decorative`이며 대비 검사 대상이 아니다(다크 2.04:1 ~ 2.60:1). 세 분류는 SRS 12.1절이 확정했고 FR-THM-005 AC-5·AC-6이 강제한다.
 
-**`status.queued`와 `status.neutralEnd`를 쓰는 컴포넌트는 아이콘과 텍스트를 함께 렌더해야 한다**(FR-THM-005 AC-5, FR-A11Y-003). 두 상태는 점·마커로만 색을 드러내고 텍스트 전경색으로 쓰지 않는다. `StatusBadge`가 이 규칙을 어떻게 구현하는지는 7.3절에 있다.
+**`status.queued`와 `status.neutralEnd`를 쓰는 컴포넌트는 색 외에 아이콘과 텍스트를 함께 렌더해야 한다**(FR-THM-005 AC-7, FR-A11Y-003). 두 상태는 점·마커로만 색을 드러내고 텍스트 전경색으로 쓰지 않는다. `StatusBadge`가 이 규칙을 어떻게 구현하는지는 7.3절에 있다.
 
-다크 `status.neutralEnd`(`#475569`)는 `nonText` 기준 3:1을 어느 표면 위에서도 만족하지 못한다(`surface.base` 2.60:1이 최대, `surface.raised` 2.24:1). 이는 값 보존과 `nonText` 분류를 동시에 만족할 수 없다는 뜻이며, 8.5절에 측정 근거와 두 가지 해소안을 기록했다.
+`status.neutralEnd`의 `decorative` 분류는 값 보존의 대가다. 근거와 대가는 8.5절에 측정값과 함께 기록했다.
 
 ### 5.7 미터 (FR-TOK-005 AC-3)
 
@@ -340,7 +338,7 @@ FR-THM-002 AC-3은 세 경계 토큰이 라이트에서 비텍스트 3:1을 만�
 | `severity.destructive` | body (배경 용도) | `#b91c1c` | `#b91c1c` | `trash-2` | FR-THM-005, FR-CMP-004 |
 | `severity.blocked` | body (배경 용도) | `#7f1d1d` | `#7f1d1d` | `shield-x` | FR-THM-005, FR-CMP-004 |
 
-**심각도 4색은 배경 전용이다. 전경색으로 쓸 수 없다.** `SeverityTag`는 이 색을 배경으로 쓰고 그 위에 `text.primary`(다크) 또는 `text.inverse`(라이트)를 올린다. 배경으로 쓸 때 텍스트 대비는 4.67:1 ~ 9.32:1로 본문 기준을 통과한다(8절 CP-030 ~ CP-033). 같은 색을 전경으로 뒤집으면 `surface.raised` 위에서 1.69:1 ~ 3.38:1로 무너진다. `usage`는 `body`이되 검사 쌍에서 언제나 배경 인자로만 등장한다. 전경 사용이 발견되면 `pnpm lint:tokens`가 실패한다.
+**심각도 4색은 배경 전용이다. 전경색으로 쓸 수 없다.** `SeverityTag`는 이 색을 배경으로 쓰고 그 위에 `text.primary`(다크) 또는 `text.inverse`(라이트)를 올린다. 배경으로 쓸 때 텍스트 대비는 4.67:1 ~ 9.32:1로 본문 기준을 통과한다(8절 CP-029 ~ CP-032). 같은 색을 전경으로 뒤집으면 `surface.raised` 위에서 1.69:1 ~ 3.38:1로 무너진다. `usage`는 `body`이되 검사 쌍에서 언제나 배경 인자로만 등장한다. 전경 사용이 발견되면 `pnpm lint:tokens`가 실패한다.
 
 두 테마가 같은 값을 공유하는 유일한 토큰군이다. 심각도는 표면 명도와 무관하게 "이 동작이 외부에 미치는 영향"을 나타내는 절대 등급이므로, 테마에 따라 색을 옮기면 등급 간 서열이 흔들린다. FR-QA-001의 키 집합 대칭 검사는 통과하며 `themeSpecific` 예외를 사용하지 않는다.
 
@@ -436,7 +434,7 @@ FR-TOK-007 AC-4는 제목이 `font.size.xl` 이상과 `clamp()` 기반 반응형
 
 대비 측정 기준: 포커스 링이 덮는 픽셀의 focus 전후 색을 비교한다. focus 전 그 픽셀의 색은 링이 놓인 표면이다. alpha 0.80은 표면에 따라 합성색이 달라지므로 표면별로 따로 계산한다.
 
-`state.disabled`와 `state.disabledPolicy`는 배경 채움이며, 그 위 텍스트 쌍으로 검사된다(8절 CP-041, CP-042).
+`state.disabled`와 `state.disabledPolicy`는 배경 채움이며, 그 위 텍스트 쌍으로 검사된다(8절 CP-040, CP-041).
 
 ### 5.12 z-index (FR-TOK-008)
 
@@ -602,12 +600,12 @@ Tailwind ramp를 쓰는 색은 같은 색상 계열에서 2~3단계 어두운 st
 | `status.success` | body | `#10b981` | `#047857` | `{emerald.700}` | 5.10:1 통과 | 5.34:1 통과 |
 | `status.partial` | body | `#eab308` | `#a16207` | `{yellow.700}` | 4.58:1 통과 | 4.79:1 통과 |
 | `status.danger` | body | `#ef4444` | `#c81e1e` | `{red.650}` | 5.34:1 통과 | 5.59:1 통과 |
-| `status.neutralEnd` | nonText | `#475569` | `#3f4b5f` | `{slate.700}` | 8.20:1 | 8.58:1 통과 |
+| `status.neutralEnd` | decorative | `#475569` | `#3f4b5f` | `{slate.700}` | 2.24:1 (검사 제외) | 8.58:1 (검사 제외) |
 | `meter.normal` | body | `#34d399` | `#047857` | `{emerald.700}` | — | 5.34:1 통과 |
 | `meter.warning` | body | `#fbbf24` | `#b45309` | `{amber.700}` | — | 4.89:1 통과 |
 | `meter.exceeded` | body | `#f87171` | `#dc2626` | `{red.600}` | — | 4.70:1 통과 |
 
-라이트 상태색 7종과 미터 3종이 각자의 `usage` 기준을 통과한다. 다크에서 `nonText` 3:1에 미달하는 `status.neutralEnd`가 라이트에서 8.58:1로 통과하는 이유는, 어두운 표면 위의 어두운 회색이라는 근본 문제가 라이트에서 사라지기 때문이다. 이 비대칭이 8.5절 결함의 원인이다.
+라이트 상태색 7종과 미터 3종이 각자의 `usage` 기준을 통과한다. `status.neutralEnd`는 `decorative`라 두 테마 모두 검사 대상이 아니지만(CR-006), 측정값을 남겨 둔다. 다크에서 2.24:1인 값이 라이트에서 8.58:1이 되는 이유는 어두운 표면 위의 어두운 회색이라는 근본 문제가 라이트에서 사라지기 때문이다. 이 비대칭이 8.5절이 다룬 모순의 원인이었다.
 
 **`status.danger`가 `{red.600}`이 아닌 이유.** 위 규칙 1을 처음 적용했을 때 `status.danger`의 라이트 값으로 Tailwind Red 600(`#dc2626`)을 골랐다. 측정하면 `text.inverse`(`#f4f7fb`)를 얹었을 때 4.49:1로, 기준 4.5:1에 0.01 모자란다. 규칙 1이 스스로 그 값을 기각한다. 같은 색상각에서 한 단계 더 어두운 `#c81e1e`를 `{red.650}`으로 정의해 5.34:1을 확보했다.
 
@@ -674,9 +672,9 @@ component 토큰은 semantic 토큰만 참조한다(FR-TOK-002 AC-3). 아래 표
 
 같은 이유로 hover가 배경을 `{accent.strong}`으로 바꾸지 않는다. 바꾸면 hover 상태의 글자 대비가 4.20:1로 떨어지고, WCAG 1.4.3은 상태별로 최소 대비를 요구한다. `accent.strong`을 어둡게 조정해도 해결되지 않는다 — `#4c5ce8`에서 `text.inverse` 대비가 3.61:1로 더 나빠지고, 밝게 하면 `accent`와 구분되지 않는다. hover는 배경을 유지한 채 `{elevation.hover}`로 표현한다. 측정상 본문 4.5:1을 두 상태 모두에서 지키는 유일한 조합이다.
 
-`accent.strong`은 이 결과로 Conductor 컴포넌트에서 배경 채움으로 쓰이지 않는다. `nonText` 토큰으로 남아 소비자가 강조 계열의 두 번째 단계로 참조한다. 선언된 검사 쌍은 `accent.strong` 대 `surface.base`뿐이다(8절 CP-013).
+`accent.strong`은 이 결과로 Conductor 컴포넌트에서 배경 채움으로 쓰이지 않는다. `nonText` 토큰으로 남아 소비자가 강조 계열의 두 번째 단계로 참조한다. 선언된 검사 쌍은 `accent.strong` 대 `surface.base`뿐이다(8절 CP-012).
 
-**`button.policyDisabled.text`가 테마별로 다른 이유.** 다크는 어두운 amber 채움(`#422006`) 위에 밝은 붉은 글자가 필요하다 — `{meter.exceeded}`(`#f87171`)가 5.27:1로 통과한다(`{status.danger}` `#ef4444`는 3.87:1로 미달). 라이트는 밝은 amber 채움(`#fef3c7`) 위에 어두운 붉은 글자가 필요하므로 `{severity.destructive}`(`#b91c1c`)를 참조한다. 두 참조 모두 semantic 토큰이며 primitive를 건너뛰지 않는다. 이 라이트 참조는 5.8절의 "심각도는 배경 전용" 제약의 예외가 아니다 — `severity.destructive`가 배경이 아닌 곳은 여기뿐이며, `state.disabledPolicy` 채움 위 5.81:1로 본문 기준을 넘는다. 이 조합은 8절 CP-042로 선언해 검사한다.
+**`button.policyDisabled.text`가 테마별로 다른 이유.** 다크는 어두운 amber 채움(`#422006`) 위에 밝은 붉은 글자가 필요하다 — `{meter.exceeded}`(`#f87171`)가 5.27:1로 통과한다(`{status.danger}` `#ef4444`는 3.87:1로 미달). 라이트는 밝은 amber 채움(`#fef3c7`) 위에 어두운 붉은 글자가 필요하므로 `{severity.destructive}`(`#b91c1c`)를 참조한다. 두 참조 모두 semantic 토큰이며 primitive를 건너뛰지 않는다. 이 라이트 참조는 5.8절의 "심각도는 배경 전용" 제약의 예외가 아니다 — `severity.destructive`가 배경이 아닌 곳은 여기뿐이며, `state.disabledPolicy` 채움 위 5.81:1로 본문 기준을 넘는다. 이 조합은 8절 CP-041로 선언해 검사한다.
 
 **`button.secondary.border`가 `{border.control}`이 아닌 이유.** `border.control`의 적용 대상은 `TextField`·`TextArea`·`Select`·`Switch`·`Checkbox` 다섯 컴포넌트로 한정된다(FR-THM-005 AC-2). 버튼은 그 목록에 없다. 버튼은 경계선 없이도 채움(`surface.raised`), 라벨 텍스트, 포커스 링으로 식별되므로 `border.strong`(`decorative`)을 계속 참조한다. 소스 `.btn`도 `border: 1px solid var(--border-strong)`을 쓴다. 이 판단은 SRS 12.1절이 세 경계 토큰에 부여한 WCAG 1.4.11 예외 근거와 같은 논리다.
 
@@ -714,21 +712,25 @@ component 토큰은 semantic 토큰만 참조한다(FR-TOK-002 AC-3). 아래 표
 | `badge.iconSize` | `12px` | | FR-CMP-004 AC-2 |
 | `badge.fill.background` | `{status.running}` 외 4종 | | FR-TOK-005 AC-1 |
 | `badge.fill.text` | `{text.inverse}` | | FR-CMP-004, FR-A11Y-004 |
-| `badge.marker.background` | `{surface.raised}` | | FR-THM-005 AC-5 |
-| `badge.marker.text` | `{text.primary}` | | FR-THM-005 AC-5 |
+| `badge.marker.background` | `{surface.raised}` | | FR-THM-005 AC-7 |
+| `badge.marker.text` | `{text.primary}` | | FR-THM-005 AC-7 |
 | `badge.marker.border` | `{border.strong}` | | FR-CSS-004 |
-| `badge.marker.dot` | `{status.queued}` 또는 `{status.neutralEnd}` | | FR-THM-005 AC-5 |
+| `badge.marker.dot` | `{status.queued}` 또는 `{status.neutralEnd}` | | FR-THM-005 AC-5, AC-6 |
 | `badge.marker.dotSize` | `9px` | | `app.css:582-584` |
+| `badge.marker.dotRing` | `{surface.raised}` | | `app.css:585` |
+| `badge.marker.dotRingWidth` | `2px` | | `app.css:585` |
 | `badge.severity.background` | `{severity.read}` 외 3종 | | FR-TOK-005 AC-2 |
-| `badge.severity.text` | `{text.primary}` | `{text.inverse}` | 8절 CP-030 ~ CP-033 |
+| `badge.severity.text` | `{text.primary}` | `{text.inverse}` | 8절 CP-029 ~ CP-032 |
 
 `StatusBadge`는 상태의 `usage`에 따라 두 형태 중 하나로 렌더된다. 이는 시각 변종을 고르는 props가 아니라 상태 토큰의 메타데이터가 결정하는 구조다 — 소비자는 `status` props만 넘긴다.
 
 **채움 형태** (`running`, `waiting`, `success`, `partial`, `danger` — `usage: body`): 상태색을 배경으로 깔고 `{text.inverse}`를 얹는다. 다섯 조합 모두 본문 4.5:1을 넘는다(다크 5.03 ~ 9.87, 라이트 4.58 ~ 5.34).
 
-**마커 형태** (`queued`, `neutralEnd` — `usage: nonText`): 배경은 `{surface.raised}`, 라벨은 `{text.primary}`(다크 15.77:1)이고, 상태색은 지름 9px의 점으로만 나타난다. 두 중립 회색을 배경 채움으로 쓰면 다크에서 `text.inverse`가 3.98:1·2.50:1, `text.primary`가 4.43:1·7.05:1이 되어 `status.queued`가 어느 글자색으로도 본문 기준을 넘지 못한다. 마커 형태는 그 문제를 없앤다. FR-THM-005 AC-5가 요구하는 "점·마커 전용, 텍스트 전경 금지"와 "아이콘·텍스트 병기"를 동시에 만족한다.
+**마커 형태** (`queued` — `usage: nonText`, `neutralEnd` — `usage: decorative`): 배경은 `{surface.raised}`, 라벨은 `{text.primary}`(다크 15.77:1)이고, 상태색은 지름 9px의 점으로만 나타난다. 두 중립 회색을 배경 채움으로 쓰면 다크에서 `text.inverse`가 3.98:1·2.50:1, `text.primary`가 4.43:1·7.05:1이 되어 `status.queued`가 어느 글자색으로도 본문 기준을 넘지 못한다. 마커 형태는 그 문제를 없앤다. FR-THM-005 AC-7이 요구하는 "점·마커 전용, 텍스트 전경 금지"와 "아이콘·텍스트 병기"를 동시에 만족한다.
 
-두 형태 모두 아이콘과 텍스트를 함께 렌더한다(FR-CMP-004 AC-1, FR-A11Y-003 AC-1). 마커 형태의 점은 색을 되풀이할 뿐 정보를 혼자 지지하지 않는다. 다만 점 자체는 비텍스트 도형이므로 `surface.raised` 대비 3:1을 진다 — `status.queued`는 3.56:1로 통과하고 `status.neutralEnd`는 2.24:1로 통과하지 못한다. 8.5절이 이 결함을 다룬다.
+점은 `{badge.marker.dotRing}`(표면색, 2px)으로 둘러싸인다. 소스 `.timeline-marker`가 `border: 2px solid var(--surface-timeline)`으로 같은 구조를 쓴다(`app.css:585`). 이 링이 점의 기하 경계를 만들기 때문에 점의 식별이 채움 대비에 의존하지 않는다 — `status.neutralEnd`를 `decorative`로 분류할 수 있는 근거다(8.4절, 8.5절).
+
+두 형태 모두 아이콘과 텍스트를 함께 렌더한다(FR-CMP-004 AC-1, FR-A11Y-003 AC-1, FR-THM-005 AC-7). 마커 형태의 점은 색을 되풀이할 뿐 정보를 혼자 지지하지 않는다. `status.queued`의 점은 `nonText`이므로 `surface.raised` 대비 3:1을 지고 3.56:1로 통과한다(8절 CP-039). `status.neutralEnd`의 점은 `decorative`이므로 검사 대상이 아니다.
 
 ### 7.4 `table.*`
 
@@ -849,7 +851,9 @@ FR-THM-004 AC-1은 검사 대상 쌍이 `packages/tokens/src/contrast-pairs.ts`�
 
 ### 8.2 선언된 쌍과 측정 결과
 
-42개 쌍 × 2개 테마 = 84건. 모든 수치는 계산된 값이다.
+선언된 쌍 40개 × 2개 테마 = 80건. 모든 수치는 계산된 값이다.
+
+CP-025는 CR-006으로 선언 목록에서 제거되었다. **ID는 재사용하지 않는다** — 번호를 당기면 이전 리포트·테스트 이름·커밋 메시지의 CP 참조가 다른 쌍을 가리키게 된다. 제거된 자리는 표에 흔적으로 남긴다.
 
 | ID | 전경 | 배경 | usage | 기준 | 다크 | 라이트 |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -861,56 +865,56 @@ FR-THM-004 AC-1은 검사 대상 쌍이 `packages/tokens/src/contrast-pairs.ts`�
 | CP-006 | `text.muted` | `surface.base` | body | 4.5 | 6.06 pass | 5.90 pass |
 | CP-007 | `text.muted` | `surface.elevated` | body | 4.5 | 4.76 pass | 6.99 pass |
 | CP-008 | `text.monoPayload` | `surface.raised` | body | 4.5 | 13.44 pass | 14.96 pass |
-| CP-010 | `accent` | `surface.base` | body | 4.5 | 5.60 pass | 4.67 pass |
-| CP-011 | `accent` | `surface.raised` | body | 4.5 | 4.82 pass | 5.39 pass |
-| CP-012 | `text.inverse` | `accent` | body | 4.5 | 5.39 pass | 5.16 pass |
-| CP-013 | `accent.strong` | `surface.base` | nonText | 3.0 | 4.36 pass | 6.00 pass |
-| CP-014 | `focusRing` | `surface.base` | nonText | 3.0 | 3.93 pass | 3.30 pass |
-| CP-015 | `focusRing` | `surface.raised` | nonText | 3.0 | 3.56 pass | 3.66 pass |
-| CP-016 | `focusRing` | `surface.elevated` | nonText | 3.0 | 3.34 pass | 3.72 pass |
-| CP-017 | `border.control` | `surface.base` | nonText | 3.0 | 3.39 pass | 4.01 pass |
-| CP-018 | `border.control` | `surface.raised` | nonText | 3.0 | 3.23 pass | 4.63 pass |
-| CP-019 | `border.control` | `surface.elevated` | nonText | 3.0 | 3.11 pass | 4.76 pass |
-| CP-020 | `status.running` | `surface.raised` | body | 4.5 | 4.82 pass | 5.39 pass |
-| CP-021 | `status.waiting` | `surface.raised` | body | 4.5 | 7.89 pass | 4.89 pass |
-| CP-022 | `status.success` | `surface.raised` | body | 4.5 | 6.68 pass | 5.34 pass |
-| CP-023 | `status.partial` | `surface.raised` | body | 4.5 | 8.84 pass | 4.79 pass |
-| CP-024 | `status.danger` | `surface.raised` | body | 4.5 | 4.50 pass | 5.59 pass |
-| CP-025 | `status.queued` | `surface.raised` | nonText | 3.0 | 3.56 pass | 6.17 pass |
-| CP-026 | `status.neutralEnd` | `surface.raised` | nonText | 3.0 | **2.24 fail** | 8.58 pass |
-| CP-027 | `meter.normal` | `surface.raised` | body | 4.5 | 8.82 pass | 5.34 pass |
-| CP-028 | `meter.warning` | `surface.raised` | body | 4.5 | 10.15 pass | 4.89 pass |
-| CP-029 | `meter.exceeded` | `surface.raised` | body | 4.5 | 6.13 pass | 4.70 pass |
-| CP-030 | `badge.severity.text` | `severity.read` | body | 4.5 | 4.67 pass | 4.67 pass |
-| CP-031 | `badge.severity.text` | `severity.write` | body | 4.5 | 4.82 pass | 4.82 pass |
-| CP-032 | `badge.severity.text` | `severity.destructive` | body | 4.5 | 6.02 pass | 6.02 pass |
-| CP-033 | `badge.severity.text` | `severity.blocked` | body | 4.5 | 9.32 pass | 9.32 pass |
-| CP-034 | `badge.fill.text` | `status.running` | body | 4.5 | 5.39 pass | 5.16 pass |
-| CP-035 | `badge.fill.text` | `status.waiting` | body | 4.5 | 8.82 pass | 4.67 pass |
-| CP-036 | `badge.fill.text` | `status.success` | body | 4.5 | 7.46 pass | 5.10 pass |
-| CP-037 | `badge.fill.text` | `status.partial` | body | 4.5 | 9.87 pass | 4.58 pass |
-| CP-038 | `badge.fill.text` | `status.danger` | body | 4.5 | 5.03 pass | 5.34 pass |
-| CP-039 | `badge.marker.text` | `badge.marker.background` | body | 4.5 | 15.77 pass | 18.27 pass |
-| CP-040 | `badge.marker.dot` (`status.queued`) | `badge.marker.background` | nonText | 3.0 | 3.56 pass | 6.17 pass |
-| CP-041 | `text.muted` | `state.disabled` | body | 4.5 | 5.05 pass | 5.67 pass |
-| CP-042 | `button.policyDisabled.text` | `state.disabledPolicy` | body | 4.5 | 5.27 pass | 5.81 pass |
+| CP-009 | `accent` | `surface.base` | body | 4.5 | 5.60 pass | 4.67 pass |
+| CP-010 | `accent` | `surface.raised` | body | 4.5 | 4.82 pass | 5.39 pass |
+| CP-011 | `text.inverse` | `accent` | body | 4.5 | 5.39 pass | 5.16 pass |
+| CP-012 | `accent.strong` | `surface.base` | nonText | 3.0 | 4.36 pass | 6.00 pass |
+| CP-013 | `focusRing` | `surface.base` | nonText | 3.0 | 3.93 pass | 3.30 pass |
+| CP-014 | `focusRing` | `surface.raised` | nonText | 3.0 | 3.56 pass | 3.66 pass |
+| CP-015 | `focusRing` | `surface.elevated` | nonText | 3.0 | 3.34 pass | 3.72 pass |
+| CP-016 | `border.control` | `surface.base` | nonText | 3.0 | 3.39 pass | 4.01 pass |
+| CP-017 | `border.control` | `surface.raised` | nonText | 3.0 | 3.23 pass | 4.63 pass |
+| CP-018 | `border.control` | `surface.elevated` | nonText | 3.0 | 3.11 pass | 4.76 pass |
+| CP-019 | `status.running` | `surface.raised` | body | 4.5 | 4.82 pass | 5.39 pass |
+| CP-020 | `status.waiting` | `surface.raised` | body | 4.5 | 7.89 pass | 4.89 pass |
+| CP-021 | `status.success` | `surface.raised` | body | 4.5 | 6.68 pass | 5.34 pass |
+| CP-022 | `status.partial` | `surface.raised` | body | 4.5 | 8.84 pass | 4.79 pass |
+| CP-023 | `status.danger` | `surface.raised` | body | 4.5 | 4.50 pass | 5.59 pass |
+| CP-024 | `status.queued` | `surface.raised` | nonText | 3.0 | 3.56 pass | 6.17 pass |
+| ~~CP-025~~ | ~~`status.neutralEnd`~~ | ~~`surface.raised`~~ | — | — | 제거됨 (CR-006) | 제거됨 (CR-006) |
+| CP-026 | `meter.normal` | `surface.raised` | body | 4.5 | 8.82 pass | 5.34 pass |
+| CP-027 | `meter.warning` | `surface.raised` | body | 4.5 | 10.15 pass | 4.89 pass |
+| CP-028 | `meter.exceeded` | `surface.raised` | body | 4.5 | 6.13 pass | 4.70 pass |
+| CP-029 | `badge.severity.text` | `severity.read` | body | 4.5 | 4.67 pass | 4.67 pass |
+| CP-030 | `badge.severity.text` | `severity.write` | body | 4.5 | 4.82 pass | 4.82 pass |
+| CP-031 | `badge.severity.text` | `severity.destructive` | body | 4.5 | 6.02 pass | 6.02 pass |
+| CP-032 | `badge.severity.text` | `severity.blocked` | body | 4.5 | 9.32 pass | 9.32 pass |
+| CP-033 | `badge.fill.text` | `status.running` | body | 4.5 | 5.39 pass | 5.16 pass |
+| CP-034 | `badge.fill.text` | `status.waiting` | body | 4.5 | 8.82 pass | 4.67 pass |
+| CP-035 | `badge.fill.text` | `status.success` | body | 4.5 | 7.46 pass | 5.10 pass |
+| CP-036 | `badge.fill.text` | `status.partial` | body | 4.5 | 9.87 pass | 4.58 pass |
+| CP-037 | `badge.fill.text` | `status.danger` | body | 4.5 | 5.03 pass | 5.34 pass |
+| CP-038 | `badge.marker.text` | `badge.marker.background` | body | 4.5 | 15.77 pass | 18.27 pass |
+| CP-039 | `badge.marker.dot` (`status.queued`) | `badge.marker.background` | nonText | 3.0 | 3.56 pass | 6.17 pass |
+| CP-040 | `text.muted` | `state.disabled` | body | 4.5 | 5.05 pass | 5.67 pass |
+| CP-041 | `button.policyDisabled.text` | `state.disabledPolicy` | body | 4.5 | 5.27 pass | 5.81 pass |
 
-라이트 `severity.*` 4쌍(CP-030 ~ CP-033)의 측정값이 다크와 동일하다. 라이트 `badge.severity.text`가 `{text.inverse}`(`#f4f7fb`)이고 다크 `badge.severity.text`가 `{text.primary}`(`#f4f7fb`)로 값이 같으며, 심각도 채움 4색이 두 테마에서 같은 값이기 때문이다. 우연이 아니라 5.8절과 6.2절의 정의가 만나는 지점이다.
+라이트 `severity.*` 4쌍(CP-029 ~ CP-032)의 측정값이 다크와 동일하다. 라이트 `badge.severity.text`가 `{text.inverse}`(`#f4f7fb`)이고 다크 `badge.severity.text`가 `{text.primary}`(`#f4f7fb`)로 값이 같으며, 심각도 채움 4색이 두 테마에서 같은 값이기 때문이다. 우연이 아니라 5.8절과 6.2절의 정의가 만나는 지점이다.
 
-`badge.marker.dot`의 `status.neutralEnd` 변형은 CP-026이 같은 조합을 이미 검사하므로 따로 선언하지 않는다.
+`badge.marker.dot`의 `status.neutralEnd` 변형은 그 토큰이 `decorative`이므로 선언하지 않는다(8.4절). `status.queued` 변형만 CP-039로 선언한다.
 
 ### 8.3 두 교정 값의 효과
 
-FR-THM-005가 강제한 두 교정이 6건의 미달을 제거했다.
+FR-THM-005가 강제한 두 교정이 9건의 미달을 제거했다. `focusRing` 6건(두 테마 × 표면 3종)과 폼 컨트롤 경계 3건(다크 표면 3종)이다. 라이트 `border.default`는 이미 불투명 값이라 교정 전에도 3:1을 넘었으므로 그쪽에서 제거된 미달은 0건이다.
 
 | 쌍 | 교정 전 (소스 값) | 교정 후 | 기준 |
 | --- | --- | --- | --- |
-| CP-014 `focusRing` / `surface.base` (다크) | 1.50 (alpha 0.30) | **3.93** (alpha 0.80) | 3.0 |
-| CP-015 `focusRing` / `surface.raised` (다크) | 1.55 (alpha 0.30) | **3.56** | 3.0 |
-| CP-016 `focusRing` / `surface.elevated` (다크) | 1.54 (alpha 0.30) | **3.34** | 3.0 |
-| CP-014 ~ CP-016 (라이트) | 1.50 / 1.53 / 1.54 | **3.30 / 3.66 / 3.72** | 3.0 |
-| CP-017 ~ CP-019 `border.control` (다크) | 1.30 / 1.37 / 1.38 (`border.default` 사용 시) | **3.39 / 3.23 / 3.11** | 3.0 |
-| CP-017 ~ CP-019 `border.control` (라이트) | 4.36 (`border.default` 사용 시) | **4.01 / 4.63 / 4.76** | 3.0 |
+| CP-013 `focusRing` / `surface.base` (다크) | 1.50 (alpha 0.30) | **3.93** (alpha 0.80) | 3.0 |
+| CP-014 `focusRing` / `surface.raised` (다크) | 1.55 (alpha 0.30) | **3.56** | 3.0 |
+| CP-015 `focusRing` / `surface.elevated` (다크) | 1.54 (alpha 0.30) | **3.34** | 3.0 |
+| CP-013 ~ CP-015 (라이트) | 1.50 / 1.53 / 1.54 | **3.30 / 3.66 / 3.72** | 3.0 |
+| CP-016 ~ CP-018 `border.control` (다크) | 1.30 / 1.37 / 1.38 (`border.default` 사용 시) | **3.39 / 3.23 / 3.11** | 3.0 |
+| CP-016 ~ CP-018 `border.control` (라이트) | 4.36 (`border.default` 사용 시) | **4.01 / 4.63 / 4.76** | 3.0 |
 
 라이트에서 `border.default`는 이미 불투명 값이라 3:1을 넘었다. `border.control`을 도입한 실익은 다크에 있다. 그러나 토큰 키는 두 테마에 대칭으로 존재해야 하므로(FR-QA-001 AC-1) 라이트에도 대응 값을 정의했다.
 
@@ -925,19 +929,22 @@ FR-THM-005가 강제한 두 교정이 6건의 미달을 제거했다.
 | `border.subtle` | 1.13 | WCAG 1.4.11 예외. 카드·패널 경계는 표면색 차이와 `elevation.*` 그림자가 이미 식별한다 |
 | `border.default` | 1.30 | 위와 같다. 폼 컨트롤에는 `border.control`을 쓴다 |
 | `border.strong` | 1.69 | 위와 같다 |
+| `status.neutralEnd` | 2.04 ~ 2.60 | WCAG 1.4.11 예외 (CR-006). FR-THM-005 AC-7이 아이콘·텍스트 병기를 강제하므로 색이 상태를 혼자 전달하지 않아 1.4.1을 충족한다. 점의 기하 경계는 채움 대비가 아니라 `.timeline-marker`의 표면색 링(`app.css:585`)이 만든다. `border.*` 예외와 동일 논리다. 8.5절 |
 | `accent.soft` | — | 배경 위 미세한 강조 채움. 그 위 텍스트는 언제나 `text.primary`를 쓴다 |
 | `accent.glow` | — | 다크 전용 발광. 정보를 혼자 전달하는 경로가 없다 (6.5절) |
 | `surface.glass` / `surface.overlay` | — | 반투명 층. 6.5절이 라이트 재정의를 규정한다 |
 | `elevation.*` (3개) | — | 그림자. `elevation.overlay`의 1px 링은 `border.strong` 참조이며 함께 제외된다 |
 | `state.hover` / `state.selected` | — | 표면을 미세하게 미는 층. 선택 상태는 `aria-pressed`와 텍스트 색이 함께 전달한다 (FR-A11Y-003) |
-| `state.disabled` / `state.disabledPolicy` | — | 배경 채움. 그 위 텍스트 쌍 CP-041, CP-042로 검사한다 |
+| `state.disabled` / `state.disabledPolicy` | — | 배경 채움. 그 위 텍스트 쌍 CP-040, CP-041로 검사한다 |
 | `font.*` / `space.*` / `radius.*` / `z.*` / `breakpoint.*` / `motion.*` | — | 색이 아니다 |
 
 `accent`는 `body`이지만 `surface.elevated` 위 조합(다크 4.40:1)을 쌍으로 선언하지 않는다. 그 조합의 본문 사용이 금지되어 있기 때문이다(5.5절). 금지 위반은 대비 검사가 아니라 `pnpm lint:tokens`가 검출한다. 같은 이유로 `text.faint`의 `surface.elevated` 조합도 선언하지 않는다.
 
-`severity.*` 4종은 `usage: body`이지만 검사 쌍에서 언제나 배경 인자로만 등장한다(CP-030 ~ CP-033). 전경 사용은 `pnpm lint:tokens`가 차단한다(5.8절).
+`severity.*` 4종은 `usage: body`이지만 검사 쌍에서 언제나 배경 인자로만 등장한다(CP-029 ~ CP-032). 전경 사용은 `pnpm lint:tokens`가 차단한다(5.8절).
 
-### 8.5 잔여 결함: CP-026 `status.neutralEnd`
+### 8.5 해소된 결함: CP-025 `status.neutralEnd` (CR-006)
+
+> **결론 먼저.** 2026-07-10 CR-006으로 **해소안 A**가 채택되었다(사용자 결정). `status.neutralEnd`의 값 `#475569`를 보존하고 `usage`를 `nonText` → `decorative`로 낮춘다. CP-025는 선언된 쌍에서 제거되었다. `pnpm check:contrast`는 두 테마에서 종료 코드 0을 반환한다. SRS 12.1절과 FR-THM-005 AC-6이 이 결정을 담고 있다. 아래는 그 결정의 근거로 보존한 측정 기록이다.
 
 **측정 사실.** 다크 `status.neutralEnd`(`#475569`)는 `nonText` 기준 3:1을 표면 6종 어디에서도 만족하지 못한다.
 
@@ -947,36 +954,38 @@ FR-THM-005가 강제한 두 교정이 6건의 미달을 제거했다.
 
 가장 유리한 조합조차 2.60:1이다. 라이트 `status.neutralEnd`(`#3f4b5f`)는 `surface.raised` 위 8.58:1로 통과하므로, 이 결함은 다크 전용이다.
 
-**함의.** SRS 12.1절은 `status.neutralEnd`에 `usage: "nonText"`를 부여하면서 값을 보존한다. 두 지시는 동시에 성립하지 않는다. `nonText`는 3:1을 뜻하고, 보존된 값은 2.24:1이다. 결과적으로 `pnpm check:contrast`가 다크 테마에서 종료 코드 1을 반환하고, M-3(미달 0건)과 FR-A11Y-004 AC-1이 충족되지 않는다.
+**모순의 성격.** CR-006 이전의 SRS 12.1절은 `status.neutralEnd`에 `usage: "nonText"`를 부여하면서 값을 보존하도록 지시했다. 두 지시는 동시에 성립하지 않았다. `nonText`는 3:1을 뜻하고, 보존된 값은 2.24:1이었다. 그대로 두면 `pnpm check:contrast`가 다크 테마에서 종료 코드 1을 반환하고, M-3(미달 0건)과 FR-A11Y-004 AC-1이 충족되지 않았을 것이다.
 
-같은 무리의 `status.queued`(`#64748b`)에는 이 문제가 없다. `surface.raised` 위 3.56:1, `surface.elevated` 위 3.25:1로 통과한다. 두 토큰을 함께 `nonText`로 묶은 분류가 한쪽에서만 성립한다.
+같은 무리의 `status.queued`(`#64748b`)에는 이 문제가 없다. `surface.raised` 위 3.56:1, `surface.elevated` 위 3.25:1로 통과한다. 두 토큰을 함께 `nonText`로 묶은 분류가 한쪽에서만 성립했다. CR-006은 이 묶음을 풀어 `status.queued`만 `nonText`로 남겼다(FR-THM-005 AC-5).
 
-**이 문서가 하지 않은 것.** 값을 임의로 바꾸지 않았고 `usage`를 임의로 낮추지 않았다. FR-THM-005는 교정 대상을 `focusRing`과 `border.control` 두 개로 한정하며, `status.neutralEnd`는 그 목록에 없다. FR-THM-005 예외/실패 처리는 "표에 없는 새 위반이 발견되면 CR을 열고 값을 조정한다"고 규정한다. 이 위반은 표 **안에** 있으므로 그 조항이 곧바로 적용되지 않는다. 따라서 CR을 열어 12.1절 자체를 고쳐야 한다.
+**이 문서가 하지 않은 것.** 값을 임의로 바꾸지 않았고 `usage`를 임의로 낮추지도 않았다. 모순을 보고하고 두 해소안을 제시한 뒤 결정을 기다렸다. 결정은 CR을 통해 내려졌다.
 
-**두 가지 해소안.** 정확히 하나만 채택 가능하다. `nonText` 분류와 값 보존 중 하나가 물러서야 한다.
+**검토된 두 해소안.** 정확히 하나만 채택 가능했다. `nonText` 분류와 값 보존 중 하나가 물러서야 했다.
 
-- **해소안 A — `usage`를 `decorative`로 낮춘다.** 근거: 마커 형태의 점은 아이콘·텍스트와 언제나 병기되므로(FR-THM-005 AC-5가 이미 강제한다) 색이 상태를 혼자 전달하지 않는다. 소스의 `.timeline-marker`는 `border: 2px solid var(--surface-timeline)`로 표면색 링을 둘러 도형의 경계를 만든다(`app.css:585`) — 점의 가시성은 채움 대비가 아니라 이 링이 지지한다. 값 보존 방침(G-1 시각 보존, M-1 시각 회귀 1%)과 정합한다. 대가: 다크 종료 상태의 점이 배경에서 흐리게 읽힌다.
-- **해소안 B — 값을 밝게 교정한다.** `#5d6e86`으로 올리면 `surface.raised` 위 3.26:1로 `nonText`를 통과하고, 배지 마커 배경 위 `text.primary` 대비도 4.84:1로 유지된다. 대가: `status.queued`(`#64748b`)와 명도가 근접해 두 중립 상태의 시각 구분이 좁아지고, `focusRing`·`border.control`에 이어 세 번째 시각 회귀 원인이 된다. FR-THM-005 AC-1·AC-2와 같은 성격의 교정이므로 12.1절 교정 표에 행을 추가하는 형태가 된다.
+- **해소안 A — `usage`를 `decorative`로 낮춘다. ✅ 채택 (CR-006)** 근거: 마커 형태의 점은 아이콘·텍스트와 언제나 병기되므로(FR-THM-005 AC-7이 강제한다) 색이 상태를 혼자 전달하지 않는다. 소스의 `.timeline-marker`는 `border: 2px solid var(--surface-timeline)`로 표면색 링을 둘러 도형의 경계를 만든다(`app.css:585`) — 점의 가시성은 채움 대비가 아니라 이 링이 지지한다. 값 보존 방침(G-1 시각 보존, M-1 시각 회귀 1%)과 정합한다. 대가: 다크 종료 상태의 점이 배경에서 흐리게 읽힌다.
+- **해소안 B — 값을 밝게 교정한다. ❌ 기각** `#5d6e86`으로 올리면 `surface.raised` 위 3.26:1로 `nonText`를 통과하고, 배지 마커 배경 위 `text.primary` 대비도 4.84:1로 유지된다. 기각 사유: `status.queued`(`#64748b`)와 명도가 근접해 두 중립 상태의 시각 구분이 좁아지고, `focusRing`·`border.control`에 이어 세 번째 시각 회귀 원인이 된다. OD-001이 확정한 "접근성 결함인 것만 값을 교정한다"는 최소 수정 방침과 충돌한다.
 
-이 문서는 **해소안 A**를 권고한다. FR-THM-005 AC-5가 이미 아이콘·텍스트 병기를 강제하므로 WCAG 1.4.1의 색상 비의존 요건이 충족되고, 1.4.11이 요구하는 "컴포넌트 식별에 필요한 시각 정보"의 역할은 점의 채움이 아니라 표면색 링과 텍스트가 맡기 때문이다. 이는 12.1절이 `border.subtle`·`border.default`·`border.strong`에 적용한 예외 근거와 동일한 논리다.
+**채택 근거.** FR-THM-005 AC-7이 아이콘·텍스트 병기를 강제하므로 WCAG 1.4.1의 색상 비의존 요건이 충족되고, 1.4.11이 요구하는 "컴포넌트 식별에 필요한 시각 정보"의 역할은 점의 채움이 아니라 표면색 링과 텍스트가 맡는다. 이는 12.1절이 `border.subtle`·`border.default`·`border.strong`에 적용한 예외 근거와 동일한 논리다.
 
-채택 전까지 `status.neutralEnd`의 `usage`는 SRS 12.1절대로 `nonText`이며, CP-026은 선언된 쌍으로 남아 다크에서 실패를 보고한다. 이 문서는 그 실패를 숨기지 않는다.
+**남는 대가 (알려진 제약).** 다크 테마에서 종료 상태의 점은 배경에서 흐리게 읽힌다(최대 2.60:1). 이 사실은 `conductor_implementation_traceability.md`의 알려진 제약 표에 기록되어 있다. 시인성 불만이 실제로 제기되면 CR을 열어 해소안 B(`#5d6e86`)를 재검토한다.
 
 ### 8.6 요약
 
 | 항목 | 다크 미달 | 라이트 미달 | 처리 |
 | --- | --- | --- | --- |
-| `focusRing` (CP-014 ~ CP-016) | 0건 | 0건 | FR-THM-005 AC-1 교정으로 해소 (alpha 0.30 → 0.80) |
-| 폼 컨트롤 경계 (CP-017 ~ CP-019) | 0건 | 0건 | FR-THM-005 AC-2 신규 `border.control`로 해소 |
+| `focusRing` (CP-013 ~ CP-015) | 0건 | 0건 | FR-THM-005 AC-1 교정으로 해소 (alpha 0.30 → 0.80) |
+| 폼 컨트롤 경계 (CP-016 ~ CP-018) | 0건 | 0건 | FR-THM-005 AC-2 신규 `border.control`로 해소 |
 | `text.faint` | — | — | `decorative` 분류 + `surface.elevated` 금지 (FR-THM-005 AC-3) |
 | `border.subtle` / `default` / `strong` | — | — | `decorative` 분류, WCAG 1.4.11 예외 (FR-THM-005 AC-4) |
 | `accent` | 0건 | 0건 | `body` 분류 + `surface.elevated` 본문 금지 |
-| `status.queued` (CP-025, CP-040) | 0건 | 0건 | `nonText` 분류 + 아이콘·텍스트 병기 |
-| `status.neutralEnd` (CP-026) | **1건** | 0건 | 8.5절. CR 필요 |
+| `status.queued` (CP-024, CP-039) | 0건 | 0건 | `nonText` 분류 유지 + 아이콘·텍스트 병기 (FR-THM-005 AC-5) |
+| `status.neutralEnd` (구 CP-025) | 0건 | 0건 | `decorative` 분류 (FR-THM-005 AC-6, CR-006). 선언된 쌍에서 제거. 8.5절 |
 | 상태·미터·심각도 나머지 | 0건 | 0건 | `body` 분류로 전부 통과 |
-| **합계** | **1건** | **0건** | |
+| **합계** | **0건** | **0건** | |
 
-`status.neutralEnd` 한 건을 제외하면 84건 중 83건이 통과한다. 그 한 건이 해소되기 전까지 `pnpm check:contrast`는 다크 테마에서 종료 코드 1을 반환하며, M-3과 FR-A11Y-004 AC-1은 충족되지 않는다.
+선언된 40개 쌍 × 2개 테마 = 80건이 전부 통과한다. `pnpm check:contrast`는 다크와 라이트 모두에서 종료 코드 0을 반환하며, M-3(미달 0건)과 FR-A11Y-004 AC-1이 충족된다.
+
+대가는 사라지지 않고 위치를 옮겼다. `status.neutralEnd`의 다크 시인성 저하(최대 2.60:1)는 대비 검사가 아니라 **알려진 제약**으로 관리된다(`conductor_implementation_traceability.md` §5). 검사를 통과했다는 사실이 그 점이 잘 보인다는 뜻은 아니다.
 ---
 
 ## 9. 모션 토큰과 감소 모드
@@ -1063,7 +1072,7 @@ FR-THM-005가 강제한 두 교정이 6건의 미달을 제거했다.
 ### 10.5 대비 검사 우회
 
 - `usage: "decorative"` 부여는 검사 제외이지 면제가 아니다. 제외 사유를 토큰 소스 주석에 기록하고 `pnpm check:contrast --report`로 조회 가능하게 한다(FR-THM-004 예외 처리, FR-A11Y-004 AC-3).
-- `usage` 값은 SRS 12.1절이 확정했다. 미달 쌍을 없애려고 토큰의 `usage`를 낮추는 행위는 CR 없이 수행할 수 없다. 8.5절의 `status.neutralEnd`가 유일한 미해소 항목이며, 그 해소 역시 CR을 거친다.
+- `usage` 값은 SRS 12.1절이 확정했다. 미달 쌍을 없애려고 토큰의 `usage`를 낮추는 행위는 CR 없이 수행할 수 없다. `status.neutralEnd`의 강등도 CR-006을 거쳤다(8.5절). 현재 미해소 항목은 없다.
 - 소스에서 계승한 값을 근사해 통과시키지 않는다. 다크 팔레트의 교정 대상은 `focusRing`과 `border.control` 둘뿐이다(FR-THM-005). 다른 값을 바꾸려면 측정값·대체값·시각 회귀 영향을 CR에 기재한다(FR-THM-001 예외 처리, SCN-002).
 - 라이트 팔레트 값은 이 문서가 파생한 값이므로, 6절의 파생 규칙이 요구하는 기준을 만족하도록 재산출할 수 있다. 재산출 시 규칙과 측정값을 함께 기록한다(6.6절 `status.danger`, `meter.normal`, `meter.warning`).
 
@@ -1077,11 +1086,15 @@ FR-THM-005가 강제한 두 교정이 6건의 미달을 제거했다.
 | 2 | FR-TOK-002, FR-TOK-003 |
 | 3 | FR-TOK-004, 용어집 3절 |
 | 4 | FR-TOK-002 AC-1/AC-5, FR-TOK-004 AC-4 |
-| 5 | FR-THM-001, FR-TOK-005, FR-TOK-007, FR-TOK-008, FR-TOK-009 |
-| 6 | FR-THM-002, FR-QA-001 |
-| 7 | FR-TOK-002 AC-3, FR-CMP-002 ~ FR-CMP-008 |
-| 8 | FR-THM-004, FR-A11Y-004, M-3, OD-001 |
+| 5 | FR-THM-001, FR-THM-005, FR-TOK-005, FR-TOK-007, FR-TOK-008, FR-TOK-009 |
+| 6 | FR-THM-002, FR-THM-005, FR-QA-001 |
+| 7 | FR-TOK-002 AC-3, FR-THM-005 AC-2/AC-5/AC-6/AC-7, FR-CMP-002 ~ FR-CMP-008 |
+| 8 | FR-THM-004, FR-THM-005, FR-A11Y-004, M-3, SRS 12.1절, CR-006 |
 | 9 | FR-CSS-005, FR-CSS-001 AC-2 |
-| 10 | FR-TOK-001, FR-TOK-002, FR-QA-001, FR-THM-003 |
+| 10 | FR-TOK-001, FR-TOK-002, FR-QA-001, FR-THM-003, FR-THM-005 |
+
+FR-THM-005는 OD-001(2026-07-10 종결, CR-005)이 낳은 요구사항이고, 그 AC-5·AC-6·AC-7은 CR-006(2026-07-10 종결)이 재구성한 것이다. 이 문서에서 그 요구사항이 실현되는 지점은 5.3절(`text.faint` 분류, AC-3), 5.4절(경계 분류와 `border.control` 신설, AC-2·AC-4), 5.5절(`accent` 분류), 5.6절(상태 분류, AC-5·AC-6), 5.7절(미터 분류), 5.8절(심각도 배경 전용), 5.11절(`focusRing` 교정, AC-1), 6.3절과 6.3.1절(라이트 대응 값), 7.3절(마커 형태 배지, AC-7), 7.5절(폼 컨트롤 경계, AC-2), 8절(검사 쌍) 열한 곳이다.
+
+CR-006은 `status.neutralEnd`의 `usage`를 `nonText`에서 `decorative`로 낮췄다(FR-THM-005 AC-6). 값 `#475569`는 보존된다. 이 문서에 남은 흔적은 5.6절의 분류 표, 7.3절의 마커 형태, 8.2절의 제거된 CP-025 행, 8.4절의 제외 사유, 8.5절의 결정 기록, 그리고 8.5절 말미의 알려진 제약이다.
 
 이 문서는 `W-010`(색상), `W-011`(타이포그래피), `W-012`(간격/레이아웃), `W-013`(반경/고도), `W-014`(모션), `W-030`(토큰 참조 페이지)의 값 근거다. 문서 사이트는 이 문서가 아니라 `@conductor/tokens/tokens.json`을 읽어 렌더한다(FR-DOC-002 AC-1). 두 산출물이 어긋나면 토큰 소스가 옳고 이 문서를 고친다.

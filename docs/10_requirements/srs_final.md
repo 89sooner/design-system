@@ -1,6 +1,6 @@
 # Conductor Design System 최종 요구사항 정의서
 
-> 상태: review | 버전: v0.2 | 갱신일: 2026-07-10
+> 상태: baseline | 버전: v1.2 | 갱신일: 2026-07-10
 
 ## 1. 문서 개요
 
@@ -176,12 +176,12 @@ FR-QA-004(시각 회귀)와 FR-CMP-009(셸 컴포넌트군)는 2026-07-10에 OD-
 | 상태 | approved |
 | 우선순위 | Must |
 | 출처 | F-TOK-002 |
-| 요구사항 | 시스템은 항상 토큰을 primitive, semantic, component 3계층으로 분류하고 참조를 primitive ← semantic ← component 방향으로만 허용하여야 한다. |
-| 수용 기준 | AC-1: primitive 토큰은 다른 토큰을 참조하지 않는다. AC-2: semantic 토큰은 primitive 토큰만 참조한다. AC-3: component 토큰은 semantic 토큰만 참조한다. AC-4: 역방향 참조가 존재하면 빌드가 종료 코드 1로 실패하고 위반 토큰 키 쌍을 출력한다. AC-5: primitive 토큰은 `@conductor/tokens`의 공개 진입점으로 export되지 않는다. |
+| 요구사항 | 시스템은 항상 토큰을 primitive, semantic, component 3계층으로 분류하고, 토큰이 자기 계층 또는 하위 계층의 토큰만 참조하도록 강제하여야 한다. |
+| 수용 기준 | AC-1: primitive 토큰은 다른 토큰을 참조하지 않는다. AC-2: semantic 토큰은 primitive 토큰 또는 다른 semantic 토큰만 참조한다. component 토큰을 참조하면 빌드 오류다(CR-008). AC-3: component 토큰은 semantic 토큰 또는 다른 component 토큰만 참조한다. 상위 계층 참조는 빌드 오류다(CR-008). AC-4: 상위 계층으로의 역방향 참조가 존재하면 빌드가 종료 코드 1로 실패하고 위반 토큰 키 쌍을 출력한다. AC-5: primitive 토큰은 `@conductor/tokens`의 공개 진입점으로 export되지 않는다. AC-6: 동일 계층 내 참조가 순환을 이루면 FR-TOK-003 AC-3의 순환 검출이 빌드를 실패시킨다. |
 | 검증 방법 | test |
 | 관련 화면 | 없음(간접 노출: W-010 색상 페이지의 계층 표시) |
 | 관련 API/데이터 | API-TOK-002 / ENT-TOK-001, ENT-TOK-002 |
-| 예외/실패 처리 | 계층 분류가 없는 토큰은 빌드 시 오류로 처리하고 해당 키를 출력한다. |
+| 예외/실패 처리 | 계층 분류가 없는 토큰은 빌드 시 오류로 처리하고 해당 키를 출력한다. 동일 계층 별칭(`surface.2` → `surface.subtle`, `border` → `border.default`)은 FR-THM-001 AC-2가 요구하는 정상 참조다. DEV-001·CR-008 참조. |
 
 #### FR-TOK-003 토큰 참조 해석과 순환 참조 차단
 
@@ -347,7 +347,7 @@ FR-QA-004(시각 회귀)와 FR-CMP-009(셸 컴포넌트군)는 2026-07-10에 OD-
 | 우선순위 | Must |
 | 출처 | OD-001 (2026-07-10 종결) / SRC-WCAG 1.4.11, 2.4.11 |
 | 요구사항 | 시스템은 항상 12.1절 표에 명시된 교정 값을 소스 계승 값 대신 사용하여야 한다. |
-| 수용 기준 | AC-1: `focusRing`이 accent 색을 alpha 0.80으로 합성한 값을 사용하며, `surface.base`와 `surface.raised` 위에서 각각 3:1 이상이다. AC-2: `border.control` 토큰이 존재하고 `surface.raised` 위에서 3:1 이상이며, `TextField`·`TextArea`·`Select`·`Switch`·`Checkbox`의 경계에 적용된다. AC-3: `text.faint`는 `usage: "decorative"`이며 `surface.elevated` 위에서 사용되면 `pnpm lint:tokens`가 실패한다. AC-4: `border.subtle`·`border.default`·`border.strong`은 `usage: "decorative"`이며 대비 검사 대상이 아니다. AC-5: `status.queued`와 `status.neutralEnd`는 `usage: "nonText"`이며, 이 두 상태를 쓰는 컴포넌트는 아이콘과 텍스트를 함께 렌더한다. |
+| 수용 기준 | AC-1: `focusRing`이 accent 색을 alpha 0.80으로 합성한 값을 사용하며, `surface.base`와 `surface.raised` 위에서 각각 3:1 이상이다. AC-2: `border.control` 토큰이 존재하고 `surface.raised` 위에서 3:1 이상이며, `TextField`·`TextArea`·`Select`·`Switch`·`Checkbox`의 경계에 적용된다. AC-3: `text.faint`는 `usage: "decorative"`이며 `surface.elevated` 위에서 사용되면 `pnpm lint:tokens`가 실패한다. AC-4: `border.subtle`·`border.default`·`border.strong`은 `usage: "decorative"`이며 대비 검사 대상이 아니다. AC-5: `status.queued`는 `usage: "nonText"`다. AC-6: `status.neutralEnd`는 `usage: "decorative"`다(CR-006). AC-7: `status.queued`와 `status.neutralEnd`를 쓰는 컴포넌트는 색 외에 아이콘과 텍스트를 함께 렌더한다. |
 | 검증 방법 | test |
 | 관련 화면 | W-030, W-050 |
 | 관련 API/데이터 | API-TOK-003 / ENT-THM-001, ENT-TOK-001 |
@@ -941,8 +941,8 @@ OD-001(2026-07-10 종결)이 확정한 정책이다. 소스 팔레트를 실측�
 | `border.default` | slate alpha 0.18 | `decorative` | 1.30 | 위와 같다. 폼 컨트롤에는 `border.control`을 쓴다 |
 | `border.strong` | slate alpha 0.30 | `decorative` | 1.69 | 위와 같다 |
 | `accent` | `#6d7cff` | `body` | 4.40 ~ 5.60 | `surface.elevated` 위 본문 사용 금지(4.40). 대형 텍스트와 비텍스트는 허용 |
-| `status.queued` | `#64748b` | `nonText` | 3.56 | 아이콘과 텍스트 병기 필수(FR-A11Y-003) |
-| `status.neutralEnd` | `#475569` | `nonText` | 2.24 | 아이콘과 텍스트 병기 필수. 점/마커 전용, 텍스트 전경 금지 |
+| `status.queued` | `#64748b` | `nonText` | 3.25 ~ 3.56 | 아이콘과 텍스트 병기 필수(FR-A11Y-003). `surface.raised` 3.56, `surface.elevated` 3.25로 기준 충족 |
+| `status.neutralEnd` | `#475569` | `decorative` (CR-006) | 2.04 ~ 2.60 | 아이콘과 텍스트 병기 필수. 점/마커 전용, 텍스트 전경 금지. **대비 검사 대상이 아니다.** WCAG 1.4.11 예외 근거: FR-THM-005 AC-7이 아이콘·텍스트 병기를 강제하므로 색이 상태를 혼자 전달하지 않고, 소스의 `.timeline-marker`가 표면색 링(`app.css:585`)으로 도형 경계를 만들어 점의 식별이 채움 대비에 의존하지 않는다. `border.*`에 적용한 예외와 동일한 논리다. 대가: 다크 테마에서 종료 상태 점이 배경에서 흐리게 읽힌다 (알려진 제약) |
 | `status.running` / `waiting` / `success` / `partial` / `danger` | — | `body` | 4.50 ~ 8.84 | 제약 없음 |
 | `meter.normal` / `warning` / `exceeded` | — | `body` | 6.13 ~ 10.15 | 제약 없음 |
 | `severity.read` / `write` / `destructive` / `blocked` | — | `body` (배경 용도) | 전경으로 쓴 흰 텍스트 기준 4.67 ~ 9.32 | 배경 전용. 전경색으로 쓰면 `surface.raised` 위에서 1.69 ~ 3.38으로 미달한다 |

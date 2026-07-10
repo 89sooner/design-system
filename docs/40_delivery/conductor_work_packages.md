@@ -81,7 +81,7 @@ design-system/
   - `packages/tokens`, `packages/css`, `packages/react`, `apps/docs` 각각의 `package.json`과 최소 진입점
   - 의존 방향 `tokens → css → react → docs` 강제 검사 스크립트 (역방향 참조 시 종료 코드 1)
   - Vitest, ESLint, TypeScript 설정 (ADR-009)
-  - CI 워크플로 골격: install → typecheck → lint → build → test
+  - CI 워크플로 골격: install → lint → lint:deps → build → typecheck → test. `typecheck`는 `build` 뒤에 온다 — `@conductor/tokens`의 공개 타입 표면 일부를 토큰 빌드가 생성하기 때문이다(CR-009, DEV-002)
   - `engines`에 Node 20 이상 선언
 - 제외(이 WP에서 하지 않는 것):
   - 토큰 값, CSS 규칙, React 컴포넌트, 문서 화면 (WP-002 이후)
@@ -117,6 +117,7 @@ design-system/
   - [ ] `--surface-2`와 `--border`가 토큰 참조(alias)로 표현된다 (FR-THM-001 AC-2)
   - [ ] 상태 7종·심각도 4종·미터 3종 키가 존재하고 각각 비어 있지 않은 `icon` 메타데이터를 갖는다 (FR-TOK-005 AC-1~3, AC-5)
   - [ ] semantic 토큰이 component 토큰을 참조하면 검사기가 종료 코드 1로 실패하고 위반 키 쌍을 출력한다 (FR-TOK-002 AC-4)
+  - [ ] 동일 계층 별칭(`surface.2` → `surface.subtle`, `border` → `border.default`, `status.running` → `accent`, `elevation.overlay` → `border.strong`)이 정상 참조로 통과한다 (FR-TOK-002 AC-2·AC-3, CR-008)
   - [ ] primitive 토큰이 `@conductor/tokens` 진입점에 export되지 않는다 (FR-TOK-002 AC-5)
 - 검증 방법: `pnpm --filter @conductor/tokens test` 및 계층 위반 픽스처로 `pnpm build` 실패 확인
 - 기록: WP-002 행, FR-TOK-001·FR-TOK-002·FR-TOK-005·FR-THM-001 매핑 갱신
@@ -244,7 +245,8 @@ design-system/
   - [ ] `border.control`이 `surface.raised` 위 3.23으로 측정된다 (FR-THM-005 AC-2)
   - [ ] `text.faint`를 `surface.elevated` 위에 쓴 픽스처가 `pnpm lint:tokens`를 실패시킨다 (FR-THM-005 AC-3)
   - [ ] `border.subtle`/`default`/`strong`이 `decorative`로 분류되어 검사 대상에서 빠진다 (FR-THM-005 AC-4)
-  - [ ] `status.queued`와 `status.neutralEnd`가 `nonText`로 분류된다 (FR-THM-005 AC-5)
+  - [ ] `status.queued`가 `nonText`로 분류되고 `surface.raised` 위 3.56, `surface.elevated` 위 3.25로 통과한다 (FR-THM-005 AC-5)
+  - [ ] `status.neutralEnd`가 `decorative`로 분류되어 검사 대상에서 빠지고, 제외 사유가 `--report`에 출력된다 (FR-THM-005 AC-6, CR-006)
   - [ ] 다크 테마 전체에 대해 미달 0건을 보고한다 (FR-A11Y-004 AC-1)
 - 검증 방법: `pnpm check:contrast` + 미달 픽스처로 실패 확인
 - 기록: WP-007 행, FR-THM-004·FR-THM-005·FR-A11Y-004 매핑 갱신

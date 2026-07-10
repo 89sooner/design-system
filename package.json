@@ -12,10 +12,16 @@
     "test": "vitest run",
     "typecheck": "pnpm -r run typecheck",
     "lint": "eslint .",
-    "lint:deps": "node scripts/check-deps.mjs"
+    "lint:deps": "node scripts/check-deps.mjs",
+    "lint:tokens": "node packages/tokens/bin/conductor-lint-tokens.mjs packages/css packages/react",
+    "check:contrast": "pnpm --filter @conductor/tokens run check:contrast"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild"]
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",
+    "@types/node": "^22.13.0",
     "eslint": "^9.19.0",
     "globals": "^15.14.0",
     "typescript": "^5.7.3",

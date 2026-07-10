@@ -1,0 +1,17 @@
+# Generated outputs
+node_modules/
+dist/
+coverage/
+.turbo/
+.omc/
+
+# Tool caches
+*.tsbuildinfo
+pnpm-debug.log*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS noise
+.DS_Store
+Thumbs.db

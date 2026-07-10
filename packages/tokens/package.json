@@ -2,18 +2,31 @@
   "name": "@conductor/tokens",
   "version": "0.0.0",
   "type": "module",
-  "sideEffects": false,
+  "sideEffects": ["*.css"],
   "types": "./dist/index.d.ts",
-  "files": ["dist"],
+  "files": ["dist", "bin"],
+  "bin": {
+    "conductor-build-tokens": "./bin/conductor-build-tokens.mjs",
+    "conductor-check-contrast": "./bin/conductor-check-contrast.mjs",
+    "conductor-lint-tokens": "./bin/conductor-lint-tokens.mjs"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./tokens.css": "./dist/tokens.css",
+    "./tokens.json": "./dist/tokens.json",
+    "./contrast-report.json": "./dist/contrast-report.json",
+    "./breakpoints": {
+      "types": "./dist/breakpoints.d.ts",
+      "import": "./dist/breakpoints.js"
+    },
     "./package.json": "./package.json"
   },
   "scripts": {
-    "build": "tsup",
+    "build": "tsup --config tsup.cli.config.ts && node ./bin/conductor-build-tokens.mjs && node ./bin/conductor-check-contrast.mjs && tsup",
+    "check:contrast": "node ./bin/conductor-check-contrast.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "devDependencies": {

@@ -80,13 +80,15 @@ Code (once it exists):
 
 ```bash
 pnpm build          # tokens → css → react → docs, in that order
+pnpm typecheck      # RUN AFTER build — part of @conductor/tokens' type surface is generated (CR-009)
 pnpm test
-pnpm typecheck
 pnpm lint:tokens    # no color/px/z-index literals outside the token source
 pnpm check:contrast # WCAG 2.1 AA per srs_final.md §12.1
 pnpm test:a11y      # axe-core, serious+ violations = 0
 pnpm size           # Button gzip ≤ 4KB, @conductor/css gzip ≤ 20KB
 ```
+
+`packages/tokens/src/tokens.ts` and `src/breakpoints.ts` are **generated** and gitignored. Never edit them; edit the token source and rebuild.
 
 ## Dependencies
 

@@ -1,0 +1,74 @@
+# Session Summary — 2026-07-10, Conductor Design System 부트스트랩
+
+## 목표 (사용자 표현 그대로)
+
+> "나만의 커스텀 디자인 시스템. `/home/roqkf/agent-ai-platform` 프로젝트의 디자인 스타일이 매우 마음에 듭니다. 이것을 나의 디자인 시스템으로 디벨롭 하고싶다. Opus 4.8 모델로 메인 오케스트레이션을 하면서 Opus, Sonnet을 서브 에이전트로 병렬 수행하며 설계 문서부터 구현 및 스캐폴딩해라. 여기서 codex는 호출하지 않을것이다."
+
+`build-srs-prd-env` 스킬로 문서 우선(documentation-first) 계획 환경을 만든 뒤, 그 문서를 근거로 코드를 스캐폴딩했다.
+
+## 무엇을 만들었나
+
+**제품**: Conductor Design System. `agent-ai-platform/packages/web`의 시각 언어(조밀한 운영용 다크 UI)를 재사용 가능한 npm 패키지 3종 + 정적 문서 사이트로 추출한다.
+
+```
+packages/tokens/   @conductor/tokens   토큰 소스 + 빌드 + CLI 3종   [REL-001 완료]
+packages/css/      @conductor/css      프레임워크 비종속 스타일시트  [WP-008~009 미착수]
+packages/react/    @conductor/react    Radix 기반 컴포넌트 30개      [WP-011~017 미착수]
+apps/docs/         (private)           정적 문서 사이트              [WP-018~022 미착수]
+docs/              SRS/PRD 문서 세트 41개 — 코드가 아님
+```
+
+의존 방향은 `tokens → css → react → docs` 단방향. 역방향은 `scripts/check-deps.mjs`가 빌드를 죽인다.
+
+## 현재 상태
+
+### 문서 (완료)
+- `docs/` 41개 파일. `validate_srs_prd_env.py --strict` **exit 0**
+- FR 49개(전부 EARS + AC + 검증방법 + 관련 ID + 예외처리 전체 블록), 화면 12개(W-###), 컴포넌트 30개(C-001~C-072), 플로우 6개, ADR 10개, WP 28개, REL 4개
+- `docs/10_requirements/srs_final.md` = **baseline v1.2** (사용자 승인). 이후 변경은 CR 선등록 필수
+- CR 9건, DEV 2건 추적 중
+
+### 코드 (REL-001 완료, WP-001~007)
+클린 체크아웃에서 게이트 7개 전부 exit 0:
+
+| 게이트 | 결과 |
+| --- | --- |
+| `pnpm lint` / `lint:deps` / `build` / `typecheck` / `test` / `lint:tokens` / `check:contrast` | 전부 exit 0 |
+| 테스트 | 278 passed / 17 files |
+| 빌드 | 6.5초 (NFR-001 예산 180초) |
+| 토큰 | 276 정의(primitive 74 / semantic 87 / component 115) → CSS 202 선언 |
+| 대비 검사 | 다크 40/40 통과, 미달 0건, 제외 165 토큰 |
+| 산출 `.d.ts`의 `any` | 0건 |
+
+`@conductor/tokens` 공개 표면:
+- exports: `.`, `./tokens.css`, `./tokens.json`, `./contrast-report.json`, `./breakpoints`, `./package.json`
+- bin: `conductor-build-tokens`, `conductor-check-contrast`, `conductor-lint-tokens`
+- `sideEffects: ["*.css"]`
+
+### 미착수
+WP-008 ~ WP-028 (REL-002/003/004). 다음 단계는 **WP-008**(`@conductor/css` 레이어 골격) 또는 **WP-010**(라이트 팔레트).
+
+## 이 세션의 핵심 성과 — 결함 5건을 코드 이전에 잡았다
+
+| # | 결함 | 어디서 잡혔나 | 처리 |
+| --- | --- | --- | --- |
+| 1 | 소스의 포커스 링 `rgba(109,124,255,0.3)` = 대비 **1.50:1**. WCAG 2.4.11(3:1) 위반 | 소스 팔레트 실측 (오케스트레이터) | CR-005 → alpha 0.80 (3.93:1) |
+| 2 | 폼 컨트롤 경계 `border.default` = **1.30:1**. WCAG 1.4.11 위반 | 소스 팔레트 실측 | CR-005 → 신규 `border.control` (0.60 alpha, 3.23:1) |
+| 3 | SRS §12.1이 `status.neutralEnd`를 `nonText`(3:1)로 분류했으나 값이 최대 **2.60:1** — 자기모순 | 토큰 문서 작성 에이전트 | CR-006 → `decorative` 강등 |
+| 4 | FR-TOK-002 AC-2("semantic은 primitive만 참조") ↔ FR-THM-001 AC-2(별칭 요구) 충돌 | 계층 검사기 구현 착수 | CR-008 → AC 정정 |
+| 5 | CI가 `typecheck`를 `build`보다 먼저 실행하는데 타입 표면 일부가 생성물 | 클린 체크아웃 재현 | CR-009 → 순서 반전 + gitignore |
+
+**1·2번은 소스에서 계승될 뻔했다.** 3·4·5번은 **오케스트레이터가 직접 심은 결함**이며, 셋 다 오케스트레이터 자신이 아니라 다른 계층(문서 작성 에이전트 / 구현 착수 / 클린 빌드 재현)이 잡았다. 이것이 이 문서 환경의 존재 이유다.
+
+## 오케스트레이션 방식
+
+메인 = Opus 4.8. 서브에이전트 11개를 병렬/순차로 운용:
+- 소스 분석 3개(design-dna, component-inventory, layout-patterns)
+- 문서 작성 7개(tokens-doc, ui-screens, component-spec, state-qa, arch-core, arch-contracts, arch-ops, delivery-qa, briefs)
+- 구현 2개(wp001, wp002-005, wp006-007)
+
+Codex는 호출하지 않았다(사용자 지시).
+
+## 다음 에이전트가 알아야 할 것 (한 줄 요약)
+
+`docs/20_derived_ui_specs/conductor_ai_agent_execution_brief.md`를 읽고 WP-008부터 시작하라. `srs_final.md`가 baseline이므로 요구사항을 바꾸려면 `docs/00_governance/change_control.md`에 CR을 먼저 등록해야 한다.

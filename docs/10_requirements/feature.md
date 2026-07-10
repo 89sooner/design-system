@@ -57,9 +57,10 @@
 | F-CMP-005 | 데이터 표시 컴포넌트군 | 목록과 이력을 조회한다 | SRC-AAP `.table`, `.timeline`, `.num`, `.mono` | `Table`, `Timeline`, `CodeBlock`, `Kbd` | 조밀 표, 이력 타임라인, 숫자 정렬, 코드 블록 | 표는 가로 스크롤 컨테이너를 자체 소유 | Type C | P0 | 승인 | FR-CMP-005 |
 | F-CMP-006 | 오버레이 컴포넌트군 | 맥락을 잃지 않고 부가 작업을 한다 | SRC-AAP `.drawer`, `.radix-overlay`, `.TooltipContent` | `Dialog`, `Drawer`, `Tooltip`, `DropdownMenu` | Radix 기반 포커스 트랩·ESC 닫기·스크롤 잠금 | 자체 포커스 트랩을 새로 구현하지 않는다 | Type C | P0 | 승인 | FR-CMP-006 |
 | F-CMP-007 | 폼 컴포넌트군 | 값을 입력하고 선택한다 | SRC-AAP `input`, `.input-glass`, `.SelectTrigger`, `.SwitchRoot`, `.form-label` | `TextField`, `TextArea`, `Select`, `Switch`, `Checkbox`, `Field` | 라벨·설명·오류를 `aria-describedby`로 연결 | 라벨 없는 입력 요소 렌더 금지 | Type C | P0 | 승인 | FR-CMP-007 |
-| F-CMP-008 | 피드백 컴포넌트군 | 진행·비어있음·오류를 인지한다 | SRC-AAP `.banner-error`, `.warn-box`, `.empty-state`, `.progress-ring`, `.linear-progress-*` | `Banner`, `EmptyState`, `Meter`, `ProgressRing`, `Spinner` | 5종 상태 표현 제공 | 오류 배너는 복구 액션 슬롯 필수 | Type C | P0 | 승인 | FR-CMP-008 |
+| F-CMP-008 | 피드백 컴포넌트군 | 진행·비어있음·오류를 인지한다 | SRC-AAP `.banner-error`, `.warn-box`, `.empty-state`, `.progress-ring`, `.linear-progress-*` | `Banner`, `EmptyState`, `Meter`, `ProgressRing`, `Spinner` | 5종 상태 표현 제공. **소스의 미터 3중 구현(`CircularProgress`, `LinearProgress`, `UsageCostPage`의 `Gauge`)을 `Meter`와 `ProgressRing` 둘로 통합한다** | 오류 배너는 복구 액션 슬롯 필수. 임계값 판정(비율 → 색)은 소비자가 계산해 `tone`으로 전달한다 | Type C | P0 | 승인 | FR-CMP-008 |
 | F-CMP-009 | 셸 컴포넌트군 | 앱 골격을 세운다 | SRC-AAP `.app-shell`, `.app-nav`, `.app-topbar` | `AppShell`, `NavList`, `TopBar` | 사이드 내비 + 상단바 + 본문 영역 | 라우팅 라이브러리를 강제하지 않는다 | Type C | P1 | 승인 | FR-CMP-009 |
 | F-CMP-010 | 필터/칩 컴포넌트군 | 목록을 좁힌다 | SRC-AAP `.filter-bar`, `.suggestion-chip` | `FilterBar`, `Chip` | `aria-pressed` 토글 칩 제공 | — | Type C | P2 | 보류 | — |
+| F-CMP-011 | 통계 타일 | 수치 하나를 라벨과 함께 읽는다 | SRC-AAP `StatCard`(IncidentDashboardPage.tsx:21-30)와 `Meta`(ArtifactPage.tsx)가 같은 패턴을 각각 중복 정의 | `StatTile` | 12px 보조 라벨 + 22px 굵은 값, 임계 색상 `tone` 옵션 | 소스에서 공유되지 않고 페이지마다 재정의된 패턴이다. 통합 가치는 있으나 v1 필수 아님 | Type C | P2 | 보류 | — |
 
 ### 2.5 DOC — 문서 사이트
 
@@ -117,6 +118,7 @@
 | F-X-007 | 다국어(i18n) 문자열 시스템 | 컴포넌트는 문자열을 props로 받는다. 번역은 소비자 책임 | 컴포넌트 내부 고정 문자열이 생길 때 |
 | F-X-008 | 런타임 테마 편집기 | 문서 사이트의 테마 토글(F-DOC-005)까지만 포함. 임의 토큰 값을 런타임에 바꾸는 편집기는 제외 | 디자이너가 직접 팔레트를 실험할 필요가 확인될 때 |
 | F-X-009 | 도메인 컴포넌트 이식 | `.thread-page`, `.approval-card-*`, `.run-summary`, `.tool-grid` 등은 agent-ai-platform 도메인 전용. 디자인 시스템에 올리면 재사용되지 않는 결합이 생긴다 | 두 번째 제품이 같은 패턴을 요구할 때 |
+| F-X-010 | 페이로드 마스킹 뷰어 | 소스 `MaskedPayloadViewer`의 코드 뷰어 셸(파일명 툴바 + 복사 버튼 + 스크롤 `<pre>`)은 C-032 `CodeBlock`이 담당한다. 그러나 `[REDACTED:*]` 하이라이팅, JSON 키/값 정규식 채색, 마스킹 규칙은 agent-ai-platform의 감사·보안 도메인에 결합되어 있다. 디자인 시스템은 마스킹 의미를 알지 못한다 | 마스킹이 두 번째 제품에서도 같은 규칙으로 필요할 때 |
 
 ## 4. 기능군 요약
 
@@ -125,9 +127,9 @@
 | TOK 토큰 | 9 | 9 | 0 | 0 |
 | THM 테마 | 4 | 4 | 0 | 0 |
 | CSS 스타일 레이어 | 5 | 5 | 0 | 0 |
-| CMP 컴포넌트 | 10 | 9 | 1 | 0 |
+| CMP 컴포넌트 | 11 | 9 | 2 | 0 |
 | DOC 문서 사이트 | 7 | 7 | 0 | 0 |
 | A11Y 접근성 | 5 | 5 | 0 | 0 |
 | DX 개발자 경험 | 5 | 5 | 0 | 0 |
 | QA 품질 검사 | 4 | 4 | 0 | 0 |
-| 제외 후보 | 9 | 0 | 0 | 9 |
+| 제외 후보 | 10 | 0 | 0 | 10 |

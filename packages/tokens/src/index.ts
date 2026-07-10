@@ -1,11 +1,13 @@
 /**
- * Namespace prefix owned by Conductor (ADR-006).
+ * Public entry point of `@conductor/tokens` (API-PKG-001, API-TOK-002).
  *
- * CSS custom properties are emitted as `--cdt-<key>` and class selectors as
- * `cdt-<block>`. Downstream packages read this constant instead of hard-coding
- * the string so that a rename stays a one-line change.
+ * Semantic and component tokens only. `primitives.ts` is deliberately absent: a consumer has no
+ * path to `ink.900` (FR-TOK-002 AC-5), and the build never gives it a `--cdt-` name
+ * (FR-TOK-004 AC-4).
  */
-export const CDT_PREFIX = "cdt-" as const;
-
-/** Published name of this package. */
-export const PACKAGE_NAME = "@conductor/tokens" as const;
+export { CDT_PREFIX, PACKAGE_NAME } from "./constants";
+export { tokens } from "./tokens";
+export type { Tokens } from "./tokens";
+export { breakpoints } from "./breakpoints";
+export type { Breakpoints } from "./breakpoints";
+export type { TokenDefinition, TokenGroup, TokenTier, TokenUsage } from "./schema";

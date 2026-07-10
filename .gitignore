@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+coverage/
+.turbo/
+.omc/
+
+# Generated token artifacts. The token source (schema/primitives/palette/scales/
+# components) is the only input; these are emitted by `pnpm --filter @conductor/tokens
+# run build`. Committing them would create a second source of truth that can drift.
+# Refs: CR-009 DEV-002 FR-TOK-001
+packages/tokens/src/tokens.ts
+packages/tokens/src/breakpoints.ts
+
+# Tool caches
+*.tsbuildinfo
+pnpm-debug.log*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local editor and OS files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Local environment overrides
+.env
+.env.*
+!.env.example

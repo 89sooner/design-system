@@ -1,0 +1,98 @@
+# 확정 결정과 그 이유
+
+저장소 문서에서 읽을 수 있는 "무엇"이 아니라, 문서에 남기 어려운 "왜"와 "무엇을 기각했는가"를 기록한다.
+
+## 사용자가 직접 내린 결정 (인터뷰 4문항, 2026-07-10)
+
+| 결정 | 선택 | 기각한 대안 | 이유 |
+| --- | --- | --- | --- |
+| 이름/네임스페이스 | **Conductor** (`@conductor/*`, `--cdt-*`) | Katakuri, Halo | 소스 `tokens.css` 첫 줄이 이미 "Conductor product UI tokens"였다. 계보가 명확 |
+| 산출물 범위 | **토큰 + React 컴포넌트 + 문서 사이트** | 토큰만 / 토큰+컴포넌트 / +Figma 동기화 | Figma 동기화는 외부 도구 의존과 DTCG 포맷 채택이 선행돼야 함 (F-X-001로 명시 제외) |
+| 테마 | **다크 우선 + 라이트 추가** | 다크 전용 / +고대비 | 라이트는 토큰 계층이 실제로 테마를 분리하는지 검증하는 테스트 케이스다. 고대비는 팔레트 3벌 유지 비용 회피 |
+| 스타일 엔진 | **Vanilla CSS + CSS 커스텀 프로퍼티** | Tailwind v4 preset, CSS Modules, vanilla-extract | 소스와 동일. 프레임워크 비종속, 런타임 0. preset은 소비자를 Tailwind에 결속 (ADR-002) |
+
+## 오픈 결정 (OD) 처리
+
+| OD | 질문 | 결정 | 상태 |
+| --- | --- | --- | --- |
+| OD-001 | 소스 팔레트의 WCAG 미달 5건 처리 | **최소 수정**: 접근성 결함(포커스 링, 폼 경계)만 값 교정. 나머지는 `usage` 메타데이터로 분류하고 값 보존 | closed (CR-005) |
+| OD-002 | 시각 회귀 검사를 v1 게이트에 넣는가 | **REL-004로 이월**. FR-QA-004 = `deferred` | closed |
+| OD-003 | 필터/칩 컴포넌트군을 v1에 넣는가 | 미결. FR 미부여, WP 없음 | **open (비차단)** |
+| OD-004 | 셸 컴포넌트군을 패키지에 넣는가 | **`@conductor/react`에 포함**. `renderLink` props로 라우팅 비종속 API 성립 | closed |
+
+### OD-001을 "최소 수정"으로 고른 이유
+
+세 선택지를 실측 수치와 함께 제시했다.
+
+- **소스 100% 보존**: 포커스 표시자는 `decorative`로 분류할 수 없다(사용자가 키보드 위치를 잃음). NFR-003을 "AA 부분 준수"로 낮춰야 했다. → 기각
+- **최소 수정 (채택)**: `focusRing` alpha 0.30→0.80, 신규 `border.control`. 시각 변화가 포커스 상태와 입력 경계에만 국한된다
+- **전면 AA**: `text.faint`를 올리면 `text.muted`와 구분이 사라지고, `status.queued`/`neutralEnd`가 같은 값으로 수렴한다. G-1(시각 보존)과 M-1(시각 회귀 1%)을 동시에 깨뜨린다. → 기각
+
+## CR로 처리한 문서 결함 (구현 중 발견)
+
+### CR-006 — `status.neutralEnd` 모순 (해소안 A)
+
+SRS §12.1이 `usage: nonText`(3:1)를 부여하면서 값 `#475569`를 보존하라고 지시했다. 실측 대비율은 표면 6종에서 2.04 ~ 2.60. **두 지시가 동시에 성립하지 않는다.**
+
+- **해소안 A (채택)**: 값 보존, `usage` → `decorative`. 근거: (1) FR-THM-005 AC-7이 아이콘+텍스트 병기를 이미 강제해 WCAG 1.4.1 충족, (2) 소스 `.timeline-marker`가 표면색 링(`app.css:585`)으로 도형 경계를 만들어 점의 식별이 채움 대비에 의존하지 않음, (3) `border.*`에 적용한 WCAG 1.4.11 예외와 동일 논리
+- **해소안 B (기각)**: `#5d6e86`으로 밝게(3.26:1). `status.queued`(`#64748b`)와 명도 근접, 세 번째 시각 회귀 원인. OD-001의 "최소 수정" 방침과 충돌
+- **남는 대가**: 다크 테마 종료 상태 점이 흐리게 읽힌다(최대 2.60:1). 검사 통과가 "잘 보인다"는 뜻이 아니다. 원장 §5 알려진 제약에 기록됨
+
+CP-025는 선언 목록에서 제거됐고 **ID는 재사용하지 않는다** (CP-001~CP-041에 40개, 결번 1).
+
+### CR-008 — 토큰 계층 참조 규칙 (DEV-001)
+
+FR-TOK-002 AC-2("semantic은 primitive만 참조")와 FR-THM-001 AC-2(별칭 `surface.2`→`surface.subtle`, `border`→`border.default` **요구**)가 양립 불가. 별칭은 정의상 semantic→semantic이다.
+
+`conductor_data_model.md`가 제시했던 회피안("별칭을 component 계층으로 재분류")도 무너진다: `elevation.overlay`(semantic)가 `{border.strong}`(semantic)을 품고, `overlay.shadow`(component)가 `{elevation.overlay}`를 참조한다. 앞을 component로 옮기면 뒤가 component→component가 되어 같은 규칙이 다시 금지한다. **재분류는 모순을 옮길 뿐 없애지 못한다.**
+
+**정정된 불변식**: *토큰은 자기 계층 또는 하위 계층의 토큰만 참조한다.* (primitive < semantic < component). 상위 참조만 오류. 동일 계층 순환은 FR-TOK-003 AC-3의 순환 검출이 잡는다.
+
+동일 계층 참조 4개: `surface.2`, `border`, `status.running`→`{accent}`, `elevation.overlay`→`{border.strong}`.
+
+### CR-009 — CI 순서 (DEV-002)
+
+`@conductor/tokens`의 공개 타입 표면 일부(`src/tokens.ts`, `src/breakpoints.ts`)를 토큰 빌드가 **생성**한다. WP-001이 세운 CI 순서는 `typecheck`를 `build`보다 먼저 돌렸다.
+
+- 정정: `install → lint → lint:deps → build → typecheck → test → lint:tokens → check:contrast`
+- 생성 파일을 `.gitignore`에 추가. 커밋된 생성물은 두 번째 진실 공급원이 되어 FR-TOK-001("토큰 소스가 유일한 입력")을 무력화한다
+
+**버린 첫 해소안**: 처음엔 "생성물 최신성" CI 검사로 `git diff --exit-code -- packages/tokens/dist`를 넣었다. `dist/`가 gitignore되어 있으므로 **어떤 경우에도 실패할 수 없는 검사**였다. 통과가 보장된 검사는 없는 것보다 나쁘다 — 안전하다는 신호를 거짓으로 준다. 실제 확인 가능한 것(재빌드가 gitignore되지 않은 파일을 남기지 않는다)으로 교체했다.
+
+## 아키텍처 문서 재해석 (CR-004)
+
+Conductor에는 **서버 런타임·DB·큐·인증이 없다.** 스캐폴드가 만든 네 문서를 그대로 채우면 존재하지 않는 시스템을 설계하게 된다.
+
+| 문서 | 재해석 |
+| --- | --- |
+| `conductor_backend_architecture.md` | 빌드 파이프라인 |
+| `conductor_api_contracts.md` | 패키지 공개 API (`exports`, CLI, TS 시그니처, 컴포넌트 props) |
+| `conductor_data_model.md` | 토큰/메타데이터 스키마 |
+| `conductor_async_events_jobs.md` | CI 잡과 릴리스 파이프라인 |
+| `conductor_security_privacy_architecture.md` | 공급망 보안 |
+
+화면 ID도 `W-###`(문서 사이트)만 존재한다. `D-###`(주 앱)와 `A-###`(관리 콘솔)는 이 제품에 없다.
+
+## 명시적 제외 (F-X-###) — 에이전트의 과잉 구현 방지
+
+| ID | 제외 항목 | 이유 |
+| --- | --- | --- |
+| F-X-001 | Figma 양방향 동기화 | 외부 도구 의존, DTCG 포맷 선행 필요 |
+| F-X-002 | Vue/Svelte/Web Components 어댑터 | 소비자가 React 단일. `@conductor/css`가 비-React 대안 |
+| F-X-003 | Tailwind preset | ADR-002가 Vanilla CSS 확정 |
+| F-X-004 | 자체 아이콘 세트 | `lucide-react`를 peer dependency로 |
+| F-X-005 | 차트/시각화 컴포넌트 | `Meter`/`ProgressRing`까지만 |
+| F-X-006 | 고대비 테마 | 팔레트 3벌 유지 비용 |
+| F-X-007 | i18n 문자열 시스템 | 컴포넌트는 문자열을 props로 받는다 |
+| F-X-008 | 런타임 토큰 편집기 | 문서 사이트 테마 토글까지만 |
+| F-X-009 | **도메인 컴포넌트 이식** | `.thread-page`, `.approval-card-*`, `.run-summary`, `.tool-grid`는 agent-ai-platform 도메인 결합 |
+| F-X-010 | 페이로드 마스킹 뷰어 | `CodeBlock`(C-032)이 셸을 담당. `[REDACTED:*]` 하이라이팅은 감사·보안 도메인 결합 |
+
+## 컴포넌트 설계 원칙 (구현 시 지킬 것)
+
+- **접근성 동작은 Radix UI에 위임**(ADR-004). 포커스 트랩·롤 관리·키보드 내비게이션을 자체 구현하지 않는다. 소스의 `StepDrawer`가 `role="dialog" aria-modal="true"`를 달고도 포커스 트랩이 없었던 것이 이 결정의 직접적 동기다
+- Radix DOM에는 **`data-*` 속성 셀렉터만** 사용. 구조 셀렉터(`>`, `+`, `:nth-child`) 금지 → Radix 업그레이드가 CSS를 깨뜨리는 위험(R-3) 완화
+- `@layer cdt.reset, cdt.base, cdt.layout, cdt.component, cdt.utility` (ADR-005). **`!important` 금지** — 소스는 `app.css:956`에서 썼다
+- props 이름 고정: 시각 변종 `variant`, 의미 색상 `tone`, 크기 `size`
+- 상태는 소비자가 소유. `Table`은 정렬·페이지네이션·가상 스크롤을 제공하지 않는다. 토스트/스낵바도 없다
+- 소스의 미터 3중 구현(`CircularProgress`, `LinearProgress`, `UsageCostPage`의 `Gauge`)을 `Meter`와 `ProgressRing` 둘로 통합한다
