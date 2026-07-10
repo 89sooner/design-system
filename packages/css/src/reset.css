@@ -1,0 +1,62 @@
+/* FR 범위: FR-CSS-002 */
+
+@layer cdt.reset {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    background-color: var(--cdt-surface-base);
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--cdt-border-strong) transparent;
+  }
+
+  body {
+    margin: 0;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  /*
+   * The ring is a box-shadow, not an outline: --cdt-focus-ring carries the
+   * whole `0 0 0 3px <colour>` triple. Its alpha is 0.80, not the source's
+   * 0.30 — CR-005 raised it to clear WCAG 2.4.11 (3.93:1). Never restore the
+   * source value.
+   */
+  :focus-visible {
+    outline: none;
+    box-shadow: var(--cdt-focus-ring);
+  }
+
+  /*
+   * The source painted rgba(109,124,255,0.32) on #fff. Neither value has a
+   * token; --cdt-accent-glow (0.28) is the nearest declared accent wash and
+   * --cdt-text-inverse would be unreadable here, so the selection foreground
+   * stays --cdt-text-primary.
+   */
+  ::selection {
+    background-color: var(--cdt-accent-glow);
+    color: var(--cdt-text-primary);
+  }
+
+  ::-webkit-scrollbar { width: 10px; height: 10px; } /* cdt-allow-literal: 스크롤바 트랙 폭에 대응하는 토큰이 없다 (space 스케일은 4px 배수) */
+
+  ::-webkit-scrollbar-thumb {
+    border: 3px solid transparent; /* cdt-allow-literal: 썸 안쪽 여백을 만드는 투명 테두리, 대응 토큰 없음 */
+    border-radius: 999px; /* cdt-allow-literal: pill 반경, radius 스케일 최대값은 24px */
+    background-color: var(--cdt-border-strong);
+    background-clip: padding-box;
+  }
+}

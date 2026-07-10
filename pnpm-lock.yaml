@@ -61,9 +61,15 @@ importers:
       lightningcss:
         specifier: ^1.29.1
         version: 1.32.0
+      postcss:
+        specifier: ^8.5.16
+        version: 8.5.16
       typescript:
         specifier: ^5.7.3
         version: 5.9.3
+      vitest:
+        specifier: ^3.0.4
+        version: 3.2.7(@types/node@22.20.1)(lightningcss@1.32.0)
 
   packages/react:
     dependencies:

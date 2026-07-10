@@ -1,0 +1,47 @@
+/* FR 범위: FR-CSS-002 */
+
+@layer cdt.utility {
+  .cdt-sr-only {
+    position: absolute;
+    width: 1px; height: 1px; margin: -1px; /* cdt-allow-literal: 시각적 숨김 상자는 1px여야 한다. 4px(space.1) 미만 토큰이 없다 */
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .cdt-skip-link {
+    position: fixed;
+    top: var(--cdt-space-3);
+    left: var(--cdt-space-3);
+    z-index: var(--cdt-page-skip-link-z);
+    padding: var(--cdt-space-2) var(--cdt-space-3);
+    border-radius: var(--cdt-radius-sm);
+    background-color: var(--cdt-accent);
+    color: var(--cdt-text-inverse);
+    text-decoration: none;
+    transform: translateY(-160%);
+    transition: transform var(--cdt-motion-fast);
+  }
+
+  .cdt-skip-link:focus {
+    transform: translateY(0);
+  }
+
+  .cdt-muted {
+    color: var(--cdt-text-muted);
+  }
+
+  .cdt-mono {
+    font-family: var(--cdt-font-mono);
+    font-size: var(--cdt-font-size-base);
+    color: var(--cdt-text-mono-payload);
+  }
+
+  .cdt-num {
+    font-family: var(--cdt-font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+}

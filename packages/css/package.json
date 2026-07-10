@@ -10,6 +10,10 @@
       "style": "./dist/index.css",
       "default": "./dist/index.css"
     },
+    "./component.css": {
+      "style": "./dist/component.css",
+      "default": "./dist/component.css"
+    },
     "./package.json": "./package.json"
   },
   "browserslist": [
@@ -20,6 +24,7 @@
   ],
   "scripts": {
     "build": "node build.mjs",
+    "test": "vitest run --project css --config ../../vitest.config.ts",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
@@ -28,6 +33,8 @@
   "devDependencies": {
     "browserslist": "^4.24.4",
     "lightningcss": "^1.29.1",
-    "typescript": "^5.7.3"
+    "postcss": "^8.5.16",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.4"
   }
 }

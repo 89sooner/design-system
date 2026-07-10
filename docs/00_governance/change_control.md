@@ -29,6 +29,9 @@
 | CR-008 | 2026-07-10 | implementation | `DEV-001` (WP-002 구현 착수 시 발견) | FR-TOK-002 AC-2("semantic은 primitive만 참조")가 토큰 설계의 semantic → semantic 참조 4건과 충돌한다. 그중 `surface.2` → `{surface.subtle}`와 `border` → `{border.default}`는 FR-THM-001 AC-2가 명시적으로 **요구**하는 별칭이므로, AC-2를 문자 그대로 구현하면 두 Must FR을 동시에 만족할 수 없다. **분류: 문서 오류.** FR-TOK-002의 설계 의도는 §2.1 제목이 밝히듯 참조 *방향*의 제약("역방향 참조가 하나라도 존재하면 실패")이지 동일 계층 별칭 금지가 아니다. **해소**: AC-2를 "primitive 또는 다른 semantic 토큰만 참조한다. component 토큰 참조는 빌드 오류다"로, AC-3을 "semantic 또는 다른 component 토큰만 참조한다. 상위 계층 참조는 빌드 오류다"로 정정한다. 불변식은 "토큰은 자기 계층 또는 하위 계층만 참조한다"로 통일된다. 동일 계층 내 순환은 FR-TOK-003 AC-3의 순환 검출이 잡는다. 값·범위 변경 없음 | DEV-001, FR-TOK-002 AC-2·AC-3·AC-6(신규), FR-THM-001 AC-2, ENT-TOK-001 | `srs_final.md`(§9.1 FR-TOK-002), `conductor_design_system_tokens.md`(§2.1, §2.3), `conductor_data_model.md`(ENT-TOK-001 불변식 2·3·4), `conductor_work_packages.md`(WP-002 DoD) | closed |
 
 | CR-009 | 2026-07-10 | implementation | `DEV-002` (WP-003/WP-004 완료 후 발견) | 토큰 빌드가 `packages/tokens/src/tokens.ts`와 `src/breakpoints.ts`를 생성하는데, WP-001의 CI 순서가 `typecheck`를 `build`보다 먼저 실행한다. 생성 파일을 지우고 `pnpm typecheck`를 돌려 종료 코드 2와 `TS2307: Cannot find module './tokens'`를 재현했다. **분류: 기술 제약.** 생성된 타입 표면은 생성 전에 검사할 수 없다. **해소**: (1) CI 순서를 `install → lint → lint:deps → build → typecheck → test`로 바꾼다. (2) 생성 파일을 `.gitignore`에 추가해 소스 트리에서 배제한다 — 커밋된 생성물은 토큰 소스와 어긋날 수 있고 FR-TOK-001의 "토큰 소스가 유일한 입력"을 무력화한다. (3) 루트 `typecheck` 스크립트가 `build`를 전제한다는 사실을 `AGENTS.md`·`CLAUDE.md`의 명령 표에 명시한다. 범위·요구사항 변경 없음 | DEV-002, FR-TOK-006, FR-DX-001 AC-2, FR-TOK-001, WP-001 | `.github/workflows/ci.yml`, `.gitignore`, `AGENTS.md`, `CLAUDE.md`, `conductor_work_packages.md`(WP-001 구현 범위), `conductor_infrastructure_operations.md` | closed |
+| CR-010 | 2026-07-11 | implementation | `DEV-003` (WP-008 착수 시 발견) | WP-008의 검증 방법이 실행 불가능한 명령(`pnpm size`, WP-025 소유)과 무의미하게 통과하는 명령(`pnpm --filter @conductor/css test`, 스크립트 부재로 no-op exit 0)을 포함한다. WP-008 검증 방법을 `pnpm --filter @conductor/css build && pnpm --filter @conductor/css test`로 정정하고, NFR-001의 `@conductor/css` gzip 20KB 예산은 `packages/css/test/bundle.test.ts`가 실제 gzip 측정으로 단언하도록 한다. `pnpm size`(Button 단독 4KB + css 20KB, JOB-CI-004)의 구현은 WP-025에 그대로 남는다. `packages/css`에 `"test": "vitest run --project css"`를 추가해 필터 실행이 실제로 테스트를 돌리게 한다. 요구사항(SRS)은 변경하지 않는다 | WP-008, WP-025, FR-DX-003 AC-3, NFR-001 | `conductor_work_packages.md`, `conductor_implementation_traceability.md`, `packages/css/package.json` | closed |
+| CR-011 | 2026-07-11 | implementation | `DEV-004` (WP-008 검증 중 발견) | CR-009가 추가한 CI의 "토큰 빌드 재현성" 단계가 깨끗한 체크아웃에서도 항상 실패한다. `pnpm install`이 `bin` 항목을 0755로 chmod하기 때문에 `git status --porcelain`이 토큰 빌드와 무관하게 3줄을 출력한다. 해당 단계를 `git -c core.fileMode=false status --porcelain --untracked-files=all`로 정정한다. 파일 모드 비트만 무시하며, CR-009가 의도한 두 검사(재빌드가 추적 파일을 바꾸지 않는다 / gitignore를 빠져나간 미추적 파일이 없다)는 그대로 유지된다 | WP-001, CR-009, FR-TOK-001 | `.github/workflows/ci.yml`, `conductor_implementation_traceability.md` | closed |
+| CR-012 | 2026-07-11 | implementation | `DEV-005` (WP-009 완료 검증 시 발견) | WP-009의 검증 방법이 `pnpm --filter @conductor/css test`만 실행한다. CSS 테스트는 기존 `dist/`를 읽으므로 소스를 변경한 뒤 빌드하지 않아도 과거 산출물을 검사할 수 있다. 검증 방법을 `pnpm --filter @conductor/css build && pnpm --filter @conductor/css test`로 정정해 현재 소스에서 산출물을 만든 뒤 검사하도록 한다. 요구사항과 구현 범위는 변경하지 않는다 | DEV-005, WP-009, FR-CSS-003, FR-TOK-009 | `conductor_work_packages.md`, `conductor_implementation_traceability.md` | closed |
 
 유형: `scope`(범위 변경), `design`(설계 변경), `implementation`(구현 편차 DEV-### 처리), `correction`(문서 오류 수정)
 
@@ -139,6 +142,43 @@ CR별로 실제 갱신한 문서 체크리스트를 남긴다.
 - [x] validator: 구조·추적성 오류 0건, `--strict` 통과
 
 **버려진 첫 번째 해소안.** 처음에는 "생성물 최신성" CI 검사로 `git diff --exit-code -- packages/tokens/dist`를 넣었다. `dist/`가 `.gitignore`에 있으므로 이 검사는 **어떤 경우에도 실패할 수 없다.** 통과가 보장된 검사는 없는 것보다 나쁘다 — 안전하다는 신호를 거짓으로 준다. 실제로 확인할 수 있는 것(재빌드가 gitignore되지 않은 파일을 남기지 않는다)으로 교체했다.
+
+### CR-010 cascade
+
+`baseline` 이후 세 번째 편차 처리다. 요구사항이 아니라 **작업 패키지의 검증 명령**을 고쳤다. `srs_final.md`는 손대지 않았다.
+
+- [x] `docs/40_delivery/conductor_work_packages.md` — WP-008 검증 방법에서 `pnpm size`를 제거하고 `pnpm --filter @conductor/css build && pnpm --filter @conductor/css test`로 정정. gzip 20KB 게이트의 수행 주체를 DoD 항목에 명시. WP-025는 손대지 않았다(`pnpm size`의 구현 범위는 계속 WP-025가 소유한다)
+- [x] `packages/css/package.json` — `"test": "vitest run --project css"` 추가. 이 스크립트가 없어서 `pnpm --filter @conductor/css test`가 아무것도 실행하지 않고 exit 0을 반환했다
+- [x] `packages/css/test/bundle.test.ts` — `zlib.gzipSync(level 9)`로 `dist/index.css`를 실제 압축해 20,480바이트 이하를 단언. 예산을 넘기면 실패한다
+- [x] `docs/40_delivery/conductor_implementation_traceability.md` — DEV-003 등록 및 종결, WP-008 행과 FR-CSS-001·FR-CSS-002·FR-CSS-005·FR-DX-003·FR-DX-001 행 갱신
+- [x] validator: 구조·추적성 오류 0건, `--strict` 통과
+
+**왜 `pnpm size`를 지금 만들지 않았는가.** `pnpm size`의 구현 범위(Button 단독 import gzip 측정, 초과 모듈 목록 출력)는 WP-025가 명시적으로 소유하고, WP-025의 선행 WP는 WP-017이다. WP-008에서 css 전용 축소판을 만들면 브리프 7절 3항("구현 범위 안에서만 작성한다")을 어기고 WP-025를 반쯤 구현한 상태로 남긴다. 대신 같은 예산(NFR-001, 20KB)을 패키지 테스트가 강제한다. WP-025는 이 예산을 CI 게이트(JOB-CI-004)로 승격시키면 된다.
+
+**DEV-003 (2)가 중요한 이유.** `pnpm --filter @conductor/css test`는 스크립트가 없어도 **실패하지 않는다.** pnpm은 없는 lifecycle 스크립트를 조용히 no-op 처리하고 종료 코드 0을 준다. WP-008을 그대로 실행했다면 "테스트 통과"라는 거짓 신호를 얻었을 것이다. CR-009에서 지운 `git diff --exit-code -- packages/tokens/dist`와 정확히 같은 결함이다: **통과가 보장된 검사는 없는 것보다 나쁘다.**
+
+### CR-011 cascade
+
+WP-008을 검증하던 중 발견한, WP-008과 무관한 CI 결함이다. 요구사항은 손대지 않았다.
+
+- [x] `.github/workflows/ci.yml` — 재현성 검사를 `git -c core.fileMode=false status --porcelain --untracked-files=all`로 정정하고, 이유를 주석으로 남겼다
+- [x] `docs/40_delivery/conductor_implementation_traceability.md` — DEV-004 등록 및 종결
+- [x] 재현 검증: `chmod 644 packages/tokens/bin/*.mjs` 후 트리가 깨끗함을 확인 → `pnpm install --frozen-lockfile` 실행 → `git status --porcelain packages/tokens/bin/`이 ` M` 3줄 출력(재현). `-c core.fileMode=false`를 붙이면 0줄
+- [x] validator: 구조·추적성 오류 0건, `--strict` 통과
+
+**왜 모드 비트를 커밋하지 않았는가.** `bin` 파일을 0755로 커밋하면 이번 증상은 사라지지만, `pnpm install`이 앞으로 추가될 모든 `bin` 항목에 같은 일을 한다. 검사가 파일 모드에 의존하지 않게 만드는 편이 근본적이다. CR-009의 원래 의도("재빌드가 gitignore되지 않은 파일을 남기지 않는다")는 모드 비트와 아무 상관이 없다.
+
+**CR-009의 교훈이 다시 확인됐다.** CR-009는 *절대 실패할 수 없는 검사*를 지웠다. 그 자리에 들어온 검사는 반대 방향으로 고장나 있었다 — **절대 통과할 수 없는 검사**였다. 두 결함의 뿌리는 같다: 검사를 작성한 뒤 그것이 통과하는 것도 실패하는 것도 관찰하지 않았다.
+
+### CR-012 cascade
+
+WP-009 완료 검증에서 발견한 작업 패키지 검증 명령의 문서 오류다. 요구사항과 구현 범위는 손대지 않았다.
+
+- [x] `docs/40_delivery/conductor_work_packages.md` — WP-009 검증 방법을 `pnpm --filter @conductor/css build && pnpm --filter @conductor/css test`로 정정하고 DoD를 실제 검증 결과로 닫음
+- [x] `docs/40_delivery/conductor_implementation_traceability.md` — DEV-005 등록 및 종결, WP-009·FR-CSS-003·FR-TOK-009 매핑 갱신
+- [x] validator: 구조·추적성 오류 0건, `--strict` 통과
+
+**왜 빌드가 필요한가.** `packages/css/test/bundle.test.ts`는 `dist/index.css`와 `dist/component.css`를 읽는다. 테스트 명령 자체는 이 산출물을 만들지 않으므로, 빌드 없는 검증은 변경 전 산출물을 검사할 수 있다. CR-010이 테스트 스크립트의 no-op을 제거했다면 CR-012는 테스트 입력의 stale 가능성을 제거한다.
 
 ## 6. 미해소 오픈 결정
 

@@ -56,11 +56,16 @@ jobs:
       # Generated token artifacts are gitignored, so they cannot drift in the repo.
       # What can drift is the build itself: assert a rebuild on an already-built tree
       # is a no-op and that nothing untracked escaped .gitignore.
+      #
+      # `core.fileMode=false` is required: `pnpm install` chmods every package `bin`
+      # entry to 0755, so the tokens CLIs report as modified before this step even
+      # runs. Without it this check fails on a clean checkout for a reason that has
+      # nothing to do with the token build. Refs: CR-011 DEV-004
       # Refs: CR-009 FR-TOK-001
       - name: token build is reproducible and leaves no untracked files
         run: |
           pnpm --filter @conductor/tokens run build
-          untracked="$(git status --porcelain --untracked-files=all)"
+          untracked="$(git -c core.fileMode=false status --porcelain --untracked-files=all)"
           if [ -n "$untracked" ]; then
             echo "::error::the token build left files git does not ignore:"
             echo "$untracked"

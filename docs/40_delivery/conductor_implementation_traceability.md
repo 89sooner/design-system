@@ -1,6 +1,6 @@
 # Conductor Design System 구현 추적 원장
 
-> 상태: review | 버전: v0.3 | 갱신일: 2026-07-10
+> 상태: review | 버전: v0.4 | 갱신일: 2026-07-11
 
 ## 1. 목적과 갱신 규칙
 
@@ -38,8 +38,8 @@ WP-001 ~ WP-028의 이름·REL·선행 관계는 `conductor_work_packages.md`에
 | WP-005 | 타이포·z-index·브레이크포인트 스케일 | REL-001 | done | (미커밋, 작업 트리) | `font.size` 7단계(10/11/12/13/14/16/20px)와 대응 `font.lineHeight`, `z` 6단계(0/10/20/30/40/50, 중복 0), `breakpoint` 3단계(560/800/1080px). `breakpoints` 객체 별도 export(`./breakpoints` 진입점). `@media` 조건 내 `var(--cdt-breakpoint-*)` 0건. 치환기가 `var()` 형태와 `{breakpoint.sm}` 별칭 형태를 모두 처리 | 2026-07-10 |
 | WP-006 | 토큰 린트와 계약 테스트 | REL-001 | done | (미커밋, 작업 트리) | `pnpm lint:tokens` 동작. 픽스처 음성 테스트 4종 실증: 색 리터럴(`#ff0000`, `rgba()`) → `error[TOK-LITERAL]` + 파일:줄:열 + exit 1; px/ms/z-index/font-size 리터럴 4종 검출; **FR-THM-005 AC-3** — `--cdt-text-faint`가 `--cdt-surface-elevated` 배경 위에 칠해지면 `text-faint-on-elevated` 위반(2.94:1 명시) + exit 1; `/* cdt-allow-literal: <사유> */` 주석이 통과시키고 `--report`가 사유와 함께 출력. 테마 계약 테스트는 대칭 차집합 검사를 두 테마 픽스처로 증명하고 `themeSpecific` 예외를 리포트에 노출 | 2026-07-10 |
 | WP-007 | 대비 검사기와 검사 쌍 정의 | REL-001 | done | (미커밋, 작업 트리) | `contrast-pairs.ts`에 40쌍 선언(CP-001 ~ CP-041, **CP-025 결번 보존** — CR-006). `pnpm check:contrast` 40/40 통과, 미달 0건, 제외 165 토큰(사유 포함). WCAG 2.1 상대 휘도 + alpha 합성. **오케스트레이터의 독립 WCAG 구현으로 40쌍 전부 교차 검증 — 불일치 0건(허용 오차 0.02).** 음성 테스트(실제 주입): `text.muted`를 `#3a4555`로 바꾸자 CP-006(2.03)·CP-007(1.59)·CP-040(1.69) 3쌍 실패, `check:contrast` exit 1, **빌드도 exit 1**, 쌍 ID·테마·측정값·기준값 출력. 복원 후 `contrast-report.json` 바이트 동일 | 2026-07-10 |
-| WP-008 | `@conductor/css` 레이어 골격과 리셋 | REL-002 | todo | - | - | - |
-| WP-009 | 레이아웃 프리미티브 클래스 | REL-002 | todo | - | - | - |
+| WP-008 | `@conductor/css` 레이어 골격과 리셋 | REL-002 | done | (미커밋, 작업 트리) | 클린 체크아웃에서 게이트 7개 전부 exit 0(빌드 14초), 테스트 319 passed / 19 files. `dist/index.css` 9,163바이트 → **gzip 2,575바이트**(NFR-001 예산 20,480). `dist/component.css` gzip 2,392바이트. 두 산출물 모두 `!important` 0건, 레이어 밖 규칙 0건, `@import` 잔존 0건, 비-`--cdt-` 커스텀 프로퍼티 0건. **음성 테스트(실제 주입)**: `!important` → `error[CSS-IMPORTANT]` + exit 1; 레이어 밖 규칙 → `error[CSS-UNLAYERED]` + exit 1; 원격 `@import` → `error[CSS-REMOTE-FONT]` + exit 1(리졸버 단계); `@font-face src: url(https://)` 및 프로토콜 상대 `//` → `error[CSS-REMOTE-FONT]` + exit 1(AST 단계); 비-`--cdt-` 커스텀 프로퍼티 → `error[CSS-CUSTOM-PROPERTY]` + exit 1. 5회 실패 전부에서 `dist/` 바이트 동일 보존(원자적 쓰기). `lint:tokens` 스캔 대상이 6 → 14 파일로 늘어 처음으로 실질 동작; 허용 주석 제거 시 `px-literal` 2건, 색 리터럴 주입 시 `color-literal` 1건으로 exit 1 실증 | 2026-07-11 |
+| WP-009 | 레이아웃 프리미티브 클래스 | REL-002 | done | (미커밋, 작업 트리) | 5개 클래스가 `cdt.layout`에 존재하고 색상 선언 0건. `cdt-split-layout`은 md 토큰(800px), `cdt-card-grid`는 sm 토큰(560px)에서 단일 컬럼. 카드 최소 열은 `--cdt-card-grid-min-column`(320px) 사용. CSS 빌드가 공개 `@conductor/tokens/breakpoints` 값으로 미디어 참조를 치환하며 산출물의 breakpoint CSS 변수 0건. CSS 57/57, 전체 330/330 테스트 통과. lint/lint:deps/build/typecheck/test/lint:tokens/check:contrast 전부 exit 0. gzip index 2,772B, component 2,589B. CR-012로 검증 명령의 stale dist 결함 수정 | 2026-07-11 |
 | WP-010 | 라이트 팔레트와 테마 결정 계약 | REL-002 | todo | - | - | - |
 | WP-011 | `@conductor/react` 골격과 공통 계약 | REL-002 | todo | - | - | - |
 | WP-012 | 액션·표면 컴포넌트군 | REL-002 | todo | - | - | - |
@@ -76,17 +76,17 @@ WP-001 ~ WP-028의 이름·REL·선행 관계는 `conductor_work_packages.md`에
 | FR-TOK-006 | `src/build/emit-ts.ts`, `src/build/emit-json.ts` | `src/build/emit-artifacts.test.ts` | WP-004 | 검증됨 (AC-1~AC-4. 산출 `.d.ts`의 `any` 0건) |
 | FR-TOK-007 | `src/scales.ts` | `src/scales.test.ts` | WP-005 | 검증됨 (AC-1~AC-4) |
 | FR-TOK-008 | `src/scales.ts` | `src/scales.test.ts` | WP-005 | 검증됨 (AC-1~AC-3) |
-| FR-TOK-009 | `src/scales.ts`, `src/build/media.ts` | `src/scales.test.ts` | WP-005 | 검증됨 (AC-1~AC-3) |
+| FR-TOK-009 | `packages/tokens/src/scales.ts`, `src/build/media.ts`, `packages/css/build.mjs`, `packages/css/checks.mjs` | `packages/tokens/src/scales.test.ts`, `packages/css/test/bundle.test.ts`, `test/checks.test.ts` | WP-005, WP-009 | 검증됨 (AC-1~AC-3. CSS 소스의 `{breakpoint.sm}`·`{breakpoint.md}`가 공개 `@conductor/tokens/breakpoints` 값으로 560px·800px 리터럴 치환되고 산출 미디어 조건의 breakpoint CSS 변수 0건. `CSS-MEDIA-VAR` 음성 테스트 포함) |
 | FR-THM-001 | `src/palette.dark.ts` | `src/palette.dark.test.ts` | WP-002 | 부분 (AC-1·AC-2 충족: 소스 프로퍼티 1:1, 별칭 2개가 토큰 참조. AC-3 키 대칭과 AC-4 `color-scheme`은 WP-010) |
 | FR-THM-002 | - | - | - | 미착수 |
 | FR-THM-003 | - | - | - | 미착수 |
 | FR-THM-004 | `src/contrast-pairs.ts`, `src/contrast-cli.ts` | `src/contrast-pairs.test.ts` | WP-007 | 부분 (AC-1~AC-4 충족, 다크 40/40 통과. 라이트 팔레트가 생기는 WP-010 이후 두 테마로 재검증) |
 | FR-THM-005 | `src/palette.dark.ts`, `src/contrast-pairs.ts`, `src/lint-cli.ts` | `src/palette.dark.test.ts`, `src/contrast-pairs.test.ts` | WP-002, WP-006, WP-007 | 검증됨 (AC-1 focusRing 3.93/3.56, AC-2 border.control 3.23, AC-3 lint 차단 실증, AC-4~AC-6 usage 분류. CR-006 반영: `status.neutralEnd`=decorative, CP-025 결번) |
-| FR-CSS-001 | - | - | - | 미착수 |
-| FR-CSS-002 | - | - | - | 미착수 |
-| FR-CSS-003 | - | - | - | 미착수 |
+| FR-CSS-001 | `packages/css/src/layers.css`, `src/reset.css`, `src/base.css`, `src/utility.css`, `packages/css/checks.mjs`, `build.mjs` | `packages/css/test/bundle.test.ts`, `test/checks.test.ts` | WP-008 | 검증됨 (AC-1~AC-4 + Radix 예외. 산출물 첫 줄이 5레이어 선언, `!important` 0건, 레이어 밖 규칙 0건. 음성 테스트로 `CSS-IMPORTANT`·`CSS-UNLAYERED`·`CSS-UNKNOWN-LAYER` 각각 exit 1 실증. **AC-3은 구조로 증명**: Conductor 규칙이 전부 레이어 안에 있으므로 레이어 밖 소비자 규칙이 명시도와 무관하게 이긴다. 실브라우저 캐스케이드 측정은 §5 참조) |
+| FR-CSS-002 | `packages/css/src/reset.css`, `src/utility.css` | `packages/css/test/bundle.test.ts` | WP-008 | 검증됨 (AC-1~AC-5 + 예외 처리. `box-sizing: border-box`가 `*`·`::before`·`::after`에, `font: inherit`가 `button`·`input`·`textarea`·`select`에, `:focus-visible`이 `var(--cdt-focus-ring)` 그림자와 `outline: none`에 적용. 원격 폰트 참조 0건을 두 단계(리졸버·AST)에서 차단. `cdt-sr-only`·`cdt-skip-link`가 `cdt.utility`에 존재. 예외 처리인 `./component.css`(리셋 제외 산출물)를 실제로 산출) |
+| FR-CSS-003 | `packages/css/src/layout.css`, `packages/css/build.mjs` | `packages/css/test/bundle.test.ts` | WP-009 | 검증됨 (AC-1~AC-4. 5개 클래스가 `cdt.layout`에 존재, split 800px·card-grid 560px 반응형 단일 컬럼, 최소 열 토큰 값 320px의 `auto-fill`, 색상 속성 0건) |
 | FR-CSS-004 | - | - | - | 미착수 |
-| FR-CSS-005 | - | - | - | 미착수 |
+| FR-CSS-005 | `packages/css/src/base.css` | `packages/css/test/bundle.test.ts` | WP-008 | 부분 (AC-3·AC-4 충족: `scroll-behavior: auto`, 규칙이 `cdt.base`에 있고 전역 `*` 대신 `:root`/`[data-cdt-theme]` 스코프 셀렉터 사용, `!important` 0건. AC-1은 **AST로만 검증** — `--cdt-motion-*` 3종이 `0s`로 재정의되고 `transition-duration`·`animation-duration`이 `0s`로 선언됨을 단언한다. 계산값(computed) 측정은 실브라우저가 필요해 WP-024의 브라우저 하네스로 이월(§5). AC-2와 예외 처리(Spinner/ProgressRing 정적 텍스트)는 컴포넌트가 생기는 WP-012 이후) |
 | FR-CMP-001 | - | - | - | 미착수 |
 | FR-CMP-002 | - | - | - | 미착수 |
 | FR-CMP-003 | - | - | - | 미착수 |
@@ -108,9 +108,9 @@ WP-001 ~ WP-028의 이름·REL·선행 관계는 `conductor_work_packages.md`에
 | FR-A11Y-003 | - | - | - | 미착수 |
 | FR-A11Y-004 | `src/contrast-cli.ts`, `.github/workflows/ci.yml` | `src/contrast-pairs.test.ts` | WP-007 | 부분 (AC-2·AC-3·AC-4 충족. AC-1 "두 테마 미달 0건"은 다크만 측정 — 라이트는 WP-010) |
 | FR-A11Y-005 | - | - | - | 미착수 |
-| FR-DX-001 | `scripts/check-deps.mjs`, 루트 `package.json` `build` 스크립트, `.github/workflows/ci.yml` | `scripts/check-deps.mjs` 음성 테스트(수동), 각 패키지 스모크 테스트 | WP-001 | 부분 (AC-1·AC-2·AC-3 충족. 클린 체크아웃에서 `lint → lint:deps → build → typecheck → test` 전부 exit 0, 빌드 6.5초. AC-4 "선행 패키지의 산출물을 소비한다"는 `@conductor/css`가 `@conductor/tokens/tokens.css` 진입점을 실제로 import하는 WP-008에서 검증. CR-009로 CI 순서 정정) |
+| FR-DX-001 | `scripts/check-deps.mjs`, 루트 `package.json` `build` 스크립트, `.github/workflows/ci.yml` | `scripts/check-deps.mjs` 음성 테스트(수동), 각 패키지 스모크 테스트 | WP-001 | 부분 (AC-1·AC-2·AC-3 충족. 클린 체크아웃에서 `lint → lint:deps → build → typecheck → test` 전부 exit 0, 빌드 6.5초. **AC-4 충족(WP-008)**: `packages/css/src/tokens.css`가 `@import "@conductor/tokens/tokens.css" layer(cdt.base);`로 공개 진입점만 참조하며, 빌드 리졸버가 tokens 패키지의 `exports` 맵을 통해 해석한다. 소스 상대경로 참조 0건. CR-009로 CI 순서 정정) |
 | FR-DX-002 | 각 패키지 `package.json`의 `exports`·`types`, `tsup` DTS 산출, `src/build/emit-ts.ts` | `packages/*/src/index.test.ts`, `packages/tokens/src/build/emit-artifacts.test.ts` | WP-001, WP-004 | 부분 (AC-1·AC-2 충족: 산출 `.d.ts` 3종의 `any` 0건. AC-3 소비자 `tsc --noEmit`와 AC-4 내부 타입 누출 검사는 실제 소비자가 생기는 WP-018 이후) |
-| FR-DX-003 | `packages/tokens/package.json` | `src/index.test.ts` | WP-003 | 부분 (AC-1·AC-2·AC-4 충족: 5개 공개 진입점, `sideEffects: ["*.css"]`. AC-3 번들 크기는 WP-025) |
+| FR-DX-003 | `packages/tokens/package.json`, `packages/css/package.json` | `packages/tokens/src/index.test.ts`, `packages/css/test/exports.test.ts` | WP-003, WP-008 | 부분 (AC-1·AC-2·AC-4 충족. WP-008에서 `@conductor/css`가 `.`·`./component.css`·`./package.json` 3개 진입점과 `sideEffects: ["*.css"]`를 선언하고, 선언된 진입점이 전부 실재 파일로 해석되며 `./src/` 노출이 0건임을 규칙 기반으로 단언한다. AC-3 `Button` 단독 gzip 4KB는 컴포넌트와 `pnpm size`가 생기는 WP-025) |
 | FR-DX-004 | - | - | - | 미착수 |
 | FR-DX-005 | - | - | - | 미착수 |
 | FR-QA-001 | `src/theme-contract.ts` | `src/theme-contract.test.ts` | WP-006 | 부분 (AC-1~AC-3 로직과 `themeSpecific` 예외를 두 테마 픽스처로 증명. 실제 두 팔레트 대칭 검사는 WP-010에서 처음 수행) |
@@ -124,6 +124,9 @@ WP-001 ~ WP-028의 이름·REL·선행 관계는 `conductor_work_packages.md`에
 
 | DEV ID | 발견일 | 유형 | 내용 | 관련 ID | 처리 CR | 상태 |
 | --- | --- | --- | --- | --- | --- | --- |
+| DEV-005 | 2026-07-11 | 문서 오류 | WP-009 완료 검증 시 발견. 공식 검증 방법이 `pnpm --filter @conductor/css test`만 실행하지만 CSS 테스트는 `packages/css/dist/*.css`를 읽고 빌드를 수행하지 않는다. 따라서 `src/layout.css` 또는 breakpoint 치환 로직을 변경한 뒤 빌드하지 않으면 과거 산출물을 검사해 잘못 통과할 수 있다. 현재 소스와 검사 대상을 일치시키려면 검증 명령에 CSS 빌드가 선행되어야 한다 | WP-009, FR-CSS-003, FR-TOK-009 | CR-012 | closed |
+| DEV-004 | 2026-07-11 | 기술 제약 | WP-008 검증 중 발견(WP-008 자체와는 무관하며 CR-009가 세운 CI 단계의 결함이다). `.github/workflows/ci.yml`의 마지막 단계는 토큰 재빌드 후 `git status --porcelain --untracked-files=all`이 비어 있기를 요구한다. 그러나 그보다 앞선 `pnpm install --frozen-lockfile`이 `package.json`의 `bin` 항목(`conductor-build-tokens`·`conductor-check-contrast`·`conductor-lint-tokens`)을 0644 → 0755로 chmod한다. 따라서 이 단계는 **깨끗한 체크아웃에서도 항상 실패**하며, 실패 사유는 토큰 빌드와 무관하다. 실측 재현: `chmod 644 packages/tokens/bin/*.mjs && git status --porcelain packages/tokens/bin/` → 비어 있음. 이어서 `pnpm install --frozen-lockfile` 실행 → 같은 명령이 ` M` 3줄 출력. CI가 아직 한 번도 실행된 적 없어(커밋 2개, 워크플로 실행 0회) 드러나지 않았다 | FR-TOK-001, FR-DX-001 AC-2, WP-001, CR-009 | CR-011 | closed |
+| DEV-003 | 2026-07-11 | 문서 오류 | WP-008 착수 시 발견. WP-008의 검증 방법 `pnpm --filter @conductor/css build && pnpm --filter @conductor/css test && pnpm size` 중 두 단계가 실행 불가능하거나 무의미하다. (1) `pnpm size`는 저장소 어디에도 없다. 이 스크립트를 만드는 것은 **WP-025의 구현 범위**이고 WP-025의 선행 WP는 WP-017이므로, WP-008 시점에는 존재할 수 없다. 즉 WP-008은 자신의 검증 명령을 실행할 수 없으면서 그 명령이 수행하는 gzip 20KB 게이트를 DoD로 요구한다. (2) `packages/css`에 `test` 스크립트가 없어 `pnpm --filter @conductor/css test`가 아무것도 실행하지 않고 종료 코드 0을 반환한다(pnpm 10.4.1은 없는 lifecycle 스크립트를 조용히 no-op 처리). 실측: `pnpm --filter @conductor/css test` → exit 0, stdout·stderr 모두 비어 있음. 이는 **절대 실패할 수 없는 검사**이며, CR-009에서 이미 한 번 제거한 결함 유형이다(통과가 보장된 검사는 없는 것보다 나쁘다) | WP-008, WP-025, FR-DX-003 AC-3, NFR-001 | CR-010 | closed |
 | DEV-002 | 2026-07-10 | 기술 제약 | WP-003/WP-004 구현 후 발견. `@conductor/tokens`의 공개 타입 표면 일부(`tokens.ts`, `breakpoints.ts`)는 토큰 빌드가 **생성**한다. 그러나 WP-001이 세운 CI 순서는 `install → typecheck → lint → lint:deps → build → test`로, 생성 전에 타입 검사를 돌린다. 생성 파일을 제거하고 `pnpm typecheck`를 실행해 재현했다: `src/index.ts(9,24): error TS2307: Cannot find module './tokens'` 외 3건, 종료 코드 2. 현재 CI가 통과하는 유일한 이유는 생성 파일이 `.gitignore`에 없어 소스 트리에 남기 때문이며, 이는 생성물이 토큰 소스와 어긋날 여지를 만든다(FR-TOK-001의 "토큰 소스가 유일한 입력" 원칙과 충돌) | FR-TOK-006, FR-DX-001 AC-2, FR-TOK-001, WP-001 | CR-009 | closed |
 | DEV-001 | 2026-07-10 | 문서 오류 | WP-002 구현 착수 시 발견. FR-TOK-002 AC-2는 "semantic 토큰은 primitive 토큰만 참조한다"고 규정하지만, 토큰 설계에는 semantic → semantic 참조가 4건 존재한다: `surface.2` → `{surface.subtle}`, `border` → `{border.default}`(둘 다 FR-THM-001 AC-2가 **요구**하는 별칭), `status.running` → `{accent}`, `elevation.overlay` → `{border.strong}`. `conductor_design_system_tokens.md` §2.1이 AC-2를 재천명한 직후 §2.3이 이 참조들을 정의해 같은 문서 안에서도 모순된다. AC-2를 문자 그대로 구현하면 FR-THM-001 AC-2가 요구하는 별칭 2개를 만들 수 없다 | FR-TOK-002 AC-2·AC-3, FR-THM-001 AC-2, FR-TOK-003 | CR-008 | closed |
 
@@ -143,6 +146,10 @@ WP-001 ~ WP-028의 이름·REL·선행 관계는 `conductor_work_packages.md`에
 | `text.faint`를 `surface.elevated` 위에 쓸 수 없다 | 대비율 2.94로 비텍스트 3:1에도 미달한다. `pnpm lint:tokens`가 이 조합을 차단한다 | FR-THM-005 AC-3 | 해당 위치에는 `text.muted`(4.76)를 쓴다 |
 | 다크 테마에서 종료 상태(`status.neutralEnd`) 점이 배경에서 흐리게 읽힌다 (CR-006, 해소안 A) | 값 `#475569`를 보존한 대가다. 대비율 2.04 ~ 2.60으로 `nonText` 3:1에 미달하나 `decorative`로 분류되어 검사 대상이 아니다. 상태 식별은 아이콘·텍스트 병기(FR-THM-005 AC-7)와 마커의 표면색 링이 담당한다 | FR-THM-005 AC-6, FR-A11Y-003 | 승인된 제약이다. 시인성 불만이 실제로 제기되면 CR을 열어 값 교정(`#5d6e86`, 3.26)을 검토한다 |
 | 라이트 테마에서 다크 전용 시각 장치(글래스 배경, 글로우)의 재현 한계(R-1) | 다크 팔레트의 글래스/글로우 효과가 라이트 배경 위에서 판독 불가능할 수 있다 | FR-THM-002 | 판독 불가한 컴포넌트 토큰은 라이트 팔레트에서 solid 대안 값으로 재정의한다. 컴포넌트 코드는 수정하지 않는다 |
+| 감소 모드의 `transition-duration`·`animation-duration` **계산값**이 실브라우저에서 측정된 적이 없다 | FR-CSS-005 AC-1을 `packages/css/test/bundle.test.ts`가 AST 단언으로만 검증한다(`--cdt-motion-*` 3종이 `0s`로 재정의되고 두 속성이 `0s`로 선언됨). node 환경의 `getComputedStyle`은 `@media`와 캐스케이드 레이어를 평가하지 않는다 | FR-CSS-005 AC-1, WP-008, WP-024 | WP-024가 Playwright chromium 브라우저 하네스(ADR-009)를 도입할 때 `prefers-reduced-motion` 에뮬레이션으로 계산값을 측정하고 이 항목을 닫는다 |
+| FR-CSS-001 AC-3(레이어 밖 소비자 규칙이 이긴다)이 실브라우저 캐스케이드로 측정된 적이 없다 | "Conductor 규칙이 전부 레이어 안에 있다"는 구조적 사실로부터 CSS 명세상 도출한다. 산출물에 레이어 밖 규칙이 0건임은 `CSS-UNLAYERED` 검사가 강제하고, 규칙 주입 시 exit 1로 실증했다 | FR-CSS-001 AC-3, WP-008, WP-024 | WP-024의 브라우저 하네스에서 소비자 규칙 오버라이드를 1건 측정해 닫는다 |
+| 리셋의 `::selection`과 링크 hover 색이 소스와 다르다 | 소스의 `rgba(109,124,255,0.32)`/`#fff`(선택 영역)와 `#aab3ff`(링크 hover)에 대응하는 토큰이 없다. 선택 영역은 `--cdt-accent-glow` + `--cdt-text-primary`로, 링크 hover는 색 변경 대신 `text-decoration: underline`으로 구현했다(어두운 배경에서 accent를 더 어둡게 하면 본문 대비 4.5:1이 깨진다) | FR-CSS-002, G-1, WP-008 | 승인된 제약이다. 정확한 색이 필요하면 토큰을 신설하는 CR을 열어 `packages/tokens`에서 처리한다(코드가 아니라 토큰 소스가 유일한 입력이다) |
+| 스크롤바·`sr-only` 치수에 `cdt-allow-literal` 허용 주석 4건이 있다 | `10px`(스크롤바 트랙), `3px`(썸 테두리), `999px`(pill 반경), `1px`/`-1px`(시각적 숨김 상자)는 대응 토큰이 없다. `space` 스케일은 4px에서 시작하고 `radius` 최대값은 24px다 | FR-TOK-001 AC-3, WP-008 | 승인된 제약이다. `pnpm lint:tokens --report`가 4건을 사유와 함께 상시 노출한다 |
 | 필터/칩 컴포넌트군(F-CMP-010)이 v1에 없다 | 소비자가 자체 구현한다. FR이 부여되지 않았고 WP도 없다 | OD-003 (open, 비차단) | REL-003 종료 시점에 Product가 결정한다 |
 
 OD-002(시각 회귀 이월)와 OD-004(셸 컴포넌트군 패키지 포함)는 2026-07-10 CR-005로 종결되었다. 더 이상 조건부 제약이 아니다.

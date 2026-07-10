@@ -1,6 +1,6 @@
 # Conductor Design System 작업 패키지
 
-> 상태: review | 버전: v0.2 | 갱신일: 2026-07-10
+> 상태: review | 버전: v0.3 | 갱신일: 2026-07-11
 
 ## 1. 목적
 
@@ -268,16 +268,16 @@ design-system/
   - `!important` 0건 강제 검사
 - 제외: 레이아웃 프리미티브(WP-009), 컴포넌트 클래스(WP-012 이후)
 - 완료 기준(DoD):
-  - [ ] 모든 규칙이 5개 레이어 중 하나에 속한다 (FR-CSS-001 AC-1)
-  - [ ] 산출물의 `!important` 출현 횟수가 0건이다 (FR-CSS-001 AC-2)
-  - [ ] 레이어 밖 소비자 규칙이 동일 명시도에서 Conductor 규칙을 덮어쓴다 (FR-CSS-001 AC-3)
-  - [ ] `box-sizing: border-box` 전역 적용, 폼 요소 `font: inherit`, `:focus-visible` 포커스 링이 확인된다 (FR-CSS-002 AC-1~3)
-  - [ ] 산출물에 원격 폰트 참조(`@import url()`, `src: url(http...)`)가 0건이다 (FR-CSS-002 AC-4, NFR-002)
-  - [ ] 감소 모드에서 `transition-duration`·`animation-duration` 계산값이 `0s`, `scroll-behavior`가 `auto`다 (FR-CSS-005 AC-1, AC-3)
-  - [ ] 감소 모드 규칙이 전역 `*` 대신 Conductor 스코프 셀렉터를 쓴다 (FR-CSS-005 AC-4)
-  - [ ] `@conductor/css` 전체 gzip 크기가 20KB 이하다 (NFR-001)
-  - [ ] `./component.css` 진입점이 `exports`에 선언된다 (FR-CSS-002 예외 처리, FR-DX-003 AC-4)
-- 검증 방법: `pnpm --filter @conductor/css build && pnpm --filter @conductor/css test && pnpm size`
+  - [x] 모든 규칙이 5개 레이어 중 하나에 속한다 (FR-CSS-001 AC-1)
+  - [x] 산출물의 `!important` 출현 횟수가 0건이다 (FR-CSS-001 AC-2)
+  - [x] 레이어 밖 소비자 규칙이 동일 명시도에서 Conductor 규칙을 덮어쓴다 (FR-CSS-001 AC-3) — 산출물에 레이어 밖 규칙이 0건임을 `CSS-UNLAYERED` 검사가 강제한다. 실브라우저 캐스케이드 측정은 원장 §5
+  - [x] `box-sizing: border-box` 전역 적용, 폼 요소 `font: inherit`, `:focus-visible` 포커스 링이 확인된다 (FR-CSS-002 AC-1~3)
+  - [x] 산출물에 원격 폰트 참조(`@import url()`, `src: url(http...)`)가 0건이다 (FR-CSS-002 AC-4, NFR-002) — 리졸버 단계와 AST 단계 두 곳에서 차단
+  - [x] 감소 모드에서 `transition-duration`·`animation-duration` 계산값이 `0s`, `scroll-behavior`가 `auto`다 (FR-CSS-005 AC-1, AC-3) — **AST 단언에 한한다.** `--cdt-motion-*` 3종이 `0s`로 재정의되고 두 속성이 `0s`로 선언됨을 확인했다. 실브라우저 계산값 측정은 WP-024로 이월(원장 §5)
+  - [x] 감소 모드 규칙이 전역 `*` 대신 Conductor 스코프 셀렉터를 쓴다 (FR-CSS-005 AC-4) — `:root` / `[data-cdt-theme]` 스코프, `!important` 0건
+  - [x] `@conductor/css` 전체 gzip 크기가 20KB 이하다 (NFR-001) — 실측 gzip 2,575바이트. `packages/css/test/bundle.test.ts`가 단언한다. `pnpm size`(JOB-CI-004)로의 승격은 WP-025가 수행한다 (CR-010)
+  - [x] `./component.css` 진입점이 `exports`에 선언된다 (FR-CSS-002 예외 처리, FR-DX-003 AC-4)
+- 검증 방법: `pnpm --filter @conductor/css build && pnpm --filter @conductor/css test` (CR-010으로 `pnpm size` 제거 — 그 스크립트의 구현 범위는 WP-025가 소유하며 WP-008 시점에 존재하지 않는다)
 - 기록: WP-008 행, FR-CSS-001·FR-CSS-002·FR-CSS-005·FR-DX-003 매핑 갱신
 
 ## WP-009 레이아웃 프리미티브 클래스
@@ -290,12 +290,12 @@ design-system/
 - 구현 범위: `cdt.layout` 레이어에 `cdt-app-shell`, `cdt-split-layout`, `cdt-card-grid`, `cdt-page`, `cdt-content-stack`
 - 제외: 도메인 전용 레이아웃(`.thread-page`, `.tool-grid` 등, F-X-009로 명시 제외)
 - 완료 기준(DoD):
-  - [ ] 5개 클래스가 존재한다 (FR-CSS-003 AC-1)
-  - [ ] `cdt-split-layout`이 800px 미만에서 단일 컬럼으로 전환된다 (FR-CSS-003 AC-2)
-  - [ ] `cdt-card-grid`가 최소 320px `auto-fill` 그리드이며 560px 미만에서 단일 컬럼이 된다 (FR-CSS-003 AC-3)
-  - [ ] 레이아웃 클래스가 색상 속성을 선언하지 않는다 (FR-CSS-003 AC-4)
-  - [ ] 브레이크포인트가 토큰(`sm` 560px, `md` 800px)에서 치환된 리터럴이며 CSS 변수 참조가 아니다 (FR-TOK-009 AC-2)
-- 검증 방법: `pnpm --filter @conductor/css test` (계산 스타일 단언)
+  - [x] 5개 클래스가 존재한다 (FR-CSS-003 AC-1)
+  - [x] `cdt-split-layout`이 800px 미만에서 단일 컬럼으로 전환된다 (FR-CSS-003 AC-2)
+  - [x] `cdt-card-grid`가 최소 320px `auto-fill` 그리드이며 560px 미만에서 단일 컬럼이 된다 (FR-CSS-003 AC-3)
+  - [x] 레이아웃 클래스가 색상 속성을 선언하지 않는다 (FR-CSS-003 AC-4)
+  - [x] 브레이크포인트가 토큰(`sm` 560px, `md` 800px)에서 치환된 리터럴이며 CSS 변수 참조가 아니다 (FR-TOK-009 AC-2)
+- 검증 방법: `pnpm --filter @conductor/css build && pnpm --filter @conductor/css test` (CR-012: 현재 소스에서 산출물을 만든 뒤 AST로 레이아웃과 미디어쿼리를 단언)
 - 기록: WP-009 행, FR-CSS-003 매핑 갱신
 
 ## WP-010 라이트 팔레트와 테마 결정 계약

@@ -1,0 +1,78 @@
+/* FR 범위: FR-CSS-002, FR-CSS-005 */
+
+@layer cdt.base {
+  body {
+    color: var(--cdt-text-primary);
+    font-family: var(--cdt-font-sans);
+    font-size: var(--cdt-font-size-md);
+    line-height: var(--cdt-font-line-height-md);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /*
+   * The source's link hover (#aab3ff) has no token, and the two accent steps
+   * that do exist run darker, which would drop a link below 4.5:1 on
+   * surface.base. Hover changes the decoration instead of the colour.
+   */
+  a {
+    color: var(--cdt-accent);
+    text-decoration: none;
+    transition: color var(--cdt-motion-fast);
+  }
+
+  a:hover,
+  a:focus-visible {
+    text-decoration: underline;
+  }
+
+  h1,
+  h2,
+  h3,
+  p {
+    text-wrap: pretty;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: var(--cdt-page-heading-size);
+    line-height: var(--cdt-page-heading-line-height);
+    letter-spacing: -0.035em;
+  }
+
+  h2,
+  h3 {
+    letter-spacing: -0.018em;
+  }
+
+  /*
+   * Reduced motion, without `!important` (ADR-005 bans it) and without the
+   * global `*` the source used (FR-CSS-005 AC-4).
+   *
+   * Redefining the motion tokens is the load-bearing half. A later layer beats
+   * an earlier one no matter the specificity, so a rule here could never win
+   * against a cdt.component transition. Changing the *value* those component
+   * rules consume sidesteps the cascade entirely — and `lint:tokens` bans raw
+   * ms literals, so every Conductor transition has to read a --cdt-motion-*
+   * token to exist at all.
+   *
+   * The scoped duration rule below is the second half: it catches anything
+   * declared in cdt.reset or cdt.base that does not route through a token.
+   */
+  @media (prefers-reduced-motion: reduce) {
+    :root,
+    [data-cdt-theme] {
+      --cdt-motion-fast: 0s cubic-bezier(0.2, 0, 0, 1);
+      --cdt-motion-standard: 0s cubic-bezier(0.2, 0, 0, 1);
+      --cdt-motion-bounce: 0s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+      scroll-behavior: auto;
+    }
+
+    [data-cdt-theme],
+    [data-cdt-theme] * {
+      transition-duration: 0s;
+      animation-duration: 0s;
+    }
+  }
+}

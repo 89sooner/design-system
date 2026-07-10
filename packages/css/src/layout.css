@@ -1,0 +1,51 @@
+/* FR 범위: FR-CSS-003, FR-TOK-009 */
+
+@layer cdt.layout {
+  .cdt-app-shell {
+    display: flex;
+    min-height: 100vh;
+    isolation: isolate;
+  }
+
+  .cdt-split-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--cdt-page-split-aside-width);
+    gap: var(--cdt-page-content-stack-gap);
+    align-items: start;
+  }
+
+  .cdt-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(var(--cdt-card-grid-min-column), 1fr));
+    gap: var(--cdt-space-5);
+  }
+
+  .cdt-page {
+    display: flex;
+    flex-direction: column;
+    gap: var(--cdt-page-stack-gap);
+  }
+
+  .cdt-content-stack {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: var(--cdt-page-content-stack-gap);
+  }
+
+  @media (max-width: {breakpoint.md}) {
+    .cdt-split-layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: {breakpoint.sm}) {
+    .cdt-card-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .cdt-page {
+      gap: var(--cdt-page-stack-gap-compact);
+    }
+  }
+}

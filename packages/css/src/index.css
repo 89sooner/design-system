@@ -1,9 +1,0 @@
-/*
- * Cascade layer order for every Conductor rule (ADR-005, FR-CSS-001 AC-4).
- * This statement must stay the first thing in the bundle: it fixes layer
- * precedence before any layer is populated, and it keeps every Conductor rule
- * weaker than an unlayered consumer rule of the same specificity.
- *
- * Layer contents land in WP-008 onward.
- */
-@layer cdt.reset, cdt.base, cdt.layout, cdt.component, cdt.utility;
