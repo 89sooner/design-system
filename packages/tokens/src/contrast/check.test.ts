@@ -49,15 +49,15 @@ describe("FR-THM-004: the dark theme's measured contrast", () => {
 
   test("FR-THM-004 AC-1: every declared pair is measured once per theme it names", () => {
     expect(report.summary.declaredPairs).toBe(contrastPairs.length);
-    expect(report.summary.checks).toBe(contrastPairs.length);
-    expect(report.themes).toEqual(["dark"]);
+    expect(report.summary.checks).toBe(contrastPairs.length * 2);
+    expect(report.themes).toEqual(["dark", "light"]);
   });
 
   test("FR-A11Y-004 AC-1: the dark theme reports zero contrast failures", () => {
     expect(report.results.filter((result) => !result.pass)).toEqual([]);
     expect(report.summary.failed).toBe(0);
     expect(exitCodeFor(report)).toBe(0);
-    expect(formatSummary(report)).toBe(`0 of ${contrastPairs.length} pairs checked failed contrast threshold`);
+    expect(formatSummary(report)).toBe(`0 of ${contrastPairs.length * 2} pairs checked failed contrast threshold`);
   });
 
   test("FR-THM-004 AC-4: text and accent pairs reproduce the tokens spec 8.2 table", () => {
@@ -254,10 +254,8 @@ describe("API-TOK-003: the checkContrast CLI contract", () => {
     expect(selectThemes(THEME_SOURCES, "dark")).toEqual([DARK]);
   });
 
-  test("FR-THM-002 AC-1: asking for the light theme before WP-010 defines it is an argument error", () => {
-    const error = thrownBy(() => selectThemes(THEME_SOURCES, "light"));
-    expect(error.exitCode).toBe(3);
-    expect(error.format()).toContain("available themes: dark");
+  test("FR-THM-002 AC-1: the light theme is selectable", () => {
+    expect(selectThemes(THEME_SOURCES, "light").map((theme) => theme.theme)).toEqual(["light"]);
   });
 
   test("FR-DOC-004: contrast-report.json carries every field W-030 renders", () => {
@@ -269,10 +267,10 @@ describe("API-TOK-003: the checkContrast CLI contract", () => {
       exclusions: Record<string, unknown>[];
     };
 
-    expect(parsed.themes).toEqual(["dark"]);
+    expect(parsed.themes).toEqual(["dark", "light"]);
     expect(parsed.thresholds).toEqual({ body: 4.5, large: 3, nonText: 3 });
     expect(parsed.summary.failed).toBe(0);
-    expect(parsed.results).toHaveLength(contrastPairs.length);
+    expect(parsed.results).toHaveLength(contrastPairs.length * 2);
     expect(parsed.results[0]).toMatchObject({
       id: "CP-001",
       theme: "dark",

@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { componentTokens } from "./components";
 import { darkPalette } from "./palette.dark";
+import { lightPalette } from "./palette.light";
 import { scaleTokens } from "./scales";
 import type { TokenDefinition } from "./schema";
 import { checkThemeContract, formatMissingKeys } from "./theme-contract";
@@ -22,7 +23,7 @@ describe("FR-QA-001: the cross-theme token contract", () => {
   test("FR-QA-001 AC-1: the declared themes have an empty symmetric difference", () => {
     const report = checkThemeContract(THEME_SOURCES);
     expect(report.missing).toEqual([]);
-    expect(report.themes).toEqual(["dark"]);
+    expect(report.themes).toEqual(["dark", "light"]);
     expect(report.checkedKeys).toBeGreaterThan(0);
   });
 
@@ -91,4 +92,13 @@ describe("FR-QA-001: the cross-theme token contract", () => {
     // and CI runs `pnpm test`. Asserting the check is callable here is what makes AC-3 true.
     expect(checkThemeContract(THEME_SOURCES).missing).toEqual([]);
   });
+});
+
+test("FR-THM-002 AC-4: light elevation alphas differ from the dark palette", () => {
+  const dark = new Map(darkPalette.map((token) => [token.key, token.value]));
+  const light = new Map(lightPalette.map((token) => [token.key, token.value]));
+
+  for (const key of ["elevation.raised", "elevation.hover", "elevation.overlay"]) {
+    expect(light.get(key)).not.toBe(dark.get(key));
+  }
 });

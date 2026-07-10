@@ -98,8 +98,15 @@ export function buildTokens(options: BuildOptions): BuildResult {
   // Tiers, keys and descriptions are theme-independent, so the canonical theme's list drives emit.
   const canonical = (resolved[0] as { tokens: TokenDefinition[] }).tokens;
   const themes = resolved.map(({ emit }) => emit);
+  const lightFallback = resolved.find(({ emit }) => emit.theme === "light")?.emit;
 
-  const css = emitCss(canonical, themes);
+  const css = emitCss(
+    canonical,
+    themes,
+    lightFallback === undefined
+      ? []
+      : [{ selectors: [":root:not([data-cdt-theme])"], colorScheme: "light", values: lightFallback.values }],
+  );
   const json = emitTokenJson(canonical, themes);
   const tokensModule = emitTokensModule(canonical);
   const breakpointsModule = emitBreakpointsModule();

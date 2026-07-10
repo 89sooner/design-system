@@ -16,6 +16,7 @@ function declarations(css: string): [string, string][] {
 
 const built = buildTokens({ outDir: "unused", report: true });
 const css = built.css;
+const darkCss = css.slice(0, css.indexOf(':root[data-cdt-theme="light"]'));
 
 describe("CSS emission from the real token source", () => {
   test("FR-TOK-004 AC-1: every custom property in the emitted tokens.css starts with `--cdt-`", () => {
@@ -37,14 +38,14 @@ describe("CSS emission from the real token source", () => {
   });
 
   test("FR-TOK-003 AC-1: `--cdt-surface-2` resolves to the same literal as `--cdt-surface-subtle`", () => {
-    const byName = new Map(declarations(css));
+    const byName = new Map(declarations(darkCss));
 
     expect(byName.get("--cdt-surface-2")).toBe("#101722");
     expect(byName.get("--cdt-surface-2")).toBe(byName.get("--cdt-surface-subtle"));
   });
 
   test("FR-THM-001 AC-2: `--cdt-border` resolves to the same literal as `--cdt-border-default`", () => {
-    const byName = new Map(declarations(css));
+    const byName = new Map(declarations(darkCss));
 
     expect(byName.get("--cdt-border")).toBe("rgba(148, 163, 184, 0.18)");
     expect(byName.get("--cdt-border")).toBe(byName.get("--cdt-border-default"));
@@ -69,9 +70,15 @@ describe("CSS emission from the real token source", () => {
     expect(css).toContain(':root,\n[data-cdt-theme="dark"] {');
   });
 
-  test("FR-TOK-004: the emitted declaration count equals the semantic plus component token count", () => {
+  test("FR-TOK-004: each theme emits the complete semantic plus component token set", () => {
     const emitted = canonicalTokens().filter((definition) => definition.tier !== "primitive");
-    expect(declarations(css)).toHaveLength(emitted.length);
+    expect(declarations(css)).toHaveLength(emitted.length * 3);
+  });
+
+  test("FR-THM-003 AC-1~3: explicit attributes win, only an absent attribute follows OS light", () => {
+    expect(css).toContain(':root,\n[data-cdt-theme="dark"] {');
+    expect(css).toContain(':root[data-cdt-theme="light"] {');
+    expect(css).toContain('@media (prefers-color-scheme: light) {\n:root:not([data-cdt-theme]) {');
   });
 });
 

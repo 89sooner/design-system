@@ -9,6 +9,7 @@
  */
 import { componentTokens } from "./components";
 import { darkPalette } from "./palette.dark";
+import { lightPalette } from "./palette.light";
 import { primitiveTokens } from "./primitives";
 import { scaleTokens } from "./scales";
 import type { TokenDefinition } from "./schema";
@@ -19,6 +20,14 @@ export interface ThemeSource {
   /** Selectors the theme's declaration block applies to. */
   readonly selectors: readonly string[];
   readonly palette: readonly TokenDefinition[];
+  /** Theme-specific component values; keys replace the shared component definition. */
+  readonly componentOverrides?: readonly TokenDefinition[];
+}
+
+function componentOverride(key: string, source: { value: string } | { alias: string }): TokenDefinition {
+  const token = componentTokens.find((candidate) => candidate.key === key);
+  if (token === undefined) throw new Error(`unknown component token override: ${key}`);
+  return { ...token, ...source };
 }
 
 /**
@@ -32,11 +41,33 @@ export const THEME_SOURCES: readonly ThemeSource[] = [
     selectors: [":root", '[data-cdt-theme="dark"]'],
     palette: darkPalette,
   },
+  {
+    theme: "light",
+    colorScheme: "light",
+    selectors: [':root[data-cdt-theme="light"]'],
+    palette: lightPalette,
+    componentOverrides: [
+      componentOverride("button.policyDisabled.text", { alias: "severity.destructive" }),
+      componentOverride("card.background", { alias: "surface.elevated" }),
+      componentOverride("card.border", { alias: "border.strong" }),
+      componentOverride("badge.severity.text", { alias: "text.inverse" }),
+      componentOverride("input.background", { alias: "surface.elevated" }),
+      componentOverride("input.backgroundFocus", { alias: "surface.elevated" }),
+      componentOverride("overlay.background", { alias: "surface.elevated" }),
+      componentOverride("overlay.backgroundBlur", { value: "0px" }),
+    ],
+  },
 ];
 
 /** Full token list for one theme: primitives, that theme's palette, shared scales, components. */
 export function tokensForTheme(theme: ThemeSource): TokenDefinition[] {
-  return [...primitiveTokens, ...theme.palette, ...scaleTokens, ...componentTokens];
+  const overrides = new Map((theme.componentOverrides ?? []).map((token) => [token.key, token]));
+  return [
+    ...primitiveTokens,
+    ...theme.palette,
+    ...scaleTokens,
+    ...componentTokens.map((token) => overrides.get(token.key) ?? token),
+  ];
 }
 
 /** The canonical theme's token list. Key set and tiers are identical across themes. */
