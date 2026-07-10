@@ -1,5 +1,12 @@
 # 확정 결정과 그 이유
 
+## WP-010~012 구현 결정 (2026-07-11)
+
+- 라이트 semantic 값은 다크 팔레트의 metadata/key를 복제한 뒤 명세 §6에서 정한 값만 재정의한다. 키를 별도 수기로 나열하면 FR-QA-001 대칭이 깨질 위험이 더 크다.
+- 테마 우선순위는 다크 `:root` → 명시 light/dark 속성 → 속성 없는 OS-light 폴백이다. 무효 속성은 :root 다크를 유지한다.
+- `publicComponents` registry는 공개 컴포넌트·테스트 파일·SSR renderer를 함께 보유한다. 이후 WP가 export를 추가할 때 테스트와 SSR 등록 누락을 빌드 전 검사로 막는다.
+- React `.tsx`를 workspace alias로 소비하는 docs까지 포함해 JSX 설정은 package가 아니라 `tsconfig.base.json`에 둔다.
+
 저장소 문서에서 읽을 수 있는 "무엇"이 아니라, 문서에 남기 어려운 "왜"와 "무엇을 기각했는가"를 기록한다.
 
 ## 사용자가 직접 내린 결정 (인터뷰 4문항, 2026-07-10)

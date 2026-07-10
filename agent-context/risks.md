@@ -1,5 +1,19 @@
 # 리스크 / 불확실한 가정 / 검증에서 속을 뻔한 지점
 
+## 2026-07-11(WP-010~012) 세션에서 추가된 함정
+
+### D. jsdom 프로젝트에서 테스트 현재 경로를 가정하지 말 것
+
+React 단독 실행과 루트 `pnpm test`는 cwd가 다르다. 매니페스트/산출물을 읽는 테스트는 `packages/react` 존재 여부로 root를 계산해야 한다. `readFileSync("package.json")`는 루트 실행에서 잘못된 매니페스트를 읽는다.
+
+### E. workspace alias가 `.tsx`를 따라가면 소비자 tsconfig도 JSX를 알아야 한다
+
+docs typecheck가 `@conductor/react` source alias를 해석한다. React package에만 JSX 설정을 두면 docs는 TS6142로 실패한다. `tsconfig.base.json`의 `jsx: react-jsx`가 필요하다.
+
+### F. 컴포넌트 CSS의 수치 리터럴은 토큰 린트 허용 사유가 필요하다
+
+1px border, 34px compact button, hover translate는 현재 token에 대응값이 없다. `cdt-allow-literal`의 이유를 코드 옆에 남기고, 색상·간격은 token으로만 쓴다.
+
 ## 2026-07-11(WP-008) 세션에서 추가된 함정
 
 ## 2026-07-11(WP-009) 세션에서 추가된 함정

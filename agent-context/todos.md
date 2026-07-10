@@ -2,23 +2,22 @@
 
 ## 시작 지점
 
-**WP-009 완료(2026-07-11).** 다음은 **WP-010**(라이트 팔레트와 테마 결정 계약). 자세한 인수인계는
-`agent-context/sessions/2026-07-11-wp009-layout-primitives.md` 참조.
+**WP-012 완료(2026-07-11, 커밋 대기).** 다음은 **WP-013**(상태 표시 컴포넌트군). 자세한 인수인계는
+`agent-context/sessions/2026-07-11-wp010-012-themes-react.md` 참조.
 
 ```text
 1. docs/20_derived_ui_specs/conductor_ai_agent_execution_brief.md 를 읽는다
-2. docs/40_delivery/conductor_work_packages.md 에서 WP-010 블록을 읽는다
+2. docs/40_delivery/conductor_work_packages.md 에서 WP-013 블록을 읽는다
 3. WP-010이 참조하는 ID의 문서만 재독한다 (WP의 ID 목록이 곧 읽기 범위)
 4. 구현 범위 안에서만 코드를 쓴다. 제외 항목은 코드가 아니라 메모로 남긴다
 5. DoD의 검증 명령을 실행한다
 6. docs/40_delivery/conductor_implementation_traceability.md 를 갱신한다
 ```
 
-### WP-010 착수 시 즉시 확인할 것
-- `docs/20_derived_ui_specs/conductor_design_system_tokens.md` §5/§6의 라이트 값을 코드로 옮긴다. 새 팔레트를 창작하지 않는다.
-- `FR-THM-001 AC-3`, `FR-TOK-005 AC-4`, `FR-A11Y-004 AC-1`, `FR-QA-001`이 WP-010 완료 후 `부분`에서 `검증됨`으로 올라가야 하는지 재검증한다.
-- 테마 선택 계약은 `data-cdt-theme`가 시스템 선호보다 우선한다. SSR flicker 방지 스니펫도 계약 일부다.
-- `check:contrast`가 두 테마를 모두 검사하는 첫 작업이다. 라이트 값의 실패 가능성을 리스크로 보고 먼저 작은 범위에서 확인한다.
+### WP-013 착수 시 즉시 확인할 것
+- 상태 7종과 severity 4종은 token metadata의 icon과 usage를 그대로 소비한다. 색만으로 의미를 전달하지 않는다.
+- WP-011의 `publicComponents` registry와 shared contract suite에 새 export/test를 반드시 등록한다.
+- `lucide-react`는 peer dependency다. 아이콘을 번들하지 않는다.
 
 ## REL-002 — 다음 릴리스 슬라이스
 
@@ -35,9 +34,10 @@ WP-010 ─────────┼→ WP-011 → { WP-012 ∥ WP-013 ∥ WP-0
 | --- | --- | --- | --- |
 | ~~WP-008~~ **done** | `@conductor/css` 레이어 골격과 리셋 | WP-003 | `@layer` 5단, `!important` 0건, gzip 2,575B ≤ 20KB, `./component.css` 부분 진입점 |
 | ~~WP-009~~ **done** | 레이아웃 프리미티브 클래스 | WP-008 | `cdt-app-shell`, `cdt-split-layout`, `cdt-card-grid`, `cdt-page`, `cdt-content-stack`, breakpoint 치환 |
-| **WP-010** | 라이트 팔레트와 테마 결정 계약 | WP-006 | 두 테마 키 대칭, `data-cdt-theme` 우선순위, SSR 깜빡임 방지 스니펫 |
-| WP-011 | `@conductor/react` 골격과 공통 계약 | WP-008 | `runContractSuite()`, ref 전달 / className 병합 / `data-*`·`aria-*` 통과 / 네이티브 props 확장 |
-| WP-012~017 | 컴포넌트군 6개 (C-001 ~ C-064) | WP-011 | 액션·표면 / 상태표시 / 데이터표시 / 오버레이 / 폼 / 피드백 |
+| ~~WP-010~~ **done** | 라이트 팔레트와 테마 결정 계약 | WP-006 | 두 테마 키 대칭, `data-cdt-theme` 우선순위, 80/80 대비 |
+| ~~WP-011~~ **done** | `@conductor/react` 골격과 공통 계약 | WP-008 | `runContractSuite()`, registry, SSR harness, peer 계약 |
+| ~~WP-012~~ **done** | 액션·표면 | WP-011 | Button/IconButton/Card/CardGrid/Panel + component CSS |
+| **WP-013~017** | 나머지 컴포넌트군 | WP-011 | 상태표시 / 데이터표시 / 오버레이 / 폼 / 피드백 |
 
 ### WP-008 착수 시 즉시 확인할 것
 

@@ -10,7 +10,7 @@ python3 $SKILL --root . --strict    # 핸드오프 게이트 (경고도 실패�
 python3 $SKILL --root . --report --code-root .   # 문서↔코드 FR/WP 태그 커버리지
 ```
 
-**마지막 실행 결과 (2026-07-11, WP-009 후)**
+**마지막 실행 결과 (2026-07-11, WP-012 후)**
 
 ```text
 OK: no structural or traceability issues found.
@@ -38,9 +38,9 @@ lint             exit=0
 lint:deps        exit=0        4 workspace packages, 6 edges, 0 violations
 build            exit=0
 typecheck        exit=0
-test             exit=0        Test Files 19 passed | Tests 330 passed
-lint:tokens      exit=0        scanned 15 file(s), 0 violation(s), 4 allowance(s)
-check:contrast   exit=0        dark 40/40 pass
+test             exit=0        Test Files 24 passed | Tests 378 passed
+lint:tokens      exit=0        scanned 28 file(s), 0 violation(s), 10 allowance(s)
+check:contrast   exit=0        dark/light 80/80 pass
 docs validator   exit=0        report/strict both clean
 git diff --check exit=0        LF -> CRLF warnings only
 ```

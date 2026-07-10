@@ -1,8 +1,15 @@
 #hidden
 # aci:v1 id=f7b39dc src=agent-context/risks.md
-@kv sha256=7180a4bcca0553cd0daa7ee96313cba6e3ac87be9405210295776908064fb83d bytes=7779 lines=87 title=리스크-/-불확실한-가정-/-검증에서-속을-뻔한-지점
-@sig agent-context/risks.md;packages/css;conductor/css;DEV-005/CR-012;conductor/tokens/breakpoints;packages/css/test/helpers.ts;packages/tokens/bin/;dist/cli.js;packages/tokens/bin/conductor-build-tokens.mjs;conductor/tokens;/bin/;packages/tokens/dist;packages/react;px/ms/z-index/font-size;CR-005/CR-006;CSS;packages;conductor;DEV;breakpoint;responsive;breakpoints;MEDIA;VAR
+@kv sha256=ebb1c14b6823da289ccdfa07f4c0d18c77a7bb603df0ede86e55f74bccf6a432 bytes=8763 lines=101 title=리스크-/-불확실한-가정-/-검증에서-속을-뻔한-지점
+@sig agent-context/risks.md;packages/react;conductor/react;packages/css;conductor/css;DEV-005/CR-012;conductor/tokens/breakpoints;packages/css/test/helpers.ts;packages/tokens/bin/;dist/cli.js;packages/tokens/bin/conductor-build-tokens.mjs;conductor/tokens;/bin/;packages/tokens/dist;px/ms/z-index/font-size;CR-005/CR-006;React;packages;readFileSync;package;workspace;conductor;JSX;tsconfig
 @h1 리스크 / 불확실한 가정 / 검증에서 속을 뻔한 지점
+@h2 2026-07-11(WP-010~012) 세션에서 추가된 함정
+@h3 D. jsdom 프로젝트에서 테스트 현재 경로를 가정하지 말 것
+@path React 단독 실행과 루트 pnpm test는 cwd가 다르다. 매니페스트/산출물을 읽는 테스트는 packages/react 존재 여부로 root를 계산해야 한다. readFileSync("package.json")는 루트 실행에서 잘못된 매니페스트를 읽는다.
+@h3 E. workspace alias가 .tsx를 따라가면 소비자 tsconfig도 JSX를 알아야 한다
+@path docs typecheck가 @conductor/react source alias를 해석한다. React package에만 JSX 설정을 두면 docs는 TS6142로 실패한다. tsconfig.base.json의 jsx: react-jsx가 필요하다.
+@h3 F. 컴포넌트 CSS의 수치 리터럴은 토큰 린트 허용 사유가 필요하다
+@p 1px border, 34px compact button, hover translate는 현재 token에 대응값이 없다. cdt-allow-literal의 이유를 코드 옆에 남기고, 색상·간격은 token으로만 쓴다.
 @h2 2026-07-11(WP-008) 세션에서 추가된 함정
 @h2 2026-07-11(WP-009) 세션에서 추가된 함정
 @h3 A. CSS 테스트는 stale dist를 읽을 수 있다

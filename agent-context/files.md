@@ -102,7 +102,7 @@ sideEffects: ["*.css"]
 
 ### `packages/css/` — REL-002 진행 중
 
-WP-008과 WP-009가 완료됐다.
+WP-008 ~ WP-012이 완료됐다.
 
 | 경로 | 역할 |
 | --- | --- |
@@ -110,6 +110,7 @@ WP-008과 WP-009가 완료됐다.
 | `packages/css/src/reset.css` | scoped reset |
 | `packages/css/src/base.css` | 토큰 기반 base 스타일 |
 | `packages/css/src/layout.css` | WP-009 레이아웃 프리미티브. 색 속성 금지 |
+| `packages/css/src/components.css` | WP-012 버튼·카드·패널 `cdt.component` 클래스 |
 | `packages/css/src/tokens.css` | `@conductor/tokens/tokens.css` 공개 진입점 import |
 | `packages/css/src/utility.css` | 낮은 범위의 utility |
 | `packages/css/build.mjs` | lightningcss 빌드, `index.css`/`component.css`, `{breakpoint.*}` 치환 |
@@ -119,7 +120,7 @@ WP-008과 WP-009가 완료됐다.
 
 ### `packages/react/`, `apps/docs/`
 
-WP-001의 최소 골격만 존재한다. `package.json` + `tsconfig.json` + 자리표시 진입점 + 스모크 테스트. 실제 구현은 WP-011 이후.
+`packages/react`은 WP-011/012까지 구현됐다. `action.tsx`는 Button/IconButton, `surface.tsx`는 Card/CardGrid/Panel, `testing/`은 공통 contract·registry·SSR harness다. `apps/docs`는 아직 최소 골격이다.
 
 ## 참고 — 소스 저장소 (읽기 전용)
 
