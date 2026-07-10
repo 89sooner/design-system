@@ -92,7 +92,7 @@ WP-001 ~ WP-028의 이름·REL·선행 관계는 `conductor_work_packages.md`에
 | FR-CMP-003 | `packages/react/src/surface.tsx`, `packages/css/src/components.css`, `src/data.tsx` | `packages/react/src/testing/surface.test.tsx`, `data.test.tsx`, `packages/css/test/bundle.test.ts` | WP-012, WP-014 | 검증됨 (AC-1~AC-4. Card의 대화형 요소 전환·상승·중첩 경고와 Table 자체 스크롤 컨테이너를 검증.) |
 | FR-CMP-004 | `packages/react/src/status.tsx`, `packages/css/src/components.css`, `packages/tokens/src/components.ts` | `packages/react/src/testing/status.test.tsx`, `packages/css/test/bundle.test.ts` | WP-013 | 검증됨 (AC-1~AC-5. Badge·StatusBadge·SeverityTag가 색·아이콘·텍스트 세 채널을 렌더하고, 7개 상태/4개 심각도 타입 및 `aria-hidden` 아이콘을 테스트한다. queued·neutralEnd는 토큰 명세에 따라 점+텍스트 마커 형태를 쓴다.) |
 | FR-CMP-005 | `packages/react/src/data.tsx`, `packages/css/src/components.css`, `packages/tokens/src/components.ts` | `packages/react/src/testing/data.test.tsx`, `packages/css/test/bundle.test.ts` | WP-014 | 검증됨 (AC-1~AC-5. Table 스크롤/숫자 셀/이름 경고, Timeline의 네이티브 button·div 전환, CodeBlock region·모노스페이스 스크롤, Kbd를 검증.) |
-| FR-CMP-006 | - | - | - | 미착수 |
+| FR-CMP-006 | `packages/react/src/overlay.tsx`, `packages/css/src/components.css`, `packages/react/package.json` | `packages/react/src/testing/overlay.test.tsx`, `packages/css/test/bundle.test.ts` | WP-015 | 검증됨 (AC-1~AC-5. 정확 고정 Radix Dialog/Tooltip/DropdownMenu wrapper가 Dialog·Drawer의 포커스/Escape/복귀/스크롤 잠금, Tooltip focus/Escape, z 토큰과 자체 접근성 동작 0건을 검증.) |
 | FR-CMP-007 | - | - | - | 미착수 |
 | FR-CMP-008 | - | - | - | 미착수 |
 | FR-CMP-009 | - | - | - | 미착수 |
@@ -104,10 +104,10 @@ WP-001 ~ WP-028의 이름·REL·선행 관계는 `conductor_work_packages.md`에
 | FR-DOC-006 | - | - | - | 미착수 |
 | FR-DOC-007 | - | - | - | 미착수 |
 | FR-A11Y-001 | `packages/css/src/reset.css`, `src/components.css` | `packages/css/test/bundle.test.ts`, `packages/react/src/testing/action.test.tsx` | WP-008, WP-012 | 부분 (AC-1 공유 `:focus-visible` focusRing 적용 및 액션/표면 대화형 요소 검증. 키보드/실브라우저 측정은 WP-024) |
-| FR-A11Y-002 | `packages/react/src/data.tsx` | `packages/react/src/testing/data.test.tsx` | WP-014 | 부분 (AC-4의 Timeline 대화형 단계가 네이티브 button으로 키보드 도달·Enter/Space 활성화를 제공함을 검증. 전체 키보드 경로와 오버레이 Escape 동작은 WP-015 이후에 완성.) |
+| FR-A11Y-002 | `packages/react/src/data.tsx`, `src/overlay.tsx` | `packages/react/src/testing/data.test.tsx`, `overlay.test.tsx` | WP-014, WP-015 | 부분 (AC-3의 Dialog/Drawer Escape·포커스 복귀와 AC-4 Timeline 대화형 단계를 검증. 전 컴포넌트 키보드 경로 전수 검증은 후속 WP와 WP-024에서 완성.) |
 | FR-A11Y-003 | `packages/react/src/status.tsx`, `packages/css/src/components.css` | `packages/react/src/testing/status.test.tsx`, `packages/css/test/bundle.test.ts` | WP-013 | 부분 (AC-1 및 AC-4의 상태·심각도 세 채널과 텍스트 구분을 검증. 폼 오류(AC-2)와 Meter(AC-3)는 WP-016·WP-017에서 구현한다.) |
 | FR-A11Y-004 | `src/contrast-cli.ts`, `.github/workflows/ci.yml` | `src/contrast-pairs.test.ts`, `src/contrast/check.test.ts` | WP-007, WP-010 | 검증됨 (AC-1~AC-4. 두 테마 80/80 미달 0건, decorative 제외·focusRing/border.control 3:1 검사) |
-| FR-A11Y-005 | - | - | - | 미착수 |
+| FR-A11Y-005 | `packages/react/src/overlay.tsx` | `packages/react/src/testing/overlay.test.tsx` | WP-015 | 부분 (AC-4의 Radix role/aria 무덮어쓰기와 menu 역할을 검증. axe 전수 검사(AC-1)·Banner·비동기 상태 항목은 WP-017 이후.) |
 | FR-DX-001 | `scripts/check-deps.mjs`, 루트 `package.json` `build` 스크립트, `.github/workflows/ci.yml` | `scripts/check-deps.mjs` 음성 테스트(수동), 각 패키지 스모크 테스트 | WP-001 | 부분 (AC-1·AC-2·AC-3 충족. 클린 체크아웃에서 `lint → lint:deps → build → typecheck → test` 전부 exit 0, 빌드 6.5초. **AC-4 충족(WP-008)**: `packages/css/src/tokens.css`가 `@import "@conductor/tokens/tokens.css" layer(cdt.base);`로 공개 진입점만 참조하며, 빌드 리졸버가 tokens 패키지의 `exports` 맵을 통해 해석한다. 소스 상대경로 참조 0건. CR-009로 CI 순서 정정) |
 | FR-DX-002 | 각 패키지 `package.json`의 `exports`·`types`, `tsup` DTS 산출, `packages/react/src/types.ts` | `packages/*/src/index.test.ts`, `packages/react/src/index.test.ts`, `packages/tokens/src/build/emit-artifacts.test.ts` | WP-001, WP-004, WP-011 | 부분 (AC-1·AC-2·AC-4 충족: React 공개 `.d.ts`의 `any` 및 `testing/` 내부 경로 0건. AC-3 소비자 `tsc --noEmit`은 WP-018) |
 | FR-DX-003 | `packages/tokens/package.json`, `packages/css/package.json`, `packages/react/package.json` | `packages/tokens/src/index.test.ts`, `packages/css/test/exports.test.ts`, `packages/react/src/index.test.ts` | WP-003, WP-008, WP-011 | 부분 (React `sideEffects: false`·공개 exports와 peer 선언 충족. Button 단독 gzip 4KB는 WP-025) |

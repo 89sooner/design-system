@@ -9,6 +9,7 @@ import { Button, IconButton } from "../action";
 import { Card, CardGrid, Panel } from "../surface";
 import { Badge, SeverityTag, StatusBadge } from "../status";
 import { CodeBlock, Kbd, Table, Timeline } from "../data";
+import { Dialog, Drawer, DropdownMenu, Tooltip } from "../overlay";
 
 export interface PublicComponent {
   readonly name: string;
@@ -29,6 +30,10 @@ export const publicComponents: readonly PublicComponent[] = [
   { name: "Timeline", testFile: "testing/data.test.tsx", render: () => createElement(Timeline, { children: null }) },
   { name: "CodeBlock", testFile: "testing/data.test.tsx", render: () => createElement(CodeBlock, { code: "{}" }) },
   { name: "Kbd", testFile: "testing/data.test.tsx", render: () => createElement(Kbd, null, "Esc") },
+  { name: "Dialog", testFile: "testing/overlay.test.tsx", render: () => createElement(Dialog.Root, { children: null }) },
+  { name: "Drawer", testFile: "testing/overlay.test.tsx", render: () => createElement(Drawer.Root, { children: null }) },
+  { name: "Tooltip", testFile: "testing/overlay.test.tsx", render: () => createElement(Tooltip.Provider, { children: createElement(Tooltip.Root, { children: null }) }) },
+  { name: "DropdownMenu", testFile: "testing/overlay.test.tsx", render: () => createElement(DropdownMenu.Root, { children: null }) },
 ];
 
 export function missingComponentTests(

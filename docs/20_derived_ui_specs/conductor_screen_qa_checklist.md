@@ -142,10 +142,10 @@ FR-CMP-001은 공개 컴포넌트 전수가 ref 전달(AC-1), className 병합(A
 | Timeline | FR-CMP-005 | [x] QA-093 | [x] QA-094 | [x] QA-095 | [x] QA-096 |
 | CodeBlock | FR-CMP-005 | [x] QA-097 | [x] QA-098 | [x] QA-099 | [x] QA-100 |
 | Kbd | FR-CMP-005 | [x] QA-101 | [x] QA-102 | [x] QA-103 | [x] QA-104 |
-| Dialog | FR-CMP-006 | [ ] QA-105 | [ ] QA-106 | [ ] QA-107 | [ ] QA-108 |
-| Drawer | FR-CMP-006 | [ ] QA-109 | [ ] QA-110 | [ ] QA-111 | [ ] QA-112 |
-| Tooltip | FR-CMP-006 | [ ] QA-113 | [ ] QA-114 | [ ] QA-115 | [ ] QA-116 |
-| DropdownMenu | FR-CMP-006 | [ ] QA-117 | [ ] QA-118 | [ ] QA-119 | [ ] QA-120 |
+| Dialog | FR-CMP-006 | [x] QA-105 | [x] QA-106 | [x] QA-107 | [x] QA-108 |
+| Drawer | FR-CMP-006 | [x] QA-109 | [x] QA-110 | [x] QA-111 | [x] QA-112 |
+| Tooltip | FR-CMP-006 | [x] QA-113 | [x] QA-114 | [x] QA-115 | [x] QA-116 |
+| DropdownMenu | FR-CMP-006 | [x] QA-117 | [x] QA-118 | [x] QA-119 | [x] QA-120 |
 | Field | FR-CMP-007 | [ ] QA-121 | [ ] QA-122 | [ ] QA-123 | [ ] QA-124 |
 | TextField | FR-CMP-007 | [ ] QA-125 | [ ] QA-126 | [ ] QA-127 | [ ] QA-128 |
 | TextArea | FR-CMP-007 | [ ] QA-129 | [ ] QA-130 | [ ] QA-131 | [ ] QA-132 |

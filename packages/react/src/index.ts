@@ -10,6 +10,8 @@ export { Badge, SeverityTag, StatusBadge } from "./status";
 export type { BadgeProps, Severity, SeverityTagProps, Status, StatusBadgeProps } from "./status";
 export { CodeBlock, Kbd, Table, Timeline } from "./data";
 export type { CodeBlockProps, KbdProps, TableCellProps, TableHeaderCellProps, TableProps, TimelineProps, TimelineStepProps } from "./data";
+export { Dialog, Drawer, DropdownMenu, Tooltip } from "./overlay";
+export type { DialogContentProps, DrawerContentProps, DropdownMenuItemProps, TooltipContentProps } from "./overlay";
 
 /** Published name of this package. */
 export const PACKAGE_NAME = "@conductor/react" as const;

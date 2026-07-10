@@ -1,4 +1,4 @@
-/* FR 범위: FR-CSS-004, FR-CMP-002, FR-CMP-003, FR-CMP-005 */
+/* FR 범위: FR-CSS-004, FR-CMP-002, FR-CMP-003, FR-CMP-005, FR-CMP-006 */
 
 @layer cdt.component {
   .cdt-btn {
@@ -313,5 +313,129 @@
     color: var(--cdt-kbd-text);
     font-family: var(--cdt-font-mono);
     font-size: var(--cdt-font-size-sm);
+  }
+
+  .cdt-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: var(--cdt-overlay-scrim-z);
+    background: var(--cdt-overlay-scrim);
+    backdrop-filter: blur(var(--cdt-overlay-scrim-blur));
+  }
+
+  .cdt-dialog,
+  .cdt-drawer,
+  .cdt-tooltip,
+  .cdt-menu {
+    border: 1px solid var(--cdt-overlay-border); /* cdt-allow-literal: 토큰에 오버레이 선 두께가 없다 */
+    color: var(--cdt-text-primary);
+  }
+
+  .cdt-dialog {
+    position: fixed;
+    inset: 50% auto auto 50%;
+    z-index: var(--cdt-overlay-content-z);
+    inline-size: min(90vw, 640px); /* cdt-allow-literal: dialog viewport cap */
+    max-block-size: 90vh; /* cdt-allow-literal: dialog viewport cap */
+    padding: var(--cdt-space-6);
+    overflow: auto;
+    border-radius: var(--cdt-overlay-radius);
+    background: var(--cdt-overlay-background);
+    backdrop-filter: blur(var(--cdt-overlay-background-blur));
+    box-shadow: var(--cdt-overlay-shadow);
+    transform: translate(-50%, -50%);
+  }
+
+  .cdt-dialog--sm {
+    inline-size: min(90vw, 420px); /* cdt-allow-literal: confirmation dialog cap */
+  }
+
+  .cdt-dialog__title,
+  .cdt-drawer__title {
+    margin: 0;
+    color: var(--cdt-text-primary);
+  }
+
+  .cdt-dialog__description {
+    color: var(--cdt-text-muted);
+  }
+
+  .cdt-drawer {
+    position: fixed;
+    inset-block: 0;
+    z-index: var(--cdt-overlay-drawer-z);
+    inline-size: min(90vw, var(--cdt-overlay-drawer-width));
+    padding: var(--cdt-space-6);
+    overflow: auto;
+    border-radius: 0;
+    background: var(--cdt-overlay-drawer-background);
+    box-shadow: var(--cdt-overlay-shadow);
+  }
+
+  .cdt-drawer--right { inset-inline-end: 0; }
+  .cdt-drawer--left { inset-inline-start: 0; }
+
+  .cdt-tooltip,
+  .cdt-menu {
+    z-index: var(--cdt-overlay-content-z);
+    border-radius: var(--cdt-radius-sm);
+    background: var(--cdt-overlay-background);
+    box-shadow: var(--cdt-overlay-shadow);
+  }
+
+  .cdt-tooltip {
+    max-inline-size: 320px; /* cdt-allow-literal: tooltip readable line length */
+    padding: var(--cdt-space-2) var(--cdt-space-3);
+    color: var(--cdt-text-primary);
+    font-size: var(--cdt-font-size-sm);
+  }
+
+  .cdt-tooltip__arrow {
+    fill: var(--cdt-overlay-background);
+  }
+
+  .cdt-menu {
+    min-inline-size: 180px; /* cdt-allow-literal: menu command label width */
+    padding: var(--cdt-space-1);
+  }
+
+  .cdt-menu__item {
+    display: flex;
+    align-items: center;
+    gap: var(--cdt-space-2);
+    min-block-size: 32px; /* cdt-allow-literal: source menu item height */
+    padding: var(--cdt-space-2) var(--cdt-space-3);
+    border-radius: var(--cdt-radius-xs);
+    color: var(--cdt-text-primary);
+    cursor: pointer;
+  }
+
+  .cdt-menu__item[data-highlighted] {
+    background: var(--cdt-accent);
+    color: var(--cdt-text-inverse);
+  }
+
+  .cdt-menu__item[data-disabled] {
+    color: var(--cdt-text-muted);
+    cursor: not-allowed;
+  }
+
+  .cdt-menu__item--danger { color: var(--cdt-status-danger); }
+  .cdt-menu__item--danger[data-highlighted] { color: var(--cdt-text-inverse); }
+
+  .cdt-menu__item-icon {
+    display: inline-flex;
+  }
+
+  .cdt-menu__label {
+    padding: var(--cdt-space-2) var(--cdt-space-3);
+    color: var(--cdt-text-muted);
+    font-size: var(--cdt-font-size-sm);
+  }
+
+  .cdt-menu__separator {
+    block-size: 1px; /* cdt-allow-literal: source menu separator thickness */
+    margin-block: var(--cdt-space-1);
+    background: var(--cdt-border-default);
   }
 }

@@ -348,3 +348,26 @@ describe("FR-CMP-005 data display styles", () => {
     expect(focused?.decls["z-index"]).toBe("var(--cdt-z-sticky)");
   });
 });
+
+describe("FR-CMP-006 Radix overlay styles", () => {
+  const components = topLevelRules(index, "cdt.component");
+
+  test("FR-CMP-006 AC-4: overlay and content consume their z-index tokens", () => {
+    const overlay = components.find((rule) => rule.selector === ".cdt-overlay");
+    expect(overlay?.decls["z-index"]).toBe("var(--cdt-overlay-scrim-z)");
+    const positioned = components.find((rule) => rule.selector === ".cdt-dialog");
+    expect(positioned?.decls["z-index"]).toBe("var(--cdt-overlay-content-z)");
+  });
+
+  test("FR-CSS-004 AC-4: Radix state styling uses only supported data attributes", () => {
+    const radixRules = components.filter((rule) => /cdt-(?:menu|tooltip|dialog|drawer)/.test(rule.selector) && rule.selector.includes("["));
+    expect(radixRules.length).toBeGreaterThan(0);
+    for (const rule of radixRules) expect(rule.selector).toMatch(/\[data-(?:state|side|align|highlighted|disabled)\]/);
+  });
+
+  test("FR-CMP-006: menu item highlighting is data-highlighted, not hover or focus", () => {
+    const highlighted = components.find((rule) => rule.selector === ".cdt-menu__item[data-highlighted]");
+    expect(highlighted?.decls.background).toBe("var(--cdt-accent)");
+    expect(components.some((rule) => rule.selector === ".cdt-menu__item:hover" || rule.selector === ".cdt-menu__item:focus")).toBe(false);
+  });
+});

@@ -50,7 +50,7 @@ design-system/
 | WP-012 | 액션·표면 컴포넌트군 | REL-002 | WP-011 | - | done |
 | WP-013 | 상태 표시 컴포넌트군 | REL-002 | WP-011 | - | done |
 | WP-014 | 데이터 표시 컴포넌트군 | REL-002 | WP-011 | - | done |
-| WP-015 | 오버레이 컴포넌트군 | REL-002 | WP-011 | - | todo |
+| WP-015 | 오버레이 컴포넌트군 | REL-002 | WP-011 | - | done |
 | WP-016 | 폼 컴포넌트군 | REL-002 | WP-011 | - | todo |
 | WP-017 | 피드백 컴포넌트군 | REL-002 | WP-011 | - | todo |
 | WP-018 | 문서 사이트 셸과 테마 토글 | REL-003 | WP-012, WP-010 | - | todo |
@@ -427,14 +427,14 @@ design-system/
 - 구현 범위: C-040 Dialog, C-041 Drawer, C-042 Tooltip, C-043 DropdownMenu — Radix UI 프리미티브 래핑. Radix 버전 정확 고정. `data-*` 속성 셀렉터만 사용
 - 제외: 토스트/스낵바 (FR-CMP-008 예외 처리로 명시 제외)
 - 완료 기준(DoD):
-  - [ ] `Dialog`/`Drawer`가 열린 동안 포커스가 갇히고, Escape로 닫히며, 닫힌 후 포커스가 트리거로 복귀한다 (FR-CMP-006 AC-1, FR-A11Y-002 AC-3)
-  - [ ] 열린 동안 배경 스크롤이 잠긴다 (FR-CMP-006 AC-2)
-  - [ ] `Tooltip`이 포커스와 hover 양쪽에서 열리고 Escape로 닫힌다 (FR-CMP-006 AC-3)
-  - [ ] 오버레이 `z-index`가 `z.overlay`/`z.popover` 토큰을 사용한다 (FR-CMP-006 AC-4, FR-TOK-008 AC-2)
-  - [ ] 포커스 트랩·롤 관리·키보드 내비게이션 자체 구현이 0건이다 (FR-CMP-006 AC-5)
-  - [ ] Radix가 제공하는 role/aria 속성을 덮어쓴 건수가 0건이다 (FR-A11Y-005 AC-4)
-  - [ ] CSS가 구조 셀렉터 없이 `data-*` 속성 셀렉터만 쓴다 (FR-CSS-004 AC-4, R-3 완화)
-  - [ ] 공유 계약 스위트를 통과한다
+  - [x] `Dialog`/`Drawer`가 열린 동안 포커스가 갇히고, Escape로 닫히며, 닫힌 후 포커스가 트리거로 복귀한다 (FR-CMP-006 AC-1, FR-A11Y-002 AC-3)
+  - [x] 열린 동안 배경 스크롤이 잠긴다 (FR-CMP-006 AC-2)
+  - [x] `Tooltip`이 포커스와 hover 양쪽에서 열리고 Escape로 닫힌다 (FR-CMP-006 AC-3)
+  - [x] 오버레이 `z-index`가 `z.overlay`/`z.popover` 토큰을 사용한다 (FR-CMP-006 AC-4, FR-TOK-008 AC-2)
+  - [x] 포커스 트랩·롤 관리·키보드 내비게이션 자체 구현이 0건이다 (FR-CMP-006 AC-5)
+  - [x] Radix가 제공하는 role/aria 속성을 덮어쓴 건수가 0건이다 (FR-A11Y-005 AC-4)
+  - [x] CSS가 구조 셀렉터 없이 `data-*` 속성 셀렉터만 쓴다 (FR-CSS-004 AC-4, R-3 완화)
+  - [x] 공유 계약 스위트를 통과한다
 - 검증 방법: `pnpm --filter @conductor/react test -- overlay`
 - 기록: WP-015 행, FR-CMP-006·FR-A11Y-002 매핑 갱신
 
