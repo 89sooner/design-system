@@ -39,8 +39,8 @@ export default defineConfig({
         test: {
           name: "react",
           root: fromRoot("./packages/react"),
-          environment: "node",
-          include: ["src/**/*.test.ts"],
+          environment: "jsdom",
+          include: ["src/**/*.test.ts", "src/**/*.test.tsx"],
         },
       },
       {

@@ -1,5 +1,8 @@
 import { CDT_PREFIX, PACKAGE_NAME as TOKENS_PACKAGE_NAME } from "@conductor/tokens";
 
+export { cx } from "./cx";
+export type { IconSlot, PolymorphicProps, Size, Tone } from "./types";
+
 /** Published name of this package. */
 export const PACKAGE_NAME = "@conductor/react" as const;
 
