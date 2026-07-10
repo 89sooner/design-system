@@ -10,12 +10,12 @@ python3 $SKILL --root . --strict    # 핸드오프 게이트 (경고도 실패�
 python3 $SKILL --root . --report --code-root .   # 문서↔코드 FR/WP 태그 커버리지
 ```
 
-**마지막 실행 결과 (2026-07-11, WP-012 후)**
+**마지막 실행 결과 (2026-07-11, WP-014 후)**
 
 ```text
 OK: no structural or traceability issues found.
 FR 정의: 49 | WP 28 | CR 12 | DEV 5
-code scan 65 files | 34/49 FR tagged | 20/28 WP tagged
+code scan 87 files | 40/49 FR tagged | 21/28 WP tagged
 strict exit=0
 ```
 
@@ -31,15 +31,15 @@ pnpm lint:tokens     # 토큰 소스 밖 하드코딩 차단
 pnpm check:contrast  # WCAG 2.1 AA
 ```
 
-**마지막 실행 결과 (2026-07-11, WP-009 후)**
+**마지막 실행 결과 (2026-07-11, WP-014 후)**
 
 ```text
 lint             exit=0
 lint:deps        exit=0        4 workspace packages, 6 edges, 0 violations
 build            exit=0
 typecheck        exit=0
-test             exit=0        Test Files 24 passed | Tests 378 passed
-lint:tokens      exit=0        scanned 28 file(s), 0 violation(s), 10 allowance(s)
+test             exit=0        Test Files 26 passed | Tests 426 passed
+lint:tokens      exit=0        scanned 32 file(s), 0 violation(s), 23 allowance(s)
 check:contrast   exit=0        dark/light 80/80 pass
 docs validator   exit=0        report/strict both clean
 git diff --check exit=0        LF -> CRLF warnings only

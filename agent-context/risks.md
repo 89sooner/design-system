@@ -2,6 +2,20 @@
 
 ## 2026-07-11(WP-010~012) 세션에서 추가된 함정
 
+## 2026-07-11(WP-013~014) 세션에서 추가된 함정
+
+### G. required children은 `createElement`의 세 번째 인자로 타입 충족되지 않을 수 있다
+
+`publicComponents` SSR registry에서 required `children`을 가진 compound root는 `createElement(Component, { children: null })`처럼 props object에 넣어야 한다. 세 번째 `null` child는 runtime에는 전달돼도 TypeScript overload의 required prop 검증은 통과하지 못한다.
+
+### H. focus-visible 0건 규칙에는 명시된 clipping 예외가 있다
+
+Timeline은 overflow hidden parent에서 reset focus ring이 잘리지 않게 component layer에서 `:focus-visible` selector가 필요하다. 이 규칙은 ring을 덮어쓰면 안 되고 position/z-index만 가져야 한다. 정적 CSS 테스트도 그 불변식을 검사한다.
+
+### I. token lint는 테스트 코드의 수치도 검사한다
+
+CSS 테스트에 `800px`을 하드코딩해도 lint 대상이다. built `--cdt-breakpoint-md` 값을 읽어 regex를 만들고, CSS z-index는 `--cdt-z-*` 토큰으로 써야 한다.
+
 ### D. jsdom 프로젝트에서 테스트 현재 경로를 가정하지 말 것
 
 React 단독 실행과 루트 `pnpm test`는 cwd가 다르다. 매니페스트/산출물을 읽는 테스트는 `packages/react` 존재 여부로 root를 계산해야 한다. `readFileSync("package.json")`는 루트 실행에서 잘못된 매니페스트를 읽는다.

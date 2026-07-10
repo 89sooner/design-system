@@ -7,6 +7,13 @@
 - `publicComponents` registry는 공개 컴포넌트·테스트 파일·SSR renderer를 함께 보유한다. 이후 WP가 export를 추가할 때 테스트와 SSR 등록 누락을 빌드 전 검사로 막는다.
 - React `.tsx`를 workspace alias로 소비하는 docs까지 포함해 JSX 설정은 package가 아니라 `tsconfig.base.json`에 둔다.
 
+## WP-013~014 구현 결정 (2026-07-11)
+
+- 상태 배지의 queued/neutralEnd는 사용자가 고르는 variant가 아니라 status token usage가 정한 marker shape다. 색 대비가 부족한 중립 상태를 배경/전경으로 뒤집지 않는다.
+- Table의 root는 내부 `<table>`을 감싼 scroll owner다. public contract의 root prop 통과와 native table naming을 함께 만족하도록 `aria-label`을 wrapper와 table에 모두 전달한다.
+- Timeline의 `:focus-visible` 규칙은 공통 focus ring을 바꾸지 않으며 overflow clipping 방지용 stacking만 담당한다. 기존 "component focus selector 0" 테스트는 이 명시 예외에 맞춰 `box-shadow`/`outline` override 0으로 좁혔다.
+- data primitives의 token source는 table만 선행되어 있었다. UI spec의 component-token 표에 이미 있는 timeline/codeBlock/kbd semantic mappings만 구현하고 token spec에도 기록했다.
+
 저장소 문서에서 읽을 수 있는 "무엇"이 아니라, 문서에 남기 어려운 "왜"와 "무엇을 기각했는가"를 기록한다.
 
 ## 사용자가 직접 내린 결정 (인터뷰 4문항, 2026-07-10)

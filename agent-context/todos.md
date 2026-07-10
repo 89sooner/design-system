@@ -2,22 +2,22 @@
 
 ## 시작 지점
 
-**WP-012 완료(2026-07-11, 커밋 대기).** 다음은 **WP-013**(상태 표시 컴포넌트군). 자세한 인수인계는
-`agent-context/sessions/2026-07-11-wp010-012-themes-react.md` 참조.
+**WP-014 완료(2026-07-11, `94a190c`).** 다음은 **WP-015**(Radix 기반 오버레이 컴포넌트군). 자세한 인수인계는
+`agent-context/sessions/2026-07-11-wp013-014-status-data.md` 참조.
 
 ```text
 1. docs/20_derived_ui_specs/conductor_ai_agent_execution_brief.md 를 읽는다
-2. docs/40_delivery/conductor_work_packages.md 에서 WP-013 블록을 읽는다
-3. WP-010이 참조하는 ID의 문서만 재독한다 (WP의 ID 목록이 곧 읽기 범위)
+2. docs/40_delivery/conductor_work_packages.md 에서 WP-015 블록을 읽는다
+3. WP-015가 참조하는 ID의 문서만 재독한다 (WP의 ID 목록이 곧 읽기 범위)
 4. 구현 범위 안에서만 코드를 쓴다. 제외 항목은 코드가 아니라 메모로 남긴다
 5. DoD의 검증 명령을 실행한다
 6. docs/40_delivery/conductor_implementation_traceability.md 를 갱신한다
 ```
 
-### WP-013 착수 시 즉시 확인할 것
-- 상태 7종과 severity 4종은 token metadata의 icon과 usage를 그대로 소비한다. 색만으로 의미를 전달하지 않는다.
+### WP-015 착수 시 즉시 확인할 것
+- Radix가 role·aria·focus trap·Escape·포커스 복귀·스크롤 잠금을 소유한다. Conductor는 이를 직접 구현하거나 덮어쓰지 않는다.
+- Radix DOM CSS는 `data-*` 속성 셀렉터만 사용한다. 구조 셀렉터를 쓰지 않는다.
 - WP-011의 `publicComponents` registry와 shared contract suite에 새 export/test를 반드시 등록한다.
-- `lucide-react`는 peer dependency다. 아이콘을 번들하지 않는다.
 
 ## REL-002 — 다음 릴리스 슬라이스
 
@@ -37,7 +37,9 @@ WP-010 ─────────┼→ WP-011 → { WP-012 ∥ WP-013 ∥ WP-0
 | ~~WP-010~~ **done** | 라이트 팔레트와 테마 결정 계약 | WP-006 | 두 테마 키 대칭, `data-cdt-theme` 우선순위, 80/80 대비 |
 | ~~WP-011~~ **done** | `@conductor/react` 골격과 공통 계약 | WP-008 | `runContractSuite()`, registry, SSR harness, peer 계약 |
 | ~~WP-012~~ **done** | 액션·표면 | WP-011 | Button/IconButton/Card/CardGrid/Panel + component CSS |
-| **WP-013~017** | 나머지 컴포넌트군 | WP-011 | 상태표시 / 데이터표시 / 오버레이 / 폼 / 피드백 |
+| ~~WP-013~~ **done** | 상태 표시 | WP-011 | Badge/StatusBadge/SeverityTag, 7 상태·4 심각도 |
+| ~~WP-014~~ **done** | 데이터 표시 | WP-011 | Table/Timeline/CodeBlock/Kbd, 스크롤·키보드·이름 경고 |
+| **WP-015~017** | 나머지 컴포넌트군 | WP-011 | 오버레이 / 폼 / 피드백 |
 
 ### WP-008 착수 시 즉시 확인할 것
 

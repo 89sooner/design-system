@@ -1,9 +1,16 @@
 #hidden
 # aci:v1 id=f7b39dc src=agent-context/risks.md
-@kv sha256=ebb1c14b6823da289ccdfa07f4c0d18c77a7bb603df0ede86e55f74bccf6a432 bytes=8763 lines=101 title=리스크-/-불확실한-가정-/-검증에서-속을-뻔한-지점
-@sig agent-context/risks.md;packages/react;conductor/react;packages/css;conductor/css;DEV-005/CR-012;conductor/tokens/breakpoints;packages/css/test/helpers.ts;packages/tokens/bin/;dist/cli.js;packages/tokens/bin/conductor-build-tokens.mjs;conductor/tokens;/bin/;packages/tokens/dist;px/ms/z-index/font-size;CR-005/CR-006;React;packages;readFileSync;package;workspace;conductor;JSX;tsconfig
+@kv sha256=a68487cf4dda3bb7b5938f4d4e068a9e6b2557062de3edffdcd96066d6eac879 bytes=9833 lines=115 title=리스크-/-불확실한-가정-/-검증에서-속을-뻔한-지점
+@sig agent-context/risks.md;position/z-index;packages/react;conductor/react;packages/css;conductor/css;DEV-005/CR-012;conductor/tokens/breakpoints;packages/css/test/helpers.ts;packages/tokens/bin/;dist/cli.js;packages/tokens/bin/conductor-build-tokens.mjs;conductor/tokens;/bin/;packages/tokens/dist;px/ms/z-index/font-size;CR-005/CR-006;required;createElement;publicComponents;SSR;children;compound;Component
 @h1 리스크 / 불확실한 가정 / 검증에서 속을 뻔한 지점
 @h2 2026-07-11(WP-010~012) 세션에서 추가된 함정
+@h2 2026-07-11(WP-013~014) 세션에서 추가된 함정
+@h3 G. required children은 createElement의 세 번째 인자로 타입 충족되지 않을 수 있다
+@p publicComponents SSR registry에서 required children을 가진 compound root는 createElement(Component, { children: null })처럼 props object에 넣어야 한다. 세 번째 null child는 runtime에는 전달돼도 TypeScript overload의 required prop 검증은 통과하지 못한다.
+@h3 H. focus-visible 0건 규칙에는 명시된 clipping 예외가 있다
+@path Timeline은 overflow hidden parent에서 reset focus ring이 잘리지 않게 component layer에서 :focus-visible selector가 필요하다. 이 규칙은 ring을 덮어쓰면 안 되고 position/z-index만 가져야 한다. 정적 CSS 테스트도 그 불변식을 검사한다.
+@h3 I. token lint는 테스트 코드의 수치도 검사한다
+@p CSS 테스트에 800px을 하드코딩해도 lint 대상이다. built --cdt-breakpoint-md 값을 읽어 regex를 만들고, CSS z-index는 --cdt-z-* 토큰으로 써야 한다.
 @h3 D. jsdom 프로젝트에서 테스트 현재 경로를 가정하지 말 것
 @path React 단독 실행과 루트 pnpm test는 cwd가 다르다. 매니페스트/산출물을 읽는 테스트는 packages/react 존재 여부로 root를 계산해야 한다. readFileSync("package.json")는 루트 실행에서 잘못된 매니페스트를 읽는다.
 @h3 E. workspace alias가 .tsx를 따라가면 소비자 tsconfig도 JSX를 알아야 한다
