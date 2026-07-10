@@ -145,6 +145,28 @@ const table: TokenDefinition[] = [
   component("table.scrollBreakpoint", ref("breakpoint.md"), "Below this, the table scrolls."),
 ];
 
+const timeline: TokenDefinition[] = [
+  component("timeline.background", ref("surface.timeline"), "Timeline fill."),
+  component("timeline.border", ref("border.default"), "Timeline edge."),
+  component("timeline.stepBackgroundHover", ref("state.hover"), "Interactive step hover fill."),
+  component("timeline.markerBackground", ref("accent.DEFAULT"), "Default marker fill."),
+  component("timeline.markerRing", ref("accent.glow"), "Default marker glow."),
+  component("timeline.markerBorder", ref("surface.timeline"), "Marker ring edge."),
+];
+
+const codeBlock: TokenDefinition[] = [
+  component("codeBlock.background", ref("surface.timeline"), "Code block fill."),
+  component("codeBlock.border", ref("border.default"), "Code block edge."),
+  component("codeBlock.text", ref("text.monoPayload"), "Code block text.", "body"),
+];
+
+const kbd: TokenDefinition[] = [
+  component("kbd.background", ref("surface.raised"), "Keycap fill."),
+  component("kbd.border", ref("border.default"), "Keycap edge."),
+  component("kbd.borderBottom", ref("border.strong"), "Keycap lower edge."),
+  component("kbd.text", ref("text.secondary"), "Keycap text.", "body"),
+];
+
 /**
  * Shared by TextField, TextArea, Select, Switch and Checkbox — exactly the five components
  * FR-THM-005 AC-2 scopes `border.control` to. The input's fill matches the surface around it and
@@ -230,6 +252,9 @@ export const componentTokens: readonly TokenDefinition[] = [
   ...card,
   ...badge,
   ...table,
+  ...timeline,
+  ...codeBlock,
+  ...kbd,
   ...input,
   ...overlay,
   ...page,

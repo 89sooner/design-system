@@ -89,9 +89,9 @@ WP-001 ~ WP-028의 이름·REL·선행 관계는 `conductor_work_packages.md`에
 | FR-CSS-005 | `packages/css/src/base.css` | `packages/css/test/bundle.test.ts` | WP-008 | 부분 (AC-3·AC-4 충족: `scroll-behavior: auto`, 규칙이 `cdt.base`에 있고 전역 `*` 대신 `:root`/`[data-cdt-theme]` 스코프 셀렉터 사용, `!important` 0건. AC-1은 **AST로만 검증** — `--cdt-motion-*` 3종이 `0s`로 재정의되고 `transition-duration`·`animation-duration`이 `0s`로 선언됨을 단언한다. 계산값(computed) 측정은 실브라우저가 필요해 WP-024의 브라우저 하네스로 이월(§5). AC-2와 예외 처리(Spinner/ProgressRing 정적 텍스트)는 컴포넌트가 생기는 WP-012 이후) |
 | FR-CMP-001 | `packages/react/src/cx.ts`, `src/types.ts`, `src/testing/contract.tsx`, `src/testing/public-components.ts` | `src/testing/contract.test.tsx`, `src/testing/public-components.test.ts`, `action.test.tsx`, `surface.test.tsx` | WP-011, WP-012 | 구현됨 (공통 스위트가 Button·IconButton·Card·CardGrid·Panel에 실행되며 registry가 테스트 파일·SSR을 강제) |
 | FR-CMP-002 | `packages/react/src/action.tsx`, `packages/css/src/components.css` | `packages/react/src/testing/action.test.tsx`, `packages/css/test/bundle.test.ts` | WP-012 | 검증됨 (AC-1~AC-5 및 loading+disabled 예외. Button 3 variant, loading click 차단, IconButton aria-label 타입, native disabled/blocked) |
-| FR-CMP-003 | `packages/react/src/surface.tsx`, `packages/css/src/components.css` | `packages/react/src/testing/surface.test.tsx`, `packages/css/test/bundle.test.ts` | WP-012 | 부분 (AC-1·AC-2·AC-3 및 중첩 대화형 경고 검증. AC-4 Table 가로 스크롤은 WP-014) |
+| FR-CMP-003 | `packages/react/src/surface.tsx`, `packages/css/src/components.css`, `src/data.tsx` | `packages/react/src/testing/surface.test.tsx`, `data.test.tsx`, `packages/css/test/bundle.test.ts` | WP-012, WP-014 | 검증됨 (AC-1~AC-4. Card의 대화형 요소 전환·상승·중첩 경고와 Table 자체 스크롤 컨테이너를 검증.) |
 | FR-CMP-004 | `packages/react/src/status.tsx`, `packages/css/src/components.css`, `packages/tokens/src/components.ts` | `packages/react/src/testing/status.test.tsx`, `packages/css/test/bundle.test.ts` | WP-013 | 검증됨 (AC-1~AC-5. Badge·StatusBadge·SeverityTag가 색·아이콘·텍스트 세 채널을 렌더하고, 7개 상태/4개 심각도 타입 및 `aria-hidden` 아이콘을 테스트한다. queued·neutralEnd는 토큰 명세에 따라 점+텍스트 마커 형태를 쓴다.) |
-| FR-CMP-005 | - | - | - | 미착수 |
+| FR-CMP-005 | `packages/react/src/data.tsx`, `packages/css/src/components.css`, `packages/tokens/src/components.ts` | `packages/react/src/testing/data.test.tsx`, `packages/css/test/bundle.test.ts` | WP-014 | 검증됨 (AC-1~AC-5. Table 스크롤/숫자 셀/이름 경고, Timeline의 네이티브 button·div 전환, CodeBlock region·모노스페이스 스크롤, Kbd를 검증.) |
 | FR-CMP-006 | - | - | - | 미착수 |
 | FR-CMP-007 | - | - | - | 미착수 |
 | FR-CMP-008 | - | - | - | 미착수 |
@@ -104,7 +104,7 @@ WP-001 ~ WP-028의 이름·REL·선행 관계는 `conductor_work_packages.md`에
 | FR-DOC-006 | - | - | - | 미착수 |
 | FR-DOC-007 | - | - | - | 미착수 |
 | FR-A11Y-001 | `packages/css/src/reset.css`, `src/components.css` | `packages/css/test/bundle.test.ts`, `packages/react/src/testing/action.test.tsx` | WP-008, WP-012 | 부분 (AC-1 공유 `:focus-visible` focusRing 적용 및 액션/표면 대화형 요소 검증. 키보드/실브라우저 측정은 WP-024) |
-| FR-A11Y-002 | - | - | - | 미착수 |
+| FR-A11Y-002 | `packages/react/src/data.tsx` | `packages/react/src/testing/data.test.tsx` | WP-014 | 부분 (AC-4의 Timeline 대화형 단계가 네이티브 button으로 키보드 도달·Enter/Space 활성화를 제공함을 검증. 전체 키보드 경로와 오버레이 Escape 동작은 WP-015 이후에 완성.) |
 | FR-A11Y-003 | `packages/react/src/status.tsx`, `packages/css/src/components.css` | `packages/react/src/testing/status.test.tsx`, `packages/css/test/bundle.test.ts` | WP-013 | 부분 (AC-1 및 AC-4의 상태·심각도 세 채널과 텍스트 구분을 검증. 폼 오류(AC-2)와 Meter(AC-3)는 WP-016·WP-017에서 구현한다.) |
 | FR-A11Y-004 | `src/contrast-cli.ts`, `.github/workflows/ci.yml` | `src/contrast-pairs.test.ts`, `src/contrast/check.test.ts` | WP-007, WP-010 | 검증됨 (AC-1~AC-4. 두 테마 80/80 미달 0건, decorative 제외·focusRing/border.control 3:1 검사) |
 | FR-A11Y-005 | - | - | - | 미착수 |

@@ -1,4 +1,4 @@
-/* FR 범위: FR-CSS-004, FR-CMP-002, FR-CMP-003 */
+/* FR 범위: FR-CSS-004, FR-CMP-002, FR-CMP-003, FR-CMP-005 */
 
 @layer cdt.component {
   .cdt-btn {
@@ -195,4 +195,123 @@
   .cdt-severity-tag--write { background: var(--cdt-severity-write); }
   .cdt-severity-tag--destructive { background: var(--cdt-severity-destructive); }
   .cdt-severity-tag--blocked { background: var(--cdt-severity-blocked); }
+
+  .cdt-table__scroll {
+    overflow-x: auto;
+    border-radius: inherit;
+  }
+
+  .cdt-table {
+    inline-size: 100%;
+    border-collapse: collapse;
+  }
+
+  .cdt-table__header-cell {
+    padding: var(--cdt-space-3);
+    border-bottom: var(--cdt-table-header-border-width) solid var(--cdt-table-header-border);
+    color: var(--cdt-table-header-text);
+    font-size: var(--cdt-table-header-font-size);
+    font-weight: 600;
+    letter-spacing: 0.08em; /* cdt-allow-literal: source table header tracking */
+    text-align: start;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .cdt-table__cell {
+    padding: var(--cdt-table-cell-padding-block) var(--cdt-table-cell-padding-inline);
+    border-bottom: 1px solid var(--cdt-table-cell-border); /* cdt-allow-literal: 토큰에 표 셀 선 두께가 없다 */
+    vertical-align: middle;
+  }
+
+  .cdt-table__row {
+    transition: background var(--cdt-table-row-transition);
+  }
+
+  .cdt-table__row:hover {
+    background: var(--cdt-table-row-background-hover);
+  }
+
+  @media (max-width: {breakpoint.md}) {
+    .cdt-table {
+      min-inline-size: var(--cdt-table-scroll-breakpoint);
+    }
+  }
+
+  .cdt-timeline {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid var(--cdt-timeline-border); /* cdt-allow-literal: 토큰에 타임라인 선 두께가 없다 */
+    border-radius: var(--cdt-radius-lg);
+    background: var(--cdt-timeline-background);
+    list-style: none;
+  }
+
+  .cdt-timeline__step {
+    display: flex;
+    inline-size: 100%;
+    align-items: center;
+    gap: var(--cdt-space-4);
+    padding: var(--cdt-space-4);
+    border: 0;
+    border-bottom: 1px solid var(--cdt-timeline-border); /* cdt-allow-literal: 토큰에 타임라인 선 두께가 없다 */
+    background: transparent;
+    color: var(--cdt-text-primary);
+    text-align: start;
+  }
+
+  .cdt-timeline__step--interactive {
+    cursor: pointer;
+  }
+
+  .cdt-timeline__step--interactive:hover {
+    background: var(--cdt-timeline-step-background-hover);
+  }
+
+  .cdt-timeline__step--interactive:focus-visible {
+    position: relative;
+    z-index: var(--cdt-z-sticky);
+  }
+
+  .cdt-timeline__marker {
+    flex: 0 0 auto;
+    inline-size: 9px; /* cdt-allow-literal: source timeline marker diameter */
+    block-size: 9px; /* cdt-allow-literal: source timeline marker diameter */
+    border: 2px solid var(--cdt-timeline-marker-border); /* cdt-allow-literal: source timeline marker ring */
+    border-radius: var(--cdt-radius-pill);
+    background: var(--cdt-timeline-marker-background);
+    box-shadow: 0 0 0 2px var(--cdt-timeline-marker-ring); /* cdt-allow-literal: source timeline marker glow ring */
+  }
+
+  .cdt-code-block {
+    overflow-x: auto;
+    padding: var(--cdt-space-4);
+    border: 1px solid var(--cdt-code-block-border); /* cdt-allow-literal: 토큰에 코드 블록 선 두께가 없다 */
+    border-radius: var(--cdt-radius-lg);
+    background: var(--cdt-code-block-background);
+    color: var(--cdt-code-block-text);
+  }
+
+  .cdt-code-block__pre {
+    margin: 0;
+    font-family: var(--cdt-font-mono);
+  }
+
+  .cdt-code-block__code {
+    font-family: inherit;
+  }
+
+  .cdt-kbd {
+    display: inline-block;
+    padding: var(--cdt-space-1) var(--cdt-space-2);
+    border: 1px solid var(--cdt-kbd-border); /* cdt-allow-literal: 토큰에 키캡 선 두께가 없다 */
+    border-bottom-color: var(--cdt-kbd-border-bottom);
+    border-radius: var(--cdt-radius-xs);
+    background: var(--cdt-kbd-background);
+    box-shadow: inset 0 1px 0 var(--cdt-surface-glass); /* cdt-allow-literal: source keycap highlight */
+    color: var(--cdt-kbd-text);
+    font-family: var(--cdt-font-mono);
+    font-size: var(--cdt-font-size-sm);
+  }
 }

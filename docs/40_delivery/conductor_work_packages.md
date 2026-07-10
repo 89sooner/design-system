@@ -49,7 +49,7 @@ design-system/
 | WP-011 | `@conductor/react` 골격과 공통 계약 | REL-002 | WP-008 | - | done |
 | WP-012 | 액션·표면 컴포넌트군 | REL-002 | WP-011 | - | done |
 | WP-013 | 상태 표시 컴포넌트군 | REL-002 | WP-011 | - | done |
-| WP-014 | 데이터 표시 컴포넌트군 | REL-002 | WP-011 | - | todo |
+| WP-014 | 데이터 표시 컴포넌트군 | REL-002 | WP-011 | - | done |
 | WP-015 | 오버레이 컴포넌트군 | REL-002 | WP-011 | - | todo |
 | WP-016 | 폼 컴포넌트군 | REL-002 | WP-011 | - | todo |
 | WP-017 | 피드백 컴포넌트군 | REL-002 | WP-011 | - | todo |
@@ -407,13 +407,13 @@ design-system/
 - 구현 범위: C-030 Table, C-031 Timeline, C-032 CodeBlock, C-033 Kbd + `cdt-table`, `cdt-timeline`, `cdt-code-block`, `cdt-kbd`
 - 제외: 정렬·페이지네이션·가상 스크롤 (FR-CMP-005 예외 처리로 명시 제외)
 - 완료 기준(DoD):
-  - [ ] `Table`이 가로 스크롤 컨테이너를 자체 소유하고 800px 미만에서 활성화된다 (FR-CMP-005 AC-1)
-  - [ ] `cdt-num` 셀의 `font-variant-numeric` 계산값이 `tabular-nums`다 (FR-CMP-005 AC-2)
-  - [ ] `Timeline` 단계가 `onSelect` 여부에 따라 `button`/`div`로 렌더되고 대화형일 때 키보드로 도달한다 (FR-CMP-005 AC-3, FR-A11Y-002 AC-4)
-  - [ ] `CodeBlock`이 모노스페이스 폰트와 가로 스크롤을 제공한다 (FR-CMP-005 AC-4)
-  - [ ] `caption`/`aria-label` 없는 `Table`이 개발 빌드 콘솔 경고를 낸다 (FR-CMP-005 AC-5)
-  - [ ] 포커스 링이 부모 `overflow: hidden`에 잘리지 않는다 (FR-A11Y-001 예외 처리)
-  - [ ] 공유 계약 스위트를 통과한다
+  - [x] `Table`이 가로 스크롤 컨테이너를 자체 소유하고 800px 미만에서 활성화된다 (FR-CMP-005 AC-1)
+  - [x] `cdt-num` 셀의 `font-variant-numeric` 계산값이 `tabular-nums`다 (FR-CMP-005 AC-2)
+  - [x] `Timeline` 단계가 `onSelect` 여부에 따라 `button`/`div`로 렌더되고 대화형일 때 키보드로 도달한다 (FR-CMP-005 AC-3, FR-A11Y-002 AC-4)
+  - [x] `CodeBlock`이 모노스페이스 폰트와 가로 스크롤을 제공한다 (FR-CMP-005 AC-4)
+  - [x] `caption`/`aria-label` 없는 `Table`이 개발 빌드 콘솔 경고를 낸다 (FR-CMP-005 AC-5)
+  - [x] 포커스 링이 부모 `overflow: hidden`에 잘리지 않는다 (FR-A11Y-001 예외 처리)
+  - [x] 공유 계약 스위트를 통과한다
 - 검증 방법: `pnpm --filter @conductor/react test -- data`
 - 기록: WP-014 행, FR-CMP-005 매핑 갱신
 

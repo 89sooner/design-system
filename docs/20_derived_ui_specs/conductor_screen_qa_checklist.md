@@ -138,10 +138,10 @@ FR-CMP-001은 공개 컴포넌트 전수가 ref 전달(AC-1), className 병합(A
 | Badge | FR-CMP-004 | [x] QA-077 | [x] QA-078 | [x] QA-079 | [x] QA-080 |
 | StatusBadge | FR-CMP-004 | [x] QA-081 | [x] QA-082 | [x] QA-083 | [x] QA-084 |
 | SeverityTag | FR-CMP-004 | [x] QA-085 | [x] QA-086 | [x] QA-087 | [x] QA-088 |
-| Table | FR-CMP-005 | [ ] QA-089 | [ ] QA-090 | [ ] QA-091 | [ ] QA-092 |
-| Timeline | FR-CMP-005 | [ ] QA-093 | [ ] QA-094 | [ ] QA-095 | [ ] QA-096 |
-| CodeBlock | FR-CMP-005 | [ ] QA-097 | [ ] QA-098 | [ ] QA-099 | [ ] QA-100 |
-| Kbd | FR-CMP-005 | [ ] QA-101 | [ ] QA-102 | [ ] QA-103 | [ ] QA-104 |
+| Table | FR-CMP-005 | [x] QA-089 | [x] QA-090 | [x] QA-091 | [x] QA-092 |
+| Timeline | FR-CMP-005 | [x] QA-093 | [x] QA-094 | [x] QA-095 | [x] QA-096 |
+| CodeBlock | FR-CMP-005 | [x] QA-097 | [x] QA-098 | [x] QA-099 | [x] QA-100 |
+| Kbd | FR-CMP-005 | [x] QA-101 | [x] QA-102 | [x] QA-103 | [x] QA-104 |
 | Dialog | FR-CMP-006 | [ ] QA-105 | [ ] QA-106 | [ ] QA-107 | [ ] QA-108 |
 | Drawer | FR-CMP-006 | [ ] QA-109 | [ ] QA-110 | [ ] QA-111 | [ ] QA-112 |
 | Tooltip | FR-CMP-006 | [ ] QA-113 | [ ] QA-114 | [ ] QA-115 | [ ] QA-116 |

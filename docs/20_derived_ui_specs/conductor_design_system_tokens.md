@@ -752,6 +752,34 @@ component 토큰은 semantic 토큰만 참조한다(FR-TOK-002 AC-3). 아래 표
 
 `table.cellBorder`가 `{border.default}`(`decorative`)를 참조하는 것은 정당하다. 행 구분선은 컴포넌트 경계가 아니라 콘텐츠 구분자이며, 표의 구조는 `<table>` 시맨틱과 헤더 텍스트가 전달한다. WCAG 1.4.11의 대상이 아니다.
 
+### 7.4.1 `timeline.*`
+
+| 토큰 키 | 다크 값 | 라이트 값 (다를 때만) | 관련 FR |
+| --- | --- | --- | --- |
+| `timeline.background` | `{surface.timeline}` | | FR-CMP-005 |
+| `timeline.border` | `{border.default}` | | FR-CMP-005 |
+| `timeline.stepBackgroundHover` | `{state.hover}` | | FR-CMP-005 |
+| `timeline.markerBackground` | `{accent}` | | FR-CMP-005 |
+| `timeline.markerRing` | `{accent.glow}` | | FR-CMP-005 |
+| `timeline.markerBorder` | `{surface.timeline}` | | FR-A11Y-001 |
+
+### 7.4.2 `codeBlock.*`
+
+| 토큰 키 | 다크 값 | 라이트 값 (다를 때만) | 관련 FR |
+| --- | --- | --- | --- |
+| `codeBlock.background` | `{surface.timeline}` | | FR-CMP-005 |
+| `codeBlock.border` | `{border.default}` | | FR-CMP-005 |
+| `codeBlock.text` | `{text.monoPayload}` | | FR-CMP-005 |
+
+### 7.4.3 `kbd.*`
+
+| 토큰 키 | 다크 값 | 라이트 값 (다를 때만) | 관련 FR |
+| --- | --- | --- | --- |
+| `kbd.background` | `{surface.raised}` | | FR-CMP-005 |
+| `kbd.border` | `{border.default}` | | FR-CMP-005 |
+| `kbd.borderBottom` | `{border.strong}` | | FR-CMP-005 |
+| `kbd.text` | `{text.secondary}` | | FR-CMP-005 |
+
 ### 7.5 `input.*`
 
 | 토큰 키 | 다크 값 | 라이트 값 (다를 때만) | 관련 FR |

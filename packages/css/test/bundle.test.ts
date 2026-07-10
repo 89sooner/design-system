@@ -287,10 +287,13 @@ describe("FR-CSS-004 action and surface primitives", () => {
     for (const rule of components) expect(rule.selector).not.toMatch(/\s[>+]\s|:nth-child/);
   });
 
-  test("FR-A11Y-001 AC-1: interactive primitives rely on the shared reset focus-visible ring", () => {
+  test("FR-A11Y-001 AC-1: components do not override the shared reset focus-visible ring", () => {
     const focus = ruleFor(index, "cdt.reset", /:focus-visible/);
     expect(focus?.decls["box-shadow"]).toBe("var(--cdt-focus-ring)");
-    expect(components.some((rule) => rule.selector.includes(":focus-visible"))).toBe(false);
+    for (const rule of components.filter((entry) => entry.selector.includes(":focus-visible"))) {
+      expect(rule.decls["box-shadow"]).toBeUndefined();
+      expect(rule.decls.outline).toBeUndefined();
+    }
   });
 });
 
@@ -312,5 +315,36 @@ describe("FR-CMP-004 status display styles", () => {
     const marker = components.find((rule) => rule.selector === ".cdt-status-badge__marker");
     expect(marker?.decls.background).toBe("var(--cdt-status-queued)");
     expect(marker?.decls.border).toBe("var(--cdt-badge-marker-dot-ring-width) solid var(--cdt-badge-marker-dot-ring)");
+  });
+});
+
+describe("FR-CMP-005 data display styles", () => {
+  const components = topLevelRules(index, "cdt.component");
+
+  test("FR-CMP-005 AC-1: Table has a scroll owner and becomes scrollable below the md breakpoint", () => {
+    const scroll = components.find((rule) => rule.selector === ".cdt-table__scroll");
+    expect(scroll?.decls["overflow-x"]).toBe("auto");
+    const root = topLevelRules(index, "cdt.base").find((rule) => rule.selector.includes(":root"));
+    const breakpoint = root?.decls["--cdt-breakpoint-md"] ?? "$^";
+    const responsive = mediaRules(index, "cdt.component", new RegExp(breakpoint)).find((rule) => rule.selector === ".cdt-table");
+    expect(responsive?.decls["min-inline-size"]).toBe("var(--cdt-table-scroll-breakpoint)");
+  });
+
+  test("FR-CMP-005 AC-2: cdt-num provides tabular numerals", () => {
+    const numeric = topLevelRules(index, "cdt.utility").find((rule) => rule.selector === ".cdt-num");
+    expect(numeric?.decls["font-variant-numeric"]).toBe("tabular-nums");
+  });
+
+  test("FR-CMP-005 AC-4: CodeBlock owns horizontal scrolling and a monospaced font", () => {
+    const block = components.find((rule) => rule.selector === ".cdt-code-block");
+    const pre = components.find((rule) => rule.selector === ".cdt-code-block__pre");
+    expect(block?.decls["overflow-x"]).toBe("auto");
+    expect(pre?.decls["font-family"]).toBe("var(--cdt-font-mono)");
+  });
+
+  test("FR-A11Y-001 exception: interactive Timeline focus lifts above its clipped parent", () => {
+    const focused = components.find((rule) => rule.selector === ".cdt-timeline__step--interactive:focus-visible");
+    expect(focused?.decls.position).toBe("relative");
+    expect(focused?.decls["z-index"]).toBe("var(--cdt-z-sticky)");
   });
 });

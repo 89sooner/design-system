@@ -8,6 +8,8 @@ export { Card, CardGrid, Panel } from "./surface";
 export type { CardGridProps, CardProps, PanelProps } from "./surface";
 export { Badge, SeverityTag, StatusBadge } from "./status";
 export type { BadgeProps, Severity, SeverityTagProps, Status, StatusBadgeProps } from "./status";
+export { CodeBlock, Kbd, Table, Timeline } from "./data";
+export type { CodeBlockProps, KbdProps, TableCellProps, TableHeaderCellProps, TableProps, TimelineProps, TimelineStepProps } from "./data";
 
 /** Published name of this package. */
 export const PACKAGE_NAME = "@conductor/react" as const;

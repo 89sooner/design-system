@@ -8,6 +8,7 @@ import { createElement, type ReactElement } from "react";
 import { Button, IconButton } from "../action";
 import { Card, CardGrid, Panel } from "../surface";
 import { Badge, SeverityTag, StatusBadge } from "../status";
+import { CodeBlock, Kbd, Table, Timeline } from "../data";
 
 export interface PublicComponent {
   readonly name: string;
@@ -24,6 +25,10 @@ export const publicComponents: readonly PublicComponent[] = [
   { name: "Badge", testFile: "testing/status.test.tsx", render: () => createElement(Badge, null, "Badge") },
   { name: "StatusBadge", testFile: "testing/status.test.tsx", render: () => createElement(StatusBadge, { status: "running", icon: "●", label: "Running" }) },
   { name: "SeverityTag", testFile: "testing/status.test.tsx", render: () => createElement(SeverityTag, { severity: "destructive", icon: "●", label: "Destructive" }) },
+  { name: "Table", testFile: "testing/data.test.tsx", render: () => createElement(Table, { "aria-label": "Table", children: null }) },
+  { name: "Timeline", testFile: "testing/data.test.tsx", render: () => createElement(Timeline, { children: null }) },
+  { name: "CodeBlock", testFile: "testing/data.test.tsx", render: () => createElement(CodeBlock, { code: "{}" }) },
+  { name: "Kbd", testFile: "testing/data.test.tsx", render: () => createElement(Kbd, null, "Esc") },
 ];
 
 export function missingComponentTests(
