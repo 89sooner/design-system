@@ -44,11 +44,11 @@ const LAYER_STATEMENT = readFileSync(join(SRC_DIR, "layers.css"), "utf8").trim()
 const BUNDLES = [
   {
     out: "index.css",
-    sources: ["tokens.css", "reset.css", "base.css", "layout.css", "utility.css"],
+    sources: ["tokens.css", "reset.css", "base.css", "layout.css", "components.css", "utility.css"],
   },
   // FR-CSS-002's exception: the same stylesheet minus cdt.reset, for consumers
   // whose own global reset would collide. Refs: FR-DX-003 AC-4
-  { out: "component.css", sources: ["tokens.css", "base.css", "layout.css", "utility.css"] },
+  { out: "component.css", sources: ["tokens.css", "base.css", "layout.css", "components.css", "utility.css"] },
 ];
 
 const targets = browserslistToTargets(

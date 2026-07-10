@@ -1,0 +1,131 @@
+/* FR 범위: FR-CSS-004, FR-CMP-002, FR-CMP-003 */
+
+@layer cdt.component {
+  .cdt-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--cdt-button-gap);
+    min-block-size: var(--cdt-button-min-height);
+    padding: var(--cdt-button-padding-block) var(--cdt-button-padding-inline);
+    border: 1px solid var(--cdt-button-secondary-border); /* cdt-allow-literal: 토큰에 선 두께가 없다 */
+    border-radius: var(--cdt-button-radius);
+    background: var(--cdt-button-secondary-background);
+    box-shadow: var(--cdt-button-primary-shadow);
+    color: var(--cdt-button-secondary-text);
+    font-size: var(--cdt-button-font-size);
+    font-weight: 600;
+    line-height: 1;
+    transition: background var(--cdt-button-transition), border-color var(--cdt-button-transition), box-shadow var(--cdt-button-transition), transform var(--cdt-button-transition);
+  }
+
+  .cdt-btn--primary,
+  .cdt-btn--tone-accent {
+    border-color: transparent;
+    background: var(--cdt-button-primary-background);
+    color: var(--cdt-button-primary-text);
+  }
+
+  .cdt-btn--ghost {
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
+    color: var(--cdt-button-ghost-text);
+  }
+
+  .cdt-btn--tone-danger {
+    border-color: var(--cdt-status-danger);
+    color: var(--cdt-status-danger);
+  }
+
+  .cdt-btn--sm {
+    min-block-size: 34px; /* cdt-allow-literal: C-001의 고정 compact 높이 */
+    padding-inline: var(--cdt-space-2);
+  }
+
+  .cdt-btn--icon {
+    inline-size: var(--cdt-button-min-height);
+    padding: 0;
+  }
+
+  .cdt-btn--icon.cdt-btn--sm {
+    inline-size: 34px; /* cdt-allow-literal: C-002의 고정 compact 정사각 크기 */
+  }
+
+  .cdt-btn--blocked,
+  .cdt-btn:disabled {
+    cursor: not-allowed;
+    border-color: var(--cdt-button-disabled-border);
+    background: var(--cdt-button-disabled-background);
+    box-shadow: none;
+    color: var(--cdt-button-disabled-text);
+    transform: none;
+  }
+
+  .cdt-btn--blocked {
+    background: var(--cdt-button-policy-disabled-background);
+    border-color: var(--cdt-button-policy-disabled-border);
+    color: var(--cdt-button-policy-disabled-text);
+  }
+
+  .cdt-btn:not(:disabled):hover {
+    border-color: var(--cdt-button-secondary-border-hover);
+    background: var(--cdt-button-secondary-background-hover);
+  }
+
+  .cdt-btn--primary:not(:disabled):hover,
+  .cdt-btn--tone-accent:not(:disabled):hover {
+    box-shadow: var(--cdt-button-primary-shadow-hover);
+    transform: translateY(-1px); /* cdt-allow-literal: source hover lift */
+  }
+
+  .cdt-btn--ghost:not(:disabled):hover {
+    background: var(--cdt-button-ghost-background-hover);
+    color: var(--cdt-button-ghost-text-hover);
+  }
+
+  .cdt-card,
+  .cdt-panel {
+    display: block;
+    border: 1px solid var(--cdt-card-border); /* cdt-allow-literal: 토큰에 선 두께가 없다 */
+    border-radius: var(--cdt-card-radius);
+    color: var(--cdt-text-primary);
+  }
+
+  .cdt-card {
+    padding: var(--cdt-card-padding);
+    background: var(--cdt-card-background);
+    box-shadow: var(--cdt-card-shadow);
+    transition: border-color var(--cdt-card-interactive-transition), box-shadow var(--cdt-card-interactive-transition), transform var(--cdt-card-interactive-transition);
+  }
+
+  .cdt-card--sm {
+    padding: var(--cdt-space-4);
+  }
+
+  .cdt-card--interactive {
+    cursor: pointer;
+  }
+
+  .cdt-card--interactive:hover {
+    border-color: var(--cdt-card-interactive-border-hover);
+    box-shadow: var(--cdt-card-interactive-shadow-hover);
+    transform: translateY(-2px); /* cdt-allow-literal: FR-CMP-003 AC-2 상승량 */
+  }
+
+  .cdt-panel {
+    overflow: hidden;
+    padding: var(--cdt-card-padding);
+    background: var(--cdt-surface-timeline);
+    border-color: var(--cdt-border-default);
+  }
+
+  .cdt-panel--sm {
+    padding: var(--cdt-space-4);
+  }
+
+  .cdt-panel__header,
+  .cdt-panel__body {
+    padding: var(--cdt-space-3) var(--cdt-space-5);
+  }
+}

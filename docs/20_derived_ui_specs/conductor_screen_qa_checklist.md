@@ -130,11 +130,11 @@ FR-CMP-001은 공개 컴포넌트 전수가 ref 전달(AC-1), className 병합(A
 
 | 컴포넌트 | 소속 FR | ref 전달 (AC-1) | className 병합 (AC-2) | data-*/aria-* 통과 (AC-3) | 네이티브 props 확장 (AC-4) |
 | --- | --- | --- | --- | --- | --- |
-| Button | FR-CMP-002 | [ ] QA-057 | [ ] QA-058 | [ ] QA-059 | [ ] QA-060 |
-| IconButton | FR-CMP-002 | [ ] QA-061 | [ ] QA-062 | [ ] QA-063 | [ ] QA-064 |
-| Card | FR-CMP-003 | [ ] QA-065 | [ ] QA-066 | [ ] QA-067 | [ ] QA-068 |
-| CardGrid | FR-CMP-003 | [ ] QA-069 | [ ] QA-070 | [ ] QA-071 | [ ] QA-072 |
-| Panel | FR-CMP-003 | [ ] QA-073 | [ ] QA-074 | [ ] QA-075 | [ ] QA-076 |
+| Button | FR-CMP-002 | [x] QA-057 | [x] QA-058 | [x] QA-059 | [x] QA-060 |
+| IconButton | FR-CMP-002 | [x] QA-061 | [x] QA-062 | [x] QA-063 | [x] QA-064 |
+| Card | FR-CMP-003 | [x] QA-065 | [x] QA-066 | [x] QA-067 | [x] QA-068 |
+| CardGrid | FR-CMP-003 | [x] QA-069 | [x] QA-070 | [x] QA-071 | [x] QA-072 |
+| Panel | FR-CMP-003 | [x] QA-073 | [x] QA-074 | [x] QA-075 | [x] QA-076 |
 | Badge | FR-CMP-004 | [ ] QA-077 | [ ] QA-078 | [ ] QA-079 | [ ] QA-080 |
 | StatusBadge | FR-CMP-004 | [ ] QA-081 | [ ] QA-082 | [ ] QA-083 | [ ] QA-084 |
 | SeverityTag | FR-CMP-004 | [ ] QA-085 | [ ] QA-086 | [ ] QA-087 | [ ] QA-088 |

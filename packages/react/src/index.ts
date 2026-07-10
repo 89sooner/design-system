@@ -2,6 +2,10 @@ import { CDT_PREFIX, PACKAGE_NAME as TOKENS_PACKAGE_NAME } from "@conductor/toke
 
 export { cx } from "./cx";
 export type { IconSlot, PolymorphicProps, Size, Tone } from "./types";
+export { Button, IconButton } from "./action";
+export type { ButtonProps, IconButtonProps } from "./action";
+export { Card, CardGrid, Panel } from "./surface";
+export type { CardGridProps, CardProps, PanelProps } from "./surface";
 
 /** Published name of this package. */
 export const PACKAGE_NAME = "@conductor/react" as const;

@@ -45,9 +45,9 @@ design-system/
 | WP-007 | 대비 검사기와 검사 쌍 정의 | REL-001 | WP-004 | - (OD-001 종결) | todo |
 | WP-008 | `@conductor/css` 레이어 골격과 리셋 | REL-002 | WP-003 | - | todo |
 | WP-009 | 레이아웃 프리미티브 클래스 | REL-002 | WP-008 | - | todo |
-| WP-010 | 라이트 팔레트와 테마 결정 계약 | REL-002 | WP-006 | - | todo |
-| WP-011 | `@conductor/react` 골격과 공통 계약 | REL-002 | WP-008 | - | todo |
-| WP-012 | 액션·표면 컴포넌트군 | REL-002 | WP-011 | - | todo |
+| WP-010 | 라이트 팔레트와 테마 결정 계약 | REL-002 | WP-006 | - | done |
+| WP-011 | `@conductor/react` 골격과 공통 계약 | REL-002 | WP-008 | - | done |
+| WP-012 | 액션·표면 컴포넌트군 | REL-002 | WP-011 | - | done |
 | WP-013 | 상태 표시 컴포넌트군 | REL-002 | WP-011 | - | todo |
 | WP-014 | 데이터 표시 컴포넌트군 | REL-002 | WP-011 | - | todo |
 | WP-015 | 오버레이 컴포넌트군 | REL-002 | WP-011 | - | todo |
@@ -314,14 +314,14 @@ design-system/
   - 서버 렌더링 깜빡임 방지 인라인 스니펫 (패키지가 자동 주입하지 않고 문서로 제공)
 - 제외: 문서 사이트 테마 토글 UI (WP-018)
 - 완료 기준(DoD):
-  - [ ] 두 테마의 semantic 키 집합 대칭 차집합이 공집합이다 (FR-THM-002 AC-1, FR-QA-001 AC-1)
-  - [ ] 라이트 적용 시 계산된 `color-scheme`이 `light`, 다크 적용 시 `dark`다 (FR-THM-002 AC-2, FR-THM-001 AC-4)
-  - [ ] 라이트 경계 토큰이 라이트 배경 위에서 비텍스트 3:1을 만족한다 (FR-THM-002 AC-3)
-  - [ ] `elevation.*`의 그림자 alpha가 두 테마에서 서로 다르다 (FR-THM-002 AC-4)
-  - [ ] `data-cdt-theme="light"` + OS 다크에서 라이트가 적용된다 (FR-THM-003 AC-1)
-  - [ ] 속성 부재 시 `prefers-color-scheme`을 따른다 (FR-THM-003 AC-2)
-  - [ ] 잘못된 속성값에서 다크가 적용된다 (FR-THM-003 AC-3)
-  - [ ] `pnpm check:contrast`가 라이트 테마에서도 미달 0건을 보고한다 (FR-A11Y-004 AC-1)
+  - [x] 두 테마의 semantic 키 집합 대칭 차집합이 공집합이다 (FR-THM-002 AC-1, FR-QA-001 AC-1)
+  - [x] 라이트 적용 시 계산된 `color-scheme`이 `light`, 다크 적용 시 `dark`다 (FR-THM-002 AC-2, FR-THM-001 AC-4)
+  - [x] 라이트 경계 토큰이 라이트 배경 위에서 비텍스트 3:1을 만족한다 (FR-THM-002 AC-3)
+  - [x] `elevation.*`의 그림자 alpha가 두 테마에서 서로 다르다 (FR-THM-002 AC-4)
+  - [x] `data-cdt-theme="light"` + OS 다크에서 라이트가 적용된다 (FR-THM-003 AC-1)
+  - [x] 속성 부재 시 `prefers-color-scheme`을 따른다 (FR-THM-003 AC-2)
+  - [x] 잘못된 속성값에서 다크가 적용된다 (FR-THM-003 AC-3)
+  - [x] `pnpm check:contrast`가 라이트 테마에서도 미달 0건을 보고한다 (FR-A11Y-004 AC-1)
 - 검증 방법: `pnpm build && pnpm check:contrast && pnpm test`
 - 기록: WP-010 행, FR-THM-002·FR-THM-003·FR-QA-001 매핑 갱신
 
@@ -342,13 +342,13 @@ design-system/
   - React 18·19 peer dependency 선언, `lucide-react` peer dependency 선언
 - 제외: 실제 컴포넌트 구현 (WP-012 ~ WP-017)
 - 완료 기준(DoD):
-  - [ ] 계약 스위트가 4개 항목(ref/className/속성 통과/props 확장)을 검증한다 (FR-CMP-001 AC-1~4)
-  - [ ] 계약 스위트가 공개 컴포넌트 전수에 실행되도록 배선된다 (FR-CMP-001 AC-5)
-  - [ ] 계약 위반 픽스처 컴포넌트가 스위트를 실패시킨다 (FR-CMP-001 예외 처리)
-  - [ ] 테스트 파일 없는 export 컴포넌트가 빌드 전 검사를 실패시킨다 (FR-QA-002 AC-1)
-  - [ ] `sideEffects: false`가 선언되고 선언되지 않은 내부 경로 import가 해석 오류를 낸다 (FR-DX-003 AC-1, AC-3)
-  - [ ] 모듈 최상위에서 `window`/`document`/`localStorage` 접근이 0건이다 (FR-DX-004 AC-2)
-  - [ ] 산출 `.d.ts`에 `any`가 0건이고 내부 타입이 누출되지 않는다 (FR-DX-002 AC-2, AC-4)
+  - [x] 계약 스위트가 4개 항목(ref/className/속성 통과/props 확장)을 검증한다 (FR-CMP-001 AC-1~4)
+  - [x] 계약 스위트가 공개 컴포넌트 전수에 실행되도록 배선된다 (FR-CMP-001 AC-5)
+  - [x] 계약 위반 픽스처 컴포넌트가 스위트를 실패시킨다 (FR-CMP-001 예외 처리)
+  - [x] 테스트 파일 없는 export 컴포넌트가 빌드 전 검사를 실패시킨다 (FR-QA-002 AC-1)
+  - [x] `sideEffects: false`가 선언되고 선언되지 않은 내부 경로 import가 해석 오류를 낸다 (FR-DX-003 AC-1, AC-3)
+  - [x] 모듈 최상위에서 `window`/`document`/`localStorage` 접근이 0건이다 (FR-DX-004 AC-2)
+  - [x] 산출 `.d.ts`에 `any`가 0건이고 내부 타입이 누출되지 않는다 (FR-DX-002 AC-2, AC-4)
 - 검증 방법: `pnpm --filter @conductor/react build && pnpm --filter @conductor/react test && pnpm typecheck`
 - 기록: WP-011 행, FR-CMP-001·FR-DX-002·FR-DX-003·FR-DX-004 매핑 갱신
 
@@ -362,19 +362,19 @@ design-system/
 - 구현 범위: C-001 Button, C-002 IconButton, C-010 Card, C-011 CardGrid, C-012 Panel + 대응 `cdt-btn`, `cdt-card`, `cdt-card-grid`, `cdt-panel` CSS 클래스
 - 제외: 상태 배지(WP-013), 오버레이(WP-015)
 - 완료 기준(DoD):
-  - [ ] `variant`가 `primary`/`secondary`/`ghost` 3종을 지원한다 (FR-CMP-002 AC-1)
-  - [ ] `loading` 시 `aria-busy="true"`이고 클릭 핸들러가 호출되지 않는다 (FR-CMP-002 AC-2)
-  - [ ] `IconButton`에 `aria-label` 누락 시 TypeScript 컴파일 오류가 난다 (FR-CMP-002 AC-3)
-  - [ ] `disabled`에서 `cursor: not-allowed`이고 hover 시각 변화가 없다 (FR-CMP-002 AC-4)
-  - [ ] `loading`과 `disabled` 동시 참일 때 `disabled` 시각이 우선하고 `aria-busy`가 유지된다 (FR-CMP-002 예외 처리)
-  - [ ] `onClick`/`href`가 있는 `Card`가 `button`/`a`로 렌더되고 포커스를 받는다 (FR-CMP-003 AC-1)
-  - [ ] 정적 `Card`는 `div`로 렌더되고 포커스를 받지 않는다 (FR-CMP-003 AC-3)
-  - [ ] 대화형 `Card` 안의 중첩 대화형 요소가 개발 빌드 콘솔 경고를 낸다 (FR-CMP-003 예외 처리)
-  - [ ] `cdt-btn cdt-btn--primary` 클래스만으로 `Button variant="primary"`와 동일한 계산 스타일이 나온다 (FR-CSS-004 AC-3)
-  - [ ] 컴포넌트 클래스가 구조 셀렉터(`>`, `+`, `:nth-child`)에 의존하지 않는다 (FR-CSS-004 AC-4)
-  - [ ] `:focus-visible` 포커스 링이 동일 `box-shadow` 계산값을 갖는다 (FR-A11Y-001 AC-1)
-  - [ ] 공유 계약 스위트를 통과한다 (FR-CMP-001 AC-5)
-  - [ ] `conductor_screen_qa_checklist.md`의 공통 QA와 접근성 QA 해당 항목이 닫힌다
+  - [x] `variant`가 `primary`/`secondary`/`ghost` 3종을 지원한다 (FR-CMP-002 AC-1)
+  - [x] `loading` 시 `aria-busy="true"`이고 클릭 핸들러가 호출되지 않는다 (FR-CMP-002 AC-2)
+  - [x] `IconButton`에 `aria-label` 누락 시 TypeScript 컴파일 오류가 난다 (FR-CMP-002 AC-3)
+  - [x] `disabled`에서 `cursor: not-allowed`이고 hover 시각 변화가 없다 (FR-CMP-002 AC-4)
+  - [x] `loading`과 `disabled` 동시 참일 때 `disabled` 시각이 우선하고 `aria-busy`가 유지된다 (FR-CMP-002 예외 처리)
+  - [x] `onClick`/`href`가 있는 `Card`가 `button`/`a`로 렌더되고 포커스를 받는다 (FR-CMP-003 AC-1)
+  - [x] 정적 `Card`는 `div`로 렌더되고 포커스를 받지 않는다 (FR-CMP-003 AC-3)
+  - [x] 대화형 `Card` 안의 중첩 대화형 요소가 개발 빌드 콘솔 경고를 낸다 (FR-CMP-003 예외 처리)
+  - [x] `cdt-btn cdt-btn--primary` 클래스만으로 `Button variant="primary"`와 동일한 계산 스타일이 나온다 (FR-CSS-004 AC-3)
+  - [x] 컴포넌트 클래스가 구조 셀렉터(`>`, `+`, `:nth-child`)에 의존하지 않는다 (FR-CSS-004 AC-4)
+  - [x] `:focus-visible` 포커스 링이 동일 `box-shadow` 계산값을 갖는다 (FR-A11Y-001 AC-1)
+  - [x] 공유 계약 스위트를 통과한다 (FR-CMP-001 AC-5)
+  - [x] `conductor_screen_qa_checklist.md`의 공통 QA와 접근성 QA 해당 항목이 닫힌다
 - 검증 방법: `pnpm --filter @conductor/react test -- action surface && pnpm lint:tokens`
 - 기록: WP-012 행, FR-CMP-002·FR-CMP-003·FR-CSS-004 매핑 갱신
 

@@ -272,3 +272,24 @@ describe("FR-DX-001 / NFR-001 packaging", () => {
     expect(inspectBundle(css, name).filter((v) => v.code === "CSS-CUSTOM-PROPERTY")).toEqual([]);
   });
 });
+
+describe("FR-CSS-004 action and surface primitives", () => {
+  const components = topLevelRules(index, "cdt.component");
+
+  test("FR-CSS-004 AC-3: Button's public primary classes consume the same tokenised visual rules", () => {
+    const primary = components.find((rule) => rule.selector.includes(".cdt-btn--primary"));
+    expect(primary?.decls.background).toBe("var(--cdt-button-primary-background)");
+    expect(primary?.decls.color).toBe("var(--cdt-button-primary-text)");
+    expect(primary?.selector).toContain(".cdt-btn--primary");
+  });
+
+  test("FR-CSS-004 AC-4: component selectors avoid structural combinators", () => {
+    for (const rule of components) expect(rule.selector).not.toMatch(/\s[>+]\s|:nth-child/);
+  });
+
+  test("FR-A11Y-001 AC-1: interactive primitives rely on the shared reset focus-visible ring", () => {
+    const focus = ruleFor(index, "cdt.reset", /:focus-visible/);
+    expect(focus?.decls["box-shadow"]).toBe("var(--cdt-focus-ring)");
+    expect(components.some((rule) => rule.selector.includes(":focus-visible"))).toBe(false);
+  });
+});
