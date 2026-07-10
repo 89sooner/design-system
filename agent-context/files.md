@@ -100,9 +100,26 @@ bin:     ["conductor-build-tokens", "conductor-check-contrast", "conductor-lint-
 sideEffects: ["*.css"]
 ```
 
-### `packages/css/`, `packages/react/`, `apps/docs/`
+### `packages/css/` — REL-002 진행 중
 
-WP-001의 최소 골격만 존재한다. `package.json` + `tsconfig.json` + 자리표시 진입점 + 스모크 테스트. **실제 구현은 WP-008 이후.**
+WP-008과 WP-009가 완료됐다.
+
+| 경로 | 역할 |
+| --- | --- |
+| `packages/css/src/layers.css` | `@layer cdt.reset, cdt.base, cdt.layout, cdt.component, cdt.utility` 선언 |
+| `packages/css/src/reset.css` | scoped reset |
+| `packages/css/src/base.css` | 토큰 기반 base 스타일 |
+| `packages/css/src/layout.css` | WP-009 레이아웃 프리미티브. 색 속성 금지 |
+| `packages/css/src/tokens.css` | `@conductor/tokens/tokens.css` 공개 진입점 import |
+| `packages/css/src/utility.css` | 낮은 범위의 utility |
+| `packages/css/build.mjs` | lightningcss 빌드, `index.css`/`component.css`, `{breakpoint.*}` 치환 |
+| `packages/css/checks.mjs` | CSS 산출물 정적 검사. `!important`, 레이어, media var 잔존 등 |
+| `packages/css/test/bundle.test.ts` | CSS 번들 계약과 gzip 검사 |
+| `packages/css/test/checks.test.ts` | 정적 검사 음성 테스트 |
+
+### `packages/react/`, `apps/docs/`
+
+WP-001의 최소 골격만 존재한다. `package.json` + `tsconfig.json` + 자리표시 진입점 + 스모크 테스트. 실제 구현은 WP-011 이후.
 
 ## 참고 — 소스 저장소 (읽기 전용)
 

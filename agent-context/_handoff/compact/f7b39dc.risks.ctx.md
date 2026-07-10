@@ -1,9 +1,21 @@
 #hidden
 # aci:v1 id=f7b39dc src=agent-context/risks.md
-@kv sha256=3a2104e2129caef15bf512678afebb20acd1d8938e90b1b07d3ad84104568b8d bytes=5441 lines=65 title=리스크-/-불확실한-가정-/-검증에서-속을-뻔한-지점
-@sig agent-context/risks.md;dist/cli.js;packages/tokens/bin/conductor-build-tokens.mjs;conductor/tokens;/bin/;packages/tokens/dist;packages/css;packages/react;px/ms/z-index/font-size;CR-005/CR-006;conductor/css;packages;conductor;gitignore;surface;elevated;contrast;WCAG;PRD;REL;Radix;DOM;important;neutralEnd
+@kv sha256=7180a4bcca0553cd0daa7ee96313cba6e3ac87be9405210295776908064fb83d bytes=7779 lines=87 title=리스크-/-불확실한-가정-/-검증에서-속을-뻔한-지점
+@sig agent-context/risks.md;packages/css;conductor/css;DEV-005/CR-012;conductor/tokens/breakpoints;packages/css/test/helpers.ts;packages/tokens/bin/;dist/cli.js;packages/tokens/bin/conductor-build-tokens.mjs;conductor/tokens;/bin/;packages/tokens/dist;packages/react;px/ms/z-index/font-size;CR-005/CR-006;CSS;packages;conductor;DEV;breakpoint;responsive;breakpoints;MEDIA;VAR
 @h1 리스크 / 불확실한 가정 / 검증에서 속을 뻔한 지점
-@h2 검증 함정 — 이 세션에서 실제로 당할 뻔한 것들
+@h2 2026-07-11(WP-008) 세션에서 추가된 함정
+@h2 2026-07-11(WP-009) 세션에서 추가된 함정
+@h3 A. CSS 테스트는 stale dist를 읽을 수 있다
+@path packages/css 테스트는 빌드 산출물 CSS를 읽는다. pnpm --filter @conductor/css test만 실행하면 소스 변경이 dist에 반영되지 않아도 통과할 수 있다. WP-009에서 DEV-005/CR-012로 공식 검증 명령을 build && test로 정정했다.
+@h3 B. lightningcss가 미디어쿼리 문법을 정규화한다
+@p (max-width: 800px)가 산출 또는 AST에서 (width <= 800px)처럼 표현될 수 있다. 테스트는 원문 문자열을 고정하지 말고 파싱 결과나 실제 breakpoint 값 존재 여부를 검사해야 한다.
+@h3 C. 미디어쿼리 안의 CSS 변수는 런타임에 평가되지 않는다
+@path @media (max-width: var(--cdt-breakpoint-md))는 유효한 responsive 계약이 아니다. 소스는 {breakpoint.md} 같은 별칭을 쓰고, 빌드가 공개 @conductor/tokens/breakpoints 값을 리터럴로 치환한다. 산출물에 var(--cdt-breakpoint-*)가 남으면 CSS-MEDIA-VAR로 실패해야 한다.
+@h3 리뷰 서브에이전트가 작업 트리를 오염시킨다
+@path 적대적 리뷰 워크플로(vacuous-check 발견을 서브에이전트가 파일을 변조해 실증하는 패턴)에서, 검증 서브에이전트가 packages/css/test/helpers.ts의 rulesInLayer에 if (found.length === 0) return found;를 주입하고 복원하지 않았다. css 스위트 전체가 red가 됐고 하마터면 내 회귀로 오해할 뻔했다. 리뷰 워크플로가 쓰기 권한을 가졌으면 끝난 뒤 반드시 git status --porcelain으로 트리를 확인하고, 초록이던 스위트가 리뷰 직후 빨개지면 내 코드보다 남은 변조를 먼저 의심하라. 리뷰 서브에이전트에 isolation: worktree 또는 읽기 전용 에이전트 타입을 주는 편이 안전하다.
+@h3 0b. pnpm install이 트리를 더럽힌다 (CR-011)
+@path pnpm install이 bin 파일을 0755로 chmod한다. CI 재현성 단계의 git status가 이 때문에 클린 체크아웃에서도 실패했다. git -c core.fileMode=false로 고쳤다. 로컬에서 git status가 packages/tokens/bin/*.mjs 3건을 M으로 보여줘도 모드 비트일 뿐 내용 변경이 아니다.
+@h2 검증 함정 — 이전 세션에서 실제로 당할 뻔한 것들
 @h3 bin/은 번들된 dist/cli.js를 실행한다
 @path packages/tokens/bin/conductor-build-tokens.mjs → dist/cli.js. 토큰 소스를 고치고 bin을 직접 실행하면 아무 변화가 없다.
 @p 음성 테스트를 두 번 실패했다. 순환 참조를 주입했는데 빌드가 exit 0으로 통과했고, 하마터면 "원자적 쓰기 확인됨"이라고 잘못 기록할 뻔했다. tokens.css가 바이트 단위로 동일했던 것이 단서였다.

@@ -10,13 +10,12 @@ python3 $SKILL --root . --strict    # 핸드오프 게이트 (경고도 실패�
 python3 $SKILL --root . --report --code-root .   # 문서↔코드 FR/WP 태그 커버리지
 ```
 
-**마지막 실행 결과 (2026-07-10)**
+**마지막 실행 결과 (2026-07-11, WP-009 후)**
 
 ```text
 OK: no structural or traceability issues found.
-FR 정의: 49 | 매트릭스 매핑 49 (100%) | 아키텍처 참조 49 (100%) | WP 참조 49 (100%)
-NFR 5 | 시나리오 4 | 오픈 결정(OD) 4 | 화면 12 (매트릭스 12)
-API 17 | 엔티티 6 | ADR 10 | REL 4 | WP 28 | CR 9 | DEV 2
+FR 정의: 49 | WP 28 | CR 12 | DEV 5
+code scan 65 files | 34/49 FR tagged | 20/28 WP tagged
 strict exit=0
 ```
 
@@ -32,16 +31,18 @@ pnpm lint:tokens     # 토큰 소스 밖 하드코딩 차단
 pnpm check:contrast  # WCAG 2.1 AA
 ```
 
-**클린 체크아웃 실행 결과 (생성 파일 + 전체 `dist/` 삭제 후)**
+**마지막 실행 결과 (2026-07-11, WP-009 후)**
 
 ```text
 lint             exit=0
-lint:deps        exit=0
-build            exit=0        (real 6.5s — NFR-001 예산 180s)
+lint:deps        exit=0        4 workspace packages, 6 edges, 0 violations
+build            exit=0
 typecheck        exit=0
-test             exit=0        Test Files 17 passed | Tests 278 passed
-lint:tokens      exit=0        scanned 6 file(s), 0 violation(s), 0 allowance(s)
-check:contrast   exit=0        0 of 40 pairs checked failed contrast threshold
+test             exit=0        Test Files 19 passed | Tests 330 passed
+lint:tokens      exit=0        scanned 15 file(s), 0 violation(s), 4 allowance(s)
+check:contrast   exit=0        dark 40/40 pass
+docs validator   exit=0        report/strict both clean
+git diff --check exit=0        LF -> CRLF warnings only
 ```
 
 ## 유용한 개별 명령
@@ -178,7 +179,7 @@ disagreements (>0.02 or verdict mismatch): 0
 
 ## 저장소 상태
 
-**git repo가 아니다.** 모든 코드가 작업 트리에 미커밋 상태다. `git init` + 커밋은 사용자 승인 필요.
+저장소는 git repo이며 `main` 브랜치에 커밋 2개가 있다. WP-001~009 작업은 아직 작업 트리에 있다. `pnpm install`로 생긴 token bin 파일 mode 변화는 `git -c core.fileMode=false`로 무시하라.
 
 커밋할 때의 규약:
 

@@ -59,6 +59,30 @@ FR-TOK-002 AC-2("semantic은 primitive만 참조")와 FR-THM-001 AC-2(별칭 `su
 
 **버린 첫 해소안**: 처음엔 "생성물 최신성" CI 검사로 `git diff --exit-code -- packages/tokens/dist`를 넣었다. `dist/`가 gitignore되어 있으므로 **어떤 경우에도 실패할 수 없는 검사**였다. 통과가 보장된 검사는 없는 것보다 나쁘다 — 안전하다는 신호를 거짓으로 준다. 실제 확인 가능한 것(재빌드가 gitignore되지 않은 파일을 남기지 않는다)으로 교체했다.
 
+### CR-010 — WP-008 검증 명령 (DEV-003, 2026-07-11)
+
+WP-008 검증 방법 `pnpm --filter @conductor/css build && pnpm --filter @conductor/css test && pnpm size` 중 두 단계가 고장나 있었다.
+
+- `pnpm size`는 존재하지 않는다. 그 스크립트를 만드는 것은 **WP-025의 구현 범위**(선행 WP-017)라 WP-008 시점에 있을 수 없다. → 검증 명령에서 제거. gzip 20KB 게이트(NFR-001)는 `packages/css/test/bundle.test.ts`가 실제 zlib 측정으로 강제.
+- `packages/css`에 `test` 스크립트가 없어 `pnpm --filter @conductor/css test`가 아무것도 안 하고 exit 0. **CR-009에서 지운 "절대 실패할 수 없는 검사"와 같은 결함.** → `"test": "vitest run --project css --config ../../vitest.config.ts"` 추가.
+- **기각한 대안**: WP-008에서 css 전용 `pnpm size` 축소판을 만드는 것. 브리프 §7-3(구현 범위 안에서만) 위반이고 WP-025를 반쯤 구현한 상태로 남긴다.
+
+### CR-011 — CI 재현성 단계 fileMode (DEV-004, 2026-07-11)
+
+CR-009가 넣은 마지막 CI 단계가 **깨끗한 체크아웃에서도 항상 실패**한다. `pnpm install`이 `package.json`의 `bin` 항목을 0644→0755로 chmod하므로 `git status --porcelain`이 토큰 빌드와 무관하게 3줄을 낸다. WP-008과 무관하나 검증 중 발견해 등록.
+
+- 정정: `git -c core.fileMode=false status --porcelain --untracked-files=all`. 모드 비트만 무시하고 CR-009의 두 검사 의도는 유지.
+- **기각한 대안**: bin을 0755로 커밋. 증상은 사라지지만 앞으로 추가될 모든 bin에 같은 일이 반복된다. 검사가 모드에 의존하지 않게 만드는 편이 근본적.
+- CR-009는 *절대 실패할 수 없는* 검사를 지웠는데, 그 자리에 *절대 통과할 수 없는* 검사가 들어와 있었다. 뿌리는 같다 — 검사를 쓴 뒤 통과·실패를 관찰하지 않았다.
+
+### CR-012 — WP-009 검증 명령 (DEV-005, 2026-07-11)
+
+WP-009의 공식 검증 명령이 test-only로 해석될 수 있었다. `packages/css` 테스트는 `dist` 산출물을 읽기 때문에 build 없이 실행하면 오래된 CSS를 검증할 수 있다.
+
+- 정정: `pnpm --filter @conductor/css build && pnpm --filter @conductor/css test`.
+- 이유: 레이아웃 소스와 breakpoint 치환기는 빌드 단계에서만 산출물에 반영된다.
+- 기각한 대안: 테스트가 매번 내부에서 빌드를 호출하게 만들기. 패키지 테스트와 빌드 책임을 섞고 전체 test 비용을 늘린다. WP 검증 명령에서 build를 명시하는 편이 단순하다.
+
 ## 아키텍처 문서 재해석 (CR-004)
 
 Conductor에는 **서버 런타임·DB·큐·인증이 없다.** 스캐폴드가 만든 네 문서를 그대로 채우면 존재하지 않는 시스템을 설계하게 된다.
