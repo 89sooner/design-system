@@ -4,6 +4,20 @@
 
 ## 2026-07-11(WP-013~014) 세션에서 추가된 함정
 
+## 2026-07-11(WP-015) 세션에서 추가된 함정
+
+### J. Radix Tooltip은 SSR registry에서도 Provider가 필요하다
+
+`Tooltip.Root`를 단독 SSR render하면 ``Tooltip must be used within TooltipProvider`` 오류가 난다. public registry renderer는 `Tooltip.Provider`로 감싸야 한다.
+
+### K. jsdom에는 ResizeObserver와 완전한 pointer flow가 없다
+
+Radix Tooltip content는 ResizeObserver를 사용하고, DropdownMenu trigger는 pointer event를 기대한다. test-local ResizeObserver shim을 두고 menu role 검사는 `defaultOpen` fixture로 한다. 이 shim은 production code에 넣지 않는다.
+
+### L. Radix portal content는 render container 바깥에 있다
+
+Dialog/Tooltip/Menu content는 document body portal로 렌더된다. Testing Library test는 container query 대신 role query를 쓰고 Escape 뒤 effect는 `waitFor`로 기다린다.
+
 ### G. required children은 `createElement`의 세 번째 인자로 타입 충족되지 않을 수 있다
 
 `publicComponents` SSR registry에서 required `children`을 가진 compound root는 `createElement(Component, { children: null })`처럼 props object에 넣어야 한다. 세 번째 `null` child는 runtime에는 전달돼도 TypeScript overload의 required prop 검증은 통과하지 못한다.

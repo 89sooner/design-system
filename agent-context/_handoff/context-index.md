@@ -1,28 +1,29 @@
 # agent-context-index:v1
-generated=2026-07-10T18:01:06+00:00
+generated=2026-07-11T00:00:48+00:00
 source_dir=agent-context
 output_dir=agent-context/_handoff
-files=11
+files=12
 legend=@hN heading;@p prose;@b bullet;@todo task;@dec decision;@risk risk;@cmd command;@path path-ref;@code code-fence;@sig retrieval-signals;@kv metadata
 
 ## read_order
 - f73e2b0 p=20 src=agent-context/session-notes.md compact=agent-context/_handoff/compact/f73e2b0.session-notes.ctx.md title=Session-2026-07-10-Conductor-Design-System-문서-환경-구축부터-REL-001-완료까지 sig=agent-context/session-notes.md,home/roqkf/agent-ai-platform,Opus/Sonnet,conductor/tokens,TS/JSON,40/40,packages/css,packages/react
 - f3c6d32 p=20 src=agent-context/session-summary.md compact=agent-context/_handoff/compact/f3c6d32.session-summary.ctx.md title=Session-Summary-2026-07-10-Conductor-Design-System-부트스트랩 sig=agent-context/session-summary.md,home/roqkf/agent-ai-platform,agent-ai-platform/packages/web,packages/tokens/,conductor/tokens,packages/css/,conductor/css,packages/react/
-- f54408e p=25 src=agent-context/todos.md compact=agent-context/_handoff/compact/f54408e.todos.ctx.md title=다음-작업-/-미해결-항목 sig=agent-context/todos.md,agent-context/sessions/2026-07-11-wp013-014-status-data.md,docs/20_derived_ui_specs/conductor_ai_agent_execution_brief.md,docs/40_delivery/conductor_work_packages.md,docs/40_delivery/conductor_implementation_traceability.md,export/test,conductor/css,/component.css
-- f0b2764 p=33 src=agent-context/decisions.md compact=agent-context/_handoff/compact/f0b2764.decisions.ctx.md title=확정-결정과-그-이유 sig=agent-context/decisions.md,metadata/key,light/dark,queued/neutralEnd,timeline/codeBlock/kbd,conductor/react,conductor/tokens,src/tokens.ts
+- f54408e p=25 src=agent-context/todos.md compact=agent-context/_handoff/compact/f54408e.todos.ctx.md title=다음-작업-/-미해결-항목 sig=agent-context/todos.md,agent-context/sessions/2026-07-11-wp015-radix-overlays.md,docs/20_derived_ui_specs/conductor_ai_agent_execution_brief.md,docs/40_delivery/conductor_work_packages.md,docs/40_delivery/conductor_implementation_traceability.md,label/description/error,TextField/TextArea,Select/Switch/Checkbox
+- f0b2764 p=33 src=agent-context/decisions.md compact=agent-context/_handoff/compact/f0b2764.decisions.ctx.md title=확정-결정과-그-이유 sig=agent-context/decisions.md,metadata/key,light/dark,queued/neutralEnd,timeline/codeBlock/kbd,Dialog/Drawer,radix-ui/react-dialog,focus/scroll
 - f0ad1d8 p=40 src=agent-context/sessions/2026-07-11-wp008-css-skeleton.md compact=agent-context/_handoff/compact/f0ad1d8.2026-07-11-wp008-css-skeleton.ctx.md title=Session-2026-07-11-WP-008-conductor/css-레이어-골격 sig=agent-context/sessions/2026-07-11-wp008-css-skeleton.md,conductor/css,lint/lint,deps/build/typecheck/test/lint,tokens/check,dist/index.css,dist/component.css,packages/css/src/
 - f89bafd p=40 src=agent-context/sessions/2026-07-11-wp009-layout-primitives.md compact=agent-context/_handoff/compact/f89bafd.2026-07-11-wp009-layout-primitives.ctx.md title=Session-2026-07-11-WP-009-layout-primitives sig=agent-context/sessions/2026-07-11-wp009-layout-primitives.md,conductor/css,packages/css/src/layout.css,conductor/tokens/breakpoints,CR-012/DEV-005,packages/css/build.mjs,packages/css/checks.mjs,packages/css/test/bundle.test.ts
 - fae0d17 p=40 src=agent-context/sessions/2026-07-11-wp010-012-themes-react.md compact=agent-context/_handoff/compact/fae0d17.2026-07-11-wp010-012-themes-react.ctx.md title=Session-2026-07-11-WP-010-WP-012-themes-and-React-primitives sig=agent-context/sessions/2026-07-11-wp010-012-themes-react.md,dark/light,contract/SSR/coverage,metadata/key,name/test,file/SSR,conductor/react,packages/tokens/src/palette.light.ts
 - f43fccd p=40 src=agent-context/sessions/2026-07-11-wp013-014-status-data.md compact=agent-context/_handoff/compact/f43fccd.2026-07-11-wp013-014-status-data.ctx.md title=Session-2026-07-11-WP-013-014-상태-및-데이터-표시-컴포넌트 sig=agent-context/sessions/2026-07-11-wp013-014-status-data.md,aria/data,packages/react/src/status.tsx,testing/status.test.tsx,contract/behavior,packages/react/src/data.tsx,testing/data.test.tsx,compound/data
+- fefc068 p=40 src=agent-context/sessions/2026-07-11-wp015-radix-overlays.md compact=agent-context/_handoff/compact/fefc068.2026-07-11-wp015-radix-overlays.ctx.md title=Session-2026-07-11-WP-015-Radix-오버레이-컴포넌트 sig=agent-context/sessions/2026-07-11-wp015-radix-overlays.md,packages/react/src/overlay.tsx,Dialog/Drawer,radix-ui/react-dialog,Tooltip/Menu,observe/unobserve/disconnect,packages/react/package.json,testing/overlay.test.tsx
 - f527103 p=50 src=agent-context/commands.md compact=agent-context/_handoff/compact/f527103.commands.ctx.md title=명령어-/-테스트-결과-/-실패한-것과-원인 sig=agent-context/commands.md,claude/skills/build-srs-prd-env/scripts/validate_srs_prd_env.py,FR/WP,40/49,21/28,dark/light,80/80,report/strict
 - f5791b0 p=50 src=agent-context/files.md compact=agent-context/_handoff/compact/f5791b0.files.ctx.md title=중요-파일과-역할 sig=agent-context/files.md,docs/20_derived_ui_specs/conductor_ai_agent_execution_brief.md,docs/40_delivery/conductor_work_packages.md,docs/40_delivery/conductor_implementation_traceability.md,docs/10_requirements/srs_final.md,docs/00_governance/change_control.md,docs/README.md,docs/00_governance/
-- f7b39dc p=50 src=agent-context/risks.md compact=agent-context/_handoff/compact/f7b39dc.risks.ctx.md title=리스크-/-불확실한-가정-/-검증에서-속을-뻔한-지점 sig=agent-context/risks.md,position/z-index,packages/react,conductor/react,packages/css,conductor/css,DEV-005/CR-012,conductor/tokens/breakpoints
+- f7b39dc p=50 src=agent-context/risks.md compact=agent-context/_handoff/compact/f7b39dc.risks.ctx.md title=리스크-/-불확실한-가정-/-검증에서-속을-뻔한-지점 sig=agent-context/risks.md,Dialog/Tooltip/Menu,position/z-index,packages/react,conductor/react,packages/css,conductor/css,DEV-005/CR-012
 
 ## files
 ### f527103
 src=agent-context/commands.md
 compact=agent-context/_handoff/compact/f527103.commands.ctx.md
-sha256=72f2cfc58367a4dd7b72a349d6378201bd6b07fd0511c469f25fc99b6e8168d7
+sha256=d8a95f2bca97fbda7c5d2f3eb557e45bf6ec984a6cb6aaed5c1e3d10ce48d112
 bytes=8168 compact_bytes=9620 lines=194 priority=50
 heads=명령어 / 테스트 결과 / 실패한 것과 원인 > 문서 검증 > 코드 게이트 — CI와 동일 순서 > 유용한 개별 명령 > 음성 테스트 — 도구가 실제로 죽는지 확인한 방법 > 의존 방향 (FR-DX-001 AC-1)
 sig=agent-context/commands.md;claude/skills/build-srs-prd-env/scripts/validate_srs_prd_env.py;FR/WP;40/49;21/28;dark/light;80/80;report/strict;conductor/tokens;packages/tokens/bin/conductor-build-tokens.mjs;dist/cli.js;dist/contrast-report.json;packages/tokens/package.json;conductor/react;scripts/check-deps.mjs;conductor/css;dist/tokens.css;packages/css/src/__probe.css;text.muted/surface.base;text.muted/surface.elevated;text.muted/state.disabled;home/roqkf/design-system;/tokens;/package.json
@@ -30,10 +31,10 @@ sig=agent-context/commands.md;claude/skills/build-srs-prd-env/scripts/validate_s
 ### f0b2764
 src=agent-context/decisions.md
 compact=agent-context/_handoff/compact/f0b2764.decisions.ctx.md
-sha256=c6073ffcd5b0f2b8ff4eb9a01d64496325405cb5be450b0163794457e4f5171f
-bytes=12999 compact_bytes=13254 lines=136 priority=33
-heads=확정 결정과 그 이유 > WP-010~012 구현 결정 (2026-07-11) > WP-013~014 구현 결정 (2026-07-11) > 사용자가 직접 내린 결정 (인터뷰 4문항, 2026-07-10) > 오픈 결정 (OD) 처리 > OD-001을 "최소 수정"으로 고른 이유
-sig=agent-context/decisions.md;metadata/key;light/dark;queued/neutralEnd;timeline/codeBlock/kbd;conductor/react;conductor/tokens;src/tokens.ts;src/breakpoints.ts;packages/tokens/dist;conductor/css;packages/css/test/bundle.test.ts;packages/css;/../vitest.config.ts;Vue/Svelte/Web;semantic;metadata;publicComponents;SSR;React;workspace;JSX;tsconfig;visible
+sha256=d8f1c8887b32d6c1c05f4488fc2cebd7c1a5cc7b2220487de6327ac89f52fc3c
+bytes=13772 compact_bytes=14080 lines=143 priority=33
+heads=확정 결정과 그 이유 > WP-010~012 구현 결정 (2026-07-11) > WP-013~014 구현 결정 (2026-07-11) > WP-015 구현 결정 (2026-07-11) > 사용자가 직접 내린 결정 (인터뷰 4문항, 2026-07-10) > 오픈 결정 (OD) 처리
+sig=agent-context/decisions.md;metadata/key;light/dark;queued/neutralEnd;timeline/codeBlock/kbd;Dialog/Drawer;radix-ui/react-dialog;focus/scroll;role/aria;class/visual;browser/axe;conductor/react;conductor/tokens;src/tokens.ts;src/breakpoints.ts;packages/tokens/dist;conductor/css;packages/css/test/bundle.test.ts;packages/css;/../vitest.config.ts;Vue/Svelte/Web;semantic;metadata;publicComponents
 
 ### f5791b0
 src=agent-context/files.md
@@ -46,10 +47,10 @@ sig=agent-context/files.md;docs/20_derived_ui_specs/conductor_ai_agent_execution
 ### f7b39dc
 src=agent-context/risks.md
 compact=agent-context/_handoff/compact/f7b39dc.risks.ctx.md
-sha256=a68487cf4dda3bb7b5938f4d4e068a9e6b2557062de3edffdcd96066d6eac879
-bytes=9833 compact_bytes=10388 lines=115 priority=50
-heads=리스크 / 불확실한 가정 / 검증에서 속을 뻔한 지점 > 2026-07-11(WP-010~012) 세션에서 추가된 함정 > 2026-07-11(WP-013~014) 세션에서 추가된 함정 > G. required children은 createElement의 세 번째 인자로 타입 충족되지 않을 수 있다 > H. focus-visible 0건 규칙에는 명시된 clipping 예외가 있다 > I. token lint는 테스트 코드의 수치도 검사한다
-sig=agent-context/risks.md;position/z-index;packages/react;conductor/react;packages/css;conductor/css;DEV-005/CR-012;conductor/tokens/breakpoints;packages/css/test/helpers.ts;packages/tokens/bin/;dist/cli.js;packages/tokens/bin/conductor-build-tokens.mjs;conductor/tokens;/bin/;packages/tokens/dist;px/ms/z-index/font-size;CR-005/CR-006;required;createElement;publicComponents;SSR;children;compound;Component
+sha256=cc38d577711077d4078c195a3406808bbb75570042754da60fdb96ef6d7cebfe
+bytes=10714 compact_bytes=11263 lines=129 priority=50
+heads=리스크 / 불확실한 가정 / 검증에서 속을 뻔한 지점 > 2026-07-11(WP-010~012) 세션에서 추가된 함정 > 2026-07-11(WP-013~014) 세션에서 추가된 함정 > 2026-07-11(WP-015) 세션에서 추가된 함정 > J. Radix Tooltip은 SSR registry에서도 Provider가 필요하다 > K. jsdom에는 ResizeObserver와 완전한 pointer flow가 없다
+sig=agent-context/risks.md;Dialog/Tooltip/Menu;position/z-index;packages/react;conductor/react;packages/css;conductor/css;DEV-005/CR-012;conductor/tokens/breakpoints;packages/css/test/helpers.ts;packages/tokens/bin/;dist/cli.js;packages/tokens/bin/conductor-build-tokens.mjs;conductor/tokens;/bin/;packages/tokens/dist;px/ms/z-index/font-size;CR-005/CR-006;Radix;SSR;Tooltip;Root;TooltipProvider;registry
 
 ### f73e2b0
 src=agent-context/session-notes.md
@@ -99,13 +100,21 @@ bytes=4287 compact_bytes=5163 lines=54 priority=40
 heads=Session: 2026-07-11 — WP-013·014 상태 및 데이터 표시 컴포넌트 > Goal > Current state > Decisions > Changed files > Commands
 sig=agent-context/sessions/2026-07-11-wp013-014-status-data.md;aria/data;packages/react/src/status.tsx;testing/status.test.tsx;contract/behavior;packages/react/src/data.tsx;testing/data.test.tsx;compound/data;packages/react/src/index.ts;testing/public-components.ts;SSR/test;packages/css/src/components.css;test/bundle.test.ts;badge/data;packages/tokens/src/components.ts;timeline/codeBlock/kbd;docs/20_derived_ui_specs/conductor_design_system_tokens.md;docs/40_delivery/conductor_work_packages.md;dark/light;80/80;claude/skills/build-srs-prd-env/scripts/validate_srs_prd_env.py;FR-A11Y-002/005;role/aria/focus;docs/traceability
 
+### fefc068
+src=agent-context/sessions/2026-07-11-wp015-radix-overlays.md
+compact=agent-context/_handoff/compact/fefc068.2026-07-11-wp015-radix-overlays.ctx.md
+sha256=86f965aecdac7749e0ec27b68d5ca5de650ef2a6e1c2227cdc6c4781c4db9bfe
+bytes=3431 compact_bytes=4185 lines=51 priority=40
+heads=Session: 2026-07-11 — WP-015 Radix 오버레이 컴포넌트 > Goal > Current state > Decisions > Changed files > Commands
+sig=agent-context/sessions/2026-07-11-wp015-radix-overlays.md;packages/react/src/overlay.tsx;Dialog/Drawer;radix-ui/react-dialog;Tooltip/Menu;observe/unobserve/disconnect;packages/react/package.json;testing/overlay.test.tsx;packages/react/src/index.ts;testing/public-components.ts;packages/css/src/components.css;test/bundle.test.ts;overlay/menu;QA/work;package/traceability;dark/light;80/80;FR-A11Y-003/005;Select/Switch/Checkbox;role/aria;QA/traceability;Risks/gotchas;hover/focus;Session
+
 ### f54408e
 src=agent-context/todos.md
 compact=agent-context/_handoff/compact/f54408e.todos.ctx.md
-sha256=398042cd90ed474ec25f537be748b1da39082ca2055aeed42c90e288617d6732
-bytes=5727 compact_bytes=6679 lines=84 priority=25
-heads=다음 작업 / 미해결 항목 > 시작 지점 > WP-015 착수 시 즉시 확인할 것 > REL-002 — 다음 릴리스 슬라이스 > WP-008 착수 시 즉시 확인할 것 > WP-010이 잠금 해제하는 것
-sig=agent-context/todos.md;agent-context/sessions/2026-07-11-wp013-014-status-data.md;docs/20_derived_ui_specs/conductor_ai_agent_execution_brief.md;docs/40_delivery/conductor_work_packages.md;docs/40_delivery/conductor_implementation_traceability.md;export/test;conductor/css;/component.css;80/80;conductor/react;Button/IconButton/Card/CardGrid/Panel;Badge/StatusBadge/SeverityTag;Table/Timeline/CodeBlock/Kbd;conductor/tokens/tokens.css;/../tokens/dist/tokens.css;/tokens.css;/dist/tokens.css;docs/20_derived_ui_specs/conductor_design_system_tokens.md;packages/tokens/src/tokens.ts;packages/tokens/src/breakpoints.ts;docs/00_governance/change_control.md;src/breakpoints.ts;Radix;context
+sha256=8d773c77ba143a1df80e7fe8dbd184be1a6b86b3107ebc9e424e082594ecf41b
+bytes=5824 compact_bytes=6815 lines=86 priority=25
+heads=다음 작업 / 미해결 항목 > 시작 지점 > WP-016 착수 시 즉시 확인할 것 > REL-002 — 다음 릴리스 슬라이스 > WP-008 착수 시 즉시 확인할 것 > WP-010이 잠금 해제하는 것
+sig=agent-context/todos.md;agent-context/sessions/2026-07-11-wp015-radix-overlays.md;docs/20_derived_ui_specs/conductor_ai_agent_execution_brief.md;docs/40_delivery/conductor_work_packages.md;docs/40_delivery/conductor_implementation_traceability.md;label/description/error;TextField/TextArea;Select/Switch/Checkbox;export/test;conductor/css;/component.css;80/80;conductor/react;Button/IconButton/Card/CardGrid/Panel;Badge/StatusBadge/SeverityTag;Table/Timeline/CodeBlock/Kbd;Dialog/Drawer/Tooltip/DropdownMenu;conductor/tokens/tokens.css;/../tokens/dist/tokens.css;/tokens.css;/dist/tokens.css;docs/20_derived_ui_specs/conductor_design_system_tokens.md;packages/tokens/src/tokens.ts;packages/tokens/src/breakpoints.ts
 
 ## continuation_protocol
 read this index first; follow read_order; inspect only compact files needed for task; run reader.py search/show/restore when routing is unclear; treat compact context as lossy and repo source as final truth.

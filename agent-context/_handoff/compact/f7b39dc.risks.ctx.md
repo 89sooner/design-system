@@ -1,10 +1,17 @@
 #hidden
 # aci:v1 id=f7b39dc src=agent-context/risks.md
-@kv sha256=a68487cf4dda3bb7b5938f4d4e068a9e6b2557062de3edffdcd96066d6eac879 bytes=9833 lines=115 title=리스크-/-불확실한-가정-/-검증에서-속을-뻔한-지점
-@sig agent-context/risks.md;position/z-index;packages/react;conductor/react;packages/css;conductor/css;DEV-005/CR-012;conductor/tokens/breakpoints;packages/css/test/helpers.ts;packages/tokens/bin/;dist/cli.js;packages/tokens/bin/conductor-build-tokens.mjs;conductor/tokens;/bin/;packages/tokens/dist;px/ms/z-index/font-size;CR-005/CR-006;required;createElement;publicComponents;SSR;children;compound;Component
+@kv sha256=cc38d577711077d4078c195a3406808bbb75570042754da60fdb96ef6d7cebfe bytes=10714 lines=129 title=리스크-/-불확실한-가정-/-검증에서-속을-뻔한-지점
+@sig agent-context/risks.md;Dialog/Tooltip/Menu;position/z-index;packages/react;conductor/react;packages/css;conductor/css;DEV-005/CR-012;conductor/tokens/breakpoints;packages/css/test/helpers.ts;packages/tokens/bin/;dist/cli.js;packages/tokens/bin/conductor-build-tokens.mjs;conductor/tokens;/bin/;packages/tokens/dist;px/ms/z-index/font-size;CR-005/CR-006;Radix;SSR;Tooltip;Root;TooltipProvider;registry
 @h1 리스크 / 불확실한 가정 / 검증에서 속을 뻔한 지점
 @h2 2026-07-11(WP-010~012) 세션에서 추가된 함정
 @h2 2026-07-11(WP-013~014) 세션에서 추가된 함정
+@h2 2026-07-11(WP-015) 세션에서 추가된 함정
+@h3 J. Radix Tooltip은 SSR registry에서도 Provider가 필요하다
+@todo Tooltip.Root를 단독 SSR render하면 Tooltip must be used within TooltipProvider 오류가 난다. public registry renderer는 Tooltip.Provider로 감싸야 한다.
+@h3 K. jsdom에는 ResizeObserver와 완전한 pointer flow가 없다
+@p Radix Tooltip content는 ResizeObserver를 사용하고, DropdownMenu trigger는 pointer event를 기대한다. test-local ResizeObserver shim을 두고 menu role 검사는 defaultOpen fixture로 한다. 이 shim은 production code에 넣지 않는다.
+@h3 L. Radix portal content는 render container 바깥에 있다
+@path Dialog/Tooltip/Menu content는 document body portal로 렌더된다. Testing Library test는 container query 대신 role query를 쓰고 Escape 뒤 effect는 waitFor로 기다린다.
 @h3 G. required children은 createElement의 세 번째 인자로 타입 충족되지 않을 수 있다
 @p publicComponents SSR registry에서 required children을 가진 compound root는 createElement(Component, { children: null })처럼 props object에 넣어야 한다. 세 번째 null child는 runtime에는 전달돼도 TypeScript overload의 required prop 검증은 통과하지 못한다.
 @h3 H. focus-visible 0건 규칙에는 명시된 clipping 예외가 있다

@@ -14,6 +14,13 @@
 - Timeline의 `:focus-visible` 규칙은 공통 focus ring을 바꾸지 않으며 overflow clipping 방지용 stacking만 담당한다. 기존 "component focus selector 0" 테스트는 이 명시 예외에 맞춰 `box-shadow`/`outline` override 0으로 좁혔다.
 - data primitives의 token source는 table만 선행되어 있었다. UI spec의 component-token 표에 이미 있는 timeline/codeBlock/kbd semantic mappings만 구현하고 token spec에도 기록했다.
 
+## WP-015 구현 결정 (2026-07-11)
+
+- Dialog/Drawer는 같은 fixed-version `@radix-ui/react-dialog`을 사용한다. Drawer는 별도 focus/scroll implementation이 아니라 side class만 다른 Dialog content다.
+- Radix primitive의 role/aria props를 직접 설정하지 않고 user props를 먼저 spread한 뒤 wrapper class/visual props만 병합한다. 접근성 속성의 최종 소유자는 Radix다.
+- Radix dependency 3개는 exact runtime dependency이자 tsup external이다. peer dependency로 소비자에게 설치를 떠넘기거나 library bundle 안에 포함하지 않는다.
+- Tooltip과 Menu의 jsdom test는 browser API/포인터 환경 차이를 test-only shim과 default-open fixture로 다룬다. 실제 browser/axe gate는 WP-024 범위다.
+
 저장소 문서에서 읽을 수 있는 "무엇"이 아니라, 문서에 남기 어려운 "왜"와 "무엇을 기각했는가"를 기록한다.
 
 ## 사용자가 직접 내린 결정 (인터뷰 4문항, 2026-07-10)
