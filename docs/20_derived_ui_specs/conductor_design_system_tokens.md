@@ -811,6 +811,18 @@ component 토큰은 semantic 토큰만 참조한다(FR-TOK-002 AC-3). 아래 표
 
 `text.faint`의 `surface.elevated` 금지 규칙(5.3절)과 이 참조는 충돌하지 않는다. 그 금지는 다크 측정값 2.94:1에서 나왔고, 다크 `input.background`는 `{surface.base}`다. 라이트에서만 `input.background`가 `{surface.elevated}`를 참조하는데, 라이트 `text.faint`(`#6b788c`)는 흰 배경 위에서 4.48:1이다. 금지 조합이 실제로 렌더되는 경로가 없다.
 
+### 7.5.1 `feedbackMeter.*`
+
+`meter.*`는 FR-TOK-005가 정확히 3개로 고정한 semantic 상태군(`normal`, `warning`, `exceeded`)이다. C-062의 component token은 CR-013에 따라 별도 `feedbackMeter.*` 네임스페이스를 쓴다. 이렇게 하면 의미 색상과 렌더링 슬롯이 같은 최상위 그룹을 공유하지 않는다.
+
+| 토큰 키 | 다크 값 | 라이트 값 (다를 때만) | 관련 FR |
+| --- | --- | --- | --- |
+| `feedbackMeter.trackBackground` | `{surface.track}` | | FR-CMP-008 AC-4 |
+| `feedbackMeter.fillNormal` | `{meter.normal}` | | FR-CMP-008 AC-4 |
+| `feedbackMeter.fillWarning` | `{meter.warning}` | | FR-CMP-008 AC-4 |
+| `feedbackMeter.fillExceeded` | `{meter.exceeded}` | | FR-CMP-008 AC-4 |
+| `feedbackMeter.height` | `8px` | | FR-CMP-008 AC-4 |
+
 ### 7.6 `overlay.*`
 
 | 토큰 키 | 다크 값 | 라이트 값 (다를 때만) | 관련 FR |

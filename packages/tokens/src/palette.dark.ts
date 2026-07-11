@@ -89,6 +89,12 @@ const surface: TokenDefinition[] = [
     value: "#0d141f",
     description: "Timeline rail. Contrast-exempt: surfaces are background arguments.",
   }),
+  darkToken({
+    key: "surface.track",
+    usage: "decorative",
+    value: "rgba(255, 255, 255, 0.05)",
+    description: "Progress and meter track, matching the source 1:1.",
+  }),
 ];
 
 const text: TokenDefinition[] = [

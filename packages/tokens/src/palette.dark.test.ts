@@ -134,6 +134,8 @@ describe("dark palette against the source tokens.css", () => {
       [
         // FR-THM-005 AC-2: the one new colour token.
         "border.control",
+        // CR-013: source progress tracks live only in app.css, not tokens.css.
+        "surface.track",
         // FR-TOK-007, FR-TOK-008, FR-TOK-009: scales the source expressed as literals.
         ...["2xs", "xs", "sm", "base", "md", "lg", "xl"].map((step) => `font.lineHeight.${step}`),
         ...["2xs", "xs", "sm", "base", "md", "lg", "xl"].map((step) => `font.size.${step}`),

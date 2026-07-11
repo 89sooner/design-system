@@ -46,8 +46,8 @@ WP-001 ~ WP-028의 이름·REL·선행 관계는 `conductor_work_packages.md`에
 | WP-013 | 상태 표시 컴포넌트군 | REL-002 | todo | - | - | - |
 | WP-014 | 데이터 표시 컴포넌트군 | REL-002 | todo | - | - | - |
 | WP-015 | 오버레이 컴포넌트군 | REL-002 | todo | - | - | - |
-| WP-016 | 폼 컴포넌트군 | REL-002 | todo | - | - | - |
-| WP-017 | 피드백 컴포넌트군 | REL-002 | todo | - | - | - |
+| WP-016 | 폼 컴포넌트군 | REL-002 | done | (미커밋, 작업 트리) | `pnpm --filter @conductor/react test -- form` 121/121, CSS 72/72, build/typecheck/test/lint:deps/lint:tokens/check:contrast 통과. `pnpm lint`는 이번 WP와 무관한 기존 `testing/contract.test.tsx` ESLint 오류 3건으로 실패 | 2026-07-11 |
+| WP-017 | 피드백 컴포넌트군 | REL-002 | done | (미커밋, 작업 트리) | `feedbackMeter.*`와 semantic `surface.track`을 추가해 CR-013 해소. build/typecheck/test(467)/CSS(72)/lint:tokens/check:contrast 통과; `pnpm lint`의 기존 오류 3건은 WP-016부터 동일 | 2026-07-11 |
 | WP-018 | 문서 사이트 셸과 테마 토글 | REL-003 | todo | - | - | - |
 | WP-019 | Getting Started와 Foundations 화면 | REL-003 | todo | - | - | - |
 | WP-020 | 컴포넌트 카탈로그와 라이브 프리뷰 | REL-003 | todo | - | - | - |
@@ -93,8 +93,8 @@ WP-001 ~ WP-028의 이름·REL·선행 관계는 `conductor_work_packages.md`에
 | FR-CMP-004 | `packages/react/src/status.tsx`, `packages/css/src/components.css`, `packages/tokens/src/components.ts` | `packages/react/src/testing/status.test.tsx`, `packages/css/test/bundle.test.ts` | WP-013 | 검증됨 (AC-1~AC-5. Badge·StatusBadge·SeverityTag가 색·아이콘·텍스트 세 채널을 렌더하고, 7개 상태/4개 심각도 타입 및 `aria-hidden` 아이콘을 테스트한다. queued·neutralEnd는 토큰 명세에 따라 점+텍스트 마커 형태를 쓴다.) |
 | FR-CMP-005 | `packages/react/src/data.tsx`, `packages/css/src/components.css`, `packages/tokens/src/components.ts` | `packages/react/src/testing/data.test.tsx`, `packages/css/test/bundle.test.ts` | WP-014 | 검증됨 (AC-1~AC-5. Table 스크롤/숫자 셀/이름 경고, Timeline의 네이티브 button·div 전환, CodeBlock region·모노스페이스 스크롤, Kbd를 검증.) |
 | FR-CMP-006 | `packages/react/src/overlay.tsx`, `packages/css/src/components.css`, `packages/react/package.json` | `packages/react/src/testing/overlay.test.tsx`, `packages/css/test/bundle.test.ts` | WP-015 | 검증됨 (AC-1~AC-5. 정확 고정 Radix Dialog/Tooltip/DropdownMenu wrapper가 Dialog·Drawer의 포커스/Escape/복귀/스크롤 잠금, Tooltip focus/Escape, z 토큰과 자체 접근성 동작 0건을 검증.) |
-| FR-CMP-007 | - | - | - | 미착수 |
-| FR-CMP-008 | - | - | - | 미착수 |
+| FR-CMP-007 | `packages/react/src/form.tsx`, `packages/css/src/components.css`, `packages/react/package.json` | `packages/react/src/testing/form.test.tsx`, `packages/css/test/bundle.test.ts` | WP-016 | 검증됨 (AC-1~AC-5. Field의 id/설명/오류 연결과 오류 invalid 상태, 이름 없는 입력 경고, Radix Select/Switch/Checkbox의 역할·상태, 40px/compact 42px 스타일 및 공개 공통 계약을 검증.) |
+| FR-CMP-008 | `packages/react/src/feedback.tsx`, `packages/css/src/components.css`, `packages/tokens/src/components.ts` | `packages/react/src/testing/feedback.test.tsx`, `packages/css/test/bundle.test.ts` | WP-017 | 검증됨 (AC-1~AC-5. Banner live role/경고, EmptyState 슬롯, Meter threshold·range·텍스트, ProgressRing/Spinner 대체 텍스트와 reduced motion CSS를 검증.) |
 | FR-CMP-009 | - | - | - | 미착수 |
 | FR-DOC-001 | - | - | - | 미착수 |
 | FR-DOC-002 | - | - | - | 미착수 |
@@ -105,9 +105,9 @@ WP-001 ~ WP-028의 이름·REL·선행 관계는 `conductor_work_packages.md`에
 | FR-DOC-007 | - | - | - | 미착수 |
 | FR-A11Y-001 | `packages/css/src/reset.css`, `src/components.css` | `packages/css/test/bundle.test.ts`, `packages/react/src/testing/action.test.tsx` | WP-008, WP-012 | 부분 (AC-1 공유 `:focus-visible` focusRing 적용 및 액션/표면 대화형 요소 검증. 키보드/실브라우저 측정은 WP-024) |
 | FR-A11Y-002 | `packages/react/src/data.tsx`, `src/overlay.tsx` | `packages/react/src/testing/data.test.tsx`, `overlay.test.tsx` | WP-014, WP-015 | 부분 (AC-3의 Dialog/Drawer Escape·포커스 복귀와 AC-4 Timeline 대화형 단계를 검증. 전 컴포넌트 키보드 경로 전수 검증은 후속 WP와 WP-024에서 완성.) |
-| FR-A11Y-003 | `packages/react/src/status.tsx`, `packages/css/src/components.css` | `packages/react/src/testing/status.test.tsx`, `packages/css/test/bundle.test.ts` | WP-013 | 부분 (AC-1 및 AC-4의 상태·심각도 세 채널과 텍스트 구분을 검증. 폼 오류(AC-2)와 Meter(AC-3)는 WP-016·WP-017에서 구현한다.) |
+| FR-A11Y-003 | `packages/react/src/status.tsx`, `src/form.tsx`, `src/feedback.tsx`, `packages/css/src/components.css` | `packages/react/src/testing/status.test.tsx`, `form.test.tsx`, `feedback.test.tsx`, `packages/css/test/bundle.test.ts` | WP-013, WP-016, WP-017 | 부분 (AC-1~AC-4의 상태/심각도 세 채널, 폼 오류, Meter 수치 텍스트를 검증. 그레이스케일 브라우저 스냅샷은 WP-024.) |
 | FR-A11Y-004 | `src/contrast-cli.ts`, `.github/workflows/ci.yml` | `src/contrast-pairs.test.ts`, `src/contrast/check.test.ts` | WP-007, WP-010 | 검증됨 (AC-1~AC-4. 두 테마 80/80 미달 0건, decorative 제외·focusRing/border.control 3:1 검사) |
-| FR-A11Y-005 | `packages/react/src/overlay.tsx` | `packages/react/src/testing/overlay.test.tsx` | WP-015 | 부분 (AC-4의 Radix role/aria 무덮어쓰기와 menu 역할을 검증. axe 전수 검사(AC-1)·Banner·비동기 상태 항목은 WP-017 이후.) |
+| FR-A11Y-005 | `packages/react/src/overlay.tsx`, `src/form.tsx`, `src/feedback.tsx` | `packages/react/src/testing/overlay.test.tsx`, `form.test.tsx`, `feedback.test.tsx` | WP-015, WP-016, WP-017 | 부분 (Banner alert/status, 장식 아이콘 숨김, Meter/Progress/Spinner 역할과 live 상태를 검증. axe 전수 검사는 WP-024.) |
 | FR-DX-001 | `scripts/check-deps.mjs`, 루트 `package.json` `build` 스크립트, `.github/workflows/ci.yml` | `scripts/check-deps.mjs` 음성 테스트(수동), 각 패키지 스모크 테스트 | WP-001 | 부분 (AC-1·AC-2·AC-3 충족. 클린 체크아웃에서 `lint → lint:deps → build → typecheck → test` 전부 exit 0, 빌드 6.5초. **AC-4 충족(WP-008)**: `packages/css/src/tokens.css`가 `@import "@conductor/tokens/tokens.css" layer(cdt.base);`로 공개 진입점만 참조하며, 빌드 리졸버가 tokens 패키지의 `exports` 맵을 통해 해석한다. 소스 상대경로 참조 0건. CR-009로 CI 순서 정정) |
 | FR-DX-002 | 각 패키지 `package.json`의 `exports`·`types`, `tsup` DTS 산출, `packages/react/src/types.ts` | `packages/*/src/index.test.ts`, `packages/react/src/index.test.ts`, `packages/tokens/src/build/emit-artifacts.test.ts` | WP-001, WP-004, WP-011 | 부분 (AC-1·AC-2·AC-4 충족: React 공개 `.d.ts`의 `any` 및 `testing/` 내부 경로 0건. AC-3 소비자 `tsc --noEmit`은 WP-018) |
 | FR-DX-003 | `packages/tokens/package.json`, `packages/css/package.json`, `packages/react/package.json` | `packages/tokens/src/index.test.ts`, `packages/css/test/exports.test.ts`, `packages/react/src/index.test.ts` | WP-003, WP-008, WP-011 | 부분 (React `sideEffects: false`·공개 exports와 peer 선언 충족. Button 단독 gzip 4KB는 WP-025) |
@@ -124,6 +124,7 @@ WP-001 ~ WP-028의 이름·REL·선행 관계는 `conductor_work_packages.md`에
 
 | DEV ID | 발견일 | 유형 | 내용 | 관련 ID | 처리 CR | 상태 |
 | --- | --- | --- | --- | --- | --- | --- |
+| DEV-006 | 2026-07-11 | 문서 오류 | C-062의 component token `meter.*`가 FR-TOK-005 semantic `meter` 3개 그룹과 충돌했다. CR-013으로 렌더링 슬롯을 `feedbackMeter.*`로 분리하고 `surface.track`을 semantic track으로 추가해 토큰 빌드를 복구했다 | WP-017, C-062, FR-CMP-008, FR-TOK-005 | CR-013 | closed |
 | DEV-005 | 2026-07-11 | 문서 오류 | WP-009 완료 검증 시 발견. 공식 검증 방법이 `pnpm --filter @conductor/css test`만 실행하지만 CSS 테스트는 `packages/css/dist/*.css`를 읽고 빌드를 수행하지 않는다. 따라서 `src/layout.css` 또는 breakpoint 치환 로직을 변경한 뒤 빌드하지 않으면 과거 산출물을 검사해 잘못 통과할 수 있다. 현재 소스와 검사 대상을 일치시키려면 검증 명령에 CSS 빌드가 선행되어야 한다 | WP-009, FR-CSS-003, FR-TOK-009 | CR-012 | closed |
 | DEV-004 | 2026-07-11 | 기술 제약 | WP-008 검증 중 발견(WP-008 자체와는 무관하며 CR-009가 세운 CI 단계의 결함이다). `.github/workflows/ci.yml`의 마지막 단계는 토큰 재빌드 후 `git status --porcelain --untracked-files=all`이 비어 있기를 요구한다. 그러나 그보다 앞선 `pnpm install --frozen-lockfile`이 `package.json`의 `bin` 항목(`conductor-build-tokens`·`conductor-check-contrast`·`conductor-lint-tokens`)을 0644 → 0755로 chmod한다. 따라서 이 단계는 **깨끗한 체크아웃에서도 항상 실패**하며, 실패 사유는 토큰 빌드와 무관하다. 실측 재현: `chmod 644 packages/tokens/bin/*.mjs && git status --porcelain packages/tokens/bin/` → 비어 있음. 이어서 `pnpm install --frozen-lockfile` 실행 → 같은 명령이 ` M` 3줄 출력. CI가 아직 한 번도 실행된 적 없어(커밋 2개, 워크플로 실행 0회) 드러나지 않았다 | FR-TOK-001, FR-DX-001 AC-2, WP-001, CR-009 | CR-011 | closed |
 | DEV-003 | 2026-07-11 | 문서 오류 | WP-008 착수 시 발견. WP-008의 검증 방법 `pnpm --filter @conductor/css build && pnpm --filter @conductor/css test && pnpm size` 중 두 단계가 실행 불가능하거나 무의미하다. (1) `pnpm size`는 저장소 어디에도 없다. 이 스크립트를 만드는 것은 **WP-025의 구현 범위**이고 WP-025의 선행 WP는 WP-017이므로, WP-008 시점에는 존재할 수 없다. 즉 WP-008은 자신의 검증 명령을 실행할 수 없으면서 그 명령이 수행하는 gzip 20KB 게이트를 DoD로 요구한다. (2) `packages/css`에 `test` 스크립트가 없어 `pnpm --filter @conductor/css test`가 아무것도 실행하지 않고 종료 코드 0을 반환한다(pnpm 10.4.1은 없는 lifecycle 스크립트를 조용히 no-op 처리). 실측: `pnpm --filter @conductor/css test` → exit 0, stdout·stderr 모두 비어 있음. 이는 **절대 실패할 수 없는 검사**이며, CR-009에서 이미 한 번 제거한 결함 유형이다(통과가 보장된 검사는 없는 것보다 나쁘다) | WP-008, WP-025, FR-DX-003 AC-3, NFR-001 | CR-010 | closed |

@@ -371,3 +371,23 @@ describe("FR-CMP-006 Radix overlay styles", () => {
     expect(components.some((rule) => rule.selector === ".cdt-menu__item:hover" || rule.selector === ".cdt-menu__item:focus")).toBe(false);
   });
 });
+
+describe("FR-CMP-007 form styles", () => {
+  const components = topLevelRules(index, "cdt.component");
+
+  test("FR-CMP-007 AC-5: form controls use the shared minimum-height token and compact breakpoint", () => {
+    const controls = components.find((rule) => rule.selector.includes(".cdt-input,") && rule.selector.includes(".cdt-select__trigger"));
+    expect(controls?.decls["min-block-size"]).toBe("var(--cdt-input-min-height)");
+    const root = topLevelRules(index, "cdt.base").find((rule) => rule.selector.includes(":root"));
+    const breakpoint = root?.decls["--cdt-breakpoint-sm"] ?? "$^";
+    const compact = mediaRules(index, "cdt.component", new RegExp(breakpoint)).find((rule) => rule.selector.includes(".cdt-checkbox"));
+    expect(compact?.decls["min-block-size"]).toBe("var(--cdt-input-min-height-compact)");
+  });
+
+  test("FR-CSS-004 AC-4: Radix form state styling uses data attributes", () => {
+    const checked = components.find((rule) => rule.selector.includes(".cdt-switch[data-state=checked]"));
+    const highlighted = components.find((rule) => rule.selector === ".cdt-select__item[data-highlighted]");
+    expect(checked?.decls.background).toBe("var(--cdt-accent)");
+    expect(highlighted?.decls.background).toBe("var(--cdt-accent)");
+  });
+});

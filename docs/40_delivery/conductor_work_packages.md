@@ -51,7 +51,7 @@ design-system/
 | WP-013 | 상태 표시 컴포넌트군 | REL-002 | WP-011 | - | done |
 | WP-014 | 데이터 표시 컴포넌트군 | REL-002 | WP-011 | - | done |
 | WP-015 | 오버레이 컴포넌트군 | REL-002 | WP-011 | - | done |
-| WP-016 | 폼 컴포넌트군 | REL-002 | WP-011 | - | todo |
+| WP-016 | 폼 컴포넌트군 | REL-002 | WP-011 | - | done |
 | WP-017 | 피드백 컴포넌트군 | REL-002 | WP-011 | - | todo |
 | WP-018 | 문서 사이트 셸과 테마 토글 | REL-003 | WP-012, WP-010 | - | todo |
 | WP-019 | Getting Started와 Foundations 화면 | REL-003 | WP-018 | - | todo |
@@ -448,12 +448,12 @@ design-system/
 - 구현 범위: C-050 Field, C-051 TextField, C-052 TextArea, C-053 Select, C-054 Switch, C-055 Checkbox. Select/Switch/Checkbox는 Radix 기반
 - 제외: 폼 상태 관리와 유효성 검사 로직 (FR-CMP-007 예외 처리로 명시 제외)
 - 완료 기준(DoD):
-  - [ ] `Field`가 라벨을 `htmlFor`/`id`로, 설명·오류를 `aria-describedby`로 연결한다 (FR-CMP-007 AC-1)
-  - [ ] 오류 상태에서 `aria-invalid="true"`다 (FR-CMP-007 AC-2, FR-A11Y-003 AC-2)
-  - [ ] 라벨 없는 `TextField`가 개발 빌드 콘솔 경고를 낸다 (FR-CMP-007 AC-3)
-  - [ ] `Switch`/`Checkbox`가 Space로 토글되고 `role`·`aria-checked`를 노출한다 (FR-CMP-007 AC-4)
-  - [ ] 폼 컨트롤 최소 높이가 40px, 560px 미만에서 42px다 (FR-CMP-007 AC-5)
-  - [ ] 공유 계약 스위트를 통과한다
+  - [x] `Field`가 라벨을 `htmlFor`/`id`로, 설명·오류를 `aria-describedby`로 연결한다 (FR-CMP-007 AC-1)
+  - [x] 오류 상태에서 `aria-invalid="true"`다 (FR-CMP-007 AC-2, FR-A11Y-003 AC-2)
+  - [x] 라벨 없는 `TextField`가 개발 빌드 콘솔 경고를 낸다 (FR-CMP-007 AC-3)
+  - [x] `Switch`/`Checkbox`가 Space로 토글되고 `role`·`aria-checked`를 노출한다 (FR-CMP-007 AC-4)
+  - [x] 폼 컨트롤 최소 높이가 40px, 560px 미만에서 42px다 (FR-CMP-007 AC-5)
+  - [x] 공유 계약 스위트를 통과한다
 - 검증 방법: `pnpm --filter @conductor/react test -- form`
 - 기록: WP-016 행, FR-CMP-007 매핑 갱신
 
@@ -467,12 +467,12 @@ design-system/
 - 구현 범위: C-060 Banner, C-061 EmptyState, C-062 Meter, C-063 ProgressRing, C-064 Spinner
 - 제외: 토스트/스낵바와 알림 큐 관리
 - 완료 기준(DoD):
-  - [ ] `Banner tone="danger"`가 `role="alert"`, `tone="info"`가 `role="status"`를 갖는다 (FR-CMP-008 AC-1, FR-A11Y-005 AC-2)
-  - [ ] `Banner tone="danger"`의 `action` 슬롯이 비면 개발 빌드 콘솔 경고를 낸다 (FR-CMP-008 AC-2)
-  - [ ] `EmptyState`가 제목·설명·액션 슬롯을 받는다 (FR-CMP-008 AC-3)
-  - [ ] `Meter`가 임계 초과 시 `meter.warning`/`meter.exceeded` 색으로 전환되고 `aria-valuenow`/`aria-valuemin`/`aria-valuemax`를 노출하며 수치 텍스트를 표시한다 (FR-CMP-008 AC-4, FR-A11Y-003 AC-3)
-  - [ ] 감소 모드에서 `Spinner`/`ProgressRing`이 애니메이션 대신 진행률 텍스트를 노출한다 (FR-CMP-008 AC-5, FR-CSS-005 예외 처리)
-  - [ ] 공유 계약 스위트를 통과한다
+  - [x] `Banner tone="danger"`가 `role="alert"`, `tone="info"`가 `role="status"`를 갖는다 (FR-CMP-008 AC-1, FR-A11Y-005 AC-2)
+  - [x] `Banner tone="danger"`의 `action` 슬롯이 비면 개발 빌드 콘솔 경고를 낸다 (FR-CMP-008 AC-2)
+  - [x] `EmptyState`가 제목·설명·액션 슬롯을 받는다 (FR-CMP-008 AC-3)
+  - [x] `Meter`가 임계 초과 시 `meter.warning`/`meter.exceeded` 색으로 전환되고 `aria-valuenow`/`aria-valuemin`/`aria-valuemax`를 노출하며 수치 텍스트를 표시한다 (FR-CMP-008 AC-4, FR-A11Y-003 AC-3)
+  - [x] 감소 모드에서 `Spinner`/`ProgressRing`이 애니메이션 대신 진행률 텍스트를 노출한다 (FR-CMP-008 AC-5, FR-CSS-005 예외 처리)
+  - [x] 공유 계약 스위트를 통과한다
 - 검증 방법: `pnpm --filter @conductor/react test -- feedback`
 - 기록: WP-017 행, FR-CMP-008 매핑 갱신
 

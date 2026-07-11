@@ -74,5 +74,15 @@
       transition-duration: 0s;
       animation-duration: 0s;
     }
+
+    :root .cdt-spinner__label,
+    [data-cdt-theme] .cdt-spinner__label {
+      position: static;
+      inline-size: auto;
+      block-size: auto;
+      overflow: visible;
+      clip: auto;
+      white-space: normal;
+    }
   }
 }

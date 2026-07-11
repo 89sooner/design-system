@@ -32,6 +32,7 @@
 | CR-010 | 2026-07-11 | implementation | `DEV-003` (WP-008 착수 시 발견) | WP-008의 검증 방법이 실행 불가능한 명령(`pnpm size`, WP-025 소유)과 무의미하게 통과하는 명령(`pnpm --filter @conductor/css test`, 스크립트 부재로 no-op exit 0)을 포함한다. WP-008 검증 방법을 `pnpm --filter @conductor/css build && pnpm --filter @conductor/css test`로 정정하고, NFR-001의 `@conductor/css` gzip 20KB 예산은 `packages/css/test/bundle.test.ts`가 실제 gzip 측정으로 단언하도록 한다. `pnpm size`(Button 단독 4KB + css 20KB, JOB-CI-004)의 구현은 WP-025에 그대로 남는다. `packages/css`에 `"test": "vitest run --project css"`를 추가해 필터 실행이 실제로 테스트를 돌리게 한다. 요구사항(SRS)은 변경하지 않는다 | WP-008, WP-025, FR-DX-003 AC-3, NFR-001 | `conductor_work_packages.md`, `conductor_implementation_traceability.md`, `packages/css/package.json` | closed |
 | CR-011 | 2026-07-11 | implementation | `DEV-004` (WP-008 검증 중 발견) | CR-009가 추가한 CI의 "토큰 빌드 재현성" 단계가 깨끗한 체크아웃에서도 항상 실패한다. `pnpm install`이 `bin` 항목을 0755로 chmod하기 때문에 `git status --porcelain`이 토큰 빌드와 무관하게 3줄을 출력한다. 해당 단계를 `git -c core.fileMode=false status --porcelain --untracked-files=all`로 정정한다. 파일 모드 비트만 무시하며, CR-009가 의도한 두 검사(재빌드가 추적 파일을 바꾸지 않는다 / gitignore를 빠져나간 미추적 파일이 없다)는 그대로 유지된다 | WP-001, CR-009, FR-TOK-001 | `.github/workflows/ci.yml`, `conductor_implementation_traceability.md` | closed |
 | CR-012 | 2026-07-11 | implementation | `DEV-005` (WP-009 완료 검증 시 발견) | WP-009의 검증 방법이 `pnpm --filter @conductor/css test`만 실행한다. CSS 테스트는 기존 `dist/`를 읽으므로 소스를 변경한 뒤 빌드하지 않아도 과거 산출물을 검사할 수 있다. 검증 방법을 `pnpm --filter @conductor/css build && pnpm --filter @conductor/css test`로 정정해 현재 소스에서 산출물을 만든 뒤 검사하도록 한다. 요구사항과 구현 범위는 변경하지 않는다 | DEV-005, WP-009, FR-CSS-003, FR-TOK-009 | `conductor_work_packages.md`, `conductor_implementation_traceability.md` | closed |
+| CR-013 | 2026-07-11 | correction | `DEV-006` (WP-017 착수 시 발견) | 사용자 결정으로 C-062의 component token 네임스페이스를 `feedbackMeter.*`로 분리하고, 원본 진행 트랙을 semantic `surface.track`으로 추가했다. FR-TOK-005의 semantic `meter` 3개 그룹과 렌더링 슬롯이 분리되어 `TOK-GROUP-SIZE` 없이 빌드된다 | DEV-006, WP-017, C-062, FR-CMP-008, FR-TOK-005 | UI component/token specs, token source, CSS, React, delivery ledger | closed |
 
 유형: `scope`(범위 변경), `design`(설계 변경), `implementation`(구현 편차 DEV-### 처리), `correction`(문서 오류 수정)
 
@@ -179,6 +180,16 @@ WP-009 완료 검증에서 발견한 작업 패키지 검증 명령의 문서 �
 - [x] validator: 구조·추적성 오류 0건, `--strict` 통과
 
 **왜 빌드가 필요한가.** `packages/css/test/bundle.test.ts`는 `dist/index.css`와 `dist/component.css`를 읽는다. 테스트 명령 자체는 이 산출물을 만들지 않으므로, 빌드 없는 검증은 변경 전 산출물을 검사할 수 있다. CR-010이 테스트 스크립트의 no-op을 제거했다면 CR-012는 테스트 입력의 stale 가능성을 제거한다.
+
+### CR-013 cascade
+
+- [x] `docs/20_derived_ui_specs/conductor_ui_component_spec.md` — C-062 component CSS variable을 `feedbackMeter.*` 산출 이름으로 정정
+- [x] `docs/20_derived_ui_specs/conductor_design_system_tokens.md` — `feedbackMeter.*`와 semantic `surface.track`의 역할·값을 기록
+- [x] `docs/20_derived_ui_specs/conductor_screen_qa_checklist.md` — C-060~064 공통 계약 QA를 완료 처리
+- [x] `docs/40_delivery/conductor_work_packages.md` / `conductor_implementation_traceability.md` — WP-017, FR-CMP-008, DEV-006을 완료 처리
+- [x] `packages/tokens/src/palette.dark.ts` / `palette.light.ts` / `components.ts` — `surface.track`과 `feedbackMeter.*` 구현
+- [x] `packages/css/src/base.css` / `components.css`, `packages/react/src/feedback.tsx` — feedback primitives 및 reduced-motion 규칙 구현
+- [x] 검증: build/typecheck/test 467개/CSS 72개/lint:tokens/check:contrast 통과
 
 ## 6. 미해소 오픈 결정
 

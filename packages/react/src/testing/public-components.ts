@@ -10,6 +10,8 @@ import { Card, CardGrid, Panel } from "../surface";
 import { Badge, SeverityTag, StatusBadge } from "../status";
 import { CodeBlock, Kbd, Table, Timeline } from "../data";
 import { Dialog, Drawer, DropdownMenu, Tooltip } from "../overlay";
+import { Checkbox, Field, Select, Switch, TextArea, TextField } from "../form";
+import { Banner, EmptyState, Meter, ProgressRing, Spinner } from "../feedback";
 
 export interface PublicComponent {
   readonly name: string;
@@ -34,6 +36,17 @@ export const publicComponents: readonly PublicComponent[] = [
   { name: "Drawer", testFile: "testing/overlay.test.tsx", render: () => createElement(Drawer.Root, { children: null }) },
   { name: "Tooltip", testFile: "testing/overlay.test.tsx", render: () => createElement(Tooltip.Provider, { children: createElement(Tooltip.Root, { children: null }) }) },
   { name: "DropdownMenu", testFile: "testing/overlay.test.tsx", render: () => createElement(DropdownMenu.Root, { children: null }) },
+  { name: "Field", testFile: "testing/form.test.tsx", render: () => createElement(Field, { label: "Field", children: createElement(TextField) }) },
+  { name: "TextField", testFile: "testing/form.test.tsx", render: () => createElement(TextField, { "aria-label": "Text field" }) },
+  { name: "TextArea", testFile: "testing/form.test.tsx", render: () => createElement(TextArea, { "aria-label": "Text area" }) },
+  { name: "Select", testFile: "testing/form.test.tsx", render: () => createElement(Select.Root, { children: null }) },
+  { name: "Switch", testFile: "testing/form.test.tsx", render: () => createElement(Switch, { "aria-label": "Switch" }) },
+  { name: "Checkbox", testFile: "testing/form.test.tsx", render: () => createElement(Checkbox, { "aria-label": "Checkbox" }) },
+  { name: "Banner", testFile: "testing/feedback.test.tsx", render: () => createElement(Banner, { children: "Banner" }) },
+  { name: "EmptyState", testFile: "testing/feedback.test.tsx", render: () => createElement(EmptyState, { title: "Empty" }) },
+  { name: "Meter", testFile: "testing/feedback.test.tsx", render: () => createElement(Meter, { value: 0, valueText: "0%", "aria-label": "Meter" }) },
+  { name: "ProgressRing", testFile: "testing/feedback.test.tsx", render: () => createElement(ProgressRing, { value: 0, valueText: "0%", "aria-label": "Progress" }) },
+  { name: "Spinner", testFile: "testing/feedback.test.tsx", render: () => createElement(Spinner, { label: "Loading" }) },
 ];
 
 export function missingComponentTests(

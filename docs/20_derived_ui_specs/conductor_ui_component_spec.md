@@ -1200,7 +1200,7 @@ component 토큰은 semantic 토큰만 참조한다(FR-TOK-002 AC-3). 아래 표
 | C-055 Checkbox | `--cdt-checkbox-background`, `--cdt-checkbox-background-checked`, `--cdt-checkbox-border`, `--cdt-checkbox-indicator-color` | `surface.tint.1`, `accent`, `border.default`, `text.inverse` |
 | C-060 Banner | `--cdt-banner-<tone>-background`, `--cdt-banner-<tone>-border`, `--cdt-banner-<tone>-text` (tone 3종) | `status.running`, `status.waiting`, `status.danger` |
 | C-061 EmptyState | `--cdt-empty-state-title-text`, `--cdt-empty-state-description-text`, `--cdt-empty-state-padding` | `text.primary`, `text.muted`, `space.6` |
-| C-062 Meter | `--cdt-meter-track-background`, `--cdt-meter-fill-normal`, `--cdt-meter-fill-warning`, `--cdt-meter-fill-exceeded`, `--cdt-meter-height` | `surface.track`, `meter.normal`, `meter.warning`, `meter.exceeded` |
+| C-062 Meter | `--cdt-feedback-meter-track-background`, `--cdt-feedback-meter-fill-normal`, `--cdt-feedback-meter-fill-warning`, `--cdt-feedback-meter-fill-exceeded`, `--cdt-feedback-meter-height` | `surface.track`, `meter.normal`, `meter.warning`, `meter.exceeded` |
 | C-063 ProgressRing | `--cdt-progress-ring-track-stroke`, `--cdt-progress-ring-indicator-stroke`, `--cdt-progress-ring-label-text` | `surface.track`, `accent`, `text.primary` |
 | C-064 Spinner | `--cdt-spinner-track-stroke`, `--cdt-spinner-indicator-stroke` | `surface.track`, `accent` |
 | C-070 AppShell | `--cdt-app-shell-nav-width`, `--cdt-app-shell-main-max-width`, `--cdt-app-shell-overlay-background`, `--cdt-skip-link-background`, `--cdt-skip-link-text` | `surface.overlay`, `accent`, `text.inverse` |
@@ -1219,7 +1219,6 @@ component 토큰은 semantic 토큰만 참조한다(FR-TOK-002 AC-3). 아래 표
 | `elevation.accent` | 강조 버튼의 색 있는 그림자 | `app.css:468`(`.btn-primary`), `app.css:474`(hover) |
 
 `font.weight.*` 스케일은 FR-TOK-007이 다루지 않으므로, `--cdt-font-weight-section-label`은 component 토큰으로 두고 semantic 토큰을 신설하지 않는다.
-
 
 
 

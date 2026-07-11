@@ -16,6 +16,7 @@ const values: Readonly<Record<string, string>> = {
   "surface.overlay": "rgba(12, 18, 28, 0.45)",
   "surface.glass": "rgba(251, 252, 253, 0.86)",
   "surface.timeline": "#f1f4f8",
+  "surface.track": "rgba(12, 18, 28, 0.08)",
   "text.primary": "#0c121c",
   "text.secondary": "#33415a",
   "text.muted": "#4d5a6e",

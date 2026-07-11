@@ -146,17 +146,17 @@ FR-CMP-001은 공개 컴포넌트 전수가 ref 전달(AC-1), className 병합(A
 | Drawer | FR-CMP-006 | [x] QA-109 | [x] QA-110 | [x] QA-111 | [x] QA-112 |
 | Tooltip | FR-CMP-006 | [x] QA-113 | [x] QA-114 | [x] QA-115 | [x] QA-116 |
 | DropdownMenu | FR-CMP-006 | [x] QA-117 | [x] QA-118 | [x] QA-119 | [x] QA-120 |
-| Field | FR-CMP-007 | [ ] QA-121 | [ ] QA-122 | [ ] QA-123 | [ ] QA-124 |
-| TextField | FR-CMP-007 | [ ] QA-125 | [ ] QA-126 | [ ] QA-127 | [ ] QA-128 |
-| TextArea | FR-CMP-007 | [ ] QA-129 | [ ] QA-130 | [ ] QA-131 | [ ] QA-132 |
-| Select | FR-CMP-007 | [ ] QA-133 | [ ] QA-134 | [ ] QA-135 | [ ] QA-136 |
-| Switch | FR-CMP-007 | [ ] QA-137 | [ ] QA-138 | [ ] QA-139 | [ ] QA-140 |
-| Checkbox | FR-CMP-007 | [ ] QA-141 | [ ] QA-142 | [ ] QA-143 | [ ] QA-144 |
-| Banner | FR-CMP-008 | [ ] QA-145 | [ ] QA-146 | [ ] QA-147 | [ ] QA-148 |
-| EmptyState | FR-CMP-008 | [ ] QA-149 | [ ] QA-150 | [ ] QA-151 | [ ] QA-152 |
-| Meter | FR-CMP-008 | [ ] QA-153 | [ ] QA-154 | [ ] QA-155 | [ ] QA-156 |
-| ProgressRing | FR-CMP-008 | [ ] QA-157 | [ ] QA-158 | [ ] QA-159 | [ ] QA-160 |
-| Spinner | FR-CMP-008 | [ ] QA-161 | [ ] QA-162 | [ ] QA-163 | [ ] QA-164 |
+| Field | FR-CMP-007 | [x] QA-121 | [x] QA-122 | [x] QA-123 | [x] QA-124 |
+| TextField | FR-CMP-007 | [x] QA-125 | [x] QA-126 | [x] QA-127 | [x] QA-128 |
+| TextArea | FR-CMP-007 | [x] QA-129 | [x] QA-130 | [x] QA-131 | [x] QA-132 |
+| Select | FR-CMP-007 | [x] QA-133 | [x] QA-134 | [x] QA-135 | [x] QA-136 |
+| Switch | FR-CMP-007 | [x] QA-137 | [x] QA-138 | [x] QA-139 | [x] QA-140 |
+| Checkbox | FR-CMP-007 | [x] QA-141 | [x] QA-142 | [x] QA-143 | [x] QA-144 |
+| Banner | FR-CMP-008 | [x] QA-145 | [x] QA-146 | [x] QA-147 | [x] QA-148 |
+| EmptyState | FR-CMP-008 | [x] QA-149 | [x] QA-150 | [x] QA-151 | [x] QA-152 |
+| Meter | FR-CMP-008 | [x] QA-153 | [x] QA-154 | [x] QA-155 | [x] QA-156 |
+| ProgressRing | FR-CMP-008 | [x] QA-157 | [x] QA-158 | [x] QA-159 | [x] QA-160 |
+| Spinner | FR-CMP-008 | [x] QA-161 | [x] QA-162 | [x] QA-163 | [x] QA-164 |
 | AppShell † | FR-CMP-009 | [ ] QA-165 | [ ] QA-166 | [ ] QA-167 | [ ] QA-168 |
 | NavList † | FR-CMP-009 | [ ] QA-169 | [ ] QA-170 | [ ] QA-171 | [ ] QA-172 |
 | TopBar † | FR-CMP-009 | [ ] QA-173 | [ ] QA-174 | [ ] QA-175 | [ ] QA-176 |

@@ -167,6 +167,47 @@ const kbd: TokenDefinition[] = [
   component("kbd.text", ref("text.secondary"), "Keycap text.", "body"),
 ];
 
+const banner: TokenDefinition[] = [
+  component("banner.info.background", ref("status.running"), "Info banner fill."),
+  component("banner.info.border", ref("status.running"), "Info banner edge."),
+  component("banner.info.text", ref("text.inverse"), "Info banner text.", "body"),
+  component("banner.warning.background", ref("status.waiting"), "Warning banner fill."),
+  component("banner.warning.border", ref("status.waiting"), "Warning banner edge."),
+  component("banner.warning.text", ref("text.inverse"), "Warning banner text.", "body"),
+  component("banner.danger.background", ref("status.danger"), "Danger banner fill."),
+  component("banner.danger.border", ref("status.danger"), "Danger banner edge."),
+  component("banner.danger.text", ref("text.inverse"), "Danger banner text.", "body"),
+];
+
+const emptyState: TokenDefinition[] = [
+  component("emptyState.titleText", ref("text.primary"), "Empty-state title.", "body"),
+  component("emptyState.descriptionText", ref("text.muted"), "Empty-state description.", "body"),
+  component("emptyState.padding", ref("space.6"), "Empty-state padding."),
+];
+
+const feedbackMeter: TokenDefinition[] = [
+  component("feedbackMeter.trackBackground", ref("surface.track"), "Meter track."),
+  component("feedbackMeter.fillNormal", ref("meter.normal"), "Normal meter fill."),
+  component("feedbackMeter.fillWarning", ref("meter.warning"), "Warning meter fill."),
+  component("feedbackMeter.fillExceeded", ref("meter.exceeded"), "Exceeded meter fill."),
+  component("feedbackMeter.height", value("8px"), "Meter track height."),
+];
+
+const progressRing: TokenDefinition[] = [
+  component("progressRing.trackStroke", ref("surface.track"), "Progress-ring track."),
+  component("progressRing.indicatorStroke", ref("accent.DEFAULT"), "Progress-ring indicator."),
+  component("progressRing.labelText", ref("text.primary"), "Progress-ring label.", "body"),
+  component("progressRing.size", value("64px"), "Medium progress-ring diameter."),
+  component("progressRing.sizeCompact", value("40px"), "Small progress-ring diameter."),
+];
+
+const spinner: TokenDefinition[] = [
+  component("spinner.trackStroke", ref("surface.track"), "Spinner track."),
+  component("spinner.indicatorStroke", ref("accent.DEFAULT"), "Spinner indicator."),
+  component("spinner.size", value("24px"), "Medium spinner diameter."),
+  component("spinner.sizeCompact", value("16px"), "Small spinner diameter."),
+];
+
 /**
  * Shared by TextField, TextArea, Select, Switch and Checkbox — exactly the five components
  * FR-THM-005 AC-2 scopes `border.control` to. The input's fill matches the surface around it and
@@ -255,6 +296,11 @@ export const componentTokens: readonly TokenDefinition[] = [
   ...timeline,
   ...codeBlock,
   ...kbd,
+  ...banner,
+  ...emptyState,
+  ...feedbackMeter,
+  ...progressRing,
+  ...spinner,
   ...input,
   ...overlay,
   ...page,

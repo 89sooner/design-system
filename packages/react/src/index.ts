@@ -12,6 +12,10 @@ export { CodeBlock, Kbd, Table, Timeline } from "./data";
 export type { CodeBlockProps, KbdProps, TableCellProps, TableHeaderCellProps, TableProps, TimelineProps, TimelineStepProps } from "./data";
 export { Dialog, Drawer, DropdownMenu, Tooltip } from "./overlay";
 export type { DialogContentProps, DrawerContentProps, DropdownMenuItemProps, TooltipContentProps } from "./overlay";
+export { Checkbox, Field, Select, Switch, TextArea, TextField } from "./form";
+export type { CheckboxProps, FieldProps, SelectTriggerProps, SwitchProps, TextAreaProps, TextFieldProps } from "./form";
+export { Banner, EmptyState, Meter, ProgressRing, Spinner } from "./feedback";
+export type { BannerProps, EmptyStateProps, MeterProps, ProgressRingProps, SpinnerProps } from "./feedback";
 
 /** Published name of this package. */
 export const PACKAGE_NAME = "@conductor/react" as const;

@@ -1,4 +1,4 @@
-/* FR 범위: FR-CSS-004, FR-CMP-002, FR-CMP-003, FR-CMP-005, FR-CMP-006 */
+/* FR 범위: FR-CSS-004, FR-CMP-002, FR-CMP-003, FR-CMP-005, FR-CMP-006, FR-CMP-007 */
 
 @layer cdt.component {
   .cdt-btn {
@@ -438,4 +438,201 @@
     margin-block: var(--cdt-space-1);
     background: var(--cdt-border-default);
   }
+
+  .cdt-field {
+    display: grid;
+    gap: var(--cdt-space-2);
+  }
+
+  .cdt-field__label {
+    color: var(--cdt-input-label-text);
+    font-size: var(--cdt-input-label-font-size);
+    font-weight: 500;
+  }
+
+  .cdt-field__required,
+  .cdt-field__error {
+    color: var(--cdt-input-error-text);
+  }
+
+  .cdt-field__required { margin-inline-start: var(--cdt-space-1); }
+
+  .cdt-field__description {
+    color: var(--cdt-text-muted);
+    font-size: var(--cdt-font-size-sm);
+  }
+
+  .cdt-input-wrap { position: relative; display: block; }
+
+  .cdt-input__icon {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: var(--cdt-space-3);
+    display: inline-flex;
+    color: var(--cdt-text-muted);
+    pointer-events: none;
+    transform: translateY(-50%);
+  }
+
+  .cdt-input,
+  .cdt-textarea,
+  .cdt-select__trigger {
+    box-sizing: border-box;
+    inline-size: 100%;
+    min-block-size: var(--cdt-input-min-height);
+    padding: var(--cdt-input-padding-block) var(--cdt-input-padding-inline);
+    border: 1px solid var(--cdt-input-border); /* cdt-allow-literal: 토큰에 폼 경계 두께가 없다 */
+    border-radius: var(--cdt-input-radius);
+    background: var(--cdt-input-background);
+    color: var(--cdt-input-text);
+    font: inherit;
+    transition: background var(--cdt-input-transition), border-color var(--cdt-input-transition), box-shadow var(--cdt-input-transition);
+  }
+
+  .cdt-input::placeholder,
+  .cdt-textarea::placeholder { color: var(--cdt-input-placeholder); }
+
+  .cdt-input:hover,
+  .cdt-textarea:hover,
+  .cdt-select__trigger:hover { border-color: var(--cdt-input-border-hover); }
+
+  .cdt-input:focus-visible,
+  .cdt-textarea:focus-visible,
+  .cdt-select__trigger:focus-visible,
+  .cdt-switch:focus-visible,
+  .cdt-checkbox:focus-visible {
+    border-color: var(--cdt-input-border-focus);
+  }
+
+  .cdt-input:focus-visible,
+  .cdt-textarea:focus-visible { background: var(--cdt-input-background-focus); }
+
+  .cdt-input--glass,
+  .cdt-textarea--glass { background: var(--cdt-surface-tint-1); }
+
+  .cdt-input--icon-start { padding-inline-start: var(--cdt-space-7); }
+
+  .cdt-input--sm,
+  .cdt-select__trigger--sm { min-block-size: 34px; /* cdt-allow-literal: C-051/C-053 compact control height */ }
+
+  .cdt-textarea { resize: vertical; }
+
+  .cdt-input--invalid,
+  .cdt-textarea--invalid,
+  .cdt-select__trigger--invalid,
+  .cdt-switch--invalid,
+  .cdt-checkbox--invalid { border-color: var(--cdt-input-border-invalid); }
+
+  .cdt-select__trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--cdt-space-3);
+    text-align: start;
+  }
+
+  .cdt-select__content {
+    z-index: var(--cdt-overlay-content-z);
+    overflow: hidden;
+    border: 1px solid var(--cdt-input-border); /* cdt-allow-literal: 토큰에 선택 목록 경계 두께가 없다 */
+    border-radius: var(--cdt-input-radius);
+    background: var(--cdt-overlay-background);
+    box-shadow: var(--cdt-overlay-shadow);
+  }
+
+  .cdt-select__item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-block-size: 32px; /* cdt-allow-literal: source select option height */
+    padding: var(--cdt-space-2) var(--cdt-space-3);
+    color: var(--cdt-input-text);
+    cursor: pointer;
+  }
+
+  .cdt-select__item[data-highlighted] { background: var(--cdt-accent); color: var(--cdt-text-inverse); }
+  .cdt-select__item[data-disabled] { color: var(--cdt-text-muted); cursor: not-allowed; }
+
+  .cdt-switch,
+  .cdt-checkbox {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    min-block-size: var(--cdt-input-min-height);
+    border: 1px solid var(--cdt-input-border); /* cdt-allow-literal: 토큰에 폼 경계 두께가 없다 */
+    background: var(--cdt-input-background);
+    transition: background var(--cdt-input-transition), border-color var(--cdt-input-transition), box-shadow var(--cdt-input-transition);
+  }
+
+  .cdt-switch {
+    inline-size: 42px; /* cdt-allow-literal: source switch hit target width */
+    border-radius: var(--cdt-radius-pill);
+  }
+
+  .cdt-switch[data-state="checked"],
+  .cdt-checkbox[data-state="checked"],
+  .cdt-checkbox[data-state="indeterminate"] { border-color: var(--cdt-input-border-focus); background: var(--cdt-accent); }
+
+  .cdt-switch__thumb {
+    inline-size: 18px; /* cdt-allow-literal: source switch thumb diameter */
+    block-size: 18px; /* cdt-allow-literal: source switch thumb diameter */
+    border-radius: var(--cdt-radius-pill);
+    background: var(--cdt-text-primary);
+    box-shadow: 0 1px 2px var(--cdt-surface-overlay); /* cdt-allow-literal: source thumb shadow geometry */
+    transform: translateX(-9px); /* cdt-allow-literal: source switch unchecked thumb offset */
+    transition: transform var(--cdt-input-transition);
+  }
+
+  .cdt-switch__thumb[data-state="checked"] { transform: translateX(9px); /* cdt-allow-literal: source switch checked thumb offset */ }
+
+  .cdt-checkbox {
+    inline-size: var(--cdt-input-min-height);
+    border-radius: var(--cdt-radius-xs);
+    color: var(--cdt-text-inverse);
+  }
+
+  .cdt-checkbox__indicator { display: inline-flex; }
+
+  @media (max-width: {breakpoint.sm}) {
+    .cdt-input,
+    .cdt-textarea,
+    .cdt-select__trigger,
+    .cdt-switch,
+    .cdt-checkbox { min-block-size: var(--cdt-input-min-height-compact); }
+  }
+
+  .cdt-banner { display: flex; align-items: flex-start; gap: var(--cdt-space-3); padding: var(--cdt-space-4); border: 1px solid transparent; /* cdt-allow-literal: token set has no banner border width */ border-radius: var(--cdt-radius-md); }
+  .cdt-banner__icon { display: inline-flex; flex: 0 0 auto; }
+  .cdt-banner__body { min-inline-size: 0; flex: 1 1 auto; }
+  .cdt-banner__title { font-weight: 600; }
+  .cdt-banner__action { flex: 0 0 auto; }
+  .cdt-banner--info { border-color: var(--cdt-banner-info-border); background: var(--cdt-banner-info-background); color: var(--cdt-banner-info-text); }
+  .cdt-banner--warning { border-color: var(--cdt-banner-warning-border); background: var(--cdt-banner-warning-background); color: var(--cdt-banner-warning-text); }
+  .cdt-banner--danger { border-color: var(--cdt-banner-danger-border); background: var(--cdt-banner-danger-background); color: var(--cdt-banner-danger-text); }
+  .cdt-empty-state { display: flex; flex-direction: column; align-items: center; gap: var(--cdt-space-3); padding: var(--cdt-empty-state-padding); color: var(--cdt-empty-state-description-text); text-align: center; }
+  .cdt-empty-state__icon { display: inline-flex; }
+  .cdt-empty-state__title { color: var(--cdt-empty-state-title-text); font-size: var(--cdt-font-size-lg); }
+  .cdt-empty-state__description { color: var(--cdt-empty-state-description-text); }
+  .cdt-meter { display: grid; gap: var(--cdt-space-2); }
+  .cdt-meter__track { overflow: hidden; block-size: var(--cdt-feedback-meter-height); border-radius: var(--cdt-radius-pill); background: var(--cdt-feedback-meter-track-background); }
+  .cdt-meter__fill { block-size: 100%; inline-size: calc(var(--cdt-meter-ratio) * 100%); border-radius: inherit; background: var(--cdt-feedback-meter-fill-normal); transition: inline-size var(--cdt-motion-standard), background var(--cdt-motion-standard); }
+  .cdt-meter--warning .cdt-meter__fill { background: var(--cdt-feedback-meter-fill-warning); }
+  .cdt-meter--exceeded .cdt-meter__fill { background: var(--cdt-feedback-meter-fill-exceeded); }
+  .cdt-progress-ring, .cdt-spinner { position: relative; display: inline-grid; place-items: center; }
+  .cdt-progress-ring { inline-size: var(--cdt-progress-ring-size); block-size: var(--cdt-progress-ring-size); }
+  .cdt-progress-ring--sm { inline-size: var(--cdt-progress-ring-size-compact); block-size: var(--cdt-progress-ring-size-compact); }
+  .cdt-spinner { inline-size: var(--cdt-spinner-size); block-size: var(--cdt-spinner-size); }
+  .cdt-spinner--sm { inline-size: var(--cdt-spinner-size-compact); block-size: var(--cdt-spinner-size-compact); }
+  .cdt-progress-ring svg, .cdt-spinner svg { inline-size: 100%; block-size: 100%; transform: rotate(-90deg); }
+  .cdt-progress-ring__track, .cdt-spinner__track { fill: none; stroke: var(--cdt-progress-ring-track-stroke); stroke-width: 4; /* cdt-allow-literal: SVG stroke geometry */ }
+  .cdt-progress-ring__indicator, .cdt-spinner__indicator { fill: none; stroke: var(--cdt-progress-ring-indicator-stroke); stroke-width: 4; /* cdt-allow-literal: SVG stroke geometry */ }
+  .cdt-progress-ring__indicator { stroke-dasharray: 88; /* cdt-allow-literal: circle circumference approximation */ stroke-dashoffset: calc(88 * (1 - var(--cdt-progress-ring-ratio))); transition: stroke-dashoffset var(--cdt-motion-standard); }
+  .cdt-progress-ring__label { color: var(--cdt-progress-ring-label-text); font-size: var(--cdt-font-size-sm); }
+  .cdt-spinner__track { stroke: var(--cdt-spinner-track-stroke); }
+  .cdt-spinner__indicator { stroke: var(--cdt-spinner-indicator-stroke); stroke-dasharray: 66; /* cdt-allow-literal: spinner visible arc */ stroke-linecap: round; }
+  .cdt-spinner svg { animation: cdt-spin var(--cdt-motion-standard) linear infinite; }
+  .cdt-spinner__label { position: absolute; inline-size: 1px; /* cdt-allow-literal: screen-reader-only clipping geometry */ block-size: 1px; /* cdt-allow-literal: screen-reader-only clipping geometry */ overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+  @keyframes cdt-spin { to { transform: rotate(270deg); } }
+
 }
