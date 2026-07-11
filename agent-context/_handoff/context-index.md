@@ -1,8 +1,8 @@
 # agent-context-index:v1
-generated=2026-07-11T00:00:48+00:00
+generated=2026-07-11T13:02:18+00:00
 source_dir=agent-context
 output_dir=agent-context/_handoff
-files=12
+files=13
 legend=@hN heading;@p prose;@b bullet;@todo task;@dec decision;@risk risk;@cmd command;@path path-ref;@code code-fence;@sig retrieval-signals;@kv metadata
 
 ## read_order
@@ -15,6 +15,7 @@ legend=@hN heading;@p prose;@b bullet;@todo task;@dec decision;@risk risk;@cmd c
 - fae0d17 p=40 src=agent-context/sessions/2026-07-11-wp010-012-themes-react.md compact=agent-context/_handoff/compact/fae0d17.2026-07-11-wp010-012-themes-react.ctx.md title=Session-2026-07-11-WP-010-WP-012-themes-and-React-primitives sig=agent-context/sessions/2026-07-11-wp010-012-themes-react.md,dark/light,contract/SSR/coverage,metadata/key,name/test,file/SSR,conductor/react,packages/tokens/src/palette.light.ts
 - f43fccd p=40 src=agent-context/sessions/2026-07-11-wp013-014-status-data.md compact=agent-context/_handoff/compact/f43fccd.2026-07-11-wp013-014-status-data.ctx.md title=Session-2026-07-11-WP-013-014-상태-및-데이터-표시-컴포넌트 sig=agent-context/sessions/2026-07-11-wp013-014-status-data.md,aria/data,packages/react/src/status.tsx,testing/status.test.tsx,contract/behavior,packages/react/src/data.tsx,testing/data.test.tsx,compound/data
 - fefc068 p=40 src=agent-context/sessions/2026-07-11-wp015-radix-overlays.md compact=agent-context/_handoff/compact/fefc068.2026-07-11-wp015-radix-overlays.ctx.md title=Session-2026-07-11-WP-015-Radix-오버레이-컴포넌트 sig=agent-context/sessions/2026-07-11-wp015-radix-overlays.md,packages/react/src/overlay.tsx,Dialog/Drawer,radix-ui/react-dialog,Tooltip/Menu,observe/unobserve/disconnect,packages/react/package.json,testing/overlay.test.tsx
+- fca0df4 p=40 src=agent-context/sessions/2026-07-11-wp016-017-forms-feedback.md compact=agent-context/_handoff/compact/fca0df4.2026-07-11-wp016-017-forms-feedback.ctx.md title=Session-2026-07-11-WP-016-WP-017-forms-and-feedback-primitives sig=agent-context/sessions/2026-07-11-wp016-017-forms-feedback.md,apps/docs,Vite/React,conductor/css,80/80,packages/react/src/testing/contract.test.tsx,radix-ui/react-select,packages/react/src/form.tsx
 - f527103 p=50 src=agent-context/commands.md compact=agent-context/_handoff/compact/f527103.commands.ctx.md title=명령어-/-테스트-결과-/-실패한-것과-원인 sig=agent-context/commands.md,claude/skills/build-srs-prd-env/scripts/validate_srs_prd_env.py,FR/WP,40/49,21/28,dark/light,80/80,report/strict
 - f5791b0 p=50 src=agent-context/files.md compact=agent-context/_handoff/compact/f5791b0.files.ctx.md title=중요-파일과-역할 sig=agent-context/files.md,docs/20_derived_ui_specs/conductor_ai_agent_execution_brief.md,docs/40_delivery/conductor_work_packages.md,docs/40_delivery/conductor_implementation_traceability.md,docs/10_requirements/srs_final.md,docs/00_governance/change_control.md,docs/README.md,docs/00_governance/
 - f7b39dc p=50 src=agent-context/risks.md compact=agent-context/_handoff/compact/f7b39dc.risks.ctx.md title=리스크-/-불확실한-가정-/-검증에서-속을-뻔한-지점 sig=agent-context/risks.md,Dialog/Tooltip/Menu,position/z-index,packages/react,conductor/react,packages/css,conductor/css,DEV-005/CR-012
@@ -107,6 +108,14 @@ sha256=86f965aecdac7749e0ec27b68d5ca5de650ef2a6e1c2227cdc6c4781c4db9bfe
 bytes=3431 compact_bytes=4185 lines=51 priority=40
 heads=Session: 2026-07-11 — WP-015 Radix 오버레이 컴포넌트 > Goal > Current state > Decisions > Changed files > Commands
 sig=agent-context/sessions/2026-07-11-wp015-radix-overlays.md;packages/react/src/overlay.tsx;Dialog/Drawer;radix-ui/react-dialog;Tooltip/Menu;observe/unobserve/disconnect;packages/react/package.json;testing/overlay.test.tsx;packages/react/src/index.ts;testing/public-components.ts;packages/css/src/components.css;test/bundle.test.ts;overlay/menu;QA/work;package/traceability;dark/light;80/80;FR-A11Y-003/005;Select/Switch/Checkbox;role/aria;QA/traceability;Risks/gotchas;hover/focus;Session
+
+### fca0df4
+src=agent-context/sessions/2026-07-11-wp016-017-forms-feedback.md
+compact=agent-context/_handoff/compact/fca0df4.2026-07-11-wp016-017-forms-feedback.ctx.md
+sha256=19011fefa54eb5d5af553e5aecd66695dae26d052b1c3dd5250a33b0f78f377b
+bytes=4161 compact_bytes=5002 lines=55 priority=40
+heads=Session: 2026-07-11 — WP-016·WP-017 forms and feedback primitives > Goal > Current state > Decisions > Changed files > Commands
+sig=agent-context/sessions/2026-07-11-wp016-017-forms-feedback.md;apps/docs;Vite/React;conductor/css;80/80;packages/react/src/testing/contract.test.tsx;radix-ui/react-select;packages/react/src/form.tsx;testing/form.test.tsx;packages/react/src/feedback.tsx;testing/feedback.test.tsx;packages/react/src/index.ts;testing/public-components.ts;packages/css/src/base.css;test/bundle.test.ts;form/feedback;packages/tokens/src/components.ts;token/component;WP-016/017;CR-013/DEV-006;claude/skills/build-srs-prd-env/scripts/validate_srs_prd_env.py;persistence/fallback;Risks/gotchas;packages/tokens/src/tokens.ts
 
 ### f54408e
 src=agent-context/todos.md
