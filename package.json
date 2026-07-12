@@ -14,16 +14,25 @@
     "lint": "eslint .",
     "lint:deps": "node scripts/check-deps.mjs",
     "lint:tokens": "node packages/tokens/bin/conductor-lint-tokens.mjs packages/css packages/react",
-    "check:contrast": "pnpm --filter @conductor/tokens run check:contrast"
+    "check:contrast": "pnpm --filter @conductor/tokens run check:contrast",
+    "test:a11y": "vitest run --config vitest.a11y.config.ts"
   },
   "pnpm": {
-    "onlyBuiltDependencies": ["esbuild"]
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",
+    "@size-limit/esbuild": "11",
+    "@size-limit/file": "11",
     "@types/node": "^22.13.0",
+    "@vitest/browser": "3.2.7",
+    "axe-core": "4.10.3",
     "eslint": "^9.19.0",
     "globals": "^15.14.0",
+    "playwright": "1.61.1",
+    "size-limit": "11",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.22.0",
     "vitest": "^3.0.4"

@@ -41,6 +41,7 @@ export default defineConfig({
           root: fromRoot("./packages/react"),
           environment: "jsdom",
           include: ["src/**/*.test.ts", "src/**/*.test.tsx"],
+          exclude: ["src/**/*.browser.test.tsx"],
         },
       },
       {

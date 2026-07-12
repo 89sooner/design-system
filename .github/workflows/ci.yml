@@ -53,6 +53,19 @@ jobs:
 
       - run: pnpm check:contrast
 
+      # JOB-CI-002: public component states are rendered in real Chromium for
+      # both themes. Unapproved serious/critical axe findings fail the job.
+      - run: pnpm test:a11y
+
+      - name: upload axe report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: axe-report-node-${{ matrix.node-version }}
+          path: test-results/axe-report.json
+          if-no-files-found: ignore
+          retention-days: 30
+
       # Generated token artifacts are gitignored, so they cannot drift in the repo.
       # What can drift is the build itself: assert a rebuild on an already-built tree
       # is a no-op and that nothing untracked escaped .gitignore.
@@ -71,3 +84,4 @@ jobs:
             echo "$untracked"
             exit 1
           fi
+

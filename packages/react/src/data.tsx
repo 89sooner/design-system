@@ -81,7 +81,7 @@ export const Table = Object.assign(forwardRef<HTMLDivElement, TableProps>(functi
   }, [ariaLabel, caption]);
 
   return (
-    <div {...scrollContainerProps} {...props} ref={ref} aria-label={ariaLabel} className={cx("cdt-table__scroll", scrollContainerProps?.className, className)}>
+    <div {...scrollContainerProps} {...props} ref={ref} tabIndex={props.tabIndex ?? scrollContainerProps?.tabIndex ?? 0} aria-label={ariaLabel} className={cx("cdt-table__scroll", scrollContainerProps?.className, className)}>
       <table aria-label={ariaLabel} className="cdt-table">
         {caption == null ? null : <caption>{caption}</caption>}
         {children}

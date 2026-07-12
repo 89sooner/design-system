@@ -16,6 +16,7 @@ describe("data display components", () => {
       <Table caption="Jobs"><Table.Head><Table.Row><Table.HeaderCell>Job</Table.HeaderCell></Table.Row></Table.Head></Table>,
     );
     expect(container.firstElementChild?.classList.contains("cdt-table__scroll")).toBe(true);
+    expect(container.firstElementChild?.getAttribute("tabindex")).toBe("0");
     expect(container.querySelector("table")?.classList.contains("cdt-table")).toBe(true);
   });
 
