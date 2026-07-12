@@ -52,12 +52,12 @@ design-system/
 | WP-014 | 데이터 표시 컴포넌트군 | REL-002 | WP-011 | - | done |
 | WP-015 | 오버레이 컴포넌트군 | REL-002 | WP-011 | - | done |
 | WP-016 | 폼 컴포넌트군 | REL-002 | WP-011 | - | done |
-| WP-017 | 피드백 컴포넌트군 | REL-002 | WP-011 | - | todo |
-| WP-018 | 문서 사이트 셸과 테마 토글 | REL-003 | WP-012, WP-010 | - | todo |
-| WP-019 | Getting Started와 Foundations 화면 | REL-003 | WP-018 | - | todo |
-| WP-020 | 컴포넌트 카탈로그와 라이브 프리뷰 | REL-003 | WP-018, WP-017 | - | todo |
-| WP-021 | 토큰 참조 화면 | REL-003 | WP-018, WP-007 | - | todo |
-| WP-022 | Patterns·Accessibility 화면과 코드 복사 | REL-003 | WP-020 | - | todo |
+| WP-017 | 피드백 컴포넌트군 | REL-002 | WP-011 | - | done |
+| WP-018 | 문서 사이트 셸과 테마 토글 | REL-003 | WP-012, WP-010 | - | done |
+| WP-019 | Getting Started와 Foundations 화면 | REL-003 | WP-018 | - | done |
+| WP-020 | 컴포넌트 카탈로그와 라이브 프리뷰 | REL-003 | WP-018, WP-017 | - | done |
+| WP-021 | 토큰 참조 화면 | REL-003 | WP-018, WP-007 | - | done |
+| WP-022 | Patterns·Accessibility 화면과 코드 복사 | REL-003 | WP-020 | - | done |
 | WP-023 | 셸 컴포넌트군 | REL-003 | WP-012 | - (OD-004 종결: 포함) | todo |
 | WP-024 | 접근성 검사 CI 잡 | REL-003 | WP-020 | - | todo |
 | WP-025 | 번들 크기 검사 CI 잡 | REL-003 | WP-017 | - | todo |

@@ -43,16 +43,16 @@ WP-001 ~ WP-028의 이름·REL·선행 관계는 `conductor_work_packages.md`에
 | WP-010 | 라이트 팔레트와 테마 결정 계약 | REL-002 | done | (미커밋, 작업 트리) | `palette.light.ts`가 명세 6절의 파생값을 다크 메타데이터와 같은 키 집합으로 선언하고, component 재정의 8건(글래스 대안·정책 비활성 텍스트 등)을 적용. `tokens.css`는 명시 `data-cdt-theme` 속성을 우선하고 속성 부재 시 OS light만 라이트로 폴백하며 무효값은 다크로 귀결. `pnpm check:contrast` 다크·라이트 80/80, `pnpm test` 332/332, typecheck·lint:tokens 통과 | 2026-07-11 |
 | WP-011 | `@conductor/react` 골격과 공통 계약 | REL-002 | done | (미커밋, 작업 트리) | React 18/19·react-dom·lucide peer 계약과 `sideEffects: false` 선언. `cx`, `PolymorphicProps`, 공유 ref/className/data/aria/native-props 계약 스위트, public component registry·빌드 전 누락 테스트 검사, SSR `renderToString` 하네스 추가. React 패키지 18/18 테스트, build·typecheck 통과 | 2026-07-11 |
 | WP-012 | 액션·표면 컴포넌트군 | REL-002 | done | (미커밋, 작업 트리) | Button·IconButton·Card·CardGrid·Panel과 `cdt.component` CSS 구현. variant/loading/disabled/blocked, IconButton 필수 aria-label, Card 요소 자동 선택·중첩 대화형 경고, 공유 계약·SSR registry까지 검증. React 48/48, CSS 60/60, lint:tokens 통과 | 2026-07-11 |
-| WP-013 | 상태 표시 컴포넌트군 | REL-002 | todo | - | - | - |
-| WP-014 | 데이터 표시 컴포넌트군 | REL-002 | todo | - | - | - |
-| WP-015 | 오버레이 컴포넌트군 | REL-002 | todo | - | - | - |
+| WP-013 | 상태 표시 컴포넌트군 | REL-002 | done | `66ea60a` | Badge·StatusBadge·SeverityTag와 상태·심각도 토큰/CSS, React·CSS 테스트 구현 | 2026-07-11 |
+| WP-014 | 데이터 표시 컴포넌트군 | REL-002 | done | `94a190c` | Table·Timeline·CodeBlock·Kbd와 토큰/CSS, React·CSS 테스트 구현 | 2026-07-11 |
+| WP-015 | 오버레이 컴포넌트군 | REL-002 | done | `95f8bba` | Radix Dialog·Drawer·Tooltip·DropdownMenu와 CSS·SSR/상호작용 테스트 구현 | 2026-07-11 |
 | WP-016 | 폼 컴포넌트군 | REL-002 | done | (미커밋, 작업 트리) | `pnpm --filter @conductor/react test -- form` 121/121, CSS 72/72, build/typecheck/test/lint:deps/lint:tokens/check:contrast 통과. `pnpm lint`는 이번 WP와 무관한 기존 `testing/contract.test.tsx` ESLint 오류 3건으로 실패 | 2026-07-11 |
 | WP-017 | 피드백 컴포넌트군 | REL-002 | done | (미커밋, 작업 트리) | `feedbackMeter.*`와 semantic `surface.track`을 추가해 CR-013 해소. build/typecheck/test(467)/CSS(72)/lint:tokens/check:contrast 통과; `pnpm lint`의 기존 오류 3건은 WP-016부터 동일 | 2026-07-11 |
-| WP-018 | 문서 사이트 셸과 테마 토글 | REL-003 | todo | - | - | - |
-| WP-019 | Getting Started와 Foundations 화면 | REL-003 | todo | - | - | - |
-| WP-020 | 컴포넌트 카탈로그와 라이브 프리뷰 | REL-003 | todo | - | - | - |
-| WP-021 | 토큰 참조 화면 | REL-003 | todo | - | - | - |
-| WP-022 | Patterns·Accessibility 화면과 코드 복사 | REL-003 | todo | - | - | - |
+| WP-018 | 문서 사이트 셸과 테마 토글 | REL-003 | done | (미커밋, 작업 트리) | Vite 정적 빌드, React Router 셸, 테마 저장/OS 폴백/첫 페인트 스니펫, 모바일 Drawer. Playwright 4/4 통과 | 2026-07-11 |
+| WP-019 | Getting Started와 Foundations 화면 | REL-003 | done | (미커밋, 작업 트리) | Getting Started 설치/캐스케이드/SSR 안내와 `tokens.json` 기반 Foundations 5화면, 설명 누락 빌드 경고, Playwright 6/6 통과 | 2026-07-11 |
+| WP-020 | 컴포넌트 카탈로그와 라이브 프리뷰 | REL-003 | done | (미커밋, 작업 트리) | `.d.ts` 기반 ComponentMeta·props 표, 공개 27개 카탈로그/상세 라우트, variant×tone 프리뷰, 오류 경계. Playwright 9/9 통과 | 2026-07-11 |
+| WP-021 | 토큰 참조 화면 | REL-003 | done | (미커밋, 작업 트리) | 전체 공개 토큰의 두 테마 값·키 필터·대비 리포트·장식 전용 사유·리포트 누락 폴백. Playwright 11/11 통과 | 2026-07-11 |
+| WP-022 | Patterns·Accessibility 화면과 코드 복사 | REL-003 | done | (미커밋, 작업 트리) | W-040 권장/금지 실제 렌더·상태/심각도/밀도/오버레이 규칙, W-050 대비·키보드·axe 허용 목록, W-021 코드 복사와 폴백. Playwright 15/15 통과 | 2026-07-11 |
 | WP-023 | 셸 컴포넌트군 | REL-003 | todo | - | - | - |
 | WP-024 | 접근성 검사 CI 잡 | REL-003 | todo | - | - | - |
 | WP-025 | 번들 크기 검사 CI 잡 | REL-003 | todo | - | - | - |
@@ -79,7 +79,7 @@ WP-001 ~ WP-028의 이름·REL·선행 관계는 `conductor_work_packages.md`에
 | FR-TOK-009 | `packages/tokens/src/scales.ts`, `src/build/media.ts`, `packages/css/build.mjs`, `packages/css/checks.mjs` | `packages/tokens/src/scales.test.ts`, `packages/css/test/bundle.test.ts`, `test/checks.test.ts` | WP-005, WP-009 | 검증됨 (AC-1~AC-3. CSS 소스의 `{breakpoint.sm}`·`{breakpoint.md}`가 공개 `@conductor/tokens/breakpoints` 값으로 560px·800px 리터럴 치환되고 산출 미디어 조건의 breakpoint CSS 변수 0건. `CSS-MEDIA-VAR` 음성 테스트 포함) |
 | FR-THM-001 | `src/palette.dark.ts`, `src/token-source.ts`, `src/build/emit-css.ts` | `src/palette.dark.test.ts`, `src/build/emit-css.test.ts` | WP-002, WP-010 | 검증됨 (AC-1~AC-4. 다크 소스 1:1·별칭·키 대칭 및 `color-scheme: dark`) |
 | FR-THM-002 | `src/palette.light.ts`, `src/token-source.ts`, `src/build/emit-css.ts` | `src/theme-contract.test.ts`, `src/contrast/check.test.ts`, `src/build/emit-css.test.ts` | WP-010 | 검증됨 (AC-1~AC-4. 키 대칭, light color-scheme, 불투명 라이트 경계 3:1 이상, elevation alpha 차이) |
-| FR-THM-003 | `src/token-source.ts`, `src/build/emit-css.ts` | `src/build/emit-css.test.ts` | WP-010 | 검증됨 (AC-1~AC-3. 명시 속성 우선, 속성 부재 OS 폴백, 무효값 다크) |
+| FR-THM-003 | `src/token-source.ts`, `src/build/emit-css.ts`, `apps/docs/src/theme.ts` | `src/build/emit-css.test.ts`, `apps/docs/e2e/shell.spec.ts` | WP-010, WP-018 | 검증됨 (CSS 명시 속성 우선·OS 폴백·무효값 다크, 문서 사이트 토글이 속성만 변경하고 컴포넌트를 재마운트하지 않음) |
 | FR-THM-004 | `src/contrast-pairs.ts`, `src/contrast-cli.ts` | `src/contrast-pairs.test.ts`, `src/contrast/check.test.ts` | WP-007, WP-010 | 검증됨 (AC-1~AC-4. 두 테마 80/80 통과, alpha 합성 포함) |
 | FR-THM-005 | `src/palette.dark.ts`, `src/contrast-pairs.ts`, `src/lint-cli.ts` | `src/palette.dark.test.ts`, `src/contrast-pairs.test.ts` | WP-002, WP-006, WP-007 | 검증됨 (AC-1 focusRing 3.93/3.56, AC-2 border.control 3.23, AC-3 lint 차단 실증, AC-4~AC-6 usage 분류. CR-006 반영: `status.neutralEnd`=decorative, CP-025 결번) |
 | FR-CSS-001 | `packages/css/src/layers.css`, `src/reset.css`, `src/base.css`, `src/utility.css`, `packages/css/checks.mjs`, `build.mjs` | `packages/css/test/bundle.test.ts`, `test/checks.test.ts` | WP-008 | 검증됨 (AC-1~AC-4 + Radix 예외. 산출물 첫 줄이 5레이어 선언, `!important` 0건, 레이어 밖 규칙 0건. 음성 테스트로 `CSS-IMPORTANT`·`CSS-UNLAYERED`·`CSS-UNKNOWN-LAYER` 각각 exit 1 실증. **AC-3은 구조로 증명**: Conductor 규칙이 전부 레이어 안에 있으므로 레이어 밖 소비자 규칙이 명시도와 무관하게 이긴다. 실브라우저 캐스케이드 측정은 §5 참조) |
@@ -96,13 +96,13 @@ WP-001 ~ WP-028의 이름·REL·선행 관계는 `conductor_work_packages.md`에
 | FR-CMP-007 | `packages/react/src/form.tsx`, `packages/css/src/components.css`, `packages/react/package.json` | `packages/react/src/testing/form.test.tsx`, `packages/css/test/bundle.test.ts` | WP-016 | 검증됨 (AC-1~AC-5. Field의 id/설명/오류 연결과 오류 invalid 상태, 이름 없는 입력 경고, Radix Select/Switch/Checkbox의 역할·상태, 40px/compact 42px 스타일 및 공개 공통 계약을 검증.) |
 | FR-CMP-008 | `packages/react/src/feedback.tsx`, `packages/css/src/components.css`, `packages/tokens/src/components.ts` | `packages/react/src/testing/feedback.test.tsx`, `packages/css/test/bundle.test.ts` | WP-017 | 검증됨 (AC-1~AC-5. Banner live role/경고, EmptyState 슬롯, Meter threshold·range·텍스트, ProgressRing/Spinner 대체 텍스트와 reduced motion CSS를 검증.) |
 | FR-CMP-009 | - | - | - | 미착수 |
-| FR-DOC-001 | - | - | - | 미착수 |
-| FR-DOC-002 | - | - | - | 미착수 |
-| FR-DOC-003 | - | - | - | 미착수 |
-| FR-DOC-004 | - | - | - | 미착수 |
-| FR-DOC-005 | - | - | - | 미착수 |
-| FR-DOC-006 | - | - | - | 미착수 |
-| FR-DOC-007 | - | - | - | 미착수 |
+| FR-DOC-001 | `apps/docs/src/main.tsx`, `App.tsx`, `vite.config.ts` | `apps/docs/e2e/shell.spec.ts` | WP-018 | 부분 (AC-1·AC-3·AC-4. workspace 소비, 정적 Vite 빌드, 외부 요청 0건을 검증. 전체 문서 화면은 WP-019~022) |
+| FR-DOC-002 | `apps/docs/src/foundations.ts`, `App.tsx`, `scripts/check-foundation-tokens.mjs` | `apps/docs/e2e/foundations.spec.ts` | WP-019 | 검증됨 (AC-1~AC-3. generated `tokens.json`을 직접 읽어 그룹별 표·스와치를 생성하고, 키·계층·현재 테마 값·용도를 렌더한다. 설명 누락은 `설명 없음`과 빌드 경고로 처리) |
+| FR-DOC-003 | `apps/docs/scripts/build-component-catalog.mjs`, `src/catalog.tsx`, `App.tsx` | `apps/docs/e2e/catalog.spec.ts` | WP-020 | 검증됨 (AC-1~AC-5. 공개 27개가 실제 DOM 프리뷰와 상세 라우트를 가지며 `.d.ts`에서 props 표를 생성한다. 프리뷰 누락은 빌드 실패, 렌더 오류는 경계로 격리) |
+| FR-DOC-004 | `apps/docs/src/token-reference.tsx`, `scripts/build-contrast-report.mjs` | `apps/docs/e2e/tokens.spec.ts` | WP-021 | 검증됨 (AC-1~AC-4와 리포트 누락 폴백. 빌드 산출 `tokens.json`·`contrast-report.json`을 소비하며 화면에서 대비율을 재계산하지 않음) |
+| FR-DOC-005 | `apps/docs/index.html`, `src/theme.ts`, `src/App.tsx` | `apps/docs/e2e/shell.spec.ts` | WP-018 | 검증됨 (AC-1~AC-5와 localStorage 차단 폴백. 첫 페인트 스니펫이 React 전 루트 속성을 결정) |
+| FR-DOC-006 | `apps/docs/src/guides.tsx`, `src/catalog.tsx` | `apps/docs/e2e/guides.spec.ts` | WP-022 | 검증됨 (AC-1~AC-3. 성공 공지·2초 복귀, polite live region, Clipboard 미지원 시 disabled/선택 가능 코드) |
+| FR-DOC-007 | `apps/docs/src/guides.tsx` | `apps/docs/e2e/guides.spec.ts` | WP-022 | 검증됨 (권장/금지 실물 예, 금지 사유, 상태 7종·심각도 4종, Dialog/Drawer 기준, 생략 컴포넌트군 고지) |
 | FR-A11Y-001 | `packages/css/src/reset.css`, `src/components.css` | `packages/css/test/bundle.test.ts`, `packages/react/src/testing/action.test.tsx` | WP-008, WP-012 | 부분 (AC-1 공유 `:focus-visible` focusRing 적용 및 액션/표면 대화형 요소 검증. 키보드/실브라우저 측정은 WP-024) |
 | FR-A11Y-002 | `packages/react/src/data.tsx`, `src/overlay.tsx` | `packages/react/src/testing/data.test.tsx`, `overlay.test.tsx` | WP-014, WP-015 | 부분 (AC-3의 Dialog/Drawer Escape·포커스 복귀와 AC-4 Timeline 대화형 단계를 검증. 전 컴포넌트 키보드 경로 전수 검증은 후속 WP와 WP-024에서 완성.) |
 | FR-A11Y-003 | `packages/react/src/status.tsx`, `src/form.tsx`, `src/feedback.tsx`, `packages/css/src/components.css` | `packages/react/src/testing/status.test.tsx`, `form.test.tsx`, `feedback.test.tsx`, `packages/css/test/bundle.test.ts` | WP-013, WP-016, WP-017 | 부분 (AC-1~AC-4의 상태/심각도 세 채널, 폼 오류, Meter 수치 텍스트를 검증. 그레이스케일 브라우저 스냅샷은 WP-024.) |
