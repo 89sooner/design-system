@@ -1,0 +1,124 @@
+name: Release
+
+# JOB-REL-001 (Refs: WP-027 FR-DX-005 NFR-002 NFR-004, ADR-010, 보안 아키텍처 §4·§6):
+#
+#   1. changeset이 포함된 커밋이 main에 병합되면 `version` 잡이 버전 상승 PR을
+#      만들거나 갱신한다. 이 잡은 npm 자격증명과 OIDC 권한을 갖지 않는다(THR-002).
+#   2. 버전 상승 PR 병합이 릴리스의 수동 승인이다. 병합 뒤 maintainer가 이
+#      워크플로를 수동 실행(workflow_dispatch)하거나 릴리스 태그를 push하면
+#      `publish` 잡이 실행된다. GITHUB_TOKEN이 만든 태그는 워크플로를 다시
+#      트리거하지 않으므로(재귀 방지) 이 수동 단계가 승인 게이트를 겸한다.
+#   3. `publish` 잡은 전체를 다시 빌드하고(로컬/PR 산출물을 신뢰하지 않는다)
+#      게이트를 통과한 뒤 OIDC 신뢰 배포로 게시하고 릴리스 태그를 push한다.
+#      장기 NPM_TOKEN은 어디에도 저장하지 않는다(NFR-002).
+on:
+  push:
+    branches: [main]
+    tags: ["@conductor/*@*"]
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: release-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  version:
+    name: version PR (changesets)
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # Refs 줄과 major 마이그레이션 노트 규약 (FR-DX-005 AC-2, AC-4)
+      - run: pnpm check:changesets
+
+      # 변경 이력 없이 병합된 변경이 발견되면 릴리스를 중단하고 누락 목록을
+      # 출력한다 (FR-DX-005 예외 처리). 첫 릴리스 전(태그 없음)에는 기준이 없어
+      # 건너뛴다.
+      - name: changes since the last release have changesets
+        run: |
+          last_tag="$(git tag --list '@conductor/*@*' --sort=-creatordate | head -n 1)"
+          if [ -n "$last_tag" ]; then
+            pnpm changeset status --since "$last_tag"
+          else
+            echo "no release tag yet; skipping missing-changeset check (first release)"
+          fi
+
+      - name: create or update the version PR
+        uses: changesets/action@v1
+        with:
+          version: pnpm changeset version
+          commit: "Version packages"
+          title: "Version packages"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish:
+    name: publish to npm (OIDC)
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/@conductor/')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # 배포 후 릴리스 태그 push
+      id-token: write # npm 신뢰 배포(OIDC), NFR-002
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      # npm 신뢰 배포(OIDC 토큰 교환)는 npm CLI 11.5 이상이 필요하다.
+      - run: npm install -g npm@11
+
+      - run: pnpm install --frozen-lockfile
+
+      # 버전 상승 PR이 병합되지 않은 상태(소비되지 않은 changeset 존재)에서는
+      # 배포하지 않는다.
+      - run: node scripts/check-changesets.mjs --require-empty
+
+      # 취약점 게이트: high 이상 1건이라도 있으면 배포하지 않는다 (ADR-010, NFR-002).
+      - run: pnpm audit --audit-level high
+
+      - run: pnpm check:secrets
+
+      # 로컬/PR 빌드 산출물을 신뢰하지 않고 전체를 다시 빌드한다 (인프라 운영 §6).
+      - run: pnpm build
+
+      # 배포 커밋의 공개 API가 커밋된 리포트와 일치해야 한다 (ADR-008, FR-DX-005 AC-1).
+      - run: pnpm check:api
+
+      # changeset publish는 레지스트리에 없는 버전만 게시하므로 재실행에 안전하고,
+      # 게시한 버전마다 git 태그를 만든다. provenance 증명을 함께 발행한다.
+      - name: publish with provenance
+        run: pnpm changeset publish
+        env:
+          NPM_CONFIG_PROVENANCE: "true"
+
+      - name: push release tags
+        run: git push origin --tags

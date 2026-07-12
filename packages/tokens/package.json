@@ -2,6 +2,12 @@
   "name": "@conductor/tokens",
   "version": "0.0.0",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/89sooner/design-system.git",
+    "directory": "packages/tokens"
+  },
+  "publishConfig": { "access": "public" },
   "sideEffects": ["*.css"],
   "types": "./dist/index.d.ts",
   "files": ["dist", "bin"],

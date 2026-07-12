@@ -62,7 +62,7 @@ design-system/
 | WP-024 | 접근성 검사 CI 잡 | REL-003 | WP-020 | - | done |
 | WP-025 | 번들 크기 검사 CI 잡 | REL-003 | WP-017 | - | done |
 | WP-026 | 시각 회귀 검사 | REL-004 | WP-020 | - (OD-002 종결: REL-004 이월 확정) | done |
-| WP-027 | Changesets와 npm 배포 워크플로 | REL-004 | WP-017 | - | todo |
+| WP-027 | Changesets와 npm 배포 워크플로 | REL-004 | WP-017 | - | done |
 | WP-028 | 문서 사이트 정적 배포 | REL-004 | WP-022, WP-027 | - | todo |
 
 차단 요인이 있는 WP는 해당 오픈 결정이 닫히기 전에 착수하지 않는다.
@@ -656,14 +656,14 @@ design-system/
 - 구현 범위: Changesets 설정, 변경 이력 생성, 공개 API 추출 리포트로 파괴 변경 검출, npm OIDC 배포 워크플로, `pnpm audit --audit-level high` 게이트, 시크릿 스캔, 롤백 절차(dist-tag 승격)
 - 제외: 문서 사이트 배포(WP-028)
 - 완료 기준(DoD):
-  - [ ] 공개 API 파괴 변경이 포함된 릴리스가 major를 올린다 (FR-DX-005 AC-1)
-  - [ ] 각 릴리스에 변경 항목과 관련 FR/WP ID가 기재된 변경 이력이 생성된다 (FR-DX-005 AC-2)
-  - [ ] 변경 이력 항목 없는 패키지는 버전이 오르지 않는다 (FR-DX-005 AC-3)
-  - [ ] 파괴 변경 릴리스에 마이그레이션 노트가 포함된다 (FR-DX-005 AC-4, NFR-004)
-  - [ ] 변경 이력 없이 병합된 변경이 발견되면 릴리스가 중단되고 누락 목록을 출력한다 (FR-DX-005 예외 처리)
-  - [ ] 배포가 OIDC 기반이며 장기 토큰을 사용하지 않는다 (NFR-002)
-  - [ ] `pnpm audit --audit-level high`가 0건이다 (NFR-002)
-  - [ ] 롤백 리허설이 10분 이내에 끝난다 (NFR-004)
+  - [x] 공개 API 파괴 변경이 포함된 릴리스가 major를 올린다 (FR-DX-005 AC-1) — `check:api`가 리포트 드리프트에서 exit 1(export 제거 픽스처 실증), major 등록은 `check:changesets`가 마이그레이션 노트와 함께 강제
+  - [x] 각 릴리스에 변경 항목과 관련 FR/WP ID가 기재된 변경 이력이 생성된다 (FR-DX-005 AC-2) — `changeset version` 실험에서 CHANGELOG가 본문 `Refs:` 줄 포함, Refs 없는 changeset은 exit 1
+  - [x] 변경 이력 항목 없는 패키지는 버전이 오르지 않는다 (FR-DX-005 AC-3) — react-only changeset 실험에서 react 0.1.0, tokens/css 0.0.0 유지
+  - [x] 파괴 변경 릴리스에 마이그레이션 노트가 포함된다 (FR-DX-005 AC-4, NFR-004) — major에 `## Migration` 절이 없으면 `check:changesets` exit 1
+  - [x] 변경 이력 없이 병합된 변경이 발견되면 릴리스가 중단되고 누락 목록을 출력한다 (FR-DX-005 예외 처리) — version 잡의 `changeset status --since <직전 태그>` + publish 잡의 `--require-empty`. changeset 없는 패키지 변경에서 status exit 1과 누락 목록 실측
+  - [x] 배포가 OIDC 기반이며 장기 토큰을 사용하지 않는다 (NFR-002) — inspection: publish 잡만 `id-token: write`, 저장소에 `NPM_TOKEN` 참조 0건. 실 레지스트리 신뢰 게시는 첫 배포에서 확인(원장 §5)
+  - [x] `pnpm audit --audit-level high`가 0건이다 (NFR-002) — 실측 exit 0(high 이상 0건, low 1건은 게이트 밖)
+  - [x] 롤백 리허설이 10분 이내에 끝난다 (NFR-004) — dist-tag 승격 스크립트 dry-run 9개 명령 1초 미만. 실 레지스트리 리허설은 첫 배포 직후 수행(원장 §5)
 - 검증 방법: `pnpm changeset status && pnpm audit --audit-level high` + 드라이런 배포와 롤백 리허설
 - 기록: WP-027 행, FR-DX-005 매핑 갱신
 

@@ -1,6 +1,12 @@
 {
   "name": "@conductor/css",
   "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/89sooner/design-system.git",
+    "directory": "packages/css"
+  },
+  "publishConfig": { "access": "public" },
   "sideEffects": ["*.css"],
   "types": "./types/index.d.ts",
   "files": ["dist", "types"],

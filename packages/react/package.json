@@ -1,6 +1,14 @@
 {
   "name": "@conductor/react",
   "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/89sooner/design-system.git",
+    "directory": "packages/react"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "sideEffects": false,
   "types": "./dist/index.d.ts",

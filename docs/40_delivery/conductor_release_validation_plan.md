@@ -80,7 +80,7 @@ Conductor Design System은 `@conductor/tokens`, `@conductor/css`, `@conductor/re
 - [x] OD-002의 REL-004 이월에 따라 `pnpm test:visual`에서 12개 컴포넌트 × 2테마 = 24 스냅샷 비교, 픽셀 차이 1% 이하(FR-QA-004) — 3회 연속 diff 0건
 - [x] FR-QA-004가 `deferred`로 표시되어 REL-001~REL-003 게이트에서는 생략됐고, REL-004의 JOB-CI-003으로 활성화됐음을 원장에 기록
 - [x] `Button` 단독 gzip 4KB 이하(527바이트), `@conductor/css` gzip 20KB 이하(7,720바이트)(NFR-001, JOB-CI-004)
-- [ ] `pnpm audit --audit-level high` 취약점 0건(NFR-002)
+- [x] `pnpm audit --audit-level high` 취약점 0건(NFR-002) — 실측 high 이상 0건(2026-07-13)
 - [ ] npm 배포 인증이 OIDC 기반이며 장기 토큰을 사용하지 않음(NFR-002, JOB-REL-001)
 - [ ] 롤백 리허설이 10분 이내에 완료된 기록 존재(NFR-004)
 

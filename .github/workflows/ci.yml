@@ -34,6 +34,12 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      # 시크릿 스캔은 모든 push와 PR에서 실행한다 (보안 아키텍처 §5, NFR-002).
+      - run: pnpm check:secrets
+
+      # changeset 규약: Refs 줄, major의 마이그레이션 노트 (FR-DX-005 AC-2, AC-4)
+      - run: pnpm check:changesets
+
       - run: pnpm lint
 
       - run: pnpm lint:deps
@@ -44,6 +50,10 @@ jobs:
       - run: pnpm build
 
       - run: pnpm typecheck
+
+      # 공개 API가 커밋된 .api.md 기준과 일치해야 한다. 차이는 파괴 변경 후보이며
+      # major changeset 없이는 병합되지 않아야 한다 (ADR-008, FR-DX-005 AC-1).
+      - run: pnpm check:api
 
       # Runs `pnpm test`, which includes the FR-QA-001 cross-theme token contract check.
       - run: pnpm test

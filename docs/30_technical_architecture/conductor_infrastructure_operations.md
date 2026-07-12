@@ -1,6 +1,6 @@
 # Conductor Design System 인프라 및 운영 아키텍처
 
-> 상태: review | 버전: v0.2 | 갱신일: 2026-07-10
+> 상태: review | 버전: v0.3 | 갱신일: 2026-07-13
 
 ## 1. 범위 재정의: 서버가 없는 인프라
 
@@ -53,8 +53,8 @@ Conductor Design System은 서버 런타임, 컴퓨팅 인스턴스, 오토스�
 
 1. 기여자가 변경과 함께 changeset을 작성한다: `pnpm changeset`(변경 유형과 영향받는 패키지를 선택하면 `.changeset/*.md` 파일이 생성된다).
 2. PR이 `main`에 병합되면, 릴리스 자동화가 열려 있는 changeset들을 모아 버전 상승 PR을 별도로 생성한다: `pnpm changeset version`(각 패키지의 `package.json` 버전을 올리고 저장소의 CHANGELOG 파일을 갱신한다).
-3. 버전 상승 PR이 병합되면 릴리스 워크플로가 태그를 생성하고 배포 잡(JOB-REL-001)을 트리거한다.
-4. 배포 잡은 `pnpm build`로 전체 빌드를 재실행한 뒤(로컬/PR 빌드 산출물을 신뢰하지 않는다) `pnpm publish -r --provenance`를 실행한다.
+3. 버전 상승 PR의 병합이 릴리스의 수동 승인이다. 병합 뒤 maintainer가 릴리스 워크플로를 수동 실행(workflow_dispatch)하거나 릴리스 태그를 push하면 배포 잡(JOB-REL-001)이 트리거된다. `GITHUB_TOKEN`이 push한 태그는 재귀 방지 정책으로 워크플로를 트리거하지 않으므로, 릴리스 태그의 생성과 push는 배포 잡이 게시 후 수행한다(CR-015).
+4. 배포 잡은 `pnpm build`로 전체 빌드를 재실행한 뒤(로컬/PR 빌드 산출물을 신뢰하지 않는다) `NPM_CONFIG_PROVENANCE=true`로 `pnpm changeset publish`를 실행한다. 이 명령은 레지스트리에 없는 버전만 게시해 재실행에 안전하고, 게시한 버전마다 git 태그를 만든다(CR-015).
 5. npm 레지스트리는 OIDC 클레임을 검증해 배포를 승인한다(`conductor_security_privacy_architecture.md` 4절, ADR-010).
 6. 파괴 변경(breaking change)이 포함된 changeset은 major 버전을 올리고 CHANGELOG 파일에 마이그레이션 노트 항목을 강제로 요구한다(FR-DX-005 AC-4). 마이그레이션 노트 없이는 changeset이 `major` 유형으로 등록되지 않는다.
 

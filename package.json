@@ -17,15 +17,24 @@
     "check:contrast": "pnpm --filter @conductor/tokens run check:contrast",
     "test:a11y": "vitest run --config vitest.a11y.config.ts",
     "test:visual": "node scripts/test-visual.mjs",
-    "size": "node scripts/check-size.mjs"
+    "size": "node scripts/check-size.mjs",
+    "changeset": "changeset",
+    "check:changesets": "node scripts/check-changesets.mjs",
+    "check:api": "node scripts/check-api.mjs",
+    "check:secrets": "node scripts/scan-secrets.mjs"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
       "esbuild"
-    ]
+    ],
+    "overrides": {
+      "human-id": "4.1.1"
+    }
   },
   "devDependencies": {
+    "@changesets/cli": "2",
     "@eslint/js": "^9.19.0",
+    "@microsoft/api-extractor": "7",
     "@size-limit/esbuild": "11",
     "@size-limit/file": "11",
     "@types/node": "^22.13.0",

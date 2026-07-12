@@ -34,6 +34,7 @@
 | CR-012 | 2026-07-11 | implementation | `DEV-005` (WP-009 완료 검증 시 발견) | WP-009의 검증 방법이 `pnpm --filter @conductor/css test`만 실행한다. CSS 테스트는 기존 `dist/`를 읽으므로 소스를 변경한 뒤 빌드하지 않아도 과거 산출물을 검사할 수 있다. 검증 방법을 `pnpm --filter @conductor/css build && pnpm --filter @conductor/css test`로 정정해 현재 소스에서 산출물을 만든 뒤 검사하도록 한다. 요구사항과 구현 범위는 변경하지 않는다 | DEV-005, WP-009, FR-CSS-003, FR-TOK-009 | `conductor_work_packages.md`, `conductor_implementation_traceability.md` | closed |
 | CR-013 | 2026-07-11 | correction | `DEV-006` (WP-017 착수 시 발견) | 사용자 결정으로 C-062의 component token 네임스페이스를 `feedbackMeter.*`로 분리하고, 원본 진행 트랙을 semantic `surface.track`으로 추가했다. FR-TOK-005의 semantic `meter` 3개 그룹과 렌더링 슬롯이 분리되어 `TOK-GROUP-SIZE` 없이 빌드된다 | DEV-006, WP-017, C-062, FR-CMP-008, FR-TOK-005 | UI component/token specs, token source, CSS, React, delivery ledger | closed |
 | CR-014 | 2026-07-12 | implementation | `DEV-007` (WP-026 standalone Chromium 검증) | `prefers-reduced-motion: reduce`가 true여도 Button의 계산된 transition이 0.14s인 결함을 확인했다. component transition alias가 토큰 빌드에서 리터럴로 완전 해석되고 `cdt.component`가 base의 직접 duration 규칙보다 우선했다. 컴포넌트 전환이 live `--cdt-motion-*`를 직접 읽도록 바꾸고, base 감소 모드 토큰 selector가 생성된 테마 selector보다 높은 명시도를 갖게 했다. 요구사항·토큰 값·공개 API 변경 없음 | DEV-007, FR-CSS-005 AC-1, WP-008, WP-026 | `packages/css/src/base.css`, `components.css`, CSS/Playwright 테스트, delivery ledger | closed |
+| CR-015 | 2026-07-13 | implementation | `DEV-008` (WP-027 구현 검증) | 인프라 운영 문서 §6의 "버전 상승 PR 병합 → 릴리스 워크플로가 태그 생성 → 태그가 배포 잡 트리거" 순서는 GitHub Actions에서 성립하지 않는다. `GITHUB_TOKEN`이 push한 태그는 재귀 방지 정책으로 워크플로를 트리거하지 않는다. 수동 승인을 maintainer의 workflow_dispatch 또는 태그 push로 정의하고, 릴리스 태그 생성·push는 배포 잡이 게시 후 수행하도록 정정한다. 배포 명령도 `pnpm publish -r --provenance`에서 재실행이 안전한 `pnpm changeset publish`(+`NPM_CONFIG_PROVENANCE=true`)로 정정한다. 요구사항·토큰 값·공개 API 변경 없음 | DEV-008, WP-027, FR-DX-005, NFR-002, JOB-REL-001 | `conductor_infrastructure_operations.md`, `.github/workflows/release.yml`, delivery ledger | closed |
 
 유형: `scope`(범위 변경), `design`(설계 변경), `implementation`(구현 편차 DEV-### 처리), `correction`(문서 오류 수정)
 
@@ -200,6 +201,14 @@ WP-009 완료 검증에서 발견한 작업 패키지 검증 명령의 문서 �
 - [x] `docs/40_delivery/conductor_work_packages.md`, `conductor_implementation_traceability.md` — WP-026, FR-CSS-005, DEV-007 근거 갱신
 - [x] SRS/PRD/화면/API/토큰 값/공개 API 영향 없음
 - [x] 검증: CSS 78/78, 시각 회귀 3회 각 25/25, 음성 픽스처 36% diff·exit 1
+
+### CR-015 cascade
+
+- [x] `docs/30_technical_architecture/conductor_infrastructure_operations.md` §6 — 수동 승인 정의, 태그 생성 주체, 배포 명령 정정 (v0.3)
+- [x] `.github/workflows/release.yml` — 자격증명 없는 version PR 잡과 OIDC publish 잡 분리, `changeset publish` + provenance
+- [x] `docs/40_delivery/conductor_work_packages.md`, `conductor_implementation_traceability.md` — WP-027, FR-DX-005, FR-DX-002, DEV-008 갱신
+- [x] SRS/PRD/화면/토큰 값/공개 API 영향 없음
+- [x] 검증: check:api·check:changesets·check:secrets 음성 픽스처 각 exit 1, `changeset version` 실험(react만 0.1.0), 3패키지 dry-run 배포 성공, audit high 0건
 
 ## 6. 미해소 오픈 결정
 

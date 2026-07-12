@@ -211,7 +211,7 @@ QA-189 ~ QA-191은 OD-002(REL-003 착수 시점 결정)에 조건부인 Should �
 - [ ] QA-205 M-5: Getting Started 절차 실행 시 신규 앱 적용 명령 수가 3개 이하다
 - [ ] QA-206 M-6: 공개 API의 `any` 노출이 0건이다
 - [x] QA-207 M-7: `Button` 단독 import gzip 크기가 4KB 이하다(React 제외) — `size-limit` 실측 527바이트
-- [ ] QA-208 의존성 취약점 severity high 이상이 0건이다(`pnpm audit --audit-level high`)
+- [x] QA-208 의존성 취약점 severity high 이상이 0건이다(`pnpm audit --audit-level high`) — 실측 high 이상 0건
 - [ ] QA-209 배포 산출물의 런타임 외부 네트워크 요청이 0건이다
 - [ ] QA-210 OD-001(대비율 검사 대상 정의)이 해소되어 있다 — 미해소 시 SRS 14절에 따라 baseline 승격과 릴리스 게이트를 차단한다
 - [ ] QA-211 파괴 변경이 포함된 릴리스에 마이그레이션 노트가 동반된다 (FR-DX-005 AC-4)
