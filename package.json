@@ -15,7 +15,8 @@
     "lint:deps": "node scripts/check-deps.mjs",
     "lint:tokens": "node packages/tokens/bin/conductor-lint-tokens.mjs packages/css packages/react",
     "check:contrast": "pnpm --filter @conductor/tokens run check:contrast",
-    "test:a11y": "vitest run --config vitest.a11y.config.ts"
+    "test:a11y": "vitest run --config vitest.a11y.config.ts",
+    "size": "node scripts/check-size.mjs"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

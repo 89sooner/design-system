@@ -60,7 +60,7 @@ design-system/
 | WP-022 | Patterns·Accessibility 화면과 코드 복사 | REL-003 | WP-020 | - | done |
 | WP-023 | 셸 컴포넌트군 | REL-003 | WP-012 | - (OD-004 종결: 포함) | done |
 | WP-024 | 접근성 검사 CI 잡 | REL-003 | WP-020 | - | done |
-| WP-025 | 번들 크기 검사 CI 잡 | REL-003 | WP-017 | - | todo |
+| WP-025 | 번들 크기 검사 CI 잡 | REL-003 | WP-017 | - | done |
 | WP-026 | 시각 회귀 검사 | REL-004 | WP-020 | - (OD-002 종결: REL-004 이월 확정) | todo |
 | WP-027 | Changesets와 npm 배포 워크플로 | REL-004 | WP-017 | - | todo |
 | WP-028 | 문서 사이트 정적 배포 | REL-004 | WP-022, WP-027 | - | todo |
@@ -620,10 +620,10 @@ design-system/
 - 구현 범위: `pnpm size` — `Button` 단독 import gzip 측정(React 제외), `@conductor/css` 전체 gzip 측정, 기준 초과 시 초과 모듈 목록 출력
 - 제외: Lighthouse 성능 측정 (WP-028의 문서 사이트 배포 이후)
 - 완료 기준(DoD):
-  - [ ] `Button` 단독 import gzip이 4KB 이하다 (FR-DX-003 AC-3, NFR-001, M-7)
-  - [ ] `@conductor/css` 전체 gzip이 20KB 이하다 (NFR-001)
-  - [ ] 기준 초과 시 CI가 실패하고 초과 모듈 목록을 출력한다 (FR-DX-003 예외 처리)
-  - [ ] `sideEffects` 선언이 검증된다 (FR-DX-003 AC-2)
+  - [x] `Button` 단독 import gzip이 4KB 이하다 (FR-DX-003 AC-3, NFR-001, M-7) — `size-limit` 실측 527바이트
+  - [x] `@conductor/css` 전체 gzip이 20KB 이하다 (NFR-001) — 실측 7,720바이트
+  - [x] 기준 초과 시 CI가 실패하고 초과 모듈 목록을 출력한다 (FR-DX-003 예외 처리) — 1바이트 제한 음성 픽스처에서 exit 1과 기여 청크 목록 출력 확인
+  - [x] `sideEffects` 선언이 검증된다 (FR-DX-003 AC-2) — React `false`, CSS `*.css` 보존 계약 확인
 - 검증 방법: `pnpm size`
 - 기록: WP-025 행, FR-DX-003 매핑 갱신
 

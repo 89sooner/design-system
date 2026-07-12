@@ -7,6 +7,7 @@ coverage/
 .turbo/
 .omc/
 test-results/
+size-report.json
 
 # Generated token artifacts. The token source (schema/primitives/palette/scales/
 # components) is the only input; these are emitted by `pnpm --filter @conductor/tokens

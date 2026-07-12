@@ -66,6 +66,19 @@ jobs:
           if-no-files-found: ignore
           retention-days: 30
 
+      # JOB-CI-004: measures the published, tree-shaken Button consumer bundle
+      # with React excluded, plus the complete CSS entry point.
+      - run: pnpm size
+
+      - name: upload size report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: size-report-node-${{ matrix.node-version }}
+          path: size-report.json
+          if-no-files-found: ignore
+          retention-days: 30
+
       # Generated token artifacts are gitignored, so they cannot drift in the repo.
       # What can drift is the build itself: assert a rebuild on an already-built tree
       # is a no-op and that nothing untracked escaped .gitignore.

@@ -183,7 +183,7 @@ FR-CMP-001은 공개 컴포넌트 전수가 ref 전달(AC-1), className 병합(A
 - [ ] QA-189 기준 컴포넌트 12개 × 테마 2종 = 24개 스냅샷이 기준 이미지와 비교된다 (FR-QA-004 AC-1)
 - [ ] QA-190 픽셀 차이가 1%를 초과하면 CI가 실패하고 차이 이미지가 아티팩트로 남는다 (FR-QA-004 AC-2)
 - [ ] QA-191 기준 이미지 갱신이 `pnpm test:visual --update` 명시적 커맨드로만 가능하다 (FR-QA-004 AC-3)
-- [ ] QA-192 `Button` 단독 import gzip 크기가 4KB 이하다(React 제외) (FR-DX-003 AC-3)
+- [x] QA-192 `Button` 단독 import gzip 크기가 4KB 이하다(React 제외) (FR-DX-003 AC-3) — `size-limit` 실측 527바이트
 
 QA-189 ~ QA-191은 OD-002(REL-003 착수 시점 결정)에 조건부인 Should 우선순위 항목이다. OD-002가 "REL-004로 이월"로 해소되면 이 3개 항목은 v1 릴리스 게이트에서 제외하고 수동 시각 확인으로 대체한다(FR-QA-004 예외처리).
 
@@ -210,7 +210,7 @@ QA-189 ~ QA-191은 OD-002(REL-003 착수 시점 결정)에 조건부인 Should �
 - [ ] QA-204 M-4: axe-core serious 이상 위반이 컴포넌트 전수 기준 0건이다
 - [ ] QA-205 M-5: Getting Started 절차 실행 시 신규 앱 적용 명령 수가 3개 이하다
 - [ ] QA-206 M-6: 공개 API의 `any` 노출이 0건이다
-- [ ] QA-207 M-7: `Button` 단독 import gzip 크기가 4KB 이하다(React 제외)
+- [x] QA-207 M-7: `Button` 단독 import gzip 크기가 4KB 이하다(React 제외) — `size-limit` 실측 527바이트
 - [ ] QA-208 의존성 취약점 severity high 이상이 0건이다(`pnpm audit --audit-level high`)
 - [ ] QA-209 배포 산출물의 런타임 외부 네트워크 요청이 0건이다
 - [ ] QA-210 OD-001(대비율 검사 대상 정의)이 해소되어 있다 — 미해소 시 SRS 14절에 따라 baseline 승격과 릴리스 게이트를 차단한다
