@@ -1,5 +1,23 @@
 # 리스크 / 불확실한 가정 / 검증에서 속을 뻔한 지점
 
+## 2026-07-12 강제 compaction 복원에서 발견
+
+### M. Vitest project environment는 다른 package의 URL 의미를 바꾼다
+
+`vitest.config.ts`에서 tokens project를 node → jsdom으로 바꾸면 `import.meta.url` 기반 file reads가 `The URL must be of scheme file` 또는 `/src/tokens.ts` ENOENT로 깨진다. docs는 Playwright E2E를 사용하므로 docs 브라우저 검사를 위해 tokens project 환경을 바꿀 이유가 없다. package별 environment를 섞지 말고 필요한 project에만 jsdom을 적용한다.
+
+### N. WP summary done과 DoD checkbox는 독립적으로 어긋날 수 있다
+
+현재 WP-018~022 summary는 done이지만 각 DoD는 전부 unchecked다. traceability의 FR-DOC-001도 완료된 후속 WP를 미완료 사유로 든다. handoff에서 “done” 한 칸만 읽지 말고 WP body와 FR ledger를 함께 확인한다.
+
+### O. Playwright webServer 실패를 제품 실패로 단정하지 않는다
+
+제한된 sandbox에서는 localhost preview server/browser가 시작되지 않았다. 권한이 있는 실행에서 같은 tree와 command가 15/15 통과했다. 실패 시 먼저 webServer 권한/포트/브라우저 실행 환경을 분리 진단한다.
+
+### P. docs bundle warning은 현재 실패가 아니지만 후속 gate의 입력이다
+
+Vite JS chunk가 507.34 kB(minified), 144.59 kB gzip으로 500 kB 경고를 낸다. WP-025의 package size와 WP-028의 Lighthouse 범위를 침범해 즉시 임의 code-splitting하지 않는다. 후속 WP에서 실제 예산과 측정 대상을 기준으로 판단한다.
+
 ## 2026-07-11(WP-010~012) 세션에서 추가된 함정
 
 ## 2026-07-11(WP-013~014) 세션에서 추가된 함정

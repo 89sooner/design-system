@@ -1,5 +1,26 @@
 # 명령어 / 테스트 결과 / 실패한 것과 원인
 
+## 2026-07-12 — WP-018~022 복원 재검증
+
+### 통과
+
+- `pnpm build`: 의존 방향 0 violations, tokens 318, contrast 80/80, CSS index gzip 6,812B, React registry 3/3, docs Vite build 통과.
+- `pnpm typecheck`: 4개 구현 package 전체 통과.
+- `pnpm --filter docs test:e2e`: browser/localhost 허용 실행에서 15/15 통과.
+- `pnpm lint:tokens`: 38 files, 0 violations, 48 allowances.
+- `pnpm check:contrast`: dark/light 80/80.
+- SRS/PRD validator `--report`, `--strict`: issue 0.
+
+### 실패
+
+- `pnpm test`: tokens project를 jsdom으로 실행해 file URL 가정이 깨짐. suite 1 + tests 2 실패, 444 tests pass.
+- `eslint .`: 5 errors. `apps/docs/src/catalog.tsx` 2건 + 기존 `packages/react/src/testing/contract.test.tsx` 3건.
+- sandbox 내부 `pnpm --filter docs test:e2e`: preview webServer start exit 1. 샌드박스 밖 동일 명령은 15/15이므로 환경 제약으로 분류.
+
+### 검증 중 생성물 정리
+
+- 임시 `.corepack/`과 `apps/docs/test-results/`는 검증 후 삭제했다. `apps/docs/dist/`, `src/generated/*`, tokens generated TS는 기존 ignore 계약에 따른 빌드 산출물이다.
+
 ## 문서 검증
 
 ```bash

@@ -1,5 +1,14 @@
 # 확정 결정과 그 이유
 
+## WP-018~022 문서 사이트 구현 결정 (changes에서 복원, 2026-07-12)
+
+- docs는 배포 서버가 없는 Vite 정적 앱이다. 이전 tsup package placeholder는 제거했고 React Router는 docs 앱 내부 의존성으로만 둔다.
+- first paint theme는 `index.html` 인라인 스니펫이 저장값 → OS 선호 순서로 루트 `data-cdt-theme`를 정한다. React 토글은 그 속성만 바꾸며 localStorage read/write 실패를 삼킨다.
+- Foundations와 token reference는 사람이 값을 복사하지 않고 `@conductor/tokens` 빌드 산출물에서 읽는다. contrast 화면도 브라우저에서 재계산하지 않고 build report 판정을 표시한다.
+- component catalog metadata는 `packages/react/dist/index.d.ts`를 TypeScript AST로 읽어 만든다. 공개 export에 preview가 없으면 docs build가 실패한다.
+- WP-018~022를 done으로 기록한 흔적은 충분하지만, root test와 lint가 red인 현재 상태에서는 새 WP를 시작하기 전에 통합 green과 DoD ledger sync를 우선한다.
+- `vitest.config.ts`의 tokens jsdom 전환은 docs Playwright 구현과 직접 관계가 없고 file-URL 테스트를 깨뜨린다. handoff refresh에서는 수정하지 않고 최소 복구 후보로 기록했다.
+
 ## WP-010~012 구현 결정 (2026-07-11)
 
 - 라이트 semantic 값은 다크 팔레트의 metadata/key를 복제한 뒤 명세 §6에서 정한 값만 재정의한다. 키를 별도 수기로 나열하면 FR-QA-001 대칭이 깨질 위험이 더 크다.

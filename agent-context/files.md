@@ -1,5 +1,23 @@
 # 중요 파일과 역할
 
+## 2026-07-12 현재 변경의 중심
+
+| 경로 | 역할 |
+| --- | --- |
+| `apps/docs/src/App.tsx` | W-001~W-050 route shell, theme toggle, mobile nav, Getting Started/Foundations route composition |
+| `apps/docs/src/catalog.tsx` | 27개 공개 component live preview, generated props table, preview error boundary, copy integration |
+| `apps/docs/src/foundations.ts` | generated `tokens.json`을 foundation group과 현재 theme 값으로 정규화 |
+| `apps/docs/src/token-reference.tsx` | 양 테마 token 표, filter, generated contrast verdict, missing-report fallback |
+| `apps/docs/src/guides.tsx` | Patterns/Accessibility, recommended/prohibited examples, clipboard state |
+| `apps/docs/scripts/build-component-catalog.mjs` | React `.d.ts` → component metadata. preview 누락 시 build fail |
+| `apps/docs/scripts/build-contrast-report.mjs` | token contrast artifact → generated TS module. 없으면 null fallback |
+| `apps/docs/e2e/*.spec.ts` | WP-018~022 Playwright 15 tests |
+| `vitest.config.ts` | **현재 root test 회귀 지점**. tokens project jsdom 변경을 검토할 것 |
+| `docs/40_delivery/conductor_work_packages.md` | WP-018~022 summary done, body DoD unchecked — sync 필요 |
+| `docs/40_delivery/conductor_implementation_traceability.md` | WP/FR-DOC 증거 원장. FR-DOC-001 partial 사유 재평가 필요 |
+
+`apps/docs/src/generated/*`, `apps/docs/dist/`, `packages/tokens/src/tokens.ts`, `packages/tokens/src/breakpoints.ts`는 생성 파일이다.
+
 ## 최우선 — 다음 에이전트가 먼저 읽을 것
 
 | 경로 | 역할 |
