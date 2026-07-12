@@ -13,6 +13,8 @@ coverage/
 # Refs: CR-009 DEV-002 FR-TOK-001
 packages/tokens/src/tokens.ts
 packages/tokens/src/breakpoints.ts
+apps/docs/src/generated/component-meta.json
+apps/docs/src/generated/contrast-report.ts
 
 # Tool caches
 *.tsbuildinfo
