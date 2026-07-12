@@ -66,6 +66,12 @@ jobs:
 
       - run: pnpm check:contrast
 
+      # pnpm 10은 허용 목록(onlyBuiltDependencies) 밖 패키지의 lifecycle script를
+      # 실행하지 않는다. 따라서 `pnpm install`은 Playwright 브라우저를 내려받지
+      # 않으며, 이 단계가 없으면 아래 두 게이트가 "Executable doesn't exist"로
+      # 죽는다 — 통과할 수 없는 검사는 없는 것보다 나쁘다. Refs: WP-024 WP-028
+      - run: pnpm exec playwright install --with-deps chromium
+
       # JOB-CI-002: public component states are rendered in real Chromium for
       # both themes. Unapproved serious/critical axe findings fail the job.
       - run: pnpm test:a11y
@@ -82,6 +88,19 @@ jobs:
       # JOB-CI-004: measures the published, tree-shaken Button consumer bundle
       # with React excluded, plus the complete CSS entry point.
       - run: pnpm size
+
+      # 문서 사이트 성능 예산(NFR-001 LCP p75 ≤ 2.5s, Fast 3G)과 런타임 외부 도메인
+      # 요청 0건(NFR-002)을 프로덕션 산출물에서 측정한다. Refs: WP-028 FR-DOC-001
+      - run: pnpm lighthouse
+
+      - name: upload lighthouse report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-report-node-${{ matrix.node-version }}
+          path: test-results/lighthouse.json
+          if-no-files-found: ignore
+          retention-days: 30
 
       - name: upload size report
         if: always()

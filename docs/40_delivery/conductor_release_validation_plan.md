@@ -66,7 +66,7 @@ Conductor Design System은 `@conductor/tokens`, `@conductor/css`, `@conductor/re
 - [ ] 컴포넌트 카탈로그가 실제 DOM 렌더 프리뷰를 제공하고, export되었으나 화면이 없는 컴포넌트 0건(FR-DOC-003)
 - [ ] 토큰 참조 화면이 대비율 수치와 판정을 표시(FR-DOC-004)
 - [ ] 테마 토글이 새로고침 후 유지되고 최초 페인트 깜빡임이 없음(FR-DOC-005)
-- [ ] 문서 사이트 LCP p75 2.5초 이하(NFR-001)
+- [x] 문서 사이트 LCP p75 2.5초 이하(NFR-001) — Fast 3G 실측 1,793ms (CR-017)
 - [x] `pnpm test:a11y`에서 axe-core serious 이상 위반 0건, 다크·라이트 두 테마 모두 검사(FR-QA-003, FR-A11Y-005)
 - [x] 포커스 링이 두 테마 모두에서 배경 대비 3:1 이상(FR-A11Y-001)
 - [x] 컴포넌트 전수에 대한 키보드 경로 테스트 통과(FR-A11Y-002)

@@ -21,7 +21,8 @@
     "changeset": "changeset",
     "check:changesets": "node scripts/check-changesets.mjs",
     "check:api": "node scripts/check-api.mjs",
-    "check:secrets": "node scripts/scan-secrets.mjs"
+    "check:secrets": "node scripts/scan-secrets.mjs",
+    "lighthouse": "node scripts/check-lighthouse.mjs"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
@@ -42,6 +43,7 @@
     "axe-core": "4.10.3",
     "eslint": "^9.19.0",
     "globals": "^15.14.0",
+    "lighthouse": "^13.4.0",
     "playwright": "1.61.1",
     "size-limit": "11",
     "typescript": "^5.7.3",

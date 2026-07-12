@@ -205,16 +205,16 @@ QA-189 ~ QA-191은 OD-002(REL-003 착수 시점 결정)에 조건부인 Should �
 작업 패키지(WP)의 완료 기준(DoD)은 아래 ID를 인용한다.
 
 - [x] QA-201 M-1: 다크 테마 시각 회귀 픽셀 차이가 기준 컴포넌트 12개에서 1% 이하다 — 3회 연속 diff 0건
-- [ ] QA-202 M-2: 다크/라이트 시맨틱 토큰 키 집합 차이가 0개다
-- [ ] QA-203 M-3: WCAG 2.1 AA 대비 미달 쌍이 두 테마 본문 용도 토큰 기준 0건이다
-- [ ] QA-204 M-4: axe-core serious 이상 위반이 컴포넌트 전수 기준 0건이다
-- [ ] QA-205 M-5: Getting Started 절차 실행 시 신규 앱 적용 명령 수가 3개 이하다
-- [ ] QA-206 M-6: 공개 API의 `any` 노출이 0건이다
+- [x] QA-202 M-2: 다크/라이트 시맨틱 토큰 키 집합 차이가 0개다 — `theme-contract` 대칭 검사가 `pnpm test`에 포함되어 상시 강제
+- [x] QA-203 M-3: WCAG 2.1 AA 대비 미달 쌍이 두 테마 본문 용도 토큰 기준 0건이다 — `pnpm check:contrast` 다크·라이트 합계 80/80
+- [x] QA-204 M-4: axe-core serious 이상 위반이 컴포넌트 전수 기준 0건이다 — `pnpm test:a11y` 공개 30개·49상태×2테마, 위반 0건, 허용 예외 0건
+- [x] QA-205 M-5: Getting Started 절차 실행 시 신규 앱 적용 명령 수가 3개 이하다 — 신규 Vite React 앱에서 문서의 3개 명령을 그대로 실행해 `tsc --noEmit` 0 오류·프로덕션 빌드 성공 확인(원장 §5). 미게시 상태이므로 패키지는 `pnpm pack` tarball로 소비
+- [x] QA-206 M-6: 공개 API의 `any` 노출이 0건이다 — `pnpm check:api`가 tokens·react 추출 리포트 3종에서 상시 강제
 - [x] QA-207 M-7: `Button` 단독 import gzip 크기가 4KB 이하다(React 제외) — `size-limit` 실측 527바이트
 - [x] QA-208 의존성 취약점 severity high 이상이 0건이다(`pnpm audit --audit-level high`) — 실측 high 이상 0건
-- [ ] QA-209 배포 산출물의 런타임 외부 네트워크 요청이 0건이다
-- [ ] QA-210 OD-001(대비율 검사 대상 정의)이 해소되어 있다 — 미해소 시 SRS 14절에 따라 baseline 승격과 릴리스 게이트를 차단한다
-- [ ] QA-211 파괴 변경이 포함된 릴리스에 마이그레이션 노트가 동반된다 (FR-DX-005 AC-4)
+- [x] QA-209 배포 산출물의 런타임 외부 네트워크 요청이 0건이다 — 프로덕션 산출물의 Chromium 요청 수집에서 외부 도메인 0건
+- [x] QA-210 OD-001(대비율 검사 대상 정의)이 해소되어 있다 — CR-005로 종결(최소 수정: `focusRing` alpha 0.80, 신규 `border.control`)
+- [x] QA-211 파괴 변경이 포함된 릴리스에 마이그레이션 노트가 동반된다 (FR-DX-005 AC-4) — `pnpm check:changesets`가 major changeset에 마이그레이션 노트가 없으면 exit 1(음성 픽스처 실증)
 
 ## 8. QA 기록 템플릿
 

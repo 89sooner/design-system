@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "node scripts/check-foundation-tokens.mjs && node scripts/build-component-catalog.mjs && node scripts/build-contrast-report.mjs && vite build",
+    "build": "node scripts/check-foundation-tokens.mjs && node scripts/build-component-catalog.mjs && node scripts/build-contrast-report.mjs && vite build && vite build --ssr src/entry-server.tsx --outDir dist-server && node scripts/prerender.mjs",
     "dev": "vite",
     "preview": "vite preview",
     "pretypecheck": "node scripts/build-component-catalog.mjs && node scripts/build-contrast-report.mjs",
