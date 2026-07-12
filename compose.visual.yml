@@ -1,0 +1,13 @@
+services:
+  visual:
+    build:
+      context: .
+      dockerfile: Dockerfile.visual
+    image: conductor-visual:playwright-1.61.1
+    environment:
+      CI: "true"
+      CONDUCTOR_VISUAL_FIXTURE: "${CONDUCTOR_VISUAL_FIXTURE:-}"
+    volumes:
+      - ./apps/docs/visual/visual.spec.ts-snapshots:/workspace/apps/docs/visual/visual.spec.ts-snapshots
+      - ./test-results:/workspace/test-results
+

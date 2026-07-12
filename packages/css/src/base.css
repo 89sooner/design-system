@@ -60,8 +60,14 @@
    * declared in cdt.reset or cdt.base that does not route through a token.
    */
   @media (prefers-reduced-motion: reduce) {
-    :root,
-    [data-cdt-theme] {
+    /*
+     * The generated theme blocks use :root / [data-cdt-theme=<name>]. Repeat
+     * the attribute (or pair :root with :not()) so this later declaration also
+     * wins on specificity, while an unlayered consumer override still wins by
+     * cascade layer order.
+     */
+    :root:not([data-cdt-theme]),
+    [data-cdt-theme][data-cdt-theme] {
       --cdt-motion-fast: 0s cubic-bezier(0.2, 0, 0, 1);
       --cdt-motion-standard: 0s cubic-bezier(0.2, 0, 0, 1);
       --cdt-motion-bounce: 0s cubic-bezier(0.34, 1.56, 0.64, 1);

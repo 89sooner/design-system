@@ -61,7 +61,7 @@ design-system/
 | WP-023 | 셸 컴포넌트군 | REL-003 | WP-012 | - (OD-004 종결: 포함) | done |
 | WP-024 | 접근성 검사 CI 잡 | REL-003 | WP-020 | - | done |
 | WP-025 | 번들 크기 검사 CI 잡 | REL-003 | WP-017 | - | done |
-| WP-026 | 시각 회귀 검사 | REL-004 | WP-020 | - (OD-002 종결: REL-004 이월 확정) | todo |
+| WP-026 | 시각 회귀 검사 | REL-004 | WP-020 | - (OD-002 종결: REL-004 이월 확정) | done |
 | WP-027 | Changesets와 npm 배포 워크플로 | REL-004 | WP-017 | - | todo |
 | WP-028 | 문서 사이트 정적 배포 | REL-004 | WP-022, WP-027 | - | todo |
 
@@ -273,7 +273,7 @@ design-system/
   - [x] 레이어 밖 소비자 규칙이 동일 명시도에서 Conductor 규칙을 덮어쓴다 (FR-CSS-001 AC-3) — 산출물에 레이어 밖 규칙이 0건임을 `CSS-UNLAYERED` 검사가 강제한다. 실브라우저 캐스케이드 측정은 원장 §5
   - [x] `box-sizing: border-box` 전역 적용, 폼 요소 `font: inherit`, `:focus-visible` 포커스 링이 확인된다 (FR-CSS-002 AC-1~3)
   - [x] 산출물에 원격 폰트 참조(`@import url()`, `src: url(http...)`)가 0건이다 (FR-CSS-002 AC-4, NFR-002) — 리졸버 단계와 AST 단계 두 곳에서 차단
-  - [x] 감소 모드에서 `transition-duration`·`animation-duration` 계산값이 `0s`, `scroll-behavior`가 `auto`다 (FR-CSS-005 AC-1, AC-3) — **AST 단언에 한한다.** `--cdt-motion-*` 3종이 `0s`로 재정의되고 두 속성이 `0s`로 선언됨을 확인했다. 실브라우저 계산값 측정은 WP-024로 이월(원장 §5)
+  - [x] 감소 모드에서 `transition-duration`·`animation-duration` 계산값이 `0s`, `scroll-behavior`가 `auto`다 (FR-CSS-005 AC-1, AC-3) — AST 단언과 WP-026 standalone Chromium 계산값 측정으로 확인했다 (CR-014)
   - [x] 감소 모드 규칙이 전역 `*` 대신 Conductor 스코프 셀렉터를 쓴다 (FR-CSS-005 AC-4) — `:root` / `[data-cdt-theme]` 스코프, `!important` 0건
   - [x] `@conductor/css` 전체 gzip 크기가 20KB 이하다 (NFR-001) — 실측 gzip 2,575바이트. `packages/css/test/bundle.test.ts`가 단언한다. `pnpm size`(JOB-CI-004)로의 승격은 WP-025가 수행한다 (CR-010)
   - [x] `./component.css` 진입점이 `exports`에 선언된다 (FR-CSS-002 예외 처리, FR-DX-003 AC-4)
@@ -638,11 +638,11 @@ design-system/
 - 구현 범위: Playwright 기반 컴포넌트 12개 × 테마 2종 = 24개 스냅샷, 컨테이너 이미지로 브라우저·폰트 고정, `--update` 커맨드로만 기준 이미지 갱신, 차이 이미지 아티팩트
 - 제외: 문서 사이트 전체 페이지 스냅샷
 - 완료 기준(DoD):
-  - [ ] 비교 대상이 24개 스냅샷이다 (FR-QA-004 AC-1)
-  - [ ] 픽셀 차이 1% 초과 시 CI가 실패하고 차이 이미지를 아티팩트로 남긴다 (FR-QA-004 AC-2, M-1)
-  - [ ] 기준 이미지 갱신이 `pnpm test:visual --update`로만 가능하다 (FR-QA-004 AC-3)
-  - [ ] 렌더 환경이 컨테이너 이미지로 고정된다 (FR-QA-004 AC-4, R-2 완화)
-  - [ ] 동일 커밋 3회 연속 실행에서 flake가 0건이다 (R-2 검증)
+  - [x] 비교 대상이 24개 스냅샷이다 (FR-QA-004 AC-1) — 대표 12개 컴포넌트 × 다크·라이트
+  - [x] 픽셀 차이 1% 초과 시 CI가 실패하고 차이 이미지를 아티팩트로 남긴다 (FR-QA-004 AC-2, M-1) — Button 36% 차이 픽스처에서 exit 1과 actual/expected/diff 생성
+  - [x] 기준 이미지 갱신이 `pnpm test:visual --update`로만 가능하다 (FR-QA-004 AC-3) — 그 외 인자는 exit 2
+  - [x] 렌더 환경이 컨테이너 이미지로 고정된다 (FR-QA-004 AC-4, R-2 완화) — Playwright 1.61.1 Noble 이미지를 digest로 고정
+  - [x] 동일 커밋 3회 연속 실행에서 flake가 0건이다 (R-2 검증) — 각 25/25 통과, 스냅샷 diff 0건
 - 검증 방법: `pnpm test:visual` 3회 반복 실행
 - 기록: WP-026 행, FR-QA-004 매핑 갱신, OD-002 종결 근거 기록
 

@@ -16,7 +16,7 @@
     font-size: var(--cdt-button-font-size);
     font-weight: 600;
     line-height: 1;
-    transition: background var(--cdt-button-transition), border-color var(--cdt-button-transition), box-shadow var(--cdt-button-transition), transform var(--cdt-button-transition);
+    transition: background var(--cdt-motion-fast), border-color var(--cdt-motion-fast), box-shadow var(--cdt-motion-fast), transform var(--cdt-motion-fast);
   }
 
   .cdt-btn--primary,
@@ -96,7 +96,7 @@
     padding: var(--cdt-card-padding);
     background: var(--cdt-card-background);
     box-shadow: var(--cdt-card-shadow);
-    transition: border-color var(--cdt-card-interactive-transition), box-shadow var(--cdt-card-interactive-transition), transform var(--cdt-card-interactive-transition);
+    transition: border-color var(--cdt-motion-fast), box-shadow var(--cdt-motion-fast), transform var(--cdt-motion-fast);
   }
 
   .cdt-card--sm {
@@ -225,7 +225,7 @@
   }
 
   .cdt-table__row {
-    transition: background var(--cdt-table-row-transition);
+    transition: background var(--cdt-motion-fast);
   }
 
   .cdt-table__row:hover {
@@ -486,7 +486,7 @@
     background: var(--cdt-input-background);
     color: var(--cdt-input-text);
     font: inherit;
-    transition: background var(--cdt-input-transition), border-color var(--cdt-input-transition), box-shadow var(--cdt-input-transition);
+    transition: background var(--cdt-motion-fast), border-color var(--cdt-motion-fast), box-shadow var(--cdt-motion-fast);
   }
 
   .cdt-input::placeholder,
@@ -562,7 +562,7 @@
     min-block-size: var(--cdt-input-min-height);
     border: 1px solid var(--cdt-input-border); /* cdt-allow-literal: 토큰에 폼 경계 두께가 없다 */
     background: var(--cdt-input-background);
-    transition: background var(--cdt-input-transition), border-color var(--cdt-input-transition), box-shadow var(--cdt-input-transition);
+    transition: background var(--cdt-motion-fast), border-color var(--cdt-motion-fast), box-shadow var(--cdt-motion-fast);
   }
 
   .cdt-switch {
@@ -581,7 +581,7 @@
     background: var(--cdt-text-primary);
     box-shadow: 0 1px 2px var(--cdt-surface-overlay); /* cdt-allow-literal: source thumb shadow geometry */
     transform: translateX(-9px); /* cdt-allow-literal: source switch unchecked thumb offset */
-    transition: transform var(--cdt-input-transition);
+    transition: transform var(--cdt-motion-fast);
   }
 
   .cdt-switch__thumb[data-state="checked"] { transform: translateX(9px); /* cdt-allow-literal: source switch checked thumb offset */ }

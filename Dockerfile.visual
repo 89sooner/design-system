@@ -1,0 +1,17 @@
+# Refs: WP-026 FR-QA-004 JOB-CI-003
+FROM mcr.microsoft.com/playwright:v1.61.1-noble@sha256:5b8f294aff9041b7191c34a4bab3ac270157a28774d4b0660e9743297b697e48
+
+ENV CI=1
+WORKDIR /workspace
+
+RUN npm install --global pnpm@10.4.1
+
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY packages/tokens/package.json packages/tokens/package.json
+COPY packages/css/package.json packages/css/package.json
+COPY packages/react/package.json packages/react/package.json
+COPY apps/docs/package.json apps/docs/package.json
+RUN pnpm install --frozen-lockfile
+
+COPY . .
+RUN pnpm build

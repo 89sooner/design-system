@@ -9,6 +9,9 @@ concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  VISUAL_REGRESSION_ENABLED: "true"
+
 jobs:
   verify:
     name: verify (node ${{ matrix.node-version }})
@@ -98,3 +101,32 @@ jobs:
             exit 1
           fi
 
+  visual:
+    name: visual regression (playwright 1.61.1)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # JOB-CI-003 runs only in the exact browser/font image declared by
+      # Dockerfile.visual. The wrapper has no retry path and normal runs cannot
+      # update committed baselines. Refs: WP-026 FR-QA-004 AC-2~AC-4
+      - run: pnpm test:visual
+
+      - name: upload visual baselines and differences
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-report
+          path: |
+            apps/docs/visual/visual.spec.ts-snapshots/*.png
+            test-results/visual/**
+          if-no-files-found: error
+          retention-days: 30

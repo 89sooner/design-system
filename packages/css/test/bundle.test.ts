@@ -162,6 +162,14 @@ describe("FR-CSS-005 reduced motion", () => {
     expect(durations?.decls["animation-duration"]).toBe("0s");
   });
 
+  test.each(bundles)("FR-CSS-005 AC-1: %s keeps component transitions linked to live motion tokens", (
+    _name,
+    css,
+  ) => {
+    expect(css).not.toMatch(/var\(--cdt-(?:button|card-interactive|table-row|input)-transition\)/);
+    expect(css.match(/var\(--cdt-motion-(?:fast|standard|bounce)\)/g)?.length ?? 0).toBeGreaterThan(0);
+  });
+
   test.each(bundles)("FR-CSS-005 AC-3: %s sets scroll-behavior: auto under reduced motion", (
     _name,
     css,
