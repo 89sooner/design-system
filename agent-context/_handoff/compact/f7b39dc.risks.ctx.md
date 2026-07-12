@@ -1,8 +1,23 @@
 #hidden
 # aci:v1 id=f7b39dc src=agent-context/risks.md
-@kv sha256=30aa002015fc2a372e53ebe624c4375d33ac543e486ce357213014eb84e7bfcb bytes=13474 lines=165 title=리스크-/-불확실한-가정-/-검증에서-속을-뻔한-지점
-@sig agent-context/risks.md;src/tokens.ts;server/browser;15/15;Dialog/Tooltip/Menu;position/z-index;packages/react;conductor/react;packages/css;conductor/css;DEV-005/CR-012;conductor/tokens/breakpoints;packages/css/test/helpers.ts;packages/tokens/bin/;dist/cli.js;packages/tokens/bin/conductor-build-tokens.mjs;conductor/tokens;/bin/;packages/tokens/dist;px/ms/z-index/font-size;CR-005/CR-006;class/CSS;apps/docs;minified/146.29kB
+@kv sha256=d7b41c2b2e12dadf88234713b53a6728713b1b28902f0b5edddf939705347297 bytes=16964 lines=195 title=리스크-/-불확실한-가정-/-검증에서-속을-뻔한-지점
+@sig agent-context/risks.md;cache/ms-playwright;A/B;changesets/cli;src/tokens.ts;server/browser;15/15;Dialog/Tooltip/Menu;position/z-index;packages/react;conductor/react;packages/css;conductor/css;DEV-005/CR-012;conductor/tokens/breakpoints;packages/css/test/helpers.ts;packages/tokens/bin/;dist/cli.js;packages/tokens/bin/conductor-build-tokens.mjs;conductor/tokens;/bin/;packages/tokens/dist;px/ms/z-index/font-size;CR-005/CR-006
 @h1 리스크 / 불확실한 가정 / 검증에서 속을 뻔한 지점
+@h2 2026-07-13 (WP-024~028) 세션에서 추가된 함정
+@h3 Q. CI가 게이트를 돌릴 브라우저를 갖고 있지 않았다
+@cmd pnpm 10은 onlyBuiltDependencies(현재 esbuild만) 밖 패키지의 lifecycle script를 실행하지 않는다. 따라서 pnpm install --frozen-lockfile은 Playwright 브라우저를 내려받지 않는다. WP-024가 넣은 CI에는 playwright install 단계가 없었고, PLAYWRIGHT_BROWSERS_PATH를 빈 디렉터리로 두고 재현하니 pnpm test:a11y가 browserType.launch: Executable doesn't exist로 죽었다. 로컬은 ~/.cache/ms-playwright가 이미 차 있어 통과했을 뿐이다.
+@path 즉 그 CI 게이트는 첫 실행부터 실패했을 것이며, 아무도 그것을 확인하지 않았다. CR-009("절대 실패할 수 없는 검사")·CR-011("절대 통과할 수 없는 검사")과 같은 뿌리다 — 검사를 쓴 뒤 그 검사가 실제로 도는지 관찰하지 않았다. pnpm exec playwright install --with-deps chromium을 test:a11y·lighthouse 앞에 넣어 고쳤다.
+@h3 R. chrome-launcher가 WSL에서 저장소를 오염시킨다
+@p chrome-launcher는 WSL을 감지하면 프로필 디렉터리 경로를 Windows 형식(C:\Users\..., \\wsl.localhost\Ubuntu-22.04\tmp\...)으로 변환해 브라우저에 넘긴다. 그런데 실행되는 것은 Playwright의 ... Lighthouse 측정 1회마다 1개씩 쌓여 64개를 지웠다. userDataDir을 명시해도 같은 변환을 거치므로 소용없다.
+@p 해소: chrome-launcher를 버리고, Playwright가 띄운 Chromium에 Lighthouse를 CDP 포트(--remote-debugging-port)로 붙인다. 의존성도 제거했다.
+@p 일반화: 브라우저·외부 프로세스를 새로 붙였으면 실행 후 git status로 트리를 본다. 리뷰 서브에이전트 오염 항목과 같은 교훈이다.
+@h3 S. 격리하지 않은 A/B는 거짓말을 한다
+@p 프리렌더가 LCP에 실제로 기여하는지 재려고 dist를 복사해 마크업을 제거했는데, strip 정규식(<div id="root">[\s\S]*</div>\s*<script)이 매칭되지 않았다(module script가 <head>에 있어 root div 뒤 ... "프리렌더 효과"로 기록할 뻔했다. 스크립트가 찍은 stripped html has shell markup: true가 단서였다.
+@p 제대로 격리하니 프리렌더 1,793ms vs 클라이언트 전용 3,580ms로 갈렸다. 측정 전에 조작이 실제로 적용됐는지부터 검사(assert)하라.
+@h3 T. 측정 방법이 판정을 뒤집는다 (DEV-010)
+@path Lighthouse 기본 lantern 시뮬레이션은 프리렌더된 HTML의 첫 페인트를 모델링하지 못해, 마크업 4,136자를 주입해도 LCP 예측이 3,002ms로 바뀌지 않는다. 같은 스로틀 계수를 실제 Chromium에 적용(throttlingMethod: "devtools")하면 1,793ms다. 예산 2.5초의 양쪽이다. SRS는 "Fast 3G 스로틀"을 명시하므로 실측을 지표로 삼고 두 값을 모두 원장에 남겼다(CR-017).
+@h3 U. 의존성 조합이 CLI를 죽인다
+@path @changesets/cli 2.x가 human-id 4.2(순수 ESM)를 끌어와 changeset version이 ERR_REQUIRE_ESM으로 죽는다. pnpm.overrides로 human-id: 4.1.1을 고정했다. changesets를 업그레이드할 때 이 override를 함께 재검토한다.
 @h2 2026-07-12 강제 compaction 복원에서 발견
 @h3 M. Vitest project environment는 다른 package의 URL 의미를 바꾼다
 @todo vitest.config.ts에서 tokens project를 node → jsdom으로 바꾸면 import.meta.url 기반 file reads가 The URL must be of scheme file 또는 /src/tokens.ts ENOENT로 깨 ... ct 환경을 바꿀 이유가 없다. package별 environment를 섞지 말고 필요한 project에만 jsdom을 적용한다.

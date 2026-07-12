@@ -1,22 +1,41 @@
 # 중요 파일과 역할
 
-## 2026-07-12 현재 변경의 중심
+## 2026-07-13 릴리스 자동화 (WP-024~028)
 
 | 경로 | 역할 |
 | --- | --- |
-| `apps/docs/src/App.tsx` | W-001~W-050 route shell, theme toggle, mobile nav, Getting Started/Foundations route composition |
-| `apps/docs/src/catalog.tsx` | 27개 공개 component live preview, generated props table, preview error boundary, copy integration |
+| `.github/workflows/ci.yml` | verify 잡(게이트 전부) + visual 잡. **`playwright install` 단계가 브라우저 게이트의 전제**다 |
+| `.github/workflows/release.yml` | JOB-REL-001. version PR 잡(자격증명 없음) / publish 잡(`id-token: write`) 분리 |
+| `.github/workflows/deploy-docs.yml` | 문서 사이트 Pages 배포. `ref` 입력으로 임의 커밋 배포 = 롤백 |
+| `.changeset/config.json` | linked 그룹(@conductor 3종), docs는 ignore |
+| `scripts/check-changesets.mjs` | `Refs:` 줄·major 마이그레이션 노트·배포 대상 검사. `--require-empty`는 게시 전 게이트 |
+| `scripts/check-api.mjs` | api-extractor 리포트 3종 드리프트 + `any` 노출. `--update`로 기준 갱신 |
+| `scripts/scan-secrets.mjs` | 토큰·PEM 7패턴. `CONDUCTOR_SECRET_FIXTURE=1`이 음성 픽스처 |
+| `scripts/release-rollback.mjs` | deprecate → dist-tag 승격 → 검증. 기본 dry-run, `--execute`로 실행 |
+| `scripts/check-lighthouse.mjs` | 정적 서빙 렌더 + 외부 요청 0건 + LCP p75/CLS. Playwright Chromium에 CDP로 붙는다 |
+| `scripts/check-size.mjs` | size-limit. Button 단독 gzip / CSS 전체 gzip / `sideEffects` 계약 |
+| `scripts/test-visual.mjs` | Docker 컨테이너에서 Playwright 시각 회귀. `--update`만 기준 이미지를 갱신한다 |
+| `vitest.a11y.config.ts` | Vitest browser mode(Playwright Chromium). axe 리포트를 `test-results/`에 쓴다 |
+| `packages/react/src/testing/a11y-scenarios.tsx` | 공개 30개 × 49상태 시나리오 정의 |
+| `packages/react/src/testing/a11y.browser.test.tsx` | axe(2테마) + 키보드 경로 + focus-visible + cascade |
+| `apps/docs/src/entry-server.tsx`, `apps/docs/scripts/prerender.mjs` | 랜딩 프리렌더. LCP 예산이 여기에 달려 있다 |
+| `apps/docs/visual/visual.spec.ts` + `-snapshots/` | 24 기준 이미지(12 컴포넌트 × 2테마) + reduced-motion 계산값 |
+| `packages/{tokens,react}/etc/*.api.md` | **커밋된 공개 API 기준.** 파괴 변경 판정의 근거 |
+
+## 문서 사이트 (apps/docs)
+
+| 경로 | 역할 |
+| --- | --- |
+| `apps/docs/src/App.tsx` | route shell. 공개 AppShell/NavList/TopBar 소비. 무거운 화면은 `lazy` |
+| `apps/docs/src/foundation-page.tsx` | Foundations 5개 화면 (WP-028에서 App.tsx에서 분리 — 코드 분할) |
+| `apps/docs/src/catalog.tsx` | 30개 공개 component live preview, generated props table |
 | `apps/docs/src/foundations.ts` | generated `tokens.json`을 foundation group과 현재 theme 값으로 정규화 |
 | `apps/docs/src/token-reference.tsx` | 양 테마 token 표, filter, generated contrast verdict, missing-report fallback |
-| `apps/docs/src/guides.tsx` | Patterns/Accessibility, recommended/prohibited examples, clipboard state |
+| `apps/docs/src/guides.tsx` | Patterns/Accessibility, recommended/prohibited examples, `axe-allowlist.json` 표시 |
 | `apps/docs/scripts/build-component-catalog.mjs` | React `.d.ts` → component metadata. preview 누락 시 build fail |
-| `apps/docs/scripts/build-contrast-report.mjs` | token contrast artifact → generated TS module. 없으면 null fallback |
-| `apps/docs/e2e/*.spec.ts` | WP-018~022 Playwright 15 tests |
-| `vitest.config.ts` | **현재 root test 회귀 지점**. tokens project jsdom 변경을 검토할 것 |
-| `docs/40_delivery/conductor_work_packages.md` | WP-018~022 summary done, body DoD unchecked — sync 필요 |
-| `docs/40_delivery/conductor_implementation_traceability.md` | WP/FR-DOC 증거 원장. FR-DOC-001 partial 사유 재평가 필요 |
+| `apps/docs/e2e/*.spec.ts` | Playwright 16 tests |
 
-`apps/docs/src/generated/*`, `apps/docs/dist/`, `packages/tokens/src/tokens.ts`, `packages/tokens/src/breakpoints.ts`는 생성 파일이다.
+생성 파일(직접 편집 금지): `apps/docs/src/generated/*`, `apps/docs/dist/`, `apps/docs/dist-server/`, `packages/tokens/src/tokens.ts`, `packages/tokens/src/breakpoints.ts`.
 
 ## 최우선 — 다음 에이전트가 먼저 읽을 것
 

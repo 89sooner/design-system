@@ -1,5 +1,85 @@
 # 명령어 / 테스트 결과 / 실패한 것과 원인
 
+## 2026-07-13 — WP-024~028 최종 검증
+
+전체 게이트 (CI와 같은 순서 + 신규 게이트):
+
+```bash
+pnpm build && pnpm typecheck && pnpm check:api && pnpm test && pnpm lint && pnpm lint:tokens
+pnpm check:contrast && pnpm check:secrets && pnpm check:changesets
+pnpm test:a11y && pnpm size && pnpm lighthouse
+pnpm --filter docs test:e2e
+pnpm test:visual                       # Docker 필요
+```
+
+| 명령 | 결과 |
+| --- | --- |
+| `pnpm build` | 통과. tokens 337, contrast 80/80, CSS gzip 7,720B(index) / 7,558B(component) |
+| `pnpm test` | 30 files, 487/487 |
+| `pnpm lint:tokens` | 42 files, 0 violations, 57 allowances |
+| `pnpm check:api` | 리포트 3종 일치, `any` 0건 |
+| `pnpm check:secrets` | 218 files, 0 findings |
+| `pnpm check:changesets` | 2 changesets, 0 violations |
+| `pnpm test:a11y` | 134 passed / 1 fixture skipped |
+| `pnpm size` | Button 527B / 4KB, CSS 7.54KiB / 20KB |
+| `pnpm lighthouse` | LCP p75 1,937ms / 2,500ms, CLS 0.000 / 0.1, 외부 요청 0건, perf 98 |
+| `pnpm --filter docs test:e2e` | 16/16 |
+| `pnpm test:visual` | 25/25 |
+| validator `--report` / `--strict` | issue 0 |
+
+### 신규 명령
+
+```bash
+pnpm changeset                    # 변경 이력 파일 작성
+pnpm check:changesets             # Refs 줄·major 마이그레이션 노트 규약 (FR-DX-005)
+node scripts/check-changesets.mjs --require-empty   # 게시 전: 소비되지 않은 changeset이 없어야 한다
+pnpm check:api                    # 공개 API 리포트 드리프트 + any 노출
+pnpm check:api --update           # 의도된 API 변경 후 기준 갱신
+pnpm check:secrets                # 토큰·PEM 7패턴 스캔
+pnpm lighthouse                   # 정적 서빙 렌더 + 외부 요청 0건 + LCP/CLS 예산
+node scripts/release-rollback.mjs 1.5.0 1.4.2            # dry-run
+node scripts/release-rollback.mjs 1.5.0 1.4.2 --execute  # 실제 dist-tag 롤백
+```
+
+### 음성 테스트 — 새 게이트가 실제로 죽는지 확인
+
+```bash
+# API 리포트 드리프트: dist/index.d.ts에서 export 1건 제거
+pnpm check:api        # error[API-REPORT-DRIFT] exit 1
+
+# changeset 규약
+printf -- '---\n"@conductor/react": patch\n---\n\nFix.\n' > .changeset/probe.md
+pnpm check:changesets # error[CHANGESET-CONVENTION]: Refs 줄 없음 exit 1
+# major + 마이그레이션 노트 없음 → 같은 코드로 exit 1
+
+# 시크릿 스캔 (합성 PAT를 런타임에 주입, 커밋되지 않는다)
+CONDUCTOR_SECRET_FIXTURE=1 pnpm check:secrets   # error[SECRET-LEAK] exit 1
+
+# Lighthouse 예산 (LCP 예산을 1ms로 좁힌다)
+CONDUCTOR_LH_FIXTURE=1 pnpm lighthouse          # error[LH-LCP-BUDGET] exit 1
+```
+
+### 소비자 스모크 (M-5 / QA-205, FR-DX-002 AC-3)
+
+문서(W-002)가 지시하는 3개 명령을 workspace 밖 신규 Vite React 앱에서 그대로 실행했다. 미게시 상태라 `@conductor/*`는 `pnpm pack` tarball로 해석되게 `pnpm.overrides`를 뒀다.
+
+```bash
+pnpm add @conductor/tokens @conductor/css @conductor/react   # (tarball로 대체)
+pnpm add react react-dom lucide-react
+pnpm run build                                                # tsc --noEmit && vite build
+```
+
+결과: `tsc --noEmit` 0 오류, 빌드 성공. 중간에 `tokens.accent.value`(존재하지 않음, `DEFAULT`가 맞다)를 tsc가 잡아냈다 — 타입 계약이 실제로 강제된다는 증거다.
+
+### 실패했던 명령과 원인
+
+| 명령 | 증상 | 원인 | 해결 |
+| --- | --- | --- | --- |
+| `pnpm test:a11y` (빈 브라우저 캐시) | `browserType.launch: Executable doesn't exist` | pnpm 10이 lifecycle script를 막아 `pnpm install`이 Playwright 브라우저를 안 받는다. CI에 설치 단계가 없었다 | CI에 `pnpm exec playwright install --with-deps chromium` 추가 |
+| `pnpm lighthouse` | 저장소 루트에 `C:\Users\...`, `\\wsl.localhost\...` 디렉터리 64개 생성 | `chrome-launcher`가 WSL을 감지해 프로필 경로를 Windows 형식으로 변환 → 리눅스 Chrome이 그 문자열을 디렉터리 이름으로 만든다 | chrome-launcher 제거, Playwright Chromium + CDP 포트로 전환 |
+| `pnpm changeset version` | `ERR_REQUIRE_ESM` (`human-id`) | changesets 2.x가 순수 ESM인 `human-id` 4.2를 끌어온다 | `pnpm.overrides`로 `human-id: 4.1.1` 고정 |
+| `pnpm add <절대경로>.tgz` (소비자 앱) | `No authorization header was set` | 절대 경로 tarball + workspace 전이 의존이 레지스트리로 해석된다 | 상대 경로 + `pnpm.overrides`로 3개 tarball 고정 |
+
 ## 2026-07-12 — WP-018~022 복원 재검증
 
 ### 통과

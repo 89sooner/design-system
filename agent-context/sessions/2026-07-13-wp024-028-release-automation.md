@@ -1,0 +1,102 @@
+# Session History — 2026-07-13 WP-024~028 커밋과 REL-004 마감
+
+## 요청과 범위
+
+사용자는 순서를 지정했다: (1) 미커밋 작업 커밋 → (3) WP-027 → (4) WP-028 → (2) handoff 갱신.
+
+착수 시점의 트리는 handoff pack보다 앞서 있었다. pack은 "WP-023까지 완료, 다음은 WP-024"라고 기록했지만, 실제로는 이후 세션이 WP-024·025·026과 CR-014/DEV-007까지 구현해 놓고 **커밋 없이** 끝나 있었다(수정 19파일 + 신규 11항목, 시각 회귀 기준 이미지 24장 포함). handoff는 손실 압축이라는 전제를 지키고 repo를 진실로 삼아 재확인한 것이 이 세션의 첫 소득이다.
+
+## 1단계 — WP-024/025/026 커밋 분할
+
+한 덩어리 트리를 WP 단위 3개 커밋으로 갈랐다. 공유 파일(ci.yml, package.json, .gitignore, delivery 문서 4종)은 커밋마다 중간 버전을 만들어 스테이징하고, 작업 디렉터리는 최종 버전으로 되돌리는 방식을 썼다(스크립트가 모든 치환을 "정확히 1건" 단언).
+
+- `1bdfe8b` WP-024 접근성 자동화 (vitest browser + axe, 키보드 경로, allowlist)
+- `f0318f9` WP-025 번들 크기 게이트 (size-limit, tsup 멀티 엔트리)
+- `6a5d5a4` WP-026 시각 회귀 + CR-014 (Docker Playwright, 기준 이미지 24장, reduced-motion 수정)
+- `410504d` 원장의 커밋 참조 정정 (WP-001~026이 전부 "(미커밋, 작업 트리)"로 남아 있었다)
+
+최종 HEAD 트리가 커밋 전 트리와 바이트 단위로 같은지 `git write-tree` 해시로 확인했다.
+
+## 2단계 — WP-027 릴리스 자동화
+
+- Changesets 2 + linked 그룹(`@conductor/tokens|css|react`). `check:changesets`가 본문 `Refs:` 줄(AC-2)과 major의 `## Migration` 절(AC-4)을 강제한다.
+- 파괴 변경 판정은 api-extractor 리포트 3종(`packages/*/etc/*.api.md`) 드리프트다(ADR-008). `check:api`가 드리프트와 `any` 노출을 함께 막는다.
+- `release.yml`: version PR 잡(자격증명 없음)과 publish 잡(`id-token: write`) 분리 — PR 코드가 릴리스 권한으로 실행되는 THR-002를 막는다.
+- 시크릿 스캔 7패턴, `pnpm audit --audit-level high`, dist-tag 롤백 스크립트(dry-run 기본).
+
+### DEV-008 / CR-015
+
+문서(인프라 운영 §6)는 "버전 상승 PR 병합 → 워크플로가 태그 생성 → 태그가 배포 잡 트리거"라고 썼지만, `GITHUB_TOKEN`이 push한 태그는 재귀 방지로 워크플로를 트리거하지 않는다. 수동 승인을 workflow_dispatch/태그 push로 정의하고, 태그 생성은 배포 잡이 게시 후 하도록 정정했다. 배포 명령도 재실행이 안전한 `changeset publish`로 바꿨다.
+
+## 3단계 — WP-028 문서 사이트 배포
+
+- 라우트 코드 분할(카탈로그·토큰·가이드·Foundations를 lazy) + 랜딩 프리렌더(`entry-server.tsx` + `scripts/prerender.mjs`).
+- `check-lighthouse.mjs`가 정적 서빙(파일 + SPA 폴백만)에서 셸 렌더(AC-3), 외부 도메인 요청 0건(AC-4/NFR-002), LCP p75와 CLS를 게이트한다.
+- `deploy-docs.yml`: 수동 승인, `ref` 입력으로 임의 커밋 배포 = 롤백.
+
+### 프리렌더가 예산을 성립시킨다 (격리 A/B)
+
+동일 번들에서 프리렌더 마크업만 제거해 6회 교차 측정했다.
+
+| 구성 | LCP p75 |
+| --- | --- |
+| 프리렌더 | 1,793ms |
+| 클라이언트 전용 | 3,580ms (예산 2,500ms 초과) |
+
+첫 시도에서는 strip 정규식이 매칭되지 않아 **같은 파일을 두 번 재고** 노이즈 257ms를 효과로 착각할 뻔했다. "stripped html has shell markup: true" 출력이 단서였다. 조작이 실제로 적용됐는지부터 확인하라.
+
+### DEV-010 / CR-017 — 측정 방법이 판정을 뒤집는다
+
+Lighthouse 기본 lantern 시뮬레이션은 프리렌더된 첫 페인트를 모델링하지 못해 프리렌더 전후 모두 3,002ms를 예측한다(마크업 4,136자를 주입해도 값이 안 바뀐다). 같은 스로틀 계수를 실제 Chromium에 적용하면 1,793ms다. SRS가 명시한 조건은 "Fast 3G 스로틀"이므로 DevTools 프리셋 실측을 지표로 삼고, 두 값을 모두 원장에 기록했다.
+
+### DEV-009 / CR-016 — Pages에는 별칭 전환이 없다
+
+인프라 운영 §8의 "커밋 SHA 디렉터리 + 별칭 전환 + 직전 5개 보존"은 GitHub Pages에서 성립하지 않는다. 배포 단위가 사이트 스냅샷 전체다. 원자성 불변식(신·구 자산 혼재 0건)은 그대로 유지되므로, 배포를 스냅샷 교체로, 롤백을 커밋 ref 재배포로 정정했다.
+
+## 이번 세션에서 실제로 깨진 것들
+
+### CI의 a11y 게이트는 첫 실행부터 실패했을 것이다
+
+pnpm 10은 `onlyBuiltDependencies` 밖 패키지의 lifecycle script를 실행하지 않는다. 따라서 `pnpm install`은 Playwright 브라우저를 내려받지 않는데, WP-024가 넣은 CI에는 `playwright install` 단계가 없었다. 빈 브라우저 캐시로 재현하니 `pnpm test:a11y`가 "Executable doesn't exist"로 죽었다. 로컬은 캐시가 있어 통과했을 뿐이다. `pnpm exec playwright install --with-deps chromium`을 추가했다.
+
+이 저장소가 CR-009/CR-011에서 배운 것과 같은 병이다: **검사를 쓴 뒤 그 검사가 실제로 도는지 관찰하지 않았다.**
+
+### chrome-launcher가 WSL에서 저장소를 오염시킨다
+
+`chrome-launcher`는 WSL을 감지하면 프로필 경로를 Windows 형식(`C:\Users\...`, `\\wsl.localhost\...`)으로 변환해 넘긴다. 그런데 실행되는 건 리눅스 Chrome이라, 그 문자열을 통째로 디렉터리 이름 삼아 cwd(= 저장소 루트)에 만든다. Lighthouse 측정 1회마다 1개씩 쌓여 **64개**를 지웠다. `--user-data-dir`을 명시해도 같은 변환을 거쳐 소용없었다.
+
+해소: chrome-launcher를 버리고 Playwright가 띄운 Chromium에 Lighthouse를 CDP 포트로 붙였다(의존성도 제거).
+
+교훈은 기존 위험 항목(`리뷰 서브에이전트가 작업 트리를 오염시킨다`)과 같다 — **브라우저·외부 프로세스를 새로 붙였으면 끝나고 `git status`로 트리를 본다.**
+
+### 그 밖
+
+- changesets 2.x가 `human-id` 4.2(ESM)와 충돌해 `changeset version`이 `ERR_REQUIRE_ESM`으로 죽는다 → `pnpm.overrides`로 `human-id: 4.1.1` 고정.
+- react-router-dom 7은 `StaticRouter`를 뺐다 → 일회성 `renderToString`에는 `MemoryRouter`로 충분하다.
+- `tokens.accent.value`는 없다(`DEFAULT`가 맞다). 소비자 스모크의 `tsc`가 잡았다 — 타입 계약이 실제로 강제된다는 증거.
+
+## 최종 검증
+
+| 게이트 | 결과 |
+| --- | --- |
+| build / typecheck / lint / lint:deps | 통과 |
+| test | 30 files, 487/487 |
+| lint:tokens | 42 files, 0 violations, 57 allowances |
+| check:contrast | dark/light 80/80 |
+| check:api | 리포트 3종 일치, `any` 0건 |
+| check:secrets / check:changesets | 통과 (음성 픽스처 각 exit 1) |
+| test:a11y | 134 passed / 1 fixture skipped |
+| size | Button 527B/4KB, CSS 7.54KiB/20KB |
+| lighthouse | LCP p75 1,937ms/2,500ms, CLS 0.000/0.1, 외부 요청 0건 |
+| docs E2E / visual | 16/16, 25/25 |
+| 소비자 스모크 | 문서의 3개 명령, `tsc --noEmit` 0 오류, 빌드 성공 |
+| validator --report/--strict | issue 0 |
+
+## 남은 일
+
+WP-001~028이 전부 done이다. 남은 것은 **실제 첫 배포와 그 뒤 리허설**뿐이며, 둘 다 사용자 자격이 필요하다.
+
+1. npm 스코프 `@conductor` 확보 → trusted publishing(OIDC) 설정 → release 워크플로 실행 → provenance 확인
+2. 배포 직후 롤백 리허설(dist-tag 승격, 10분 예산) 실측 → 원장 §5의 npm 행을 닫는다
+3. GitHub Pages 활성화 → deploy-docs 실행 → 실 배포·롤백 시간 실측 → 원장 §5의 Pages 행을 닫는다
+4. 선택: 소비자 스모크 CI 자동화, FR-A11Y-003 AC-4 그레이스케일 스냅샷, FR-DX-004 AC-3 hydration

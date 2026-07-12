@@ -2,58 +2,59 @@
 
 ## 현재 시작 지점
 
-WP-023까지 구현·문서·검증이 green이다. 다음 작업은 **WP-024 접근성 자동화**다.
+**WP-001 ~ WP-028이 전부 done이고 커밋됐다.** 코드로 할 수 있는 일은 끝났다. 남은 항목은 전부 **사용자 자격이 필요한 실제 배포와 그 리허설**이다.
 
 ```text
-1. agent-context/sessions/2026-07-12-wp023-shell-components.md를 읽는다
-2. WP-024의 DoD와 FR-A11Y/FR-QA 매핑을 원문에서 확인한다
-3. 현재 수동/컴포넌트별 a11y 검사와 새 루트 test:a11y 계약의 경계를 정한다
-4. axe serious+ 0, keyboard smoke, CI 실행을 구현한다
-5. 전체 게이트와 문서 strict validator를 실행하고 traceability를 갱신한다
+1. agent-context/sessions/2026-07-13-wp024-028-release-automation.md를 읽는다
+2. docs/40_delivery/conductor_implementation_traceability.md §5(알려진 제약)에서 열려 있는 행을 본다
+3. 첫 배포에 필요한 외부 설정(npm 스코프, OIDC 신뢰, GitHub Pages)을 사용자와 확인한다
+4. 배포 → 리허설 → §5의 해당 행을 닫는다
 ```
 
-## P0 — WP-024 접근성 자동화
+## P0 — 첫 npm 배포 (사용자 자격 필요)
 
-- 루트 `pnpm test:a11y`가 실제로 실패 가능한 gate가 되게 한다.
-- axe-core serious 이상 violation 0을 컴포넌트/문서 소비 경로에서 검증한다.
-- 키보드 smoke는 skip link, off-canvas Escape, focus 이동 등 이미 존재하는 WP-023 Playwright 증거를 재사용할지 WP-024 전용 스위트로 묶을지 DoD를 기준으로 결정한다.
-- Radix가 소유하는 focus trap/roles/keyboard 동작을 다시 손으로 구현하지 않는다.
+- npm 조직/스코프 `@conductor` 확보 (THR-001 typosquatting 방어의 전제이기도 하다)
+- npm trusted publishing(OIDC) 설정: 저장소 `89sooner/design-system`, 워크플로 `.github/workflows/release.yml`
+- 버전 상승 PR 병합 → release 워크플로 수동 실행 → provenance와 신뢰 게시 확인
+- 워크플로와 게이트는 이미 있다. 검증되지 않은 것은 **실 레지스트리 동작**뿐이다
 
-## P1 — WP-025 크기 자동화
+## P1 — 롤백 리허설 (배포 직후)
 
-- Button 단독 gzip ≤4KB, `@conductor/css` gzip ≤20KB.
-- 현재 CSS 측정치는 index 7,751B / component 7,590B다.
-- docs Vite JS chunk는 약 517.81kB minified / 146.29kB gzip으로 경고가 난다. WP-025 또는 WP-028에서 근거 있게 처리한다.
+- `node scripts/release-rollback.mjs <결함버전> <직전버전> --execute` (기본은 dry-run)
+- 10분 예산(NFR-004) 실측 → 원장 §5의 "npm 실 레지스트리 검증" 행을 닫는다
 
-## P2 — 릴리스 마감
+## P2 — GitHub Pages 배포
 
-- WP-026 release readiness.
-- WP-027 consumer smoke.
-- WP-028 docs performance/Lighthouse.
+- 저장소 Settings에서 Pages 소스를 GitHub Actions로 활성화
+- `deploy-docs` 워크플로 수동 실행(`ref` 기본 `main`) → 배포 시간 실측
+- 롤백 = 직전 정상 커밋을 `ref`로 재실행 → 10분 예산 실측 → 원장 §5의 Pages 행을 닫는다
+
+## P3 — 선택 항목 (릴리스 차단 아님)
+
+- 소비자 스모크를 CI 잡으로 승격 (지금은 1회 수동 실측이며 `pnpm pack` tarball 소비)
+- FR-A11Y-003 AC-4 / QA-183: 그레이스케일 렌더 스냅샷에서 상태 7종·심각도 4종 구분
+- FR-DX-004 AC-3: hydration 일치 (docs는 `createRoot` 재마운트라 이 AC를 닫지 않는다)
+- OD-003 FilterBar/Chip은 open/비차단. **FR/WP가 없으므로 구현하지 않는다.**
 
 ## 검증 기준선
 
 ```text
-pnpm build
-pnpm typecheck
-pnpm test
-pnpm lint
-pnpm lint:tokens
-pnpm check:contrast
+pnpm build && pnpm typecheck && pnpm test && pnpm lint && pnpm lint:tokens && pnpm check:contrast
+pnpm check:api && pnpm check:secrets && pnpm check:changesets
+pnpm test:a11y && pnpm size && pnpm lighthouse
 pnpm --filter docs test:e2e
+pnpm test:visual                      # Docker 필요
 python3 ~/.claude/skills/build-srs-prd-env/scripts/validate_srs_prd_env.py --root . --report
 python3 ~/.claude/skills/build-srs-prd-env/scripts/validate_srs_prd_env.py --root . --strict
 ```
 
-WP-023 완료 기준: root tests 485/485, React 142/142, CSS 76/76, docs E2E 16/16, contrast 80/80.
-
-## 열린 결정
-
-- OD-003 FilterBar/Chip의 v1 포함 여부만 open이며 Must FR을 차단하지 않는다. FR/WP가 없으므로 구현하지 않는다.
+최신 통과 수치: root tests 487/487, a11y 134, docs E2E 16/16, visual 25/25, contrast 80/80, LCP p75 1,937ms, CLS 0.000, Button 527B, CSS 7.54KiB.
 
 ## 계속 지킬 것
 
 - `srs_final.md` baseline 의미를 바꾸면 CR을 먼저 등록하고 cascade한다.
-- 생성 파일 `packages/tokens/src/tokens.ts`, `src/breakpoints.ts`, docs `src/generated/*`를 직접 편집하지 않는다.
-- docs 검증 전 workspace dependency dist가 최신인지 확인한다. 가장 안전한 기준은 루트 `pnpm build`다.
+- 생성 파일(`packages/tokens/src/tokens.ts`, `src/breakpoints.ts`, `apps/docs/src/generated/*`)을 직접 편집하지 않는다.
+- docs 검증 전 workspace dependency `dist`가 최신인지 확인한다. 가장 안전한 기준은 루트 `pnpm build`다.
 - `@conductor/react`에 라우팅 라이브러리를 추가하지 않는다. 링크는 `renderLink`로 위임한다.
+- 브라우저를 띄우는 도구를 새로 붙였으면 끝나고 `git status`로 트리 오염을 확인한다.
+- 공개 API를 바꿨으면 `pnpm check:api --update`로 리포트를 갱신하고, 파괴 변경이면 major changeset과 마이그레이션 노트를 함께 커밋한다.
