@@ -1,7 +1,7 @@
 #hidden
 # aci:v1 id=f7b39dc src=agent-context/risks.md
-@kv sha256=82f65c251c6dc3225df0e83424f9a441becd1c127a1410a228428296eecf50be bytes=12285 lines=147 title=리스크-/-불확실한-가정-/-검증에서-속을-뻔한-지점
-@sig agent-context/risks.md;src/tokens.ts;server/browser;15/15;Dialog/Tooltip/Menu;position/z-index;packages/react;conductor/react;packages/css;conductor/css;DEV-005/CR-012;conductor/tokens/breakpoints;packages/css/test/helpers.ts;packages/tokens/bin/;dist/cli.js;packages/tokens/bin/conductor-build-tokens.mjs;conductor/tokens;/bin/;packages/tokens/dist;px/ms/z-index/font-size;CR-005/CR-006;compaction;Vitest;project
+@kv sha256=30aa002015fc2a372e53ebe624c4375d33ac543e486ce357213014eb84e7bfcb bytes=13474 lines=165 title=리스크-/-불확실한-가정-/-검증에서-속을-뻔한-지점
+@sig agent-context/risks.md;src/tokens.ts;server/browser;15/15;Dialog/Tooltip/Menu;position/z-index;packages/react;conductor/react;packages/css;conductor/css;DEV-005/CR-012;conductor/tokens/breakpoints;packages/css/test/helpers.ts;packages/tokens/bin/;dist/cli.js;packages/tokens/bin/conductor-build-tokens.mjs;conductor/tokens;/bin/;packages/tokens/dist;px/ms/z-index/font-size;CR-005/CR-006;class/CSS;apps/docs;minified/146.29kB
 @h1 리스크 / 불확실한 가정 / 검증에서 속을 뻔한 지점
 @h2 2026-07-12 강제 compaction 복원에서 발견
 @h3 M. Vitest project environment는 다른 package의 URL 의미를 바꾼다
@@ -83,3 +83,12 @@
 @path 문서 사이트 LCP p75 ≤ 2.5초도 미측정(WP-028)
 @h2 문서 환경의 함정
 @p validate_srs_prd_env.py는 백틱으로 감싼 .md로 끝나는 문자열을 문서 경로로 오인한다. 토큰 이름 radius.md, font.size.md, breakpoint.md, font.lineHeight.md를 백틱에 넣으면 경고가 뜬다. 볼드(radius.md)를 써라. 실제 문서 파일명(srs_final.md)은 백틱으로 감싸도 된다.
+@h2 WP-023에서 추가된 함정 (2026-07-12)
+@h3 Radix non-modal Dialog에는 Overlay가 없다
+@path Dialog.Root modal={false}에서 Dialog.Overlay는 렌더되지 않는다. class/CSS를 아무리 고쳐도 scrim이 생기지 않는다. AppShell의 scrim은 plain element이며, 닫기는 Content의 Radix DismissableLayer가 소유한다.
+@h3 docs-only E2E는 workspace의 stale dist를 볼 수 있다
+@path apps/docs가 빌드된 @conductor/react를 소비하는 경로에서는 docs build만 다시 해도 React source 변경이 반영되지 않을 수 있다. 새 public component나 동작을 검증하기 전 root build 또는 React build를 선행한다.
+@h3 토큰 누출 검사는 부분 문자열로 쓰지 않는다
+@p primitive key ink 금지를 includes("ink:")로 검사하면 skipLink: 같은 정상 component key를 오탐한다. 계층/구조를 검사하려면 top-level serialization key나 parsed object를 본다.
+@h3 Vite chunk warning은 아직 열린 후속 게이트다
+@path docs chunk 약 517.81kB minified/146.29kB gzip 경고가 남는다. WP-023 실패는 아니지만 WP-025 size 및 WP-028 Lighthouse에서 실제 budget과 함께 처리해야 한다.

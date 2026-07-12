@@ -138,7 +138,20 @@ WP-008 ~ WP-012이 완료됐다.
 
 ### `packages/react/`, `apps/docs/`
 
-`packages/react`은 WP-011/012까지 구현됐다. `action.tsx`는 Button/IconButton, `surface.tsx`는 Card/CardGrid/Panel, `testing/`은 공통 contract·registry·SSR harness다. `apps/docs`는 아직 최소 골격이다.
+`packages/react`은 WP-023까지 구현됐고 공개 컴포넌트는 30개다. `apps/docs`는 12개 route를 가진 정적 문서 사이트이며 공개 패키지의 첫 소비자다.
+
+| 경로 | 역할 |
+| --- | --- |
+| `packages/react/src/shell.tsx` | WP-023 AppShell/NavList/TopBar. non-modal Radix Dialog, plain scrim, skip link, renderLink 위임 |
+| `packages/react/src/testing/shell.test.tsx` | 셸 단위/계약 테스트 16개 |
+| `packages/react/src/testing/public-components.ts` | 30개 공개 registry와 SSR renderer |
+| `packages/react/src/index.ts` | 30개 컴포넌트/타입의 공개 barrel |
+| `packages/tokens/src/components.ts` | component token 175개. 셸 관련 19개 포함 |
+| `packages/css/src/components.css` | 셸/off-canvas/nav/topbar 스타일 포함 |
+| `apps/docs/src/App.tsx` | React Router 소비자. public AppShell/NavList/TopBar로 문서 UI 구성 |
+| `apps/docs/src/catalog.tsx` | 30개 public API 기반 catalog/live preview |
+| `apps/docs/e2e/shell.spec.ts` | theme/mobile scrim/Escape/skip focus E2E |
+| `docs/40_delivery/conductor_implementation_traceability.md` | WP-023 및 FR별 최신 코드/테스트 증거 원장 |
 
 ## 참고 — 소스 저장소 (읽기 전용)
 

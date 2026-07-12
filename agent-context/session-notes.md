@@ -1,81 +1,57 @@
-# Session: 2026-07-12 — 강제 compaction 이후 WP-018~022 상태 복원
+# Session: 2026-07-12 — WP-023 셸 컴포넌트군 완료
 
 ## Goal
 
-사용자 요청: handoff를 리프레시하기 전에 세션이 강제로 compact되어 진행 맥락이 사라졌으므로, 현재 changes를 근거로 진행 내용을 역추정해 `agent-context/`를 갱신하고 handoff pack을 다시 만든다.
+WP-023의 C-070 `AppShell`, C-071 `NavList`, C-072 `TopBar`를 `@conductor/react`에 구현하고, docs를 첫 소비자로 전환하며 전체 품질 게이트를 통과시킨다. 이어 세션 컨텍스트를 갱신해 handoff pack을 만든다.
 
 ## Current state
 
-### 변경 증거로 복원된 완료 범위
+- WP-023 구현과 문서 추적이 완료됐다. 공개 컴포넌트는 27개에서 30개로 증가했다.
+- `AppShell`은 Radix Dialog의 `modal={false}`와 plain scrim을 조합한다. Escape와 바깥 클릭은 Radix `DismissableLayer`가 처리한다.
+- `NavList`는 라우팅을 `renderLink`로 소비자에게 위임한다. `@conductor/react`에는 React Router 의존성이 없다.
+- `TopBar`는 title/actions/mobileNavTrigger 슬롯을 제공한다. ReactNode 슬롯 `title`과 native `title` 충돌은 native props에서 `title`을 omit하고 문자열일 때만 `<header title>`로 미러링해 해결했다.
+- docs의 기존 자체 sidebar/topbar/drawer를 공개 `AppShell`/`NavList`/`TopBar`로 교체했다. docs가 실제 소비자라는 FR-DOC-001 AC-2를 닫았다.
+- 19개 셸 component token을 추가했다. 토큰 총계 337개(primitive 74 / semantic 88 / component 175), CSS 선언 263개다.
+- WP-018~022에서 남았던 tokens Vitest 환경 회귀와 ESLint 5건도 최소 수정으로 해소했다.
 
-- WP-018~022 구현이 작업 트리에 존재한다. `apps/docs`는 tsup 자리표시 패키지에서 Vite + React Router 정적 문서 사이트로 전환됐다.
-- 셸/테마, Getting Started, Foundations 5화면, 27개 공개 컴포넌트 카탈로그, 토큰 참조, Patterns, Accessibility, 코드 복사가 구현됐다.
-- `conductor_implementation_traceability.md`는 WP-018~022를 `done`으로 기록하며, 단계별 Playwright 누적 결과를 4/4 → 6/6 → 9/9 → 11/11 → 15/15로 남겼다.
-- 2026-07-12 재검증: 루트 `pnpm build` 통과, 루트 `pnpm typecheck` 통과, docs Playwright 15/15 통과, `pnpm lint:tokens` 통과(38 files, 0 violations), `pnpm check:contrast` 통과(80/80), 문서 validator report/strict 통과.
+## Verification evidence
 
-### 아직 완료로 넘기면 안 되는 상태
+- `pnpm build` — 통과. 의존성 위반 0, tokens 337, contrast 80/80, CSS gzip index 7,751B / component 7,590B, React/docs build 통과.
+- `pnpm typecheck` — 4개 workspace 전부 통과.
+- `pnpm test` — 29 files, 485/485 통과.
+- `pnpm lint` — 통과.
+- `pnpm lint:tokens` — 40 files, 0 violations, 57 allowances.
+- `pnpm check:contrast` — 80/80 통과.
+- `pnpm --filter @conductor/react test -- shell` — 실제로 전체 React 12 files, 142/142 통과.
+- CSS suite — 3 files, 76/76 통과.
+- docs Playwright — 16/16 통과. 실제 600px viewport에서 scrim click, Escape, skip-link focus를 검증했다.
+- SRS/PRD validator `--report`, `--strict` — issue 0.
+- `git diff --check` — 오류 없음(LF/CRLF 경고만 존재).
 
-- 루트 `pnpm test`는 3건 실패한다. 이번 변경의 `vitest.config.ts`가 tokens 프로젝트를 `environment: "node"`에서 `"jsdom"`으로 바꿔 `import.meta.url`이 file URL이 아니게 된 것이 직접 원인이다. 실패 위치: `packages/tokens/src/index.test.ts`, `src/build/emit-artifacts.test.ts`, `src/lint/lint.test.ts`. 결과는 25 files passed / 3 failed, 444 tests passed / 2 failed, suite load failure 1건.
-- ESLint는 저장소 자체 기준 5건 실패한다. 새 docs 오류 2건은 `apps/docs/src/catalog.tsx`의 `componentDidCatch(_error, _info)` unused parameters, 기존 오류 3건은 `packages/react/src/testing/contract.test.tsx`다.
-- `conductor_work_packages.md` 요약 표는 WP-018~022를 `done`으로 바꿨지만 각 WP의 DoD 체크박스는 전부 `[ ]`로 남았다.
-- traceability의 FR-DOC-001은 여전히 “전체 문서 화면은 WP-019~022”를 이유로 `부분`인데, 같은 원장에서 WP-019~022는 이미 done이다. 최종 동기화가 필요하다.
-- Vite 빌드는 통과하지만 JS chunk 507.34 kB(minified), 144.59 kB gzip으로 500 kB 경고를 낸다. 현재 WP DoD 실패는 아니며 Lighthouse는 WP-028, bundle gate는 WP-025 범위다.
+## Debugging decisions
 
-## Decisions
-
-- 다음 에이전트는 WP-023 착수 전에 현재 작업 트리를 green으로 돌리고 WP-018~022의 문서 동기화를 닫아야 한다. 완료 표기만 믿고 새 WP로 넘어가지 않는다.
-- `vitest.config.ts`의 tokens 환경 변경은 docs E2E에 필요하지 않은 것으로 보인다. 가장 작은 복구 후보는 tokens 프로젝트를 다시 `node`로 두고 include를 원래 `src/**/*.test.ts`로 복원하는 것. 다만 handoff refresh 범위에서는 코드를 수정하지 않고 근거와 실패만 기록했다.
-- docs의 source-of-truth는 패키지 빌드 산출물이다. Foundations/token 화면은 `tokens.json`/`contrast-report.json`, component catalog는 `packages/react/dist/index.d.ts`에서 생성한다.
-- 테마는 React 상태로 컴포넌트를 재마운트하지 않고 루트 `data-cdt-theme`만 바꾼다. `index.html` 인라인 스니펫이 React 실행 전에 저장값 또는 OS 선호를 적용한다.
-- 공개 컴포넌트에 preview가 없으면 `build-component-catalog.mjs`가 빌드를 실패시킨다. 카탈로그 메타와 대비 리포트 TS 파일은 generated/gitignored다.
-
-## Changed files
-
-- `.gitignore` — docs generated metadata/contrast module 제외 추가.
-- `apps/docs/package.json`, `pnpm-lock.yaml` — tsup 패키지 계약을 Vite/React/Router/Playwright 앱 계약으로 교체.
-- `apps/docs/index.html`, `vite.config.ts`, `playwright.config.ts` — 정적 앱, first-paint theme, E2E 서버 설정.
-- `apps/docs/src/main.tsx`, `App.tsx`, `theme.ts`, `docs.css` — 라우팅 셸, 테마, 모바일 내비, 전체 화면 스타일.
-- `apps/docs/src/foundations.ts`, `catalog.tsx`, `token-reference.tsx`, `guides.tsx` — WP-019~022 화면과 데이터/프리뷰/복사 동작.
-- `apps/docs/scripts/*.mjs` — Foundations description 경고, `.d.ts` catalog 생성, contrast report 생성.
-- `apps/docs/e2e/*.spec.ts` — shell/foundations/catalog/tokens/guides 15개 Playwright 테스트.
-- 삭제: `apps/docs/src/main.ts`, `main.test.ts`, `tsup.config.ts` — 기존 자리표시 패키지 골격.
-- `docs/40_delivery/conductor_work_packages.md`, `conductor_implementation_traceability.md` — WP-017~022 상태와 FR-DOC 매핑 갱신(단, 위 Current state의 동기화 잔여 존재).
-- `vitest.config.ts` — tokens 환경을 jsdom으로 변경; 현재 루트 test 회귀 원인.
-
-## Commands
-
-### 2026-07-12 재검증 통과
-
-- `pnpm build` — 4 workspace package 의존 순서 빌드 통과. tokens 318개, CSS index gzip 6,812B, React 공개 컴포넌트 registry test 3/3, docs Vite build 통과.
-- `pnpm typecheck` — tokens/css/react/docs 전부 통과.
-- `pnpm --filter docs test:e2e` — 샌드박스 밖 localhost/browser 실행에서 15/15 통과.
-- `pnpm lint:tokens` — 38 files, 0 violations, 48 allowances.
-- `pnpm check:contrast` — dark/light 합계 80/80 통과.
-- `validate_srs_prd_env.py --report`, `--strict` — structural/traceability issue 0.
-
-### 실패와 원인
-
-- `pnpm test` — 위의 tokens-jsdom 회귀로 실패. 정확한 오류는 `The URL must be of scheme file`, `ENOENT ... /src/tokens.ts`.
-- `eslint .` — 5 errors. docs 2건 + 기존 React contract test 3건.
-- 첫 sandbox 내부 Playwright 실행은 preview server start exit 1. 샌드박스 밖에서 같은 명령은 15/15 통과했으므로 제품 실패가 아니라 browser/local-server 실행 제약이다.
+1. 첫 모바일 E2E에서 `.cdt-app-shell__overlay`가 존재하지 않았다. Radix source를 확인해 `DialogOverlay`가 `modal={false}`일 때 `null`을 반환함을 확인했다. 따라서 scrim은 plain div로 렌더하고 Content의 `DismissableLayer`가 outside pointer를 감지하게 했다.
+2. 이 수정 뒤에도 E2E가 한 번 실패했다. docs E2E 명령이 `apps/docs`만 빌드해 `packages/react/dist`의 오래된 코드를 소비한 것이 원인이었다. React dist를 먼저 재빌드하자 16/16 통과했다.
+3. 루트 test의 `"ink:"` 금지 검사는 새 유효 키 `skipLink:` 내부 문자열을 오탐했다. primitive leakage의 실제 의도에 맞게 top-level YAML key regex로 바꿨다.
+4. 토큰 린트는 CSS 테스트 제목의 리터럴 `800px`도 검사했다. 제목을 `md breakpoint`로 바꿨다.
+5. TopBar `title: ReactNode`가 native HTML `title?: string`과 충돌했다. 슬롯 API는 유지하고 inherited native title만 omit했다.
 
 ## Next steps
 
-1. `vitest.config.ts`의 tokens project를 node 환경으로 되돌려 `pnpm test`를 green으로 만든다. docs는 Playwright를 사용하므로 별도 Vitest jsdom 변경이 필요했는지 근거를 먼저 확인한다.
-2. `apps/docs/src/catalog.tsx`의 새 ESLint 2건을 해결한다. 이어 기존 `contract.test.tsx` 3건도 처리할지 현재 작업 범위와 기존 기록을 확인한다.
-3. WP-018~022 각 DoD를 실제 테스트 증거와 대조해 `[x]`로 동기화하고, FR-DOC-001의 `부분` 상태가 여전히 맞는지 AC별로 재평가한다. 문서 변경이 baseline scope 변경은 아니므로 새 CR은 필요하지 않지만, 요구사항 의미를 바꾸면 CR 선등록이 필요하다.
-4. 루트 `build → typecheck → test → lint → lint:tokens → check:contrast`, docs E2E, 문서 strict validator를 다시 실행한다.
-5. 그 뒤 WP-023(C-070 AppShell, C-071 NavList, C-072 TopBar)을 시작한다. 라우팅 라이브러리를 `@conductor/react`에 추가하지 말고 `renderLink`로 위임한다.
+1. WP-024 접근성 자동화: axe serious+ 0, keyboard smoke, CI `test:a11y` 계약을 구현한다.
+2. WP-025 bundle size 자동화: Button gzip ≤4KB, `@conductor/css` gzip ≤20KB를 공식 루트 스크립트와 CI 게이트로 만든다.
+3. WP-026 release readiness, WP-027 consumer smoke, WP-028 docs 성능 순으로 진행한다.
+4. docs Vite chunk 경고(약 517.81 kB minified / 146.29 kB gzip)는 WP-025/WP-028에서 다룬다. 현재 WP-023 실패로 취급하지 않는다.
 
 ## Risks/gotchas
 
-- docs 자체 15/15 성공과 루트 test green은 별개다. 현재는 전자만 성립한다.
-- `apps/docs/src/generated/component-meta.json`, `contrast-report.ts`, `apps/docs/dist`, tokens generated TS는 빌드 산출물이다. 직접 편집하지 않는다.
-- Playwright는 localhost server/browser 권한이 필요해 제한된 sandbox에서 webServer가 시작되지 않을 수 있다.
-- `conductor_work_packages.md`의 summary `done`과 unchecked DoD가 모순이다. 다음 에이전트는 summary만 읽지 말 것.
-- FR-DOC-001의 `부분` 사유가 이미 해소된 WP를 가리키므로 ledger가 현재 코드보다 한 단계 뒤처졌을 가능성이 높다.
+- docs 단독 build/E2E는 workspace dependency의 stale `dist`를 소비할 수 있다. React 소스 변경 뒤 docs를 검증할 때는 루트 build 또는 React build를 선행한다.
+- `Dialog.Root modal={false}`에서는 Radix `Dialog.Overlay`가 렌더되지 않는다. 다시 Overlay primitive로 교체하면 모바일 scrim이 사라진다.
+- generated 파일 `packages/tokens/src/tokens.ts`, `src/breakpoints.ts`, docs `src/generated/*`를 직접 편집하지 않는다.
+- Vite chunk warning은 기록된 후속 작업이며, WP-023 범위에서 임의 분할하지 않는다.
+- OD-003 FilterBar/Chip은 여전히 open/nonblocking이고 FR/WP가 없으므로 구현하지 않는다.
 
 ## References
 
-- `agent-context/sessions/2026-07-12-wp018-022-docs-site.md`
-- WP-018~023, FR-DOC-001~007, FR-CMP-009, API-DOC-001, API-CMP-009.
+- `agent-context/sessions/2026-07-12-wp023-shell-components.md`
+- WP-023, FR-CMP-009, FR-DOC-001, FR-A11Y-002, FR-DX-004, FR-QA-002.

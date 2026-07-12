@@ -145,3 +145,21 @@ git diff --exit-code -- packages/tokens/dist   # dist/ 는 gitignore 되어 있�
 ## 문서 환경의 함정
 
 `validate_srs_prd_env.py`는 백틱으로 감싼 `.md`로 끝나는 문자열을 **문서 경로로 오인**한다. 토큰 이름 `radius.md`, `font.size.md`, `breakpoint.md`, `font.lineHeight.md`를 백틱에 넣으면 경고가 뜬다. **볼드(`**radius.md**`)를 써라.** 실제 문서 파일명(`srs_final.md`)은 백틱으로 감싸도 된다.
+
+## WP-023에서 추가된 함정 (2026-07-12)
+
+### Radix non-modal Dialog에는 Overlay가 없다
+
+`Dialog.Root modal={false}`에서 `Dialog.Overlay`는 렌더되지 않는다. class/CSS를 아무리 고쳐도 scrim이 생기지 않는다. AppShell의 scrim은 plain element이며, 닫기는 Content의 Radix DismissableLayer가 소유한다.
+
+### docs-only E2E는 workspace의 stale dist를 볼 수 있다
+
+`apps/docs`가 빌드된 `@conductor/react`를 소비하는 경로에서는 docs build만 다시 해도 React source 변경이 반영되지 않을 수 있다. 새 public component나 동작을 검증하기 전 root build 또는 React build를 선행한다.
+
+### 토큰 누출 검사는 부분 문자열로 쓰지 않는다
+
+primitive key `ink` 금지를 `includes("ink:")`로 검사하면 `skipLink:` 같은 정상 component key를 오탐한다. 계층/구조를 검사하려면 top-level serialization key나 parsed object를 본다.
+
+### Vite chunk warning은 아직 열린 후속 게이트다
+
+docs chunk 약 517.81kB minified/146.29kB gzip 경고가 남는다. WP-023 실패는 아니지만 WP-025 size 및 WP-028 Lighthouse에서 실제 budget과 함께 처리해야 한다.

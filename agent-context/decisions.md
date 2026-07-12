@@ -150,3 +150,28 @@ Conductor에는 **서버 런타임·DB·큐·인증이 없다.** 스캐폴드가
 - props 이름 고정: 시각 변종 `variant`, 의미 색상 `tone`, 크기 `size`
 - 상태는 소비자가 소유. `Table`은 정렬·페이지네이션·가상 스크롤을 제공하지 않는다. 토스트/스낵바도 없다
 - 소스의 미터 3중 구현(`CircularProgress`, `LinearProgress`, `UsageCostPage`의 `Gauge`)을 `Meter`와 `ProgressRing` 둘로 통합한다
+
+## WP-023 셸 컴포넌트 결정 (2026-07-12)
+
+### docs를 공개 셸의 첫 소비자로 교체
+
+FR-DOC-001 AC-2는 docs가 패키지 컴포넌트를 실제 소비해야 한다. 카탈로그 preview만 추가하고 docs의 자체 sidebar/topbar를 남기는 안은 중복 구현을 유지한다. 따라서 `App.tsx`의 custom shell을 AppShell/NavList/TopBar로 교체하고 React Router만 소비자에 남겼다.
+
+### non-modal Radix + plain scrim
+
+AppShell은 페이지 shell이므로 modal focus trap을 걸지 않는다. `Dialog.Root modal={false}`를 유지하되, Radix Overlay는 이 모드에서 렌더되지 않으므로 plain scrim을 Portal 안에 둔다. 닫기 동작은 custom document listener가 아니라 Radix Content의 `DismissableLayer` outside interaction과 Escape에 위임한다.
+
+- 기각: `modal={true}`로 바꿔 Overlay를 얻기. 페이지 shell에 modal semantics/focus trap을 강제한다.
+- 기각: document-level click/Escape listener 직접 구현. ADR-004의 Radix 위임 원칙을 훼손한다.
+
+### 라우팅 비종속 NavList
+
+`NavList.renderLink`가 `href`, `className`, `aria-current`, children을 소비자 링크에 전달한다. `@conductor/react`에 React Router를 넣지 않는다. docs는 이 callback에서 `NavLink`를 렌더한다.
+
+### TopBar title 이름 충돌
+
+요구된 슬롯 이름 `title`은 유지한다. native `HTMLAttributes.title`만 상속 대상에서 omit하고, 슬롯이 string일 때 native header title로도 미러링한다. 슬롯을 `heading`으로 바꾸는 안은 문서 API와 불일치하므로 기각했다.
+
+### 셸 시각 계약
+
+기존 page/layout token만으로 셸 치수를 숨기지 않고 shell-specific component token 19개를 추가했다. 소비자가 sidebar width, topbar height, nav item 상태를 공개 `--cdt-*` 계약으로 재정의할 수 있어야 하기 때문이다.

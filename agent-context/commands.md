@@ -213,3 +213,28 @@ Refs: WP-008 FR-CSS-001 FR-CSS-002
 ```ts
 test("FR-CMP-002 AC-2: loading 상태에서 클릭 핸들러가 호출되지 않는다", ...)
 ```
+
+## WP-023 최종 검증 (2026-07-12)
+
+| 명령 | 결과 |
+| --- | --- |
+| `pnpm build` | 통과. dependency violation 0, tokens 337, contrast 80/80, CSS gzip 7,751/7,590B, React/docs build 성공 |
+| `pnpm typecheck` | tokens/css/react/docs 통과 |
+| `pnpm test` | 29 files, 485/485 |
+| `pnpm lint` | 통과 |
+| `pnpm lint:tokens` | 40 files, 0 violations, 57 allowances |
+| `pnpm check:contrast` | dark/light 합계 80/80 |
+| `pnpm --filter @conductor/react test -- shell` | 12 files, 142/142. 현재 script는 project 전체 실행 |
+| CSS test | 3 files, 76/76 |
+| docs Playwright | 16/16. 600px scrim click, Escape, skip focus 포함 |
+| validator `--report`, `--strict` | issue 0 |
+
+### WP-023에서 실제로 실패한 검증
+
+| 증상 | 원인 | 해결 |
+| --- | --- | --- |
+| 모바일 overlay selector 부재 | Radix Overlay가 `modal={false}`에서 null | plain scrim + Radix DismissableLayer |
+| scrim 수정 뒤 docs E2E 재실패 | docs-only build가 stale React dist 소비 | React/root build 선행 |
+| tokens emit test가 `skipLink:`를 primitive로 판정 | `"ink:"` substring 검사 오탐 | top-level key regex |
+| token lint가 CSS test에서 실패 | test title의 `800px` literal | `md breakpoint` 문구 사용 |
+| TopBar type/common contract 실패 | ReactNode slot title과 native string title 교차 | inherited native title omit + string mirror |
