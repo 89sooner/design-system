@@ -21,8 +21,8 @@ export default defineConfig({
         test: {
           name: "tokens",
           root: fromRoot("./packages/tokens"),
-          environment: "jsdom",
-          include: ["src/**/*.test.ts", "src/**/*.test.tsx"],
+          environment: "node",
+          include: ["src/**/*.test.ts"],
         },
       },
       {

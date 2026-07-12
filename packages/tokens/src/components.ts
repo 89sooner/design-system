@@ -11,7 +11,7 @@
  * that copies a checked semantic token (`input.focusRing` → `focusRing`) does not re-declare
  * the obligation — the semantic token already carries it (tokens spec 8.4).
  *
- * Refs: WP-002 FR-TOK-002 FR-CMP-002 FR-CMP-003 FR-CMP-004 FR-CMP-005 FR-CMP-006 FR-CMP-007
+ * Refs: WP-002 FR-TOK-002 FR-CMP-002 FR-CMP-003 FR-CMP-004 FR-CMP-005 FR-CMP-006 FR-CMP-007 FR-CMP-009
  */
 import type { TokenDefinition, TokenUsage } from "./schema";
 import { FONT_SIZE_PX } from "./scales";
@@ -288,6 +288,28 @@ const page: TokenDefinition[] = [
   component("page.skipLinkZ", ref("z.popover"), "Skip link stacking layer."),
 ];
 
+const shell: TokenDefinition[] = [
+  component("appShell.navWidth", ref("page.shellNavWidth"), "AppShell desktop navigation width."),
+  component("appShell.mainMaxWidth", value("1480px"), "AppShell main content maximum width."),
+  component("appShell.overlayBackground", ref("surface.overlay"), "Mobile navigation scrim."),
+  component("skipLink.background", ref("accent.DEFAULT"), "Skip-link fill."),
+  component("skipLink.text", ref("text.inverse"), "Skip-link label."),
+  component("navList.background", ref("surface.raised"), "Navigation surface."),
+  component("navList.border", ref("border.subtle"), "Navigation surface edge."),
+  component("navItem.text", ref("text.muted"), "Navigation item label."),
+  component("navItem.textActive", ref("text.primary"), "Active navigation item label."),
+  component("navItem.backgroundHover", ref("state.hover"), "Navigation item hover wash."),
+  component("navItem.backgroundActive", ref("state.selected"), "Active navigation item wash."),
+  component("navItem.indicator", ref("accent.DEFAULT"), "Active navigation item indicator."),
+  component("navSectionLabel.text", ref("text.faint"), "Navigation section label."),
+  component("font.weight.sectionLabel", value(700), "Navigation section label weight."),
+  component("topBar.background", ref("surface.glass"), "TopBar glass surface."),
+  component("topBar.border", ref("border.subtle"), "TopBar lower edge."),
+  component("topBar.eyebrowText", ref("text.faint"), "TopBar eyebrow label."),
+  component("topBar.titleText", ref("text.secondary"), "TopBar context title."),
+  component("topBar.minHeight", value("68px"), "TopBar minimum height."),
+];
+
 export const componentTokens: readonly TokenDefinition[] = [
   ...button,
   ...card,
@@ -304,4 +326,5 @@ export const componentTokens: readonly TokenDefinition[] = [
   ...input,
   ...overlay,
   ...page,
+  ...shell,
 ];

@@ -45,8 +45,8 @@
 - [ ] QA-009 `data-cdt-theme` 속성이 없을 때, OS가 `prefers-color-scheme: dark`이면 다크 팔레트가, 그 외에는 라이트 팔레트가 적용된다 (FR-THM-003 AC-2)
 - [ ] QA-010 `data-cdt-theme="light"`이고 OS가 다크일 때 라이트 팔레트가 적용된다 (FR-THM-003 AC-1)
 - [ ] QA-011 테마 전환 시 컴포넌트가 재마운트되지 않고 CSS 커스텀 프로퍼티 값만 바뀐다 (FR-THM-003 AC-4)
-- [ ] QA-012 뷰포트 800px 미만에서 사이드 내비게이션이 오프캔버스로 전환되고, 오버레이 클릭 또는 Escape로 닫힌다 (FR-CMP-009 AC-3)
-- [ ] QA-013 skip-link가 렌더되고 활성화 시 본문 영역으로 포커스가 이동한다 (FR-CMP-009 AC-4)
+- [x] QA-012 뷰포트 800px 미만에서 사이드 내비게이션이 오프캔버스로 전환되고, 오버레이 클릭 또는 Escape로 닫힌다 (FR-CMP-009 AC-3)
+- [x] QA-013 skip-link가 렌더되고 활성화 시 본문 영역으로 포커스가 이동한다 (FR-CMP-009 AC-4)
 - [ ] QA-014 문서 사이트가 `@conductor/react`와 `@conductor/css`를 소비자로서 설치해 사용하며, 소스 상대경로 import가 0건이다 (FR-DOC-001 AC-1)
 
 ### W-002 Getting Started
@@ -157,9 +157,9 @@ FR-CMP-001은 공개 컴포넌트 전수가 ref 전달(AC-1), className 병합(A
 | Meter | FR-CMP-008 | [x] QA-153 | [x] QA-154 | [x] QA-155 | [x] QA-156 |
 | ProgressRing | FR-CMP-008 | [x] QA-157 | [x] QA-158 | [x] QA-159 | [x] QA-160 |
 | Spinner | FR-CMP-008 | [x] QA-161 | [x] QA-162 | [x] QA-163 | [x] QA-164 |
-| AppShell † | FR-CMP-009 | [ ] QA-165 | [ ] QA-166 | [ ] QA-167 | [ ] QA-168 |
-| NavList † | FR-CMP-009 | [ ] QA-169 | [ ] QA-170 | [ ] QA-171 | [ ] QA-172 |
-| TopBar † | FR-CMP-009 | [ ] QA-173 | [ ] QA-174 | [ ] QA-175 | [ ] QA-176 |
+| AppShell † | FR-CMP-009 | [x] QA-165 | [x] QA-166 | [x] QA-167 | [x] QA-168 |
+| NavList † | FR-CMP-009 | [x] QA-169 | [x] QA-170 | [x] QA-171 | [x] QA-172 |
+| TopBar † | FR-CMP-009 | [x] QA-173 | [x] QA-174 | [x] QA-175 | [x] QA-176 |
 
 † FR-CMP-009는 Should 우선순위이며 OD-004에 조건부다. OD-004가 "패키지에 포함"으로 해소되는 경우에만 QA-165 ~ QA-176을 `@conductor/react`의 공개 컴포넌트로 실행한다. "문서 사이트 내부 컴포넌트로 강등"으로 해소되면 이 3개 행은 공개 컴포넌트 QA 대상에서 제외하고, 문서 사이트 자체 구현 코드에 대한 QA로 이관한다(SRS FR-CMP-009 예외처리).
 

@@ -5,7 +5,7 @@ test("FR-DOC-003 AC-1, AC-5: catalog mounts every public component as a live pre
   await page.goto("/components");
   await expect(page.getByRole("heading", { name: "Components" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Button Button preview" })).toBeVisible();
-  await expect(page.locator("[aria-label$=' preview']")).toHaveCount(27);
+  await expect(page.locator("[aria-label$=' preview']")).toHaveCount(30);
 });
 
 test("FR-DOC-003 AC-2, AC-3, AC-4: detail route shows generated props and variant-tone preview", async ({ page }) => {

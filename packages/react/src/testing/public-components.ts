@@ -12,6 +12,7 @@ import { CodeBlock, Kbd, Table, Timeline } from "../data";
 import { Dialog, Drawer, DropdownMenu, Tooltip } from "../overlay";
 import { Checkbox, Field, Select, Switch, TextArea, TextField } from "../form";
 import { Banner, EmptyState, Meter, ProgressRing, Spinner } from "../feedback";
+import { AppShell, NavList, TopBar } from "../shell";
 
 export interface PublicComponent {
   readonly name: string;
@@ -47,6 +48,9 @@ export const publicComponents: readonly PublicComponent[] = [
   { name: "Meter", testFile: "testing/feedback.test.tsx", render: () => createElement(Meter, { value: 0, valueText: "0%", "aria-label": "Meter" }) },
   { name: "ProgressRing", testFile: "testing/feedback.test.tsx", render: () => createElement(ProgressRing, { value: 0, valueText: "0%", "aria-label": "Progress" }) },
   { name: "Spinner", testFile: "testing/feedback.test.tsx", render: () => createElement(Spinner, { label: "Loading" }) },
+  { name: "AppShell", testFile: "testing/shell.test.tsx", render: () => createElement(AppShell, { nav: null, skipLinkLabel: "Skip", children: "Content" }) },
+  { name: "NavList", testFile: "testing/shell.test.tsx", render: () => createElement(NavList, { items: [], renderLink: () => null, "aria-label": "Navigation" }) },
+  { name: "TopBar", testFile: "testing/shell.test.tsx", render: () => createElement(TopBar) },
 ];
 
 export function missingComponentTests(

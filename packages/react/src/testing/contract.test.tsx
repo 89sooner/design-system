@@ -4,7 +4,7 @@ import { afterEach, describe, expect, test } from "vitest";
 import { cx } from "../cx";
 import { contractFailures, runContractSuite } from "./contract";
 
-interface FixtureProps extends ComponentPropsWithoutRef<"button"> {}
+type FixtureProps = ComponentPropsWithoutRef<"button">;
 
 const Fixture = forwardRef<HTMLButtonElement, FixtureProps>(({ className, ...props }, ref) => (
   <button ref={ref} className={cx("cdt-fixture", className)} {...props} />
@@ -17,7 +17,7 @@ afterEach(cleanup);
 
 describe("shared contract failure fixture", () => {
   test("FR-CMP-001 exception: a component that drops forwarded props violates the shared contract", () => {
-    const Broken = forwardRef<HTMLButtonElement, ButtonHTMLAttributes<HTMLButtonElement>>((_props, _ref) => (
+    const Broken = forwardRef<HTMLButtonElement, ButtonHTMLAttributes<HTMLButtonElement>>(() => (
       <button className="cdt-broken" />
     ));
     let received: HTMLButtonElement | null = null;

@@ -58,7 +58,7 @@ design-system/
 | WP-020 | 컴포넌트 카탈로그와 라이브 프리뷰 | REL-003 | WP-018, WP-017 | - | done |
 | WP-021 | 토큰 참조 화면 | REL-003 | WP-018, WP-007 | - | done |
 | WP-022 | Patterns·Accessibility 화면과 코드 복사 | REL-003 | WP-020 | - | done |
-| WP-023 | 셸 컴포넌트군 | REL-003 | WP-012 | - (OD-004 종결: 포함) | todo |
+| WP-023 | 셸 컴포넌트군 | REL-003 | WP-012 | - (OD-004 종결: 포함) | done |
 | WP-024 | 접근성 검사 CI 잡 | REL-003 | WP-020 | - | todo |
 | WP-025 | 번들 크기 검사 CI 잡 | REL-003 | WP-017 | - | todo |
 | WP-026 | 시각 회귀 검사 | REL-004 | WP-020 | - (OD-002 종결: REL-004 이월 확정) | todo |
@@ -583,11 +583,11 @@ design-system/
 - 구현 범위: C-070 AppShell, C-071 NavList, C-072 TopBar. `renderLink` props로 링크 렌더 위임
 - 제외: 라우팅 라이브러리 의존성 추가
 - 완료 기준(DoD):
-  - [ ] `NavList`가 `renderLink` props로 링크 렌더를 위임한다 (FR-CMP-009 AC-1)
-  - [ ] `@conductor/react` 의존성 목록에 라우팅 라이브러리가 0건이다 (FR-CMP-009 AC-2)
-  - [ ] 800px 미만에서 사이드 내비가 오프캔버스로 전환되고 오버레이 클릭 또는 Escape로 닫힌다 (FR-CMP-009 AC-3)
-  - [ ] `AppShell`이 `skip-link`를 렌더하고 본문으로 포커스를 이동시킨다 (FR-CMP-009 AC-4, FR-CSS-002 AC-5)
-  - [ ] 공유 계약 스위트를 통과한다
+  - [x] `NavList`가 `renderLink` props로 링크 렌더를 위임한다 (FR-CMP-009 AC-1)
+  - [x] `@conductor/react` 의존성 목록에 라우팅 라이브러리가 0건이다 (FR-CMP-009 AC-2)
+  - [x] 800px 미만에서 사이드 내비가 오프캔버스로 전환되고 오버레이 클릭 또는 Escape로 닫힌다 (FR-CMP-009 AC-3)
+  - [x] `AppShell`이 `skip-link`를 렌더하고 본문으로 포커스를 이동시킨다 (FR-CMP-009 AC-4, FR-CSS-002 AC-5)
+  - [x] 공유 계약 스위트를 통과한다
 - 검증 방법: `pnpm --filter @conductor/react test -- shell`
 - 기록: WP-023 행, FR-CMP-009 매핑 갱신, OD-004 종결 근거 기록
 

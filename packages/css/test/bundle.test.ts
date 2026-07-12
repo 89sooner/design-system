@@ -250,6 +250,32 @@ describe("FR-CSS-003 layout primitives", () => {
   });
 });
 
+describe("FR-CMP-009 shell components", () => {
+  const componentRules = topLevelRules(index, "cdt.component");
+  const tokenRoot = topLevelRules(index, "cdt.base").find((rule) => rule.selector.includes(":root"));
+  const md = tokenRoot?.decls["--cdt-breakpoint-md"] ?? "$^";
+
+  test.each(bundles)("FR-CMP-009: %s contains every shell component class", (_name, css) => {
+    const selectors = rulesInLayer(css, "cdt.component").map((rule) => rule.selector);
+    for (const selector of [".cdt-app-shell__nav", ".cdt-app-shell__main", ".cdt-nav-list", ".cdt-nav-list__item", ".cdt-topbar"]) {
+      expect(selectors).toContain(selector);
+    }
+  });
+
+  test("FR-CMP-009 AC-3: desktop navigation becomes a mobile Radix surface at the md breakpoint", () => {
+    const rules = mediaRules(index, "cdt.component", new RegExp(md));
+    expect(rules.find((rule) => rule.selector === ".cdt-app-shell__nav:not([data-mobile])")?.decls.display).toBe("none");
+    expect(rules.find((rule) => rule.selector === ".cdt-app-shell__nav[data-mobile]")?.decls.position).toBe("fixed");
+    expect(rules.find((rule) => rule.selector === ".cdt-app-shell__overlay")?.decls.display).toBe("block");
+  });
+
+  test("C-071 / C-072: shell visuals resolve through public tokens", () => {
+    expect(ruleFor(index, "cdt.component", /^\.cdt-nav-list$/)?.decls.background).toBe("var(--cdt-nav-list-background)");
+    expect(ruleFor(index, "cdt.component", /^\.cdt-topbar$/)?.decls.background).toBe("var(--cdt-top-bar-background)");
+    expect(componentRules.find((rule) => rule.selector === ".cdt-app-shell__main")?.decls["max-inline-size"]).toBe("var(--cdt-app-shell-main-max-width)");
+  });
+});
+
 describe("FR-DX-001 / NFR-001 packaging", () => {
   test("FR-DX-001 AC-4: the stylesheet consumes @conductor/tokens through its public entry point", () => {
     const source = readSource("../src/tokens.css");

@@ -43,6 +43,10 @@ describe("@conductor/react package contract", () => {
     expect(CONSUMED_PACKAGES).toContain("@conductor/tokens");
   });
 
+  test("FR-CMP-009 AC-2: @conductor/react has no routing-library dependency", () => {
+    expect(Object.keys(manifest.dependencies ?? {}).filter((name) => /router|routing/i.test(name))).toEqual([]);
+  });
+
   test("FR-DX-002 AC-1: the entry point exports the values its type declaration claims", () => {
     expect(PACKAGE_NAME).toBe(manifest.name);
     expect(blockClassName("btn")).toBe("cdt-btn");
@@ -60,7 +64,7 @@ describe("@conductor/react package contract", () => {
   });
 
   test("FR-DX-004 AC-2: production source has no browser-global access", () => {
-    const source = ["index.ts", "cx.ts", "types.ts", "testing/contract.tsx", "testing/public-components.ts", "testing/ssr.tsx"]
+    const source = ["index.ts", "cx.ts", "types.ts", "shell.tsx", "testing/contract.tsx", "testing/public-components.ts", "testing/ssr.tsx"]
       .map((file) => readFileSync(join(packageRoot, "src", file), "utf8"))
       .join("\n");
     expect(source).not.toMatch(/\b(window|document|localStorage)\b/);

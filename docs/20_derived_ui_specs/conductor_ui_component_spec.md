@@ -968,7 +968,7 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
 
 ### 3.8 셸 컴포넌트군 (FR-CMP-009 / API-CMP-009, OD-004 조건부)
 
-이 군은 우선순위 `Should`이며 OD-004의 결정을 기다린다. `@conductor/react`의 의존성 목록에 라우팅 라이브러리가 0건이어야 한다(FR-CMP-009 AC-2). 이 조건이 성립하지 않으면 FR-CMP-009를 `deprecated`로 표시하고 세 컴포넌트를 문서 사이트 내부 컴포넌트로 강등한다. 강등 시 이 절의 컴포넌트 ID는 유지되지만 공개 진입점에서 제거된다.
+이 군은 우선순위 `Should`이며 OD-004가 2026-07-10에 "패키지에 포함"으로 종결되었다. C-070 ~ C-072는 `@conductor/react` 공개 진입점에 포함하며, 의존성 목록의 라우팅 라이브러리 0건을 유지한다(FR-CMP-009 AC-2). 이 조건이 깨지면 SRS 예외 처리에 따라 FR-CMP-009를 `deprecated`로 표시하고 세 컴포넌트를 문서 사이트 내부 컴포넌트로 강등한다.
 
 #### C-070 AppShell
 
@@ -1219,7 +1219,6 @@ component 토큰은 semantic 토큰만 참조한다(FR-TOK-002 AC-3). 아래 표
 | `elevation.accent` | 강조 버튼의 색 있는 그림자 | `app.css:468`(`.btn-primary`), `app.css:474`(hover) |
 
 `font.weight.*` 스케일은 FR-TOK-007이 다루지 않으므로, `--cdt-font-weight-section-label`은 component 토큰으로 두고 semantic 토큰을 신설하지 않는다.
-
 
 
 

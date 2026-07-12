@@ -16,6 +16,8 @@ export { Checkbox, Field, Select, Switch, TextArea, TextField } from "./form";
 export type { CheckboxProps, FieldProps, SelectTriggerProps, SwitchProps, TextAreaProps, TextFieldProps } from "./form";
 export { Banner, EmptyState, Meter, ProgressRing, Spinner } from "./feedback";
 export type { BannerProps, EmptyStateProps, MeterProps, ProgressRingProps, SpinnerProps } from "./feedback";
+export { AppShell, NavList, TopBar } from "./shell";
+export type { AppShellProps, NavItem, NavLinkRenderProps, NavListProps, TopBarProps } from "./shell";
 
 /** Published name of this package. */
 export const PACKAGE_NAME = "@conductor/react" as const;

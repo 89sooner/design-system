@@ -19,8 +19,8 @@
     z-index: var(--cdt-page-skip-link-z);
     padding: var(--cdt-space-2) var(--cdt-space-3);
     border-radius: var(--cdt-radius-sm);
-    background-color: var(--cdt-accent);
-    color: var(--cdt-text-inverse);
+    background-color: var(--cdt-skip-link-background);
+    color: var(--cdt-skip-link-text);
     text-decoration: none;
     transform: translateY(-160%);
     transition: transform var(--cdt-motion-fast);

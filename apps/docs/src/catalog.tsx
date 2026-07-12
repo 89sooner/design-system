@@ -1,7 +1,7 @@
 // Refs: WP-020 FR-DOC-003 FR-DX-002
 import * as Components from "@conductor/react";
 import generated from "./generated/component-meta.json";
-import { Component, type ErrorInfo, type ReactNode } from "react";
+import { Component, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { CopyCode } from "./guides";
 
@@ -11,7 +11,7 @@ export const componentMeta = generated as readonly ComponentMeta[];
 class PreviewBoundary extends Component<{ readonly children: ReactNode }, { readonly failed: boolean }> {
   override state = { failed: false };
   static getDerivedStateFromError(): { failed: boolean } { return { failed: true }; }
-  override componentDidCatch(_error: Error, _info: ErrorInfo): void {}
+  override componentDidCatch(): void {}
   override render(): ReactNode { return this.state.failed ? <Components.Banner tone="danger">This preview could not render.</Components.Banner> : this.props.children; }
 }
 
@@ -44,6 +44,9 @@ export function ComponentPreview({ name }: { readonly name: string }) {
     case "Meter": return <Components.Meter aria-label="Example meter" value={60} valueText="60%" />;
     case "ProgressRing": return <Components.ProgressRing aria-label="Example progress" value={60} valueText="60%" />;
     case "Spinner": return <Components.Spinner label="Loading" />;
+    case "AppShell": return <Components.AppShell nav={<span>Navigation</span>} skipLinkLabel="Skip to preview content" style={{ minHeight: "12rem" }}>Shell content</Components.AppShell>;
+    case "NavList": return <Components.NavList aria-label="Example navigation" items={[{ id: "overview", label: "Overview", href: "#overview", active: true }]} renderLink={(item, props) => <a href={item.href} {...props} />} />;
+    case "TopBar": return <Components.TopBar eyebrow="Design system" title="Components" actions={<Components.IconButton aria-label="Example action" icon="●" />} />;
     default: throw new Error(`Unknown component preview: ${name}`);
   }
 }

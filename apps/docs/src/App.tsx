@@ -1,4 +1,4 @@
-import { Banner, CodeBlock, Drawer, IconButton, Panel, Switch, Table } from "@conductor/react";
+import { AppShell, Banner, CodeBlock, IconButton, NavList, Panel, Switch, Table, TopBar } from "@conductor/react";
 import { Menu, Moon, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, Route, Routes, useLocation, useParams } from "react-router-dom";
@@ -8,11 +8,27 @@ import { CatalogIndex, ComponentDetail } from "./catalog";
 import { TokenReference } from "./token-reference";
 import { Accessibility, Patterns } from "./guides";
 
-const navItems = [["Overview", "/"], ["Getting Started", "/getting-started"], ["Color", "/foundations/color"], ["Typography", "/foundations/typography"], ["Spacing & Layout", "/foundations/spacing"], ["Radius & Elevation", "/foundations/elevation"], ["Motion", "/foundations/motion"], ["Components", "/components"], ["Tokens", "/tokens/reference"], ["Guidelines", "/guidelines"], ["Accessibility", "/accessibility"]] as const;
+const navItems = [
+  { id: "overview", label: "Overview", href: "/", section: "Start" },
+  { id: "getting-started", label: "Getting Started", href: "/getting-started", section: "Start" },
+  { id: "color", label: "Color", href: "/foundations/color", section: "Foundations" },
+  { id: "typography", label: "Typography", href: "/foundations/typography", section: "Foundations" },
+  { id: "spacing", label: "Spacing & Layout", href: "/foundations/spacing", section: "Foundations" },
+  { id: "elevation", label: "Radius & Elevation", href: "/foundations/elevation", section: "Foundations" },
+  { id: "motion", label: "Motion", href: "/foundations/motion", section: "Foundations" },
+  { id: "components", label: "Components", href: "/components", section: "Reference" },
+  { id: "tokens", label: "Tokens", href: "/tokens/reference", section: "Reference" },
+  { id: "guidelines", label: "Guidelines", href: "/guidelines", section: "Guides" },
+  { id: "accessibility", label: "Accessibility", href: "/accessibility", section: "Guides" },
+] as const;
 
 function Navigation({ close }: { readonly close?: () => void }) {
   const location = useLocation();
-  return <nav className="docs-nav" aria-label="Documentation"><Link className="docs-nav__brand" to="/" onClick={close}>Conductor</Link><div className="docs-nav__items">{navItems.map(([label, to]) => <Link key={to} className={location.pathname === to ? "docs-nav__link docs-nav__link--active" : "docs-nav__link"} to={to} onClick={close}>{label}</Link>)}</div></nav>;
+  const items = navItems.map((item) => ({
+    ...item,
+    active: location.pathname === item.href || (item.href === "/components" && location.pathname.startsWith("/components/")),
+  }));
+  return <><Link className="docs-nav__brand" to="/" onClick={close}>Conductor</Link><NavList items={items} aria-label="Documentation" renderLink={(item, props) => <Link {...props} to={item.href} onClick={close} />} /></>;
 }
 
 function Overview() {
@@ -61,5 +77,7 @@ export function App() {
   useEffect(() => applyTheme(theme, document), [theme]);
   const toggleTheme = () => { const next = theme === "dark" ? "light" : "dark"; setTheme(next); persistTheme(next, window); };
 
-  return <div className="cdt-app-shell docs-shell"><a className="cdt-skip-link" href="#content">Skip to content</a><aside className="docs-sidebar"><Navigation /></aside><Drawer.Root open={navOpen} onOpenChange={setNavOpen}><Drawer.Content side="left" className="docs-mobile-nav"><Drawer.Title>Documentation</Drawer.Title><Navigation close={() => setNavOpen(false)} /></Drawer.Content></Drawer.Root><div className="docs-main"><header className="docs-topbar"><IconButton aria-label="Open navigation" icon={<Menu />} variant="ghost" onClick={() => setNavOpen(true)} className="docs-menu-button" /><Link className="docs-topbar__title" to="/">Conductor</Link><div className="docs-theme-toggle">{theme === "dark" ? <Moon aria-hidden="true" size={16} /> : <Sun aria-hidden="true" size={16} />}<span className="cdt-sr-only">Use {theme === "dark" ? "light" : "dark"} theme</span><Switch checked={theme === "light"} onClick={toggleTheme} aria-label="Toggle color theme" /></div></header><main id="content" className="docs-content" tabIndex={-1}><Routes><Route path="/" element={<Overview />} /><Route path="/getting-started" element={<GettingStarted />} /><Route path="/foundations/color" element={<FoundationPage group="color" theme={theme} title="Color" />} /><Route path="/foundations/typography" element={<FoundationPage group="typography" theme={theme} title="Typography" />} /><Route path="/foundations/spacing" element={<FoundationPage group="spacing" theme={theme} title="Spacing & Layout" />} /><Route path="/foundations/elevation" element={<FoundationPage group="elevation" theme={theme} title="Radius & Elevation" />} /><Route path="/foundations/motion" element={<FoundationPage group="motion" theme={theme} title="Motion" />} /><Route path="/components" element={<CatalogIndex />} /><Route path="/components/:componentId" element={<ComponentRoute />} /><Route path="/tokens" element={<TokenRoute />} /><Route path="/tokens/reference" element={<TokenRoute />} /><Route path="/patterns" element={<Patterns />} /><Route path="/guidelines" element={<Patterns />} /><Route path="/accessibility" element={<Accessibility />} /><Route path="*" element={<Placeholder title="Not found" />} /></Routes></main></div></div>;
+  const topBar = <TopBar menuButton={<IconButton aria-label="Open navigation" icon={<Menu />} variant="ghost" onClick={() => setNavOpen(true)} />} title={<Link className="docs-topbar__title" to="/">Conductor</Link>} actions={<div className="docs-theme-toggle">{theme === "dark" ? <Moon aria-hidden="true" size={16} /> : <Sun aria-hidden="true" size={16} />}<span className="cdt-sr-only">Use {theme === "dark" ? "light" : "dark"} theme</span><Switch checked={theme === "light"} onClick={toggleTheme} aria-label="Toggle color theme" /></div>} />;
+
+  return <AppShell className="docs-shell" nav={<Navigation close={() => setNavOpen(false)} />} topBar={topBar} navOpen={navOpen} onNavOpenChange={setNavOpen} skipLinkLabel="Skip to content" mainId="content"><Routes><Route path="/" element={<Overview />} /><Route path="/getting-started" element={<GettingStarted />} /><Route path="/foundations/color" element={<FoundationPage group="color" theme={theme} title="Color" />} /><Route path="/foundations/typography" element={<FoundationPage group="typography" theme={theme} title="Typography" />} /><Route path="/foundations/spacing" element={<FoundationPage group="spacing" theme={theme} title="Spacing & Layout" />} /><Route path="/foundations/elevation" element={<FoundationPage group="elevation" theme={theme} title="Radius & Elevation" />} /><Route path="/foundations/motion" element={<FoundationPage group="motion" theme={theme} title="Motion" />} /><Route path="/components" element={<CatalogIndex />} /><Route path="/components/:componentId" element={<ComponentRoute />} /><Route path="/tokens" element={<TokenRoute />} /><Route path="/tokens/reference" element={<TokenRoute />} /><Route path="/patterns" element={<Patterns />} /><Route path="/guidelines" element={<Patterns />} /><Route path="/accessibility" element={<Accessibility />} /><Route path="*" element={<Placeholder title="Not found" />} /></Routes></AppShell>;
 }

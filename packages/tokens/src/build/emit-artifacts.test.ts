@@ -41,8 +41,8 @@ describe("TypeScript token artifact", () => {
   test("FR-TOK-002 AC-5: no primitive token appears in the generated module", () => {
     const module = emitTokensModule(source);
 
-    expect(module).not.toContain("ink:");
-    expect(module).not.toContain("indigo:");
+    expect(module).not.toMatch(/^  ink:/m);
+    expect(module).not.toMatch(/^  indigo:/m);
     expect(module).not.toContain("--cdt-ink-900");
   });
 

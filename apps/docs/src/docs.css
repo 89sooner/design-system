@@ -1,18 +1,9 @@
 .docs-shell { background: var(--cdt-surface-base); }
-.docs-sidebar { position: sticky; top: 0; width: 16rem; height: 100vh; padding: var(--cdt-space-5); border-right: 1px solid var(--cdt-border-default); background: var(--cdt-surface-raised); }
-.docs-main { min-width: 0; flex: 1; }
-.docs-nav { display: flex; flex-direction: column; gap: var(--cdt-space-5); }
 .docs-nav__brand, .docs-topbar__title { color: var(--cdt-text-primary); font-weight: 700; }
-.docs-nav__items { display: grid; gap: var(--cdt-space-1); }
-.docs-nav__link { padding: var(--cdt-space-2) var(--cdt-space-3); border-radius: var(--cdt-radius-sm); color: var(--cdt-text-muted); }
-.docs-nav__link--active, .docs-nav__link:hover { background: var(--cdt-surface-subtle); color: var(--cdt-text-primary); text-decoration: none; }
-.docs-topbar { display: flex; align-items: center; justify-content: space-between; min-height: 3.5rem; padding: 0 var(--cdt-space-6); border-bottom: 1px solid var(--cdt-border-default); background: var(--cdt-surface-base); }
-.docs-menu-button { display: none; }
+.docs-nav__brand { display: block; padding: var(--cdt-space-3); }
 .docs-theme-toggle { display: inline-flex; align-items: center; gap: var(--cdt-space-2); }
-.docs-content { width: min(100% - var(--cdt-space-8), 72rem); margin: 0 auto; padding: var(--cdt-space-8) 0; }
 .docs-eyebrow { margin: 0 0 var(--cdt-space-2); color: var(--cdt-accent); font-size: var(--cdt-font-size-sm); font-weight: 700; text-transform: uppercase; }
 .docs-lead { max-width: 42rem; color: var(--cdt-text-muted); font-size: var(--cdt-font-size-lg); }
-.docs-mobile-nav { width: min(20rem, 90vw); padding: var(--cdt-space-5); }
 .docs-token-swatch { display: block; width: 2rem; height: 2rem; border: 1px solid var(--cdt-border-default); }
 .docs-preview { min-height: 3rem; margin-top: var(--cdt-space-3); }
 .docs-preview-row { display: flex; flex-wrap: wrap; gap: var(--cdt-space-2); align-items: center; }
@@ -22,4 +13,3 @@
 .docs-code-example { display: grid; gap: var(--cdt-space-3); }
 .docs-color-dot, .docs-meter-only { display: block; width: 1rem; height: 1rem; border-radius: var(--cdt-radius-pill); background: var(--cdt-status-success); }
 .docs-meter-only { width: 100%; border-radius: var(--cdt-radius-sm); }
-@media (max-width: 800px) { .docs-sidebar { display: none; } .docs-menu-button { display: inline-flex; } .docs-content { width: min(100% - var(--cdt-space-6), 72rem); padding: var(--cdt-space-6) 0; } }

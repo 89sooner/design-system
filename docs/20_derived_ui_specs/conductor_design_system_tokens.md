@@ -865,6 +865,30 @@ component 토큰은 semantic 토큰만 참조한다(FR-TOK-002 AC-3). 아래 표
 
 `page.headingLineHeight`만 단위 없는 비율이다. `clamp()`로 크기가 변하는 유일한 토큰이므로 px 고정이 불가능하다.
 
+### 7.8 셸 컴포넌트 토큰 (WP-023)
+
+| 토큰 키 | 값 | 관련 컴포넌트 |
+| --- | --- | --- |
+| `appShell.navWidth` | `{page.shellNavWidth}` | C-070 |
+| `appShell.mainMaxWidth` | `1480px` | C-070 |
+| `appShell.overlayBackground` | `{surface.overlay}` | C-070 |
+| `skipLink.background` | `{accent}` | C-070 |
+| `skipLink.text` | `{text.inverse}` | C-070 |
+| `navList.background` | `{surface.raised}` | C-071 |
+| `navList.border` | `{border.subtle}` | C-071 |
+| `navItem.text` | `{text.muted}` | C-071 |
+| `navItem.textActive` | `{text.primary}` | C-071 |
+| `navItem.backgroundHover` | `{state.hover}` | C-071 |
+| `navItem.backgroundActive` | `{state.selected}` | C-071 |
+| `navItem.indicator` | `{accent}` | C-071 |
+| `navSectionLabel.text` | `{text.faint}` | C-071 |
+| `font.weight.sectionLabel` | `700` | C-071 |
+| `topBar.background` | `{surface.glass}` | C-072 |
+| `topBar.border` | `{border.subtle}` | C-072 |
+| `topBar.eyebrowText` | `{text.faint}` | C-072 |
+| `topBar.titleText` | `{text.secondary}` | C-072 |
+| `topBar.minHeight` | `68px` | C-072 |
+
 ---
 
 ## 8. 대비율 검사 쌍

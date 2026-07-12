@@ -395,18 +395,46 @@ export interface MeterProps {
 ### API-CMP-009 셸군
 
 ```ts
-export interface NavListItem {
-  href: string;
-  label: string;
+export interface AppShellProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  nav: React.ReactNode;
+  topBar?: React.ReactNode;
+  navOpen?: boolean;
+  onNavOpenChange?: (open: boolean) => void;
+  skipLinkLabel: string;
+  mainId?: string;
+  children: React.ReactNode;
 }
 
-export interface NavListProps {
-  items: NavListItem[];
-  renderLink: (item: NavListItem, children: React.ReactNode) => React.ReactElement;
+export interface NavItem {
+  id: string;
+  href: string;
+  label: string;
+  icon?: React.ReactNode;
+  active?: boolean;
+  section?: string;
+}
+
+export interface NavLinkRenderProps {
+  className: string;
+  "aria-current": "page" | undefined;
+  children: React.ReactNode;
+}
+
+export interface NavListProps extends Omit<React.HTMLAttributes<HTMLElement>, "children"> {
+  items: readonly NavItem[];
+  renderLink: (item: NavItem, props: NavLinkRenderProps) => React.ReactNode;
+  "aria-label": string;
+}
+
+export interface TopBarProps extends Omit<React.HTMLAttributes<HTMLElement>, "children" | "title"> {
+  eyebrow?: React.ReactNode;
+  title?: React.ReactNode;
+  actions?: React.ReactNode;
+  menuButton?: React.ReactNode;
 }
 ```
 
-`renderLink`로 링크 렌더를 위임해 `@conductor/react`가 라우팅 라이브러리에 의존하지 않는다(AC-1, AC-2). 이 API는 FR-CMP-009 Should 우선순위이며 OD-004가 해소되지 않으면 문서 사이트 내부 컴포넌트로 강등된다.
+`renderLink`로 링크 렌더를 위임해 `@conductor/react`가 라우팅 라이브러리에 의존하지 않는다(AC-1, AC-2). `AppShell`의 모바일 내비는 exact `@radix-ui/react-dialog`의 non-modal `DismissableLayer`에 Escape와 outside pointer dismissal을 위임한다. OD-004는 2026-07-10에 패키지 포함으로 종결되었다.
 
 ### API-DOC-001 문서 사이트 라우트 계약
 
