@@ -53,9 +53,11 @@ describe("form components", () => {
 
   test("FR-CMP-007: Select keeps the Radix combobox role and accepts Field context", () => {
     const { getByLabelText } = render(
-      <Field label="Region"><Select.Root><Select.Trigger><Select.Value placeholder="Choose a region" /></Select.Trigger><Select.Content><Select.Item value="kr">Korea</Select.Item></Select.Content></Select.Root></Field>,
+      <Field label="Region"><Select.Root defaultValue="kr"><Select.Trigger><Select.Value placeholder="Choose a region" /></Select.Trigger><Select.Content><Select.Item value="kr">Korea</Select.Item></Select.Content></Select.Root></Field>,
     );
-    expect(getByLabelText("Region").getAttribute("role")).toBe("combobox");
+    const trigger = getByLabelText("Region");
+    expect(trigger.getAttribute("role")).toBe("combobox");
+    expect(trigger.textContent).toContain("Korea");
   });
 
   test("FR-CMP-001 AC-1~AC-4: Select.Trigger forwards its root contract through Select.Root", () => {

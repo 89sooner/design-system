@@ -1,6 +1,6 @@
 # Conductor Design System 구현 추적 원장
 
-> 상태: review | 버전: v0.4 | 갱신일: 2026-07-11
+> 상태: review | 버전: v0.5 | 갱신일: 2026-07-15
 
 ## 1. 목적과 갱신 규칙
 
@@ -61,6 +61,21 @@ WP-001 ~ WP-028의 이름·REL·선행 관계는 `conductor_work_packages.md`에
 | WP-028 | 문서 사이트 정적 배포 | REL-004 | done | `705410e` | 라우트 코드 분할(첫 청크 361kB→셸만)과 랜딩 프리렌더로 Fast 3G LCP p75 1,793ms/2,500ms 달성. `pnpm lighthouse`가 정적 서빙 렌더·외부 도메인 요청 0건·LCP 예산을 게이트하고, `deploy-docs.yml`이 수동 승인·`ref` 지정 배포/롤백으로 GitHub Pages에 원자적 스냅샷을 올린다. 프리렌더 격리 A/B에서 클라이언트 전용은 3,580ms로 예산 초과 | 2026-07-13 |
 
 상태값: `todo` / `in_progress` / `done` / `blocked`
+
+### CR-018 교차 WP 유지보수 (2026-07-15)
+
+사용자 요청에 따른 컴포넌트 시각 정제는 새 WP를 만들지 않고 기존 WP-005·WP-008·WP-012~017·WP-020·WP-024·WP-026의 유지보수로 수행했다. 공개 React API와 Radix 접근성 책임은 유지했다. additive `radius.pill` 토큰은 API 추출 기준과 Changeset에 기록했다.
+
+| 범위 | 결과 |
+| --- | --- |
+| 시각 구현 | Card/Overlay 깊이, Button variant×tone, Table 계층, Form/Select/Switch 상태, Banner 중립 표면 + 상태 rail, EmptyState/Meter/Progress 정제 |
+| DEV-011 | `radius.pill` 누락, `Select.Content` 자식 유실, Button 조합 우선순위 오류를 실제 Chromium 스냅샷에서 발견해 수정 |
+| 토큰/대비 | 338개(primitive 74 / semantic 89 / component 175), CSS 264 선언, 다크·라이트 80/80 통과 |
+| 정적 검증 | build·typecheck·lint·lint:deps·lint:tokens(42파일, 위반 0)·check:api(3리포트, `any` 0)·check:changesets 통과 |
+| 단위/접근성 | Vitest 488/488, axe/keyboard 134 passed + 음성 픽스처 1 skipped, 허용 예외 0 |
+| 브라우저 | 문서 E2E 16/16, 고정 Chromium 시각 회귀 25/25(diff 0), 다크·라이트 기준 이미지 24장 갱신 |
+| 예산 | Button 527B/4KB, CSS 8.11KiB/20KiB |
+| 문서 | validator `--report`·`--strict` 모두 구조·추적성 오류 0 |
 
 ## 3. 요구사항 → 코드/테스트 매핑 표
 
@@ -124,6 +139,7 @@ WP-001 ~ WP-028의 이름·REL·선행 관계는 `conductor_work_packages.md`에
 
 | DEV ID | 발견일 | 유형 | 내용 | 관련 ID | 처리 CR | 상태 |
 | --- | --- | --- | --- | --- | --- | --- |
+| DEV-011 | 2026-07-15 | 구현 편차 | CR-018 실제 Chromium 시각 검수에서 세 계약 불일치를 발견했다. (1) 컴포넌트 명세가 Badge·Switch에 요구하는 `--cdt-radius-pill`이 토큰 소스에 없어 CSS 선언이 무효였고 Switch·Meter·마커가 직사각형으로 렌더됐다. (2) `Select.Content`가 `children`을 `RadixSelect.Viewport`에 전달하지 않아 선택 항목과 현재 값이 렌더되지 않았다. (3) `.cdt-btn--tone-accent`가 variant와 같은 채움 규칙에 묶여 Secondary/Ghost accent가 Primary처럼 렌더되고, Ghost danger에 경계가 생겼다. `radius.pill` 복구, Select 자식 전달, variant 우선의 조합 셀렉터로 해소했고 단위·axe·E2E·시각 회귀를 모두 통과했다 | FR-CSS-004, FR-CMP-002, FR-CMP-007, WP-005, WP-012, WP-016, WP-026 | CR-018 | closed |
 | DEV-009 | 2026-07-13 | 문서 오류 | WP-028 구현에서 발견. 인프라 운영 §8이 규정한 "커밋 SHA 버전 디렉터리 + 별칭(pointer) 전환 + 직전 5개 보존" 배포 모델을 GitHub Pages가 지원하지 않는다. Pages의 배포 단위는 사이트 스냅샷 전체이며 별칭 전환 API가 없다. CR-016으로 배포를 원자적 스냅샷 교체로, 롤백을 직전 정상 커밋 ref 재배포로 정정했다. §8의 실제 불변식(신·구 자산 혼재 0건)은 그대로 성립한다 | FR-DOC-001, NFR-004, WP-028, JOB-BUILD-004 | CR-016 | closed |
 | DEV-010 | 2026-07-13 | 기술 제약 | WP-028 LCP 측정에서 발견. Lighthouse 기본 스로틀(lantern 시뮬레이션)은 프리렌더된 HTML의 첫 페인트를 모델링하지 못해, 프리렌더 전후 모두 LCP를 3,002ms로 예측한다(마크업 4,136자 주입에도 값이 바뀌지 않는다). 같은 스로틀 계수를 실제 Chromium에 적용해 관측하면 1,793ms이며, 마크업만 제거한 동일 번들은 3,580ms로 갈린다. 즉 시뮬레이션 예측은 실제 페인트를 반영하지 못하면서 예산 판정을 뒤집는다. CR-017로 SRS가 명시한 "Fast 3G 스로틀"을 DevTools 프리셋 실측으로 적용하고 두 값을 모두 기록한다 | NFR-001, FR-DOC-001, WP-028 | CR-017 | closed |
 | DEV-008 | 2026-07-13 | 기술 제약 | WP-027 구현 검증에서 확인했다. GitHub Actions의 `GITHUB_TOKEN`이 push한 태그는 재귀 방지 정책으로 후속 워크플로를 트리거하지 않아, 문서의 "워크플로가 태그를 생성해 배포 잡을 트리거" 절차가 그대로는 성립하지 않는다. CR-015로 수동 승인(태그 push 또는 workflow_dispatch)과 배포 후 태그 생성으로 정정하고, 배포 명령을 멱등한 `changeset publish`로 바꿨다 | FR-DX-005, NFR-002, WP-027, JOB-REL-001 | CR-015 | closed |

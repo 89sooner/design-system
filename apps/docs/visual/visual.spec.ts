@@ -24,7 +24,7 @@ async function openComponent(page: Page, component: (typeof components)[number])
 
   if (component === "Dialog") {
     await page.getByRole("button", { name: "Open dialog" }).click();
-    const dialog = page.getByRole("dialog", { name: "Dialog" });
+    const dialog = page.getByRole("dialog", { name: "Promote to production?" });
     await expect(dialog).toBeVisible();
     return dialog;
   }

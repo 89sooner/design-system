@@ -1,6 +1,6 @@
 # Conductor Design System 토큰 명세
 
-> 상태: review | 버전: v0.4 | 갱신일: 2026-07-10
+> 상태: review | 버전: v0.5 | 갱신일: 2026-07-15
 
 ## 0. 문서 성격과 범위 경계
 
@@ -401,6 +401,9 @@ FR-TOK-007 AC-4는 제목이 `font.size.xl` 이상과 `clamp()` 기반 반응형
 | **radius.md** | `12px` | `tokens.css:67` |
 | `radius.lg` | `18px` | `tokens.css:68` |
 | `radius.xl` | `24px` | `tokens.css:69` |
+| `radius.pill` | `9999px` | `app.css:500`, `app.css:1269` |
+
+`radius.pill`은 `tokens.css`의 다섯 단계 표면 반경을 확장해 근사한 값이 아니라, Badge와 Switch가 `app.css`에서 공유하는 완전 원형 기하를 그대로 승격한 semantic 토큰이다. 컴포넌트 명세가 처음부터 `--cdt-radius-pill`을 요구했으나 WP-005 구현에서 소스가 누락된 사실을 CR-018 시각 검수에서 발견해 복구했다(DEV-011).
 
 ### 5.10 고도 (`elevation.*`)
 
@@ -779,6 +782,22 @@ component 토큰은 semantic 토큰만 참조한다(FR-TOK-002 AC-3). 아래 표
 | `kbd.border` | `{border.default}` | | FR-CMP-005 |
 | `kbd.borderBottom` | `{border.strong}` | | FR-CMP-005 |
 | `kbd.text` | `{text.secondary}` | | FR-CMP-005 |
+
+### 7.4.4 `banner.*`
+
+| 토큰 키 | 다크 값 | 라이트 값 (다를 때만) | 관련 FR |
+| --- | --- | --- | --- |
+| `banner.info.background` | `{surface.raised}` | | FR-CMP-008, CR-018 |
+| `banner.info.border` | `{status.running}` | | FR-CMP-008, FR-A11Y-003 |
+| `banner.info.text` | `{text.secondary}` | | FR-A11Y-004 |
+| `banner.warning.background` | `{surface.raised}` | | FR-CMP-008, CR-018 |
+| `banner.warning.border` | `{status.waiting}` | | FR-CMP-008, FR-A11Y-003 |
+| `banner.warning.text` | `{text.secondary}` | | FR-A11Y-004 |
+| `banner.danger.background` | `{surface.raised}` | | FR-CMP-008, CR-018 |
+| `banner.danger.border` | `{status.danger}` | | FR-CMP-008, FR-A11Y-003 |
+| `banner.danger.text` | `{text.secondary}` | | FR-A11Y-004 |
+
+CR-018 이전 구현은 상태 semantic 색을 배경 전체에 적용하고 `text.inverse`를 본문에 사용했다. 상태는 넓은 면적이 아니라 시작 가장자리와 아이콘으로 병기하고, 본문은 공통 중립 표면 위의 `text.secondary`로 고정한다. 다크·라이트 모두 기존 CP-004(`text.secondary/surface.raised`)를 통과하며, 상태색/`surface.raised` 조합도 CP-019~CP-023의 기준을 통과한다. Banner 토큰 키와 React API는 바뀌지 않는다.
 
 ### 7.5 `input.*`
 

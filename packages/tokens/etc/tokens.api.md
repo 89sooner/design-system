@@ -158,6 +158,7 @@ export const tokens: {
         readonly md: "var(--cdt-radius-md)";
         readonly lg: "var(--cdt-radius-lg)";
         readonly xl: "var(--cdt-radius-xl)";
+        readonly pill: "var(--cdt-radius-pill)";
     };
     readonly z: {
         readonly base: "var(--cdt-z-base)";

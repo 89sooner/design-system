@@ -1,6 +1,6 @@
 # Conductor Design System UI 컴포넌트 명세서
 
-> 상태: review | 버전: v0.2 | 갱신일: 2026-07-10
+> 상태: review | 버전: v0.3 | 갱신일: 2026-07-15
 
 ## 0. 문서 위치와 범위
 
@@ -59,6 +59,16 @@
 3. 컴포넌트 클래스는 자식 구조 셀렉터(`>`, `+`, `:nth-child`)에 의존하지 않는다(FR-CSS-004 AC-4). Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다.
 4. `!important`를 사용하지 않는다(FR-CSS-001 AC-2). 소스 `app.css:954-957`의 `.dropdown-item:hover { ... !important }` 패턴은 계승하지 않는다. `DropdownMenu.Item`은 Radix가 부여하는 `[data-highlighted]` 속성 셀렉터로 하이라이트를 표현한다(`app.css:1263-1267`의 `.SelectItem[data-highlighted]` 패턴과 동일).
 5. React 없이 CSS 클래스만으로 동일한 계산된 스타일을 얻을 수 있어야 한다(FR-CSS-004 AC-3).
+
+#### CR-018 시각 정제 규칙
+
+사용자 시각 피드백에 따라 공개 API와 접근성 소유권은 유지하면서 다음 표현 규칙을 추가한다.
+
+1. 넓은 면을 강조색으로 채우는 것은 Primary 액션처럼 단일 최우선 행동에 한정한다. 정보·경고·오류 메시지는 중립 표면 위에 상태색 가장자리와 아이콘을 병기해 본문 대비와 정보 위계를 보존한다.
+2. Card와 Overlay는 `surface.glass`·`surface.tint.1`·elevation을 함께 사용해 떠 있는 표면으로, Panel은 그림자 없는 구획 표면으로 구분한다. 라이트 테마의 불투명 대안과 0px blur 재정의는 그대로 적용한다(FR-THM-002).
+3. Button·Form control은 얇은 내부 하이라이트와 hover/active 피드백을 갖되, 검증된 단색 Primary 채움과 `focusRing`·`border.control` 교정값을 바꾸지 않는다(FR-THM-005).
+4. Table은 컨테이너·caption·header·body의 표면 및 타이포 위계를 갖고, Feedback 컴포넌트는 제목·설명·수치 레이블을 서로 다른 텍스트 단계로 표현한다.
+5. 메뉴와 선택 항목의 `[data-highlighted]`는 `accent.soft` 배경 + `text.primary` 조합을 사용한다. 강조색 전체 채움은 사용자의 현재 위치보다 Primary 액션처럼 읽히므로 탐색 하이라이트에 사용하지 않는다.
 
 ### 1.6 props 네이밍 고정
 
@@ -189,6 +199,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   - `app.css:490-494` — `.btn.policy-disabled` 정책 차단 시각(`--state-disabled-policy` 배경, `--status-danger` 경계).
   - `app.css:783-796` — `.filter-bar .btn` 34px 높이, 투명 배경, `[aria-pressed="true"]` 선택 시각. `sm` 크기와 `ghost` 변종의 근거.
   - `app.css:1097-1099` — 뷰포트 560px 미만에서 `min-height: 42px`.
+  - **CR-018 결정**: `variant`가 채움 전략을 항상 우선한다. `primary`는 neutral/accent에서 accent 채움, danger에서 danger 채움을 사용한다. `secondary`는 표면 + 경계를 유지하고 accent/danger는 경계와 전경으로 tone을 나타낸다. `ghost`는 세 tone 모두 투명 경계를 유지한다. tone 클래스가 variant를 덮어써 Secondary/Ghost를 Primary처럼 만들지 않는다(DEV-011).
 
 | 이름 | 타입 | 기본값 | 필수 | 설명 |
 | --- | --- | --- | --- | --- |
@@ -254,6 +265,7 @@ export type IconButtonProps = PolymorphicProps<"button", IconButtonOwnProps> & {
   - `app.css:428-434` — `a.card:hover`, `button.card:hover`, `.interactive-card:hover` → `transform: translateY(-2px)`, `box-shadow: var(--elevation-hover)`, `border-color: var(--border-strong)`. FR-CMP-003 AC-2의 "2px 상승 + 강조 경계"의 근거.
   - `app.css:1058-1061` — `.card:has(> .table) { overflow-x: auto }`. FR-CMP-003 AC-4의 근거.
   - `app.css:1084` — 뷰포트 560px 미만에서 패딩 축소, 반경 `--radius-md`로 축소.
+  - **CR-018 결정**: 초기 구현이 `card.background`과 `card.shadow`만 적용해 원본의 글래스 그라디언트와 재질 깊이를 잃었다. `surface.tint.1`에서 투명으로 사라지는 그라디언트, 얇은 내부 하이라이트, 라이트에서 0px로 재정의되는 글래스 blur를 복원한다. Primary 액션의 대비를 해치는 accent 그라디언트는 추가하지 않는다.
 
 | 이름 | 타입 | 기본값 | 필수 | 설명 |
 | --- | --- | --- | --- | --- |
@@ -625,7 +637,7 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
   - `app.css:1239-1248` — `.SelectContent` `overflow: hidden`, `backdrop-filter: blur(16px)`, `slideDownAndFade` 진입. 메뉴 표면의 직접 근거다.
   - `app.css:1249-1267` — `.SelectItem` 높이 32px, 좌우 패딩, `.SelectItem[data-highlighted]` 하이라이트 배경. 메뉴 항목의 근거다.
   - `app.css:954-957` — `.dropdown-item:hover, .dropdown-item:focus { background: var(--state-hover) !important }`.
-  - **결정**: 위 `!important` 규칙은 계승하지 않는다(FR-CSS-001 AC-2). 하이라이트는 `.cdt-menu__item[data-highlighted]` 속성 셀렉터로 표현하며, Radix가 키보드와 포인터 하이라이트를 하나의 속성으로 통합한다. 하이라이트 배경은 `state.hover`가 아니라 `.SelectItem[data-highlighted]`(`app.css:1263-1267`)와 동일한 강조색 채움을 사용한다.
+  - **결정**: 위 `!important` 규칙은 계승하지 않는다(FR-CSS-001 AC-2). 하이라이트는 `.cdt-menu__item[data-highlighted]` 속성 셀렉터로 표현하며, Radix가 키보드와 포인터 하이라이트를 하나의 속성으로 통합한다. CR-018 이후 배경은 `accent.soft`, 전경은 `text.primary`를 사용해 탐색 위치를 Primary 액션보다 낮은 시각 단계로 유지한다.
   - **결정**: 소스 `.SelectItem`의 `border-radius: 4px`는 스케일 밖이다. `--cdt-radius-xs`(6px)를 사용한다.
 
 **합성 API**: `DropdownMenu.Root`, `DropdownMenu.Trigger`, `DropdownMenu.Content`, `DropdownMenu.Item`, `DropdownMenu.Label`, `DropdownMenu.Separator`.
@@ -752,6 +764,8 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
   - `app.css:1249-1267` — `.SelectItem` 높이 32px, `[data-highlighted]` 강조색 채움.
   - **결정**: `.SelectContent`의 `z-index: 60`은 스케일 밖이다. `--cdt-z-popover`(50)를 사용한다.
   - **결정**: `.SelectTrigger:focus`는 `:focus-visible`이 아닌 `:focus`를 사용한다. FR-A11Y-001 AC-4(마우스 포커스에서 링 미표시)를 만족하도록 `:focus-visible`로 옮긴다.
+  - **CR-018 결정**: 선택 항목의 `[data-highlighted]`는 DropdownMenu와 동일한 `accent.soft` + `text.primary` 조합을 사용한다. 선택 여부는 Radix의 `aria-selected`와 항목 텍스트가 전달하며, 강조색 면 채움에만 의존하지 않는다.
+  - **CR-018 구현 검증**: `Select.Content`는 전달받은 `children`을 `RadixSelect.Viewport` 안에 렌더해야 한다. 자식을 버리면 선택 항목뿐 아니라 닫힌 Trigger의 현재 값도 비어 보이므로, `defaultValue`의 ItemText가 Trigger에 표시되는 단위 테스트를 둔다(DEV-011).
 
 **합성 API**: `Select.Root`, `Select.Trigger`, `Select.Value`, `Select.Content`, `Select.Item`, `Select.Group`, `Select.Label`. 모두 Radix `Select` 파트를 감싼다.
 
@@ -843,9 +857,9 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
   - `app.css:632-641` — `.banner-error` 반투명 위험색 배경, 동색 반투명 경계, `border-radius: var(--radius-md)`, `padding: var(--space-4)`, 밝은 위험색 전경, `display: flex`, `gap: var(--space-3)`.
   - `app.css:643-652` — `.banner-info` 동일 구조의 정보색 변형.
   - `app.css:664-670` — `.warn-box` 동일 구조의 경고색 변형. `display: flex`가 없는 블록 형태다.
-  - **결정**: 세 규칙이 "반투명 배경 + 동색 반투명 경계 + 밝은 동색 전경"의 동일 구조를 공유한다. 이를 `tone` 축으로 통합한다. `.warn-box`의 블록 레이아웃은 `.banner-error`의 flex 레이아웃으로 통일한다.
+  - **결정**: 세 규칙의 공통 flex 구조를 `tone` 축으로 통합한다. CR-018에서 넓은 상태색 면이 본문보다 먼저 읽히는 문제를 수정해, 배경은 세 tone 모두 `surface.raised`, 본문은 `text.secondary`를 사용한다. tone은 3px 시작 가장자리와 아이콘 색으로 병기하고 제목은 `text.primary`를 사용한다. 색만으로 의미를 전달하지 않는 P-2와 다크·라이트 본문 대비를 동시에 보존한다.
   - **결정**: `tone` 값은 `info`, `warning`, `danger` 3종으로 고정한다. `success` 배너는 소스에 시각 근거가 없고 FR-CMP-008 AC-1이 요구하지 않으므로 추가하지 않는다. 성공 상태는 `StatusBadge status="success"`(C-021)로 전달한다.
-  - **결정**: 소스 전경색은 리터럴이다. `--cdt-banner-<tone>-text` component 토큰으로 치환하며 각 상태 semantic 토큰의 밝은 대응값을 참조한다. 라이트 테마에서 반투명 배경이 판독되지 않으면 팔레트에서 solid 대안 값으로 재정의한다. 컴포넌트 코드는 수정하지 않는다(FR-THM-002 예외/실패 처리).
+  - **결정**: `--cdt-banner-<tone>-background|border|text` component 토큰으로 구조를 유지한다. background는 `surface.raised`, border는 각 상태 semantic 토큰, text는 `text.secondary`를 참조하므로 테마별 컴포넌트 분기 없이 같은 CSS가 동작한다(FR-THM-002).
 
 | 이름 | 타입 | 기본값 | 필수 | 설명 |
 | --- | --- | --- | --- | --- |
@@ -1219,8 +1233,6 @@ component 토큰은 semantic 토큰만 참조한다(FR-TOK-002 AC-3). 아래 표
 | `elevation.accent` | 강조 버튼의 색 있는 그림자 | `app.css:468`(`.btn-primary`), `app.css:474`(hover) |
 
 `font.weight.*` 스케일은 FR-TOK-007이 다루지 않으므로, `--cdt-font-weight-section-label`은 component 토큰으로 두고 semantic 토큰을 신설하지 않는다.
-
-
 
 
 

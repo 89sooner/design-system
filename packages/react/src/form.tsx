@@ -126,8 +126,8 @@ const SelectTrigger = forwardRef<HTMLButtonElement, SelectTriggerProps>(function
 });
 SelectTrigger.displayName = "Select.Trigger";
 
-const SelectContent = forwardRef<HTMLDivElement, ComponentPropsWithoutRef<typeof RadixSelect.Content>>(function SelectContent({ className, ...props }, ref) {
-  return <RadixSelect.Portal><RadixSelect.Content {...props} ref={ref} className={cx("cdt-select__content", className)}><RadixSelect.Viewport /></RadixSelect.Content></RadixSelect.Portal>;
+const SelectContent = forwardRef<HTMLDivElement, ComponentPropsWithoutRef<typeof RadixSelect.Content>>(function SelectContent({ children, className, ...props }, ref) {
+  return <RadixSelect.Portal><RadixSelect.Content {...props} ref={ref} className={cx("cdt-select__content", className)}><RadixSelect.Viewport>{children}</RadixSelect.Viewport></RadixSelect.Content></RadixSelect.Portal>;
 });
 SelectContent.displayName = "Select.Content";
 

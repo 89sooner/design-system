@@ -168,15 +168,15 @@ const kbd: TokenDefinition[] = [
 ];
 
 const banner: TokenDefinition[] = [
-  component("banner.info.background", ref("status.running"), "Info banner fill."),
+  component("banner.info.background", ref("surface.raised"), "Info banner surface."),
   component("banner.info.border", ref("status.running"), "Info banner edge."),
-  component("banner.info.text", ref("text.inverse"), "Info banner text.", "body"),
-  component("banner.warning.background", ref("status.waiting"), "Warning banner fill."),
+  component("banner.info.text", ref("text.secondary"), "Info banner body text.", "body"),
+  component("banner.warning.background", ref("surface.raised"), "Warning banner surface."),
   component("banner.warning.border", ref("status.waiting"), "Warning banner edge."),
-  component("banner.warning.text", ref("text.inverse"), "Warning banner text.", "body"),
-  component("banner.danger.background", ref("status.danger"), "Danger banner fill."),
+  component("banner.warning.text", ref("text.secondary"), "Warning banner body text.", "body"),
+  component("banner.danger.background", ref("surface.raised"), "Danger banner surface."),
   component("banner.danger.border", ref("status.danger"), "Danger banner edge."),
-  component("banner.danger.text", ref("text.inverse"), "Danger banner text.", "body"),
+  component("banner.danger.text", ref("text.secondary"), "Danger banner body text.", "body"),
 ];
 
 const emptyState: TokenDefinition[] = [

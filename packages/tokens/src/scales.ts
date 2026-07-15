@@ -86,6 +86,7 @@ const radius: TokenDefinition[] = [
   aliased("radius.md", "curve.12", "Button radius, compact card radius."),
   aliased("radius.lg", "curve.18", "Card and overlay radius."),
   aliased("radius.xl", "curve.24", "Largest radius."),
+  semantic("radius.pill", "9999px", "Fully rounded badge, toggle, marker and progress geometry."),
 ];
 
 /** FR-TOK-008 AC-1. Six layers; AC-3 forbids two layers sharing a value. */

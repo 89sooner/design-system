@@ -46,6 +46,13 @@ describe("typography scale", () => {
   });
 });
 
+describe("radius scale", () => {
+  test("FR-CSS-004: `radius.pill` resolves the shared fully-rounded component contract", () => {
+    expect(byKey.get("radius.pill")?.value).toBe("9999px");
+    expect(css).toContain("--cdt-radius-pill: 9999px;");
+  });
+});
+
 describe("z-index scale", () => {
   test("FR-TOK-008 AC-1: `z` has exactly six layers at 0/10/20/30/40/50", () => {
     expect(Z_LAYERS).toEqual({ base: 0, raised: 10, sticky: 20, drawer: 30, overlay: 40, popover: 50 });

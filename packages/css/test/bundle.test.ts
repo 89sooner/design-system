@@ -396,12 +396,14 @@ describe("FR-CMP-006 Radix overlay styles", () => {
   test("FR-CSS-004 AC-4: Radix state styling uses only supported data attributes", () => {
     const radixRules = components.filter((rule) => /cdt-(?:menu|tooltip|dialog|drawer)/.test(rule.selector) && rule.selector.includes("["));
     expect(radixRules.length).toBeGreaterThan(0);
-    for (const rule of radixRules) expect(rule.selector).toMatch(/\[data-(?:state|side|align|highlighted|disabled)\]/);
+    for (const rule of radixRules) {
+      expect(rule.selector).toMatch(/\[data-(?:state|side|align|highlighted|disabled)(?:=[^\]]+)?\]/);
+    }
   });
 
   test("FR-CMP-006: menu item highlighting is data-highlighted, not hover or focus", () => {
     const highlighted = components.find((rule) => rule.selector === ".cdt-menu__item[data-highlighted]");
-    expect(highlighted?.decls.background).toBe("var(--cdt-accent)");
+    expect(highlighted?.decls.background).toBe("var(--cdt-accent-soft)");
     expect(components.some((rule) => rule.selector === ".cdt-menu__item:hover" || rule.selector === ".cdt-menu__item:focus")).toBe(false);
   });
 });
@@ -422,6 +424,6 @@ describe("FR-CMP-007 form styles", () => {
     const checked = components.find((rule) => rule.selector.includes(".cdt-switch[data-state=checked]"));
     const highlighted = components.find((rule) => rule.selector === ".cdt-select__item[data-highlighted]");
     expect(checked?.decls.background).toBe("var(--cdt-accent)");
-    expect(highlighted?.decls.background).toBe("var(--cdt-accent)");
+    expect(highlighted?.decls.background).toBe("var(--cdt-accent-soft)");
   });
 });

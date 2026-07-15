@@ -37,6 +37,7 @@
 | CR-015 | 2026-07-13 | implementation | `DEV-008` (WP-027 구현 검증) | 인프라 운영 문서 §6의 "버전 상승 PR 병합 → 릴리스 워크플로가 태그 생성 → 태그가 배포 잡 트리거" 순서는 GitHub Actions에서 성립하지 않는다. `GITHUB_TOKEN`이 push한 태그는 재귀 방지 정책으로 워크플로를 트리거하지 않는다. 수동 승인을 maintainer의 workflow_dispatch 또는 태그 push로 정의하고, 릴리스 태그 생성·push는 배포 잡이 게시 후 수행하도록 정정한다. 배포 명령도 `pnpm publish -r --provenance`에서 재실행이 안전한 `pnpm changeset publish`(+`NPM_CONFIG_PROVENANCE=true`)로 정정한다. 요구사항·토큰 값·공개 API 변경 없음 | DEV-008, WP-027, FR-DX-005, NFR-002, JOB-REL-001 | `conductor_infrastructure_operations.md`, `.github/workflows/release.yml`, delivery ledger | closed |
 | CR-016 | 2026-07-13 | implementation | `DEV-009` (WP-028 구현) | 인프라 운영 문서 §8은 문서 사이트 배포를 "커밋 SHA 디렉터리 업로드 → 별칭(pointer) 전환 → 직전 5개 버전 보존"으로 규정한다. GitHub Pages는 배포 단위가 사이트 스냅샷 전체이며 버전 디렉터리와 별칭 전환 API를 제공하지 않는다. 대신 각 배포가 원자적 스냅샷 교체이므로 §8의 실제 불변식(방문자가 신·구 자산이 섞인 상태를 받지 않는다)은 그대로 성립한다. 롤백은 별칭 되돌리기 대신 "직전 정상 커밋 ref 재배포"로 정정한다. lockfile 고정 재빌드는 결정적이며 10분 예산(NFR-004) 안에 끝난다 | DEV-009, WP-028, FR-DOC-001, NFR-004, JOB-BUILD-004 | `conductor_infrastructure_operations.md`, `.github/workflows/deploy-docs.yml`, delivery ledger | closed |
 | CR-017 | 2026-07-13 | implementation | `DEV-010` (WP-028 LCP 측정) | NFR-001의 문서 사이트 LCP 지표를 Lighthouse 기본 스로틀(lantern 시뮬레이션)로 재면 프리렌더된 첫 페인트를 모델링하지 못해 3,002ms로 나오고, 같은 스로틀 계수를 실제 브라우저에 적용해 관측하면 1,793ms다. 두 값이 예산 2.5초의 양쪽에 놓여 판정을 뒤집는다. SRS가 명시한 측정 조건은 "로컬 프로덕션 빌드, Fast 3G 스로틀"이므로, 시뮬레이션 예측이 아니라 DevTools Fast 3G 프리셋(RTT 150ms, 1.6Mbps, CPU 4x)을 실제로 적용해 관측한 값을 지표로 삼는다. 두 값을 모두 원장에 기록한다. 목표치·요구사항은 변경하지 않는다 | DEV-010, WP-028, NFR-001, FR-DOC-001 | `scripts/check-lighthouse.mjs`, delivery ledger | closed |
+| CR-018 | 2026-07-15 | design | 사용자 요청 (컴포넌트 심미성·시인성·가독성 개선) + `DEV-011` | 공개 API와 Radix 접근성 책임은 유지하면서 컴포넌트의 시각 언어를 "차분한 깊이 + 명확한 정보 위계"로 정비한다. 검증된 단색 Primary 액션과 대비 교정값은 보존하고, Card·Overlay의 글래스/고도 표현, Button·Form의 상호작용 피드백, Table의 구조적 위계, Banner의 중립 표면 + 상태색 가장자리, Feedback의 트랙/레이블 판독성을 강화한다. 문서 카탈로그 예시는 실제 구성 계층이 보이도록 현실적인 콘텐츠로 교체하고, 다크·라이트 시각 기준선을 갱신한다. 시각 검수에서 발견한 `DEV-011`을 함께 해소한다: 명세에만 있고 소스에 빠진 additive `radius.pill` 토큰을 복구하고, `Select.Content`가 자식을 버리던 결함과 Button의 variant×tone 우선순위 오류를 수정한다. 요구사항·공개 React API의 삭제/변경 없음 | DEV-011, FR-CSS-004, FR-CMP-002~008, FR-THM-002, FR-THM-005, FR-QA-003, FR-QA-004, WP-005, WP-008, WP-012~017, WP-020, WP-024, WP-026 | `conductor_ui_component_spec.md`, `conductor_design_system_tokens.md`, token/CSS/React source, docs catalog, unit/CSS tests, visual baselines, delivery ledger | closed |
 
 유형: `scope`(범위 변경), `design`(설계 변경), `implementation`(구현 편차 DEV-### 처리), `correction`(문서 오류 수정)
 
@@ -225,6 +226,20 @@ WP-009 완료 검증에서 발견한 작업 패키지 검증 명령의 문서 �
 - [x] `docs/40_delivery/conductor_implementation_traceability.md` — NFR-001 측정 방법과 두 측정값(1,793ms 관측 / 3,002ms 시뮬레이션) 기록
 - [x] 목표치(2.5초)와 요구사항 문구는 변경하지 않음
 - [x] 검증: 프리렌더 격리 A/B 6회 교차 실행 — 프리렌더 1,793ms vs 클라이언트 전용 3,580ms(동일 번들, 마크업만 제거), 1바이트 예산 음성 픽스처 exit 1
+
+### CR-018 cascade
+
+- [x] `docs/20_derived_ui_specs/conductor_ui_component_spec.md` — 차분한 깊이·정보 위계 원칙, Button variant×tone, Card 재질, Menu/Select 하이라이트, Banner 표현 계약 갱신(v0.3)
+- [x] `docs/20_derived_ui_specs/conductor_design_system_tokens.md` — `radius.pill` 복구 근거와 Banner component 토큰 참조 갱신(v0.5)
+- [x] `packages/tokens/src/scales.ts`, `components.ts` — additive `radius.pill`, 중립 Banner 표면/본문 토큰 구현
+- [x] `packages/css/src/components.css` — Button·Card·Table·Timeline·Overlay·Form·Banner·Feedback 시각 정제, Radix 상태 셀렉터 유지
+- [x] `packages/react/src/form.tsx` — `Select.Content` 자식을 `RadixSelect.Viewport`에 전달(DEV-011)
+- [x] `apps/docs/src/catalog.tsx`, `docs.css` — 실제 정보 위계가 드러나는 30개 라이브 예시와 접근 가능한 Dialog/폼 맥락 갱신
+- [x] 단위/CSS/API — Vitest 488/488, CSS 78/78, typecheck·lint·lint:tokens·check:api·check:changesets 통과
+- [x] 접근성/브라우저 — axe/keyboard 134 passed + 1 skipped, 문서 E2E 16/16, 시각 회귀 25/25(diff 0), 기준 이미지 24장 갱신
+- [x] 대비/예산 — 다크·라이트 80/80, Button 527B/4KB, CSS 8.11KiB/20KiB
+- [x] `docs/40_delivery/conductor_implementation_traceability.md` — DEV-011 종결과 교차 WP 검증 근거 기록(v0.5)
+- [x] validator: 구조·추적성 오류 0건, `--report`·`--strict` 통과
 
 ## 6. 미해소 오픈 결정
 
