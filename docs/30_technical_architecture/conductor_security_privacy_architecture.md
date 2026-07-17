@@ -1,6 +1,6 @@
 # Conductor Design System 보안 및 개인정보 아키텍처
 
-> 상태: review | 버전: v0.4 | 갱신일: 2026-07-17
+> 상태: review | 버전: v0.5 | 갱신일: 2026-07-17
 
 ## 1. 범위 재정의: 이 제품은 공급망 보안 문제다
 
@@ -99,7 +99,7 @@ Conductor는 소비자 애플리케이션의 DOM에 직접 렌더되므로, Cond
 
 | Threat ID | 시나리오 | 영향 | 완화 | SRS 명명 여부 |
 | --- | --- | --- | --- | --- |
-| THR-001 | 공격자가 `@conductor-by-89soone/react`와 유사한 이름(`conductor-react`, `@conductors/react`)으로 악성 패키지를 npm에 게시해 오타 설치를 유도한다(typosquatting) | 소비자 빌드에 임의 코드가 포함된다 | `@conductor` 조직 스코프를 npm에 예약하고, 문서 사이트 Getting Started(W-002)에 정확한 설치 명령을 고정 표기한다. 정식 스코프 외 패키지는 Conductor가 게시·지원하지 않음을 문서에 명시한다 | SRS 미명명 — 이 문서에서 자체 식별 |
+| THR-001 | 공격자가 `@conductor-by-89soone/react`와 유사한 이름(`conductor-react`, `@conductors/react`)으로 악성 패키지를 npm에 게시해 오타 설치를 유도한다(typosquatting) | 소비자 빌드에 임의 코드가 포함된다 | `@conductor-by-89soone` 조직 스코프를 npm에 예약하고, 문서 사이트 Getting Started(W-002)에 정확한 설치 명령을 고정 표기한다. 정식 스코프 외 패키지는 Conductor가 게시·지원하지 않음을 문서에 명시한다 | SRS 미명명 — 이 문서에서 자체 식별 |
 | THR-002 | PR에 포함된 악성 `postinstall` 스크립트 또는 변경된 CI 워크플로 YAML이 릴리스 잡과 동일한 권한으로 실행되어 OIDC 토큰이나 빌드 산출물을 탈취한다 | 릴리스 자격증명 탈취 또는 오염된 산출물 배포 | 빌드 잡(PR 트리거, 시크릿 없음)과 릴리스 잡(태그 push 트리거, OIDC 토큰 있음)을 별도 워크플로로 분리한다(6절). CI 설치는 `pnpm install --frozen-lockfile --ignore-scripts`를 기본값으로 하고, 빌드에 필요한 스크립트만 명시적으로 허용 목록에 추가한다 | SRS 미명명 — 이 문서에서 자체 식별 |
 | THR-003 | Radix UI 또는 lucide-react의 신규 배포 버전이 계정 탈취 등으로 악성 코드를 포함한다 | Conductor를 통해 소비자 번들에 악성 코드가 전파된다 | Radix는 정확한 버전 고정(caret 미사용)으로 자동 업그레이드를 차단한다(R-3). 두 의존성 모두 3.3의 `pnpm audit` 게이트 대상이다 | NFR-002가 일반 취약점 게이트를 명명. 계정 탈취발 악성 배포 시나리오는 이 문서에서 구체화 |
 | THR-004 | 대비 검사 제외 목록(`usage: "decorative"`)이 남용되어 실제 본문 텍스트 토큰이 접근성 검사를 우회한다 | WCAG 2.1 AA 미달 상태가 릴리스된다 | 제외 목록을 `pnpm check:contrast --report`로 조회 가능하게 하고(FR-THM-004 예외 처리), 접근성 검토자가 릴리스 게이트에서 제외 목록 변경을 리뷰한다 | FR-A11Y-005, FR-THM-004가 명명 |

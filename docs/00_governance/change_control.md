@@ -44,6 +44,9 @@
 | CR-022 | 2026-07-15 | implementation | 실제 릴리스 권한 감사 + `DEV-015`·`DEV-016` | npm의 현재 Trusted Publishing 요구사항을 실제 워크플로와 대조했다. release job의 Node 20은 최소 Node 22.14.0/npm 11.5.1을 충족하지 못하고, private GitHub 저장소에서는 public npm 패키지라도 provenance가 생성되지 않는다. 또한 미게시 패키지는 Trusted Publisher를 등록할 수 없어 `@conductor/*` 3종을 `bootstrap` dist-tag로 최초 1회 생성한 뒤 패키지별 신뢰 관계를 등록해야 한다. release job을 Node 22.14.0/npm 11.18.0으로 고정하고 private repository를 provenance preflight에서 차단한다. 최초 namespace bootstrap은 npm 2FA 대화형 인증으로만 수행하며 장기 토큰을 저장하지 않는다. 공개 전 secret scan이 현재 추적 파일만 검사하던 편차도 작업 트리 전체와 Git 이력 검사로 해소한다. 요구사항·공개 API 변경 없음 | DEV-015, DEV-016, WP-027, FR-DX-005, NFR-002, NFR-004, JOB-REL-001 | release workflow, secret scanner, infrastructure/security/ADR, release plan, delivery ledger | closed |
 | CR-023 | 2026-07-17 | scope | 사용자 결정 (공개 npm organization 확정) | 제3자가 소유한 `@conductor` 대신 사용자가 생성한 npm organization `conductor-by-89soone`을 공개 배포 namespace로 확정한다. 세 패키지와 모든 소비자 import·의존성·Changesets·릴리스 태그 계약을 `@conductor-by-89soone/*`로 일괄 전환한다. 첫 공개 릴리스 전 변경이므로 기존 게시 소비자 마이그레이션은 없으며, 제품명 Conductor와 CSS 계약 `--cdt-*`·`cdt-*`는 변경하지 않는다. 저장소는 MIT로 배포하고 패키지별 설치·사용 README를 포함한다 | SCN-001, FR-DX-001~005, FR-DOC-001~007, API-PKG-001~003, JOB-BUILD-001~004, JOB-CI-001~004, JOB-REL-001, WP-001~028, REL-001~004 | SRS, PRD, glossary, traceability, derived UI, architecture, delivery, agent briefs, repository source/config/workflows | closed |
 | CR-024 | 2026-07-17 | implementation | CR-023 릴리스 게이트 + `DEV-017` | 라이트 테마의 열린 Dialog에서 axe `color-contrast` serious 위반 1건을 재현했다. 명세는 `Dialog.Close`의 `cdt-dialog__close` 클래스를 요구하지만 구현은 Radix 원시 버튼을 그대로 노출해 브라우저 기본 ButtonFace/텍스트 색을 사용했다. `asChild` 소비자 스타일은 보존하고 원시 `Dialog.Close`·`Drawer.Close`에만 기존 Conductor secondary compact Button 클래스를 기본 적용한다. Radix의 닫기 동작·포커스 복귀·role 책임과 공개 props 타입은 변경하지 않는다 | DEV-017, FR-CMP-006, FR-A11Y-004, FR-QA-003, C-040, C-041, WP-015, WP-024, WP-026 | overlay source/unit/a11y tests, component spec, delivery ledger | closed |
+| CR-025 | 2026-07-17 | implementation | 첫 OIDC 릴리스 + `DEV-018` | `changeset publish`가 npm 0.1.0 3종과 provenance는 게시했지만 Git identity가 없는 runner에서 annotated tag 생성이 실패했다. Changesets CLI가 하위 git helper의 boolean 실패를 예외로 전파하지 않아 `git push --tags`까지 성공으로 끝났다. 누락 태그 3개를 릴리스 SHA에 복구하고, publish 전에 `github-actions[bot]` identity를 설정한다. publish 뒤 manifest의 현재 버전별 태그가 annotated object이고 릴리스 HEAD에서 도달 가능하며 원격 object와 같은지 `check:release-tags`로 강제한다. 요구사항·패키지 API 변경 없음 | DEV-018, FR-DX-005, NFR-002, WP-027, JOB-REL-001 | release workflow, release tag checker, infrastructure/async architecture, release plan, delivery ledger | closed |
+| CR-026 | 2026-07-17 | implementation | 첫 npm 레지스트리 소비자 스모크 + `DEV-019` | `@conductor-by-89soone/react`의 `lucide-react: ^0.400.0` peer 범위는 semver 0.x에서 0.400.x만 허용하지만 저장소와 docs는 0.468.0을 사용하고 설치 문서는 버전을 고정하지 않는다. 아이콘을 번들하지 않고 소비자가 주입하는 기존 계약 안에서 호환 범위를 `>=0.400.0 <2`로 바로잡고 patch changeset을 추가한다. React 컴포넌트 props와 런타임 동작 변경 없음 | DEV-019, FR-CMP-004, FR-DX-004, WP-011, API-PKG-003 | react manifest/test/README, package API contract, work package, delivery ledger | closed |
+| CR-027 | 2026-07-17 | correction | 첫 공개 릴리스 문서 감사 + `DEV-020` | 실제 릴리스와 운영 문서를 대조해 CR-023 cascade 뒤 남은 옛 org `conductor` 2건, 실행되지 않는 수동 `next` publish·dist-tag 승격 절차, CHANGELOG 생성 시점과 롤백 순서 불일치를 정정한다. 실제 계약은 org `conductor-by-89soone`, version PR에서 CHANGELOG 생성, 승인 후 OIDC `changeset publish`, deprecate 후 `react → css → tokens` dist-tag 롤백이다. SRS·제품 범위 변경 없음 | DEV-020, FR-DX-005, NFR-002, NFR-004, WP-027, JOB-REL-001 | infrastructure/security/async architecture, release plan, rollback script, delivery ledger | closed |
 
 유형: `scope`(범위 변경), `design`(설계 변경), `implementation`(구현 편차 DEV-### 처리), `correction`(문서 오류 수정)
 
@@ -58,6 +61,7 @@
 | 아키텍처 게이트 | 2026-07-10 | pass | 고위험 FR(FR-THM-004, FR-A11Y-004, FR-DX-003)이 빌드 파이프라인·CI 잡·패키지 계약에 매핑. 스택 결정 ADR-001~010 기록. 안정화된 API(API-PKG-001~003, API-TOK-001~003)에 구체적 JSON/TS 예시 포함 |
 | 딜리버리 게이트 | 2026-07-10 | pass | REL-001~004 전부가 WP로 분해됨. 각 WP가 FR을 참조하고 체크 가능한 DoD와 검증 명령을 보유. 의존 순환 0건 |
 | 핸드오프 게이트 | 2026-07-10 | pass | 사용자가 `srs_final.md`의 `baseline` 승격을 승인했다(v1.0). OD-001·OD-002·OD-004가 CR-005로 종결되어 Must FR을 차단하는 open OD가 0건이다. `validate_srs_prd_env.py --root . --strict`가 오류·경고 0건으로 통과한다. 브리프와 작업 패키지 상태가 SRS baseline과 정합적이다. WP-001은 브리프와 그것이 지목하는 문서만으로 실행 가능하다 |
+| REL-004 외부 릴리스 게이트 | 2026-07-17 | pass | version PR #2·main CI·OIDC Release run 29569125471 성공, npm 0.1.0 3종 SLSA provenance v1, npm 롤백 323.8초 후 정상 복구, Pages 실제 롤백 214초·복원 203초, 레지스트리 소비자 `tsc --noEmit` 통과. 태그/peer/docs 편차는 CR-025~027로 해소 |
 
 ### baseline 승격 기록
 
@@ -306,6 +310,26 @@ WP-009 완료 검증에서 발견한 작업 패키지 검증 명령의 문서 �
 - [x] `docs/40_delivery/conductor_implementation_traceability.md` — DEV-017 원인·해소·검증 증거 기록
 - [x] Chromium 전체 접근성 게이트 164 passed + 음성 fixture 1 skipped, 두 테마 Dialog 개별 시각 기준선과 전체 visual 27/27 통과
 - [x] Radix 원본 `DialogCloseProps`를 직접 사용해 공개 API 리포트 드리프트 0건 유지
+
+### CR-025 cascade
+
+- [x] `.github/workflows/release.yml` — publish 전 bot Git identity 설정, publish 후 로컬 annotated tag 검증, push 후 원격 object 일치 검증 추가
+- [x] `scripts/check-release-tags.mjs`, root `check:release-tags` — manifest 현재 버전 3종의 tag type·HEAD ancestry·remote object를 실패 가능한 게이트로 고정
+- [x] 누락된 0.1.0 annotated tag 3개를 release SHA `1c6f628`에 복구하고 GitHub refs API와 로컬/원격 checker로 확인
+- [x] 인프라·async 아키텍처, 릴리스 계획, work package, delivery ledger에 DEV-018과 검증 불변식 반영
+
+### CR-026 cascade
+
+- [x] `packages/react/package.json`, `src/index.test.ts` — `lucide-react` peer 범위를 `>=0.400.0 <2`로 정정
+- [x] `packages/react/README.md`, `conductor_api_contracts.md`, WP-011, delivery ledger — 소비자 요구 버전과 DEV-019 근거 동기화
+- [x] `@conductor-by-89soone/react` patch changeset에 Refs를 포함하고 격리 소비자에서 0.1.0 + lucide 0.400.0 설치·`tsc --noEmit` 통과
+
+### CR-027 cascade
+
+- [x] 인프라·보안 아키텍처 — npm org와 typosquatting 완화를 `conductor-by-89soone`으로 정정
+- [x] async 아키텍처·릴리스 계획 — version PR/CHANGELOG → OIDC publish/provenance/tag 검증 → registry smoke의 실제 순서로 정정
+- [x] `scripts/release-rollback.mjs`와 문서 — deprecate 후 `react → css → tokens` 순서의 dist-tag 롤백으로 통일
+- [x] release plan·work packages·delivery ledger — npm 323.8초와 Pages 214초/203초 실 롤백, provenance, 레지스트리 소비자 증거로 외부 잔여 게이트 종결
 
 ## 6. 미해소 오픈 결정
 

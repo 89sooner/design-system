@@ -22,6 +22,7 @@
     "changeset": "changeset",
     "check:changesets": "node scripts/check-changesets.mjs",
     "check:api": "node scripts/check-api.mjs",
+    "check:release-tags": "node scripts/check-release-tags.mjs",
     "check:secrets": "node scripts/scan-secrets.mjs",
     "lighthouse": "node scripts/check-lighthouse.mjs"
   },

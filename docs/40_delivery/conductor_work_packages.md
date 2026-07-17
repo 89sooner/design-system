@@ -1,6 +1,6 @@
 # Conductor Design System 작업 패키지
 
-> 상태: review | 버전: v0.5 | 갱신일: 2026-07-17
+> 상태: review | 버전: v0.6 | 갱신일: 2026-07-17
 
 ## 1. 목적
 
@@ -339,7 +339,7 @@ design-system/
   - 공유 계약 테스트 스위트 (`runContractSuite(Component, defaultProps)`): ref 전달 / className 병합 / `data-*`·`aria-*` 통과 / 네이티브 props 확장
   - 공개 진입점에 export되었으나 테스트 파일이 없는 컴포넌트를 검출하는 검사
   - `renderToString` SSR 스모크 테스트 하네스
-  - React 18·19 peer dependency 선언, `lucide-react` peer dependency 선언
+  - React 18·19 peer dependency 선언, `lucide-react` peer dependency 선언(`>=0.400.0 <2`; 0.x caret가 한 minor에만 고정되는 문제를 피한다 — CR-026)
 - 제외: 실제 컴포넌트 구현 (WP-012 ~ WP-017)
 - 완료 기준(DoD):
   - [x] 계약 스위트가 4개 항목(ref/className/속성 통과/props 확장)을 검증한다 (FR-CMP-001 AC-1~4)
@@ -661,9 +661,9 @@ design-system/
   - [x] 변경 이력 항목 없는 패키지는 버전이 오르지 않는다 (FR-DX-005 AC-3) — react-only changeset 실험에서 react 0.1.0, tokens/css 0.0.0 유지
   - [x] 파괴 변경 릴리스에 마이그레이션 노트가 포함된다 (FR-DX-005 AC-4, NFR-004) — major에 `## Migration` 절이 없으면 `check:changesets` exit 1
   - [x] 변경 이력 없이 병합된 변경이 발견되면 릴리스가 중단되고 누락 목록을 출력한다 (FR-DX-005 예외 처리) — version 잡의 `changeset status --since <직전 태그>` + publish 잡의 `--require-empty`. changeset 없는 패키지 변경에서 status exit 1과 누락 목록 실측
-  - [x] 배포가 OIDC 기반이며 장기 토큰을 사용하지 않는다 (NFR-002) — inspection: publish 잡만 `id-token: write`, 저장소에 `NPM_TOKEN` 참조 0건. 실 레지스트리 신뢰 게시는 첫 배포에서 확인(원장 §5)
+  - [x] 배포가 OIDC 기반이며 장기 토큰을 사용하지 않는다 (NFR-002) — publish 잡만 `id-token: write`, 저장소에 `NPM_TOKEN` 참조 0건. Release run 29569125471에서 npm Trusted Publishing으로 0.1.0 3종을 게시했고 SLSA provenance v1 확인
   - [x] `pnpm audit --audit-level high`가 0건이다 (NFR-002) — 실측 exit 0(high 이상 0건, low 1건은 게이트 밖)
-  - [x] 롤백 리허설이 10분 이내에 끝난다 (NFR-004) — dist-tag 승격 스크립트 dry-run 9개 명령 1초 미만. 실 레지스트리 리허설은 첫 배포 직후 수행(원장 §5)
+  - [x] 롤백 리허설이 10분 이내에 끝난다 (NFR-004) — 실제 npm deprecate + 3종 `latest: 0.1.0 → 0.0.0` 9단계 323.8초. 레지스트리 원문 검증 후 deprecation 해제와 `latest=0.1.0` 복구 완료
 - 검증 방법: `pnpm changeset status && pnpm audit --audit-level high` + 드라이런 배포와 롤백 리허설
 - 기록: WP-027 행, FR-DX-005 매핑 갱신
 
@@ -680,7 +680,7 @@ design-system/
   - [x] 정적 빌드 산출물이 서버 런타임 없이 동작한다 (FR-DOC-001 AC-3) — 파일 서빙 + SPA 폴백만 있는 서버에서 문서 셸이 렌더됨을 `pnpm lighthouse`가 검사한다
   - [x] 배포된 사이트가 외부 도메인 네트워크 요청을 0건 발생시킨다 (FR-DOC-001 AC-4, NFR-002) — 프로덕션 산출물의 모든 요청 URL을 Chromium에서 수집해 0건 확인
   - [x] 문서 사이트 LCP p75가 2.5초 이하다 (NFR-001) — Fast 3G 실측 1,793ms/2,500ms. 랜딩 프리렌더가 이 예산을 성립시킨다(마크업 제거 시 3,580ms). 측정 방법은 CR-017
-  - [x] 배포 롤백이 10분 이내에 끝난다 (NFR-004) — 롤백 = 직전 정상 커밋 ref 재배포(CR-016). 워크플로 총 소요는 로컬 재현 기준 install+build+gate 2분대. 실 Pages 리허설은 첫 배포에서 수행(원장 §5)
-  - [x] `conductor_screen_qa_checklist.md`의 릴리스 게이트 체크리스트가 전부 닫힌다 — QA-201~QA-211 중 실 레지스트리·실 배포에 의존하는 항목만 원장 §5에 남는다
+  - [x] 배포 롤백이 10분 이내에 끝난다 (NFR-004) — 직전 정상 커밋 ref 재배포 run 29568304495가 214초, main 복원 run 29568605076이 203초에 성공. 공개 HTML에서 구 scope와 현재 scope가 각각 확인됨(CR-016)
+  - [x] `conductor_screen_qa_checklist.md`의 릴리스 게이트 체크리스트가 전부 닫힌다 — QA-201~QA-211 완료, npm OIDC/provenance·실 레지스트리 소비자 스모크·Pages 실배포와 두 롤백 리허설까지 외부 증거 확보
 - 검증 방법: `pnpm --filter docs build && pnpm lighthouse` + 배포·롤백 리허설
 - 기록: WP-028 행, FR-DOC-001 매핑 갱신
