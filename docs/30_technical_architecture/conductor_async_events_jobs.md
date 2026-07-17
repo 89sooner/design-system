@@ -1,6 +1,6 @@
 # Conductor Design System CI 잡과 릴리스 파이프라인
 
-> 상태: review | 버전: v0.4 | 갱신일: 2026-07-17
+> 상태: review | 버전: v0.6 | 갱신일: 2026-07-17
 
 ## 0. 문서 재해석
 
@@ -75,7 +75,7 @@ Conductor Design System에는 큐, 워커 런타임, dead letter queue, 사용�
 | 항목 | 내용 |
 | --- | --- |
 | Worker | axe-core + 헤드리스 브라우저(Playwright) |
-| 입력 | `ComponentMeta[]`(JOB-BUILD-003), 각 컴포넌트 × 주요 상태(기본/disabled/오류/열림) × 테마 2종 |
+| 입력 | `ComponentMeta[]`(JOB-BUILD-003), 각 컴포넌트 × 주요 상태(기본/disabled/오류/열림) × 테마 2종. 렌더 후 유한 진입 animation이 끝난 안정 상태에서 감사하며 무한 상태 표시는 대기에서 제외 |
 | 출력 | `axe-report.json` |
 | 재시도 | 브라우저 초기화 실패 등 인프라성 오류에 한해 1회 자동 재시도. axe 규칙 위반(assertion 실패)은 재시도하지 않는다 |
 | 실패 시 동작 | serious 또는 critical 위반 1건 이상이면 종료 코드 1. 허용 목록(규칙 ID + 사유, 접근성 검토자 승인 필요)에 없는 위반만 실패로 집계 |
@@ -108,7 +108,7 @@ Conductor Design System에는 큐, 워커 런타임, dead letter queue, 사용�
 | 항목 | 내용 |
 | --- | --- |
 | Worker | 릴리스 워크플로(GitHub Actions) |
-| 입력 | 변경 이력(changeset) 파일, JOB-BUILD-001~004 아티팩트, OIDC 토큰 |
+| 입력 | 변경 이력(changeset) 파일, JOB-BUILD-001~004 아티팩트, OIDC 토큰. Changeset frontmatter 검사는 LF/CRLF/CR을 동일하게 해석 |
 | 출력 | npm 레지스트리 배포, `CHANGELOG` 갱신, git 태그 |
 | 재시도 | 0회 자동 재시도. 실패 시 수동 재트리거만 허용(배포 원자성 보호) |
 | 실패 시 동작 | 배포 중단. 부분 배포된 패키지가 있으면 해당 패키지만 `npm deprecate`로 표시하고 나머지는 배포하지 않는다 |

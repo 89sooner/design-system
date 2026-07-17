@@ -1,6 +1,6 @@
 # Conductor Design System 작업 패키지
 
-> 상태: review | 버전: v0.6 | 갱신일: 2026-07-17
+> 상태: review | 버전: v0.8 | 갱신일: 2026-07-17
 
 ## 1. 목적
 
@@ -598,7 +598,7 @@ design-system/
 - 관련 화면/플로우: 없음 (간접 노출: W-050, SFC-CI) / FLOW-003
 - 관련 API/데이터/잡: — / — / JOB-CI-002
 - 선행 WP: WP-020
-- 구현 범위: 컴포넌트별 주요 상태(기본/disabled/오류/열림) × 테마 2종에 대한 axe 실행, 허용 목록 파일(규칙 ID + 사유), CI 게이트, 키보드 경로 테스트
+- 구현 범위: 컴포넌트별 주요 상태(기본/disabled/오류/열림) × 테마 2종에 대한 axe 실행, 유한 진입 animation 완료 후의 안정 상태 감사, 허용 목록 파일(규칙 ID + 사유), CI 게이트, 키보드 경로 테스트
 - 제외: 시각 회귀(WP-026)
 - 완료 기준(DoD):
   - [x] 각 컴포넌트의 주요 상태에 대해 검사가 실행된다 (FR-QA-003 AC-1)
@@ -653,7 +653,7 @@ design-system/
 - 관련 화면/플로우: 없음 (간접 노출: SFC-REL) / —
 - 관련 API/데이터/잡: — / — / JOB-REL-001
 - 선행 WP: WP-017
-- 구현 범위: Changesets 설정, 변경 이력 생성, 공개 API 추출 리포트로 파괴 변경 검출, npm OIDC 배포 워크플로, `pnpm audit --audit-level high` 게이트, 시크릿 스캔, 롤백 절차(dist-tag 승격)
+- 구현 범위: Changesets 설정, LF/CRLF에 독립적인 변경 이력 검사, 변경 이력 생성, 공개 API 추출 리포트로 파괴 변경 검출, npm OIDC 배포 워크플로, `pnpm audit --audit-level high` 게이트, 시크릿 스캔, 롤백 절차(dist-tag 승격)
 - 제외: 문서 사이트 배포(WP-028)
 - 완료 기준(DoD):
   - [x] 공개 API 파괴 변경이 포함된 릴리스가 major를 올린다 (FR-DX-005 AC-1) — `check:api`가 리포트 드리프트에서 exit 1(export 제거 픽스처 실증), major 등록은 `check:changesets`가 마이그레이션 노트와 함께 강제

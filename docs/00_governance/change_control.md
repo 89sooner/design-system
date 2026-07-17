@@ -47,6 +47,8 @@
 | CR-025 | 2026-07-17 | implementation | 첫 OIDC 릴리스 + `DEV-018` | `changeset publish`가 npm 0.1.0 3종과 provenance는 게시했지만 Git identity가 없는 runner에서 annotated tag 생성이 실패했다. Changesets CLI가 하위 git helper의 boolean 실패를 예외로 전파하지 않아 `git push --tags`까지 성공으로 끝났다. 누락 태그 3개를 릴리스 SHA에 복구하고, publish 전에 `github-actions[bot]` identity를 설정한다. publish 뒤 manifest의 현재 버전별 태그가 annotated object이고 릴리스 HEAD에서 도달 가능하며 원격 object와 같은지 `check:release-tags`로 강제한다. 요구사항·패키지 API 변경 없음 | DEV-018, FR-DX-005, NFR-002, WP-027, JOB-REL-001 | release workflow, release tag checker, infrastructure/async architecture, release plan, delivery ledger | closed |
 | CR-026 | 2026-07-17 | implementation | 첫 npm 레지스트리 소비자 스모크 + `DEV-019` | `@conductor-by-89soone/react`의 `lucide-react: ^0.400.0` peer 범위는 semver 0.x에서 0.400.x만 허용하지만 저장소와 docs는 0.468.0을 사용하고 설치 문서는 버전을 고정하지 않는다. 아이콘을 번들하지 않고 소비자가 주입하는 기존 계약 안에서 호환 범위를 `>=0.400.0 <2`로 바로잡고 patch changeset을 추가한다. React 컴포넌트 props와 런타임 동작 변경 없음 | DEV-019, FR-CMP-004, FR-DX-004, WP-011, API-PKG-003 | react manifest/test/README, package API contract, work package, delivery ledger | closed |
 | CR-027 | 2026-07-17 | correction | 첫 공개 릴리스 문서 감사 + `DEV-020` | 실제 릴리스와 운영 문서를 대조해 CR-023 cascade 뒤 남은 옛 org `conductor` 2건, 실행되지 않는 수동 `next` publish·dist-tag 승격 절차, CHANGELOG 생성 시점과 롤백 순서 불일치를 정정한다. 실제 계약은 org `conductor-by-89soone`, version PR에서 CHANGELOG 생성, 승인 후 OIDC `changeset publish`, deprecate 후 `react → css → tokens` dist-tag 롤백이다. SRS·제품 범위 변경 없음 | DEV-020, FR-DX-005, NFR-002, NFR-004, WP-027, JOB-REL-001 | infrastructure/security/async architecture, release plan, rollback script, delivery ledger | closed |
+| CR-028 | 2026-07-17 | implementation | main CI 접근성 게이트 + `DEV-021` | 동일 SHA의 PR 및 Node 20 잡은 통과했지만 main Node 22 잡에서 라이트 테마의 열린 Dialog가 axe `color-contrast` serious 위반을 간헐적으로 냈다. 실패 색상은 정지 상태 토큰이 아니라 `cdt-dialog-enter`가 약 4.6% 진행된 opacity 합성값이었다. axe 실행 전에 브라우저가 애니메이션을 등록할 한 프레임을 보장하고 유한 애니메이션의 `finished`를 기다리되 Spinner 같은 무한 상태 표시는 제외한다. 제품 CSS·토큰·공개 API·접근성 허용 목록은 변경하지 않는다 | DEV-021, FR-QA-003, FR-A11Y-005, WP-024, JOB-CI-002 | frontend/async architecture, a11y browser test, work package, delivery ledger | closed |
+| CR-029 | 2026-07-17 | implementation | 로컬 릴리스 게이트 재검증 + `DEV-022` | 저장소 blob의 LF Changeset은 CI에서 통과하지만 `core.autocrlf=true` 환경에서 CRLF로 체크아웃되면 `check-changesets.mjs`의 LF 전용 frontmatter 정규식이 유효한 항목을 누락으로 오판했다. 파싱 전에 CRLF와 단독 CR을 LF로 정규화해 Git 줄바꿈 정책과 무관하게 같은 계약을 검사한다. Changeset 형식·버전 정책·패키지 API 변경 없음 | DEV-022, FR-DX-005, WP-027, JOB-REL-001 | changeset checker, async architecture, work package, delivery ledger | closed |
 
 유형: `scope`(범위 변경), `design`(설계 변경), `implementation`(구현 편차 DEV-### 처리), `correction`(문서 오류 수정)
 
@@ -330,6 +332,20 @@ WP-009 완료 검증에서 발견한 작업 패키지 검증 명령의 문서 �
 - [x] async 아키텍처·릴리스 계획 — version PR/CHANGELOG → OIDC publish/provenance/tag 검증 → registry smoke의 실제 순서로 정정
 - [x] `scripts/release-rollback.mjs`와 문서 — deprecate 후 `react → css → tokens` 순서의 dist-tag 롤백으로 통일
 - [x] release plan·work packages·delivery ledger — npm 323.8초와 Pages 214초/203초 실 롤백, provenance, 레지스트리 소비자 증거로 외부 잔여 게이트 종결
+
+### CR-028 cascade
+
+- [x] 실패 run 29582993773의 `axe-report.json` — 라이트 Dialog title·description·close의 계산 foreground가 각각 `#dadee4`·`#dee3ea`·`#dadee4`였고, light 정지 상태 토큰과 배경을 합성하면 약 4.6% opacity 프레임과 일치함을 확인
+- [x] `packages/react/src/testing/a11y.browser.test.tsx` — 렌더 후 한 animation frame을 지난 다음 유한 Web Animation만 완료까지 기다리고 axe를 실행. 무한 Spinner는 iterations가 무한이므로 제외
+- [x] frontend/async 아키텍처, WP-024, delivery ledger — JOB-CI-002가 전환 중간 프레임이 아니라 안정 상태를 감사한다는 계약과 DEV-021 근거 반영
+- [x] 로컬 Chromium 전체 접근성 게이트 4회 연속 각 164 passed + 음성 fixture 1 skipped. 제품 CSS·토큰·API·allowlist·Changeset 변경 없음
+
+### CR-029 cascade
+
+- [x] Git blob의 **warm-icons-agree.md**는 LF, `core.autocrlf=true` 작업 트리는 CRLF임을 byte 단위로 확인. 변경 내용이 같은데 로컬만 `CHANGESET-CONVENTION`으로 실패함을 재현
+- [x] `scripts/check-changesets.mjs` — frontmatter 파싱 전에 CRLF와 단독 CR을 LF로 정규화. 저장소에 정의된 Changeset 계약과 오류 메시지는 보존
+- [x] 현재 CRLF patch Changeset 양성 실행은 1개·위반 0건, 임시 Refs 누락 Changeset 음성 실행은 기존 오류와 exit 1을 유지
+- [x] async 아키텍처, WP-027, delivery ledger에 DEV-022와 교차 플랫폼 줄바꿈 불변식 반영. 요구사항·공개 API·배포 버전 변경 없음
 
 ## 6. 미해소 오픈 결정
 
