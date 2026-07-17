@@ -1,5 +1,6 @@
 // Refs: QA-001 QA-002 QA-005 QA-006 QA-007 QA-008 QA-200
 import { expect, test } from "@playwright/test";
+import { docsPath } from "./routes";
 
 const screens = [
   ["W-001", "/", "Conductor Design System"],
@@ -24,7 +25,7 @@ for (const theme of ["dark", "light"] as const) {
 
       for (const [screen, path, heading] of screens) {
         await test.step(screen, async () => {
-          await page.goto(path);
+          await page.goto(docsPath(path));
           await expect(page.getByRole("heading", { name: heading, exact: true }).first()).toBeVisible();
           await expect(page.locator("html")).toHaveAttribute("data-cdt-theme", theme);
 
@@ -78,7 +79,7 @@ for (const theme of ["dark", "light"] as const) {
 
     for (const [screen, path, heading] of screens) {
       await test.step(screen, async () => {
-        await page.goto(path);
+        await page.goto(docsPath(path));
         await expect(page.getByRole("heading", { name: heading, exact: true }).first()).toBeVisible();
         const count = await page.locator("#content").evaluate((main) => {
           const selector = "a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex='-1'])";

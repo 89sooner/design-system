@@ -1,8 +1,9 @@
 // Refs: WP-019 FR-DOC-002 FR-TOK-005 FR-TOK-007 FR-TOK-009 FR-CSS-003 FR-CSS-005
 import { expect, test, type Page } from "@playwright/test";
+import { docsPath } from "./routes";
 
 test("FR-DOC-002 AC-1 through AC-3: Foundation screens read the complete generated token artifact", async ({ page }) => {
-  await page.goto("/foundations/color");
+  await page.goto(docsPath("/foundations/color"));
   const table = page.getByRole("table", { name: "Foundation tokens" });
   await expect(page.getByRole("heading", { name: "Color" })).toBeVisible();
   await expect(table).toContainText("surface.base");
@@ -13,14 +14,14 @@ test("FR-DOC-002 AC-1 through AC-3: Foundation screens read the complete generat
   await expect(table).not.toContainText("slate.50");
 
   for (const [path, heading] of [["/foundations/typography", "Typography"], ["/foundations/spacing", "Spacing & Layout"], ["/foundations/elevation", "Radius & Elevation"], ["/foundations/motion", "Motion"]] as const) {
-    await page.goto(path);
+    await page.goto(docsPath(path));
     await expect(page.getByRole("heading", { name: heading, exact: true })).toBeVisible();
     await expect(page.getByRole("table", { name: "Foundation tokens" })).toHaveCount(1);
   }
 });
 
 test("FR-TOK-007 AC-1, AC-2, AC-4: typography shows the seven-step scale and responsive heading", async ({ page }) => {
-  await page.goto("/foundations/typography");
+  await page.goto(docsPath("/foundations/typography"));
   const table = page.getByRole("table", { name: "Foundation tokens" });
   for (const step of ["2xs", "xs", "sm", "base", "md", "lg", "xl"]) {
     await expect(table.getByText(`font.size.${step}`, { exact: true })).toBeVisible();
@@ -39,7 +40,7 @@ test("FR-TOK-007 AC-1, AC-2, AC-4: typography shows the seven-step scale and res
 test("FR-CSS-003 AC-2, AC-3: live layout examples collapse at md and sm", async ({ page }) => {
   const columns = async (selector: string) => page.locator(selector).evaluate((element) => getComputedStyle(element).gridTemplateColumns.split(/\s+/).filter(Boolean).length);
   await page.setViewportSize({ width: 1200, height: 900 });
-  await page.goto("/foundations/spacing");
+  await page.goto(docsPath("/foundations/spacing"));
   for (const key of ["breakpoint.sm", "breakpoint.md", "breakpoint.lg"]) {
     await expect(page.getByRole("table", { name: "Foundation tokens" }).getByText(key, { exact: true })).toBeVisible();
   }
@@ -54,7 +55,7 @@ test("FR-CSS-003 AC-2, AC-3: live layout examples collapse at md and sm", async 
 
 test("FR-THM-002 AC-4: elevation previews expose different values per theme", async ({ page }) => {
   await page.addInitScript(() => window.localStorage.setItem("conductor-theme", "dark"));
-  await page.goto("/foundations/elevation");
+  await page.goto(docsPath("/foundations/elevation"));
   const row = page.getByRole("row").filter({ hasText: "elevation.overlay" });
   const darkValue = await row.locator("code").last().textContent();
   await page.getByRole("switch", { name: "Toggle color theme" }).click();
@@ -70,7 +71,7 @@ interface MotionState {
 
 async function captureMotionStates(page: Page, reducedMotion: "reduce" | "no-preference"): Promise<MotionState> {
   await page.emulateMedia({ reducedMotion });
-  await page.goto("/foundations/motion");
+  await page.goto(docsPath("/foundations/motion"));
   const button = page.locator('[data-motion-target="button"]');
   const selectedSwitch = page.locator('[data-motion-target="switch"]');
   const read = async (selector: typeof button) => selector.evaluate((element) => {

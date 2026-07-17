@@ -1,8 +1,9 @@
 // Refs: WP-021 FR-DOC-004 FR-A11Y-004
 import { expect, test } from "@playwright/test";
+import { docsPath } from "./routes";
 
 test("FR-DOC-004 AC-1 through AC-4: token reference filters, compares themes, and reports contrast", async ({ page }) => {
-  await page.goto("/tokens");
+  await page.goto(docsPath("/tokens"));
   const table = page.getByRole("table", { name: "Token reference" });
   await expect(table).toContainText("text.primary");
   await expect(table).toContainText("#f4f7fb");
@@ -15,7 +16,7 @@ test("FR-DOC-004 AC-1 through AC-4: token reference filters, compares themes, an
 });
 
 test("FR-DOC-004 exception: unavailable contrast metrics show the warning and fallback", async ({ page }) => {
-  await page.goto("/tokens?metrics-unavailable");
+  await page.goto(docsPath("/tokens?metrics-unavailable"));
   await expect(page.getByText("대비 검사 결과 파일이 없습니다. 대비율 열은 측정되지 않음으로 표시됩니다.")).toBeVisible();
   await expect(page.getByRole("table", { name: "Token reference" })).toContainText("측정되지 않음");
 });

@@ -1,5 +1,6 @@
 // Refs: WP-026 FR-QA-004 AC-1 AC-2 AC-4 JOB-CI-003 FR-CSS-005 AC-1
 import { expect, test, type Locator, type Page } from "@playwright/test";
+import { docsPath } from "../e2e/routes";
 
 const components = [
   "Button",
@@ -18,7 +19,7 @@ const components = [
 const themes = ["dark", "light"] as const;
 
 async function openComponent(page: Page, component: (typeof components)[number]): Promise<Locator> {
-  await page.goto(`/components/${component}`);
+  await page.goto(docsPath(`/components/${component}`));
   const preview = page.locator(".docs-preview");
   await expect(preview).toBeVisible();
 
@@ -59,7 +60,7 @@ for (const theme of themes) {
 
 test("FR-CSS-005 AC-1: reduced-motion durations resolve to zero in Chromium", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto("/components/Button");
+  await page.goto(docsPath("/components/Button"));
   const values = await page.locator(".cdt-btn").first().evaluate((element) => {
     const root = getComputedStyle(document.documentElement);
     const button = getComputedStyle(element);
@@ -84,7 +85,7 @@ test("FR-A11Y-003 AC-4: every public component remains identifiable in grayscale
     window.localStorage.setItem("conductor-theme", "dark");
     document.documentElement.dataset.cdtTheme = "dark";
   });
-  await page.goto("/components");
+  await page.goto(docsPath("/components"));
   await expect(page.locator(".docs-component-tile")).toHaveCount(30);
   await page.addStyleTag({ content: "#root { filter: grayscale(1); }" });
   await expect(page.locator("#root")).toHaveCSS("filter", "grayscale(1)");
@@ -101,7 +102,7 @@ test("FR-CMP-004 AC-5 / FR-A11Y-003 AC-4: status and severity labels remain dist
     window.localStorage.setItem("conductor-theme", "dark");
     document.documentElement.dataset.cdtTheme = "dark";
   });
-  await page.goto("/patterns");
+  await page.goto(docsPath("/patterns"));
   for (const label of ["queued", "running", "waiting", "success", "partial", "danger", "neutralEnd", "read", "write", "destructive", "blocked"]) {
     await expect(page.getByRole("cell", { name: label, exact: true }).first()).toBeVisible();
   }

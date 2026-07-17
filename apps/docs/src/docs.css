@@ -1,4 +1,4 @@
-.docs-shell { background: var(--cdt-surface-base); }
+.docs-shell { background: transparent; }
 .docs-nav__brand, .docs-topbar__title { color: var(--cdt-text-primary); font-weight: 700; }
 .docs-nav__brand { display: block; padding: var(--cdt-space-3); }
 .docs-theme-toggle { display: inline-flex; align-items: center; gap: var(--cdt-space-2); }
