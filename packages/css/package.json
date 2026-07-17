@@ -1,6 +1,6 @@
 {
   "name": "@conductor-by-89soone/css",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Framework-agnostic layered styles for Conductor.",
   "license": "MIT",
   "homepage": "https://89sooner.github.io/design-system/",
