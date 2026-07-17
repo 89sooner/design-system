@@ -1,6 +1,6 @@
 # Conductor Design System CI 잡과 릴리스 파이프라인
 
-> 상태: review | 버전: v0.6 | 갱신일: 2026-07-17
+> 상태: review | 버전: v0.7 | 갱신일: 2026-07-17
 
 ## 0. 문서 재해석
 
@@ -199,9 +199,10 @@ document.dispatchEvent(
 
 1. `main` 브랜치에 변경 이력(changeset) 파일이 포함된 커밋이 병합된다.
 2. 릴리스 워크플로가 JOB-BUILD-001~004와 JOB-CI-001, JOB-CI-002, JOB-CI-004(및 활성화된 경우 JOB-CI-003)의 성공을 확인한다.
-3. version PR이 변경 이력을 집계해 각 패키지의 semver 버전과 `CHANGELOG` 항목을 결정한다(`conductor_api_contracts.md` 6절). 변경 이력이 없는 패키지는 버전을 올리지 않는다(FR-DX-005 AC-3).
-4. version PR 병합이라는 수동 승인 게이트를 통과하면 OIDC 토큰으로 npm에 배포하고 annotated git 태그를 생성·push한다. 태그는 로컬 생성과 원격 object 일치를 각각 검증한다(CR-025).
-5. 변경 이력 없이 병합된 변경이 발견되면 릴리스를 중단하고 누락된 변경 목록을 출력한다(FR-DX-005 예외 처리).
+3. 일반 source commit에서는 직전 릴리스 태그 이후의 package 변경에 Changeset이 있는지 검사하고, 누락되면 목록을 출력하며 중단한다(FR-DX-005 예외 처리).
+4. version PR이 변경 이력을 집계해 각 패키지의 semver 버전과 `CHANGELOG` 항목을 결정한다(`conductor_api_contracts.md` 6절). 변경 이력이 없는 패키지는 버전을 올리지 않는다(FR-DX-005 AC-3).
+5. version PR merge는 Changeset을 이미 소비·삭제한 결과이므로 3번을 다시 실행하지 않는다. 이 예외는 제목만으로 판단하지 않고 Changesets bot 작성자, 삭제된 Changeset, 영향 패키지의 manifest/CHANGELOG 쌍, 그 외 변경 파일 0건을 모두 검사한다(CR-030).
+6. version PR 병합이라는 수동 승인 게이트를 통과하면 OIDC 토큰으로 npm에 배포하고 annotated git 태그를 생성·push한다. 태그는 로컬 생성과 원격 object 일치를 각각 검증한다(CR-025).
 
 **롤백(NFR-004, 10분 이내).**
 
