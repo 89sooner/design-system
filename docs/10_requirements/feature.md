@@ -1,6 +1,6 @@
 # Conductor Design System 기능 후보 문서
 
-> 상태: review | 버전: v0.2 | 갱신일: 2026-07-10
+> 상태: review | 버전: v0.3 | 갱신일: 2026-07-17
 
 ## 1. 목적
 
@@ -20,9 +20,9 @@
 | F-TOK-001 | 토큰 소스 단일화 | 시각 값을 한 곳에서 정의한다 | SRC-AAP tokens.css 전체 | `packages/tokens/src/tokens.ts` | 소스가 모든 산출물의 유일한 입력이 된다 | 소스 외 위치의 하드코딩 값은 빌드 검사에서 실패 | Type A | P0 | 승인 | FR-TOK-001 |
 | F-TOK-002 | 3계층 토큰 구조 | 원시 값과 의미를 분리해 테마를 교체한다 | SRC-AAP는 시맨틱 계층만 존재 | 토큰 소스 | primitive → semantic → component 참조 방향 강제 | 역방향/순환 참조는 빌드 오류 | Type C | P0 | 승인 | FR-TOK-002 |
 | F-TOK-003 | 토큰 참조(alias) 해석 | 값 중복 없이 토큰을 재사용한다 | SRC-AAP `--surface-2: var(--surface-subtle)` | 토큰 빌드 | 참조를 해석해 최종 값을 산출 | 순환 참조 검출 시 빌드 중단 | Type B | P0 | 승인 | FR-TOK-003 |
-| F-TOK-004 | CSS 커스텀 프로퍼티 산출 | 어떤 스택에서도 토큰을 쓴다 | SRC-USER Vanilla CSS 결정 | `@conductor/tokens/tokens.css` | `--cdt-*` 변수 선언 파일 생성 | 접두사 없는 변수 산출 금지 | Type A | P0 | 승인 | FR-TOK-004 |
+| F-TOK-004 | CSS 커스텀 프로퍼티 산출 | 어떤 스택에서도 토큰을 쓴다 | SRC-USER Vanilla CSS 결정 | `@conductor-by-89soone/tokens/tokens.css` | `--cdt-*` 변수 선언 파일 생성 | 접두사 없는 변수 산출 금지 | Type A | P0 | 승인 | FR-TOK-004 |
 | F-TOK-005 | 상태/심각도 토큰군 | 실행 상태와 부작용 등급을 색으로 구분한다 | SRC-AAP `--status-*`, `--severity-*`, `--meter-*` | 토큰 소스 | 7종 상태색, 4종 심각도색, 3종 미터색 제공 | 색상 단독 전달 금지(FR-A11Y-003) | Type A | P0 | 승인 | FR-TOK-005 |
-| F-TOK-006 | TypeScript/JSON 산출 | 런타임과 도구에서 토큰을 읽는다 | SRC-AAP에 없음 (신규) | `@conductor/tokens` import | 타입이 붙은 중첩 객체와 JSON 파일 생성 | 타입 생성 실패 시 빌드 중단 | Type B | P0 | 승인 | FR-TOK-006 |
+| F-TOK-006 | TypeScript/JSON 산출 | 런타임과 도구에서 토큰을 읽는다 | SRC-AAP에 없음 (신규) | `@conductor-by-89soone/tokens` import | 타입이 붙은 중첩 객체와 JSON 파일 생성 | 타입 생성 실패 시 빌드 중단 | Type B | P0 | 승인 | FR-TOK-006 |
 | F-TOK-007 | 타이포 스케일 토큰화 | 글자 크기를 값이 아닌 이름으로 쓴다 | SRC-AAP는 14/13/12/11/10px 하드코딩 | 토큰 소스 | 7단계 타입 스케일 토큰 제공 | 스케일 밖 크기 사용 시 린트 경고 | Type C | P0 | 승인 | FR-TOK-007 |
 | F-TOK-008 | z-index 스케일 토큰화 | 겹침 순서를 예측 가능하게 만든다 | SRC-AAP는 20/25/30/40/50/60/100/200 하드코딩 | 토큰 소스 | 6단계 z-index 토큰 제공 | 토큰 밖 z-index 사용 시 린트 경고 | Type C | P1 | 승인 | FR-TOK-008 |
 | F-TOK-009 | 브레이크포인트 토큰화 | 반응형 기준점을 공유한다 | SRC-AAP는 1080/800/560px 하드코딩 | 토큰 소스 | 3단계 브레이크포인트 토큰 제공 | CSS 변수는 미디어쿼리에서 동작하지 않음 → 빌드 시 치환 | Type C | P1 | 승인 | FR-TOK-009 |
@@ -40,7 +40,7 @@
 
 | 기능 ID | 기능명 | 사용자 목표 | 출처/근거 | 진입점 | 시스템 반응 | 예외/제약 | 실현 방식 | 릴리스 후보 | 상태 | 관련 FR |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| F-CSS-001 | 캐스케이드 레이어 정의 | 소비자 CSS가 항상 이길 수 있게 한다 | SRC-AAP는 `!important` 사용(`app.css:956`) | `@conductor/css/index.css` | `@layer cdt.reset, cdt.base, cdt.layout, cdt.component, cdt.utility` 선언 | 라이브러리 CSS에 `!important` 금지 | Type C | P0 | 승인 | FR-CSS-001 |
+| F-CSS-001 | 캐스케이드 레이어 정의 | 소비자 CSS가 항상 이길 수 있게 한다 | SRC-AAP는 `!important` 사용(`app.css:956`) | `@conductor-by-89soone/css/index.css` | `@layer cdt.reset, cdt.base, cdt.layout, cdt.component, cdt.utility` 선언 | 라이브러리 CSS에 `!important` 금지 | Type C | P0 | 승인 | FR-CSS-001 |
 | F-CSS-002 | 베이스/리셋 레이어 | 브라우저 기본값을 정규화한다 | SRC-AAP `app.css:2-128` | 스타일시트 import | box-sizing, 폰트, 포커스, 스크롤바, 선택 영역 정규화 | 폰트는 원격 로드하지 않음 | Type A | P0 | 승인 | FR-CSS-002 |
 | F-CSS-003 | 레이아웃 프리미티브 | 화면 골격을 재사용한다 | SRC-AAP `.app-shell`, `.split-layout`, `.card-grid`, `.page` | CSS 클래스 | 셸/스플릿/그리드/페이지 클래스 제공 | 도메인 전용 레이아웃(`.thread-page` 등)은 제외 | Type C | P0 | 승인 | FR-CSS-003 |
 | F-CSS-004 | 컴포넌트 클래스 레이어 | React 없이도 같은 시각을 얻는다 | SRC-AAP `.btn`, `.card`, `.badge`, `.table`, `.timeline` | CSS 클래스 | 프리미티브 컴포넌트별 클래스 제공 | 클래스는 `cdt-` 접두사 필수 | Type C | P0 | 승인 | FR-CSS-004 |
@@ -50,7 +50,7 @@
 
 | 기능 ID | 기능명 | 사용자 목표 | 출처/근거 | 진입점 | 시스템 반응 | 예외/제약 | 실현 방식 | 릴리스 후보 | 상태 | 관련 FR |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| F-CMP-001 | 컴포넌트 공통 계약 | 모든 컴포넌트가 같은 규칙을 따른다 | SRC-AAP 컴포넌트별 규칙 불일치 | `@conductor/react` | ref 전달, `className` 병합, `data-*` 통과, 네이티브 props 확장 | 계약 위반 컴포넌트는 배포 차단 | Type C | P0 | 승인 | FR-CMP-001 |
+| F-CMP-001 | 컴포넌트 공통 계약 | 모든 컴포넌트가 같은 규칙을 따른다 | SRC-AAP 컴포넌트별 규칙 불일치 | `@conductor-by-89soone/react` | ref 전달, `className` 병합, `data-*` 통과, 네이티브 props 확장 | 계약 위반 컴포넌트는 배포 차단 | Type C | P0 | 승인 | FR-CMP-001 |
 | F-CMP-002 | 액션 컴포넌트군 | 사용자가 동작을 실행한다 | SRC-AAP `.btn`, `.btn-primary`, `.btn-icon`, `.btn.policy-disabled` | `Button`, `IconButton` | variant/tone/size/loading/disabled 지원 | 정책 차단 상태는 사유 텍스트 동반 필수 | Type C | P0 | 승인 | FR-CMP-002 |
 | F-CMP-003 | 표면 컴포넌트군 | 콘텐츠를 묶어 배치한다 | SRC-AAP `.card`, `.interactive-card`, `.card-grid` | `Card`, `CardGrid`, `Panel` | 정적/대화형 카드, 그리드 배치 | 대화형 카드는 키보드 도달 필수 | Type C | P0 | 승인 | FR-CMP-003 |
 | F-CMP-004 | 상태 표시 컴포넌트군 | 상태와 심각도를 읽는다 | SRC-AAP `.badge`, `--status-*`, `--severity-*` | `Badge`, `StatusBadge`, `SeverityTag` | tone별 색 + 아이콘 + 텍스트 동시 제공 | 색상 단독 전달 금지 | Type C | P0 | 승인 | FR-CMP-004, FR-A11Y-003 |
@@ -66,7 +66,7 @@
 
 | 기능 ID | 기능명 | 사용자 목표 | 출처/근거 | 진입점 | 시스템 반응 | 예외/제약 | 실현 방식 | 릴리스 후보 | 상태 | 관련 FR |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| F-DOC-001 | 문서 사이트 셸 | 문서를 탐색한다 | SRC-USER 산출물 결정 | `apps/docs` | 사이드 내비 + 본문 + 테마 토글 | 문서 사이트는 `@conductor/react`를 소비자로서 사용 | Type C | P0 | 승인 | FR-DOC-001 |
+| F-DOC-001 | 문서 사이트 셸 | 문서를 탐색한다 | SRC-USER 산출물 결정 | `apps/docs` | 사이드 내비 + 본문 + 테마 토글 | 문서 사이트는 `@conductor-by-89soone/react`를 소비자로서 사용 | Type C | P0 | 승인 | FR-DOC-001 |
 | F-DOC-002 | Foundations 페이지 | 토큰의 의미를 배운다 | SRC-AAP 토큰 구조 | `/foundations/*` | 색·타이포·간격·반경·고도·모션 페이지 | 값은 토큰 빌드 산출물에서 읽어 렌더 | Type C | P0 | 승인 | FR-DOC-002 |
 | F-DOC-003 | 컴포넌트 카탈로그 | 컴포넌트를 실제로 본다 | SRC-USER 산출물 결정 | `/components/:id` | 라이브 프리뷰 + props 표 + 사용 규칙 | 데코레이션용 가짜 스크린샷 금지 | Type C | P0 | 승인 | FR-DOC-003 |
 | F-DOC-004 | 토큰 참조 페이지 | 토큰 이름을 검색한다 | SRC-AAP에 없음 (신규) | `/tokens` | 이름·값·테마별 값·대비율 표 | 값은 빌드 산출물에서 생성 | Type C | P0 | 승인 | FR-DOC-004 |
@@ -110,10 +110,10 @@
 | 후보 ID | 후보명 | 제외 사유 | 재검토 조건 |
 | --- | --- | --- | --- |
 | F-X-001 | Figma 양방향 동기화 | 사용자가 2026-07-10에 산출물 범위에서 제외. 외부 도구 의존성과 W3C DTCG 포맷 채택이 선행되어야 함 | 토큰 소스가 DTCG 포맷으로 안정화된 이후 | 
-| F-X-002 | Vue / Svelte / Web Components 어댑터 | 소비자가 React 단일. `@conductor/css`가 프레임워크 비종속 대안을 이미 제공 | React 외 소비자 애플리케이션이 실재할 때 |
+| F-X-002 | Vue / Svelte / Web Components 어댑터 | 소비자가 React 단일. `@conductor-by-89soone/css`가 프레임워크 비종속 대안을 이미 제공 | React 외 소비자 애플리케이션이 실재할 때 |
 | F-X-003 | Tailwind preset 제공 | 사용자가 Vanilla CSS + 커스텀 프로퍼티를 스타일 엔진으로 확정(ADR-002). preset은 소비자를 Tailwind에 결속 | 소비자가 Tailwind를 채택하고 `--cdt-*` 변수 직접 참조로 부족할 때 |
 | F-X-004 | 자체 아이콘 세트 제작 | 아이콘 디자인은 디자인 시스템 v1 목표가 아님. `lucide-react`를 peer dependency로 둔다 | 브랜드 아이콘 요구가 생길 때 |
-| F-X-005 | 차트/데이터 시각화 컴포넌트 | 범위가 독립적이고 크다. `ProgressRing`/`Meter`까지만 포함 | 별도 패키지 `@conductor/charts`로 분리 검토 |
+| F-X-005 | 차트/데이터 시각화 컴포넌트 | 범위가 독립적이고 크다. `ProgressRing`/`Meter`까지만 포함 | 별도 패키지 `@conductor-by-89soone/charts`로 분리 검토 |
 | F-X-006 | 고대비(High Contrast) 테마 | 사용자가 다크 + 라이트 2종으로 확정. 팔레트 3벌 유지 비용 회피 | WCAG AAA 요구가 생길 때 |
 | F-X-007 | 다국어(i18n) 문자열 시스템 | 컴포넌트는 문자열을 props로 받는다. 번역은 소비자 책임 | 컴포넌트 내부 고정 문자열이 생길 때 |
 | F-X-008 | 런타임 테마 편집기 | 문서 사이트의 테마 토글(F-DOC-005)까지만 포함. 임의 토큰 값을 런타임에 바꾸는 편집기는 제외 | 디자이너가 직접 팔레트를 실험할 필요가 확인될 때 |

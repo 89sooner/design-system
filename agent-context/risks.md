@@ -84,7 +84,7 @@ React 단독 실행과 루트 `pnpm test`는 cwd가 다르다. 매니페스트/�
 
 ### E. workspace alias가 `.tsx`를 따라가면 소비자 tsconfig도 JSX를 알아야 한다
 
-docs typecheck가 `@conductor/react` source alias를 해석한다. React package에만 JSX 설정을 두면 docs는 TS6142로 실패한다. `tsconfig.base.json`의 `jsx: react-jsx`가 필요하다.
+docs typecheck가 `@conductor-by-89soone/react` source alias를 해석한다. React package에만 JSX 설정을 두면 docs는 TS6142로 실패한다. `tsconfig.base.json`의 `jsx: react-jsx`가 필요하다.
 
 ### F. 컴포넌트 CSS의 수치 리터럴은 토큰 린트 허용 사유가 필요하다
 
@@ -96,7 +96,7 @@ docs typecheck가 `@conductor/react` source alias를 해석한다. React package
 
 ### A. CSS 테스트는 stale dist를 읽을 수 있다
 
-`packages/css` 테스트는 빌드 산출물 CSS를 읽는다. `pnpm --filter @conductor/css test`만 실행하면 소스 변경이 dist에 반영되지 않아도 통과할 수 있다. WP-009에서 DEV-005/CR-012로 공식 검증 명령을 `build && test`로 정정했다.
+`packages/css` 테스트는 빌드 산출물 CSS를 읽는다. `pnpm --filter @conductor-by-89soone/css test`만 실행하면 소스 변경이 dist에 반영되지 않아도 통과할 수 있다. WP-009에서 DEV-005/CR-012로 공식 검증 명령을 `build && test`로 정정했다.
 
 ### B. lightningcss가 미디어쿼리 문법을 정규화한다
 
@@ -104,7 +104,7 @@ docs typecheck가 `@conductor/react` source alias를 해석한다. React package
 
 ### C. 미디어쿼리 안의 CSS 변수는 런타임에 평가되지 않는다
 
-`@media (max-width: var(--cdt-breakpoint-md))`는 유효한 responsive 계약이 아니다. 소스는 `{breakpoint.md}` 같은 별칭을 쓰고, 빌드가 공개 `@conductor/tokens/breakpoints` 값을 리터럴로 치환한다. 산출물에 `var(--cdt-breakpoint-*)`가 남으면 `CSS-MEDIA-VAR`로 실패해야 한다.
+`@media (max-width: var(--cdt-breakpoint-md))`는 유효한 responsive 계약이 아니다. 소스는 `{breakpoint.md}` 같은 별칭을 쓰고, 빌드가 공개 `@conductor-by-89soone/tokens/breakpoints` 값을 리터럴로 치환한다. 산출물에 `var(--cdt-breakpoint-*)`가 남으면 `CSS-MEDIA-VAR`로 실패해야 한다.
 
 ### 0. 리뷰 서브에이전트가 작업 트리를 오염시킨다
 적대적 리뷰 워크플로(vacuous-check 발견을 서브에이전트가 파일을 **변조**해 실증하는 패턴)에서, 검증 서브에이전트가 `packages/css/test/helpers.ts`의 `rulesInLayer`에 `if (found.length === 0) return found;`를 주입하고 **복원하지 않았다.** css 스위트 전체가 red가 됐고 하마터면 내 회귀로 오해할 뻔했다. 리뷰 워크플로가 쓰기 권한을 가졌으면 **끝난 뒤 반드시 `git status --porcelain`으로 트리를 확인**하고, 초록이던 스위트가 리뷰 직후 빨개지면 내 코드보다 남은 변조를 먼저 의심하라. 리뷰 서브에이전트에 `isolation: worktree` 또는 읽기 전용 에이전트 타입을 주는 편이 안전하다.
@@ -120,7 +120,7 @@ docs typecheck가 `@conductor/react` source alias를 해석한다. React package
 
 음성 테스트를 두 번 실패했다. 순환 참조를 주입했는데 빌드가 exit 0으로 통과했고, 하마터면 "원자적 쓰기 확인됨"이라고 잘못 기록할 뻔했다. `tokens.css`가 바이트 단위로 동일했던 것이 단서였다.
 
-**올바른 방법**: `pnpm --filter @conductor/tokens run build` (이 스크립트가 `tsup --config tsup.cli.config.ts && node ./bin/... && tsup` 순서로 CLI를 먼저 재번들한다).
+**올바른 방법**: `pnpm --filter @conductor-by-89soone/tokens run build` (이 스크립트가 `tsup --config tsup.cli.config.ts && node ./bin/... && tsup` 순서로 CLI를 먼저 재번들한다).
 
 ### 2. 절대 실패할 수 없는 검사
 
@@ -169,7 +169,7 @@ git diff --exit-code -- packages/tokens/dist   # dist/ 는 gitignore 되어 있�
 
 - 라이트 팔레트 값은 `conductor_design_system_tokens.md` §5·§6에 산출돼 있으나 **아직 코드로 검증된 적이 없다.** WP-010이 `check:contrast`를 두 테마로 돌리는 첫 순간이다. 라이트 쪽 미달이 나올 수 있다
 - `severity.*` 4색은 두 테마가 값을 공유하는 유일한 토큰군이다(절대 등급이므로). `themeSpecific` 예외를 쓰지 않으며 FR-QA-001 키 대칭 검사를 통과한다는 것이 문서의 주장이다. WP-010에서 확인하라
-- `@conductor/css` gzip ≤ 20KB, `Button` 단독 gzip ≤ 4KB는 **아직 측정된 적 없다**(WP-025). 컴포넌트가 다 들어간 뒤에야 알 수 있다
+- `@conductor-by-89soone/css` gzip ≤ 20KB, `Button` 단독 gzip ≤ 4KB는 **아직 측정된 적 없다**(WP-025). 컴포넌트가 다 들어간 뒤에야 알 수 있다
 - 문서 사이트 LCP p75 ≤ 2.5초도 미측정(WP-028)
 
 ## 문서 환경의 함정
@@ -184,7 +184,7 @@ git diff --exit-code -- packages/tokens/dist   # dist/ 는 gitignore 되어 있�
 
 ### docs-only E2E는 workspace의 stale dist를 볼 수 있다
 
-`apps/docs`가 빌드된 `@conductor/react`를 소비하는 경로에서는 docs build만 다시 해도 React source 변경이 반영되지 않을 수 있다. 새 public component나 동작을 검증하기 전 root build 또는 React build를 선행한다.
+`apps/docs`가 빌드된 `@conductor-by-89soone/react`를 소비하는 경로에서는 docs build만 다시 해도 React source 변경이 반영되지 않을 수 있다. 새 public component나 동작을 검증하기 전 root build 또는 React build를 선행한다.
 
 ### 토큰 누출 검사는 부분 문자열로 쓰지 않는다
 

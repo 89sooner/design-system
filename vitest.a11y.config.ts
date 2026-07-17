@@ -8,9 +8,13 @@ export default defineConfig({
   define: {
     __CONDUCTOR_A11Y_FIXTURE__: JSON.stringify(process.env.CONDUCTOR_A11Y_FIXTURE ?? ""),
   },
+  optimizeDeps: {
+    include: ["react", "react/jsx-runtime", "react-dom/client", "react-dom/server"],
+  },
   test: {
     root: fromRoot("./packages/react"),
-    include: ["src/testing/a11y.browser.test.tsx"],
+    include: ["src/testing/a11y.browser.test.tsx", "src/testing/hydration.browser.test.tsx"],
+    fileParallelism: false,
     testTimeout: 30_000,
     hookTimeout: 30_000,
     browser: {

@@ -14,7 +14,7 @@ name: Release
 on:
   push:
     branches: [main]
-    tags: ["@conductor/*@*"]
+    tags: ["@conductor-by-89soone/*@*"]
   workflow_dispatch:
 
 permissions: {}
@@ -55,7 +55,7 @@ jobs:
       # 건너뛴다.
       - name: changes since the last release have changesets
         run: |
-          last_tag="$(git tag --list '@conductor/*@*' --sort=-creatordate | head -n 1)"
+          last_tag="$(git tag --list '@conductor-by-89soone/*@*' --sort=-creatordate | head -n 1)"
           if [ -n "$last_tag" ]; then
             pnpm changeset status --since "$last_tag"
           else
@@ -73,12 +73,20 @@ jobs:
 
   publish:
     name: publish to npm (OIDC)
-    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/@conductor/')
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/@conductor-by-89soone/')
     runs-on: ubuntu-latest
     permissions:
       contents: write # 배포 후 릴리스 태그 push
       id-token: write # npm 신뢰 배포(OIDC), NFR-002
     steps:
+      # npm provenance는 public source repository에서만 생성된다. private 상태에서
+      # publish를 허용하면 NFR-002의 provenance 증거가 조용히 빠지므로 먼저 중단한다.
+      - name: require public source repository for provenance
+        if: github.event.repository.private
+        run: |
+          echo "::error title=Public repository required::npm trusted publishing can publish from a private repository, but npm provenance cannot be generated. Make the repository public before release."
+          exit 1
+
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -90,11 +98,13 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # npm trusted publishing requires Node >=22.14.0 and npm >=11.5.1.
+          node-version: 22.14.0
           cache: pnpm
+          registry-url: https://registry.npmjs.org
 
-      # npm 신뢰 배포(OIDC 토큰 교환)는 npm CLI 11.5 이상이 필요하다.
-      - run: npm install -g npm@11
+      # Exact pin keeps the OIDC exchange toolchain reproducible.
+      - run: npm install -g npm@11.18.0
 
       - run: pnpm install --frozen-lockfile
 

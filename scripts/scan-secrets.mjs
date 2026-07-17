@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Refs: WP-027 NFR-002 JOB-REL-001
 // 보안 아키텍처 §5: npm 토큰, GitHub PAT, 클라우드 자격증명, 개인키(PEM) 패턴을
-// 추적 파일 전체에서 스캔한다. 위반 1건이면 exit 1로 병합/배포를 차단한다.
+// 작업 트리와 Git 이력 전체에서 스캔한다. 위반 1건이면 exit 1로 병합/배포를 차단한다.
 import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
@@ -20,12 +20,21 @@ const RULES = [
   { id: "private-key-block", pattern: /-----BEGIN (?:RSA |EC |DSA |OPENSSH |PGP )?PRIVATE KEY-----/g },
 ];
 
-const trackedFiles = execFileSync("git", ["ls-files"], { cwd: ROOT, encoding: "utf8" })
-  .split("\n")
+const workingTreeFiles = execFileSync("git", ["ls-files", "--cached", "--others", "--exclude-standard", "-z"], {
+  cwd: ROOT,
+  encoding: "utf8",
+})
+  .split("\0")
   .filter((path) => path.length > 0)
   .filter((path) => !BINARY_EXTENSIONS.has(path.split(".").pop().toLowerCase()));
 
-const sources = trackedFiles.map((path) => ({ path, text: readFileSync(resolve(ROOT, path), "utf8") }));
+const sources = workingTreeFiles.map((path) => ({ path, text: readFileSync(resolve(ROOT, path), "utf8") }));
+
+const history = execFileSync("git", ["log", "--all", "--format=commit:%H", "--no-ext-diff", "--no-textconv", "-p"], {
+  cwd: ROOT,
+  encoding: "utf8",
+  maxBuffer: 64 * 1024 * 1024,
+});
 
 // 음성 픽스처: 리포터와 규칙이 실제로 잡는지 실증한다. 토큰은 커밋되지 않도록
 // 런타임에 합성한다.
@@ -34,7 +43,7 @@ if (process.env.CONDUCTOR_SECRET_FIXTURE === "1") {
 }
 
 const findings = [];
-for (const source of sources) {
+function scanSource(source) {
   const lines = source.text.split("\n");
   for (const rule of RULES) {
     for (let index = 0; index < lines.length; index += 1) {
@@ -46,10 +55,13 @@ for (const source of sources) {
   }
 }
 
+for (const source of sources) scanSource(source);
+scanSource({ path: "git-history", text: history });
+
 if (findings.length > 0) {
   console.error(`error[SECRET-LEAK]: ${findings.length} potential credential(s) found`);
   for (const finding of findings) console.error(`  ${finding.path}:${finding.line}  ${finding.rule}`);
   console.error("  유출된 시크릿은 이력 정리와 무관하게 발급 주체에서 즉시 폐기(revoke)한다.");
   process.exit(1);
 }
-console.log(`[check:secrets] scanned ${sources.length} file(s), 0 finding(s)`);
+console.log(`[check:secrets] scanned ${sources.length} working-tree file(s) and Git history, 0 finding(s)`);

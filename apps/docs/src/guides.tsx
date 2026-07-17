@@ -1,5 +1,5 @@
 // Refs: WP-022 FR-DOC-006 FR-DOC-007 FR-A11Y-003 FR-QA-003
-import { Banner, Button, CodeBlock, Dialog, Drawer, Field, Meter, Panel, SeverityTag, StatusBadge, Table, TextField } from "@conductor/react";
+import { Banner, Button, CodeBlock, Dialog, Drawer, Field, Meter, Panel, SeverityTag, StatusBadge, Table, TextField } from "@conductor-by-89soone/react";
 import allowList from "../../../axe-allowlist.json";
 import contrastReport from "./generated/contrast-report";
 import { useEffect, useState, type ReactNode } from "react";
@@ -26,7 +26,7 @@ export function Patterns() {
 
 const axeAllowList = allowList as readonly { readonly rule: string; readonly reason: string }[];
 
-export function Accessibility() {
-  const report = contrastReport as { readonly summary?: { readonly passed: number; readonly failed: number; readonly checks: number } } | null;
+export function Accessibility({ forceMissingReport = false }: { readonly forceMissingReport?: boolean }) {
+  const report = forceMissingReport ? null : contrastReport as { readonly summary?: { readonly passed: number; readonly failed: number; readonly checks: number } } | null;
   return <section className="cdt-page" aria-labelledby="accessibility-title"><div><p className="docs-eyebrow">Accessibility</p><h1 id="accessibility-title">Accessibility</h1><p className="docs-lead">Conductor targets WCAG 2.1 AA and delegates complex overlay behavior to Radix primitives.</p></div><Panel as="section"><h2>Contrast report</h2>{report === null ? <Banner tone="warning">Contrast metrics are unavailable.</Banner> : <p>{report.summary?.passed} of {report.summary?.checks} checks passed; {report.summary?.failed} failed.</p>}<p>Focus rings and control borders are checked as non-text at 3:1 or better.</p></Panel><Panel as="section"><h2>Keyboard paths</h2><ul><li>Tab follows visual order and the skip link reaches main content.</li><li>Escape closes Dialog, Drawer, DropdownMenu, and Select.</li><li>Focus returns to the trigger after an overlay closes.</li></ul></Panel><Panel as="section"><h2>axe allow list</h2>{axeAllowList.length === 0 ? <p>No axe exceptions are currently allowed.</p> : <Table caption="axe allow list"><Table.Head><Table.Row><Table.HeaderCell>Rule</Table.HeaderCell><Table.HeaderCell>Reason</Table.HeaderCell></Table.Row></Table.Head><Table.Body>{axeAllowList.map((entry) => <Table.Row key={entry.rule}><Table.Cell>{entry.rule}</Table.Cell><Table.Cell>{entry.reason}</Table.Cell></Table.Row>)}</Table.Body></Table>}</Panel><Panel as="section"><h2>Color is not the only signal</h2><p>Status, severity, invalid fields, and exceeded meters expose text and/or icons in addition to color.</p></Panel></section>;
 }

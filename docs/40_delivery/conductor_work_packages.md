@@ -1,6 +1,6 @@
 # Conductor Design System 작업 패키지
 
-> 상태: review | 버전: v0.3 | 갱신일: 2026-07-11
+> 상태: review | 버전: v0.5 | 갱신일: 2026-07-17
 
 ## 1. 목적
 
@@ -24,9 +24,9 @@ design-system/
   pnpm-workspace.yaml
   tsconfig.base.json
   packages/
-    tokens/               # @conductor/tokens
-    css/                  # @conductor/css
-    react/                # @conductor/react
+    tokens/               # @conductor-by-89soone/tokens
+    css/                  # @conductor-by-89soone/css
+    react/                # @conductor-by-89soone/react
   apps/
     docs/                 # 문서 사이트 (Conductor의 첫 소비자)
   docs/                   # 이 계획 문서 세트 (코드 아님)
@@ -36,17 +36,17 @@ design-system/
 
 | WP ID | 이름 | REL | 선행 WP | 차단 요인 | 상태 |
 | --- | --- | --- | --- | --- | --- |
-| WP-001 | 모노레포 부트스트랩 | REL-001 | - | - | todo |
-| WP-002 | 토큰 스키마와 다크 팔레트 소스 | REL-001 | WP-001 | - | todo |
-| WP-003 | 토큰 참조 해석기와 CSS 산출 | REL-001 | WP-002 | - | todo |
-| WP-004 | TypeScript·JSON 산출과 타입 | REL-001 | WP-003 | - | todo |
-| WP-005 | 타이포·z-index·브레이크포인트 스케일 | REL-001 | WP-003 | - | todo |
-| WP-006 | 토큰 린트와 계약 테스트 | REL-001 | WP-004, WP-005 | - | todo |
-| WP-007 | 대비 검사기와 검사 쌍 정의 | REL-001 | WP-004 | - (OD-001 종결) | todo |
-| WP-008 | `@conductor/css` 레이어 골격과 리셋 | REL-002 | WP-003 | - | todo |
-| WP-009 | 레이아웃 프리미티브 클래스 | REL-002 | WP-008 | - | todo |
+| WP-001 | 모노레포 부트스트랩 | REL-001 | - | - | done |
+| WP-002 | 토큰 스키마와 다크 팔레트 소스 | REL-001 | WP-001 | - | done |
+| WP-003 | 토큰 참조 해석기와 CSS 산출 | REL-001 | WP-002 | - | done |
+| WP-004 | TypeScript·JSON 산출과 타입 | REL-001 | WP-003 | - | done |
+| WP-005 | 타이포·z-index·브레이크포인트 스케일 | REL-001 | WP-003 | - | done |
+| WP-006 | 토큰 린트와 계약 테스트 | REL-001 | WP-004, WP-005 | - | done |
+| WP-007 | 대비 검사기와 검사 쌍 정의 | REL-001 | WP-004 | - (OD-001 종결) | done |
+| WP-008 | `@conductor-by-89soone/css` 레이어 골격과 리셋 | REL-002 | WP-003 | - | done |
+| WP-009 | 레이아웃 프리미티브 클래스 | REL-002 | WP-008 | - | done |
 | WP-010 | 라이트 팔레트와 테마 결정 계약 | REL-002 | WP-006 | - | done |
-| WP-011 | `@conductor/react` 골격과 공통 계약 | REL-002 | WP-008 | - | done |
+| WP-011 | `@conductor-by-89soone/react` 골격과 공통 계약 | REL-002 | WP-008 | - | done |
 | WP-012 | 액션·표면 컴포넌트군 | REL-002 | WP-011 | - | done |
 | WP-013 | 상태 표시 컴포넌트군 | REL-002 | WP-011 | - | done |
 | WP-014 | 데이터 표시 컴포넌트군 | REL-002 | WP-011 | - | done |
@@ -81,17 +81,17 @@ design-system/
   - `packages/tokens`, `packages/css`, `packages/react`, `apps/docs` 각각의 `package.json`과 최소 진입점
   - 의존 방향 `tokens → css → react → docs` 강제 검사 스크립트 (역방향 참조 시 종료 코드 1)
   - Vitest, ESLint, TypeScript 설정 (ADR-009)
-  - CI 워크플로 골격: install → lint → lint:deps → build → typecheck → test. `typecheck`는 `build` 뒤에 온다 — `@conductor/tokens`의 공개 타입 표면 일부를 토큰 빌드가 생성하기 때문이다(CR-009, DEV-002)
+  - CI 워크플로 골격: install → lint → lint:deps → build → typecheck → test. `typecheck`는 `build` 뒤에 온다 — `@conductor-by-89soone/tokens`의 공개 타입 표면 일부를 토큰 빌드가 생성하기 때문이다(CR-009, DEV-002)
   - `engines`에 Node 20 이상 선언
 - 제외(이 WP에서 하지 않는 것):
   - 토큰 값, CSS 규칙, React 컴포넌트, 문서 화면 (WP-002 이후)
   - 배포 워크플로 (WP-027)
 - 완료 기준(DoD):
-  - [ ] 클린 체크아웃에서 `pnpm install && pnpm build`가 종료 코드 0을 반환한다 (FR-DX-001 AC-2)
-  - [ ] `packages/tokens`가 `packages/react`를 참조하도록 조작하면 빌드가 종료 코드 1로 실패한다 (FR-DX-001 AC-1)
-  - [ ] 각 패키지 `package.json`이 `exports`와 `types`를 선언한다 (FR-DX-002 AC-1)
-  - [ ] `pnpm build`가 3분 이내에 끝난다 (FR-DX-001 AC-3, NFR-001)
-  - [ ] CI 워크플로가 PR에서 실행된다
+  - [x] 클린 체크아웃에서 `pnpm install && pnpm build`가 종료 코드 0을 반환한다 (FR-DX-001 AC-2)
+  - [x] `packages/tokens`가 `packages/react`를 참조하도록 조작하면 빌드가 종료 코드 1로 실패한다 (FR-DX-001 AC-1)
+  - [x] 각 패키지 `package.json`이 `exports`와 `types`를 선언한다 (FR-DX-002 AC-1)
+  - [x] `pnpm build`가 3분 이내에 끝난다 (FR-DX-001 AC-3, NFR-001)
+  - [x] CI 워크플로가 PR에서 실행된다
 - 검증 방법: `rm -rf node_modules && pnpm install && time pnpm build && pnpm test`
 - 기록: `conductor_implementation_traceability.md`의 WP-001 행과 FR-DX-001·FR-DX-002 매핑 갱신
 
@@ -113,13 +113,13 @@ design-system/
   - 참조 해석과 CSS 산출 (WP-003)
   - 타이포/z-index/브레이크포인트 스케일 (WP-005)
 - 완료 기준(DoD):
-  - [ ] `agent-ai-platform/packages/web/src/styles/tokens.css`의 `:root` 커스텀 프로퍼티가 (별칭 2개 제외) 모두 다크 팔레트에 1:1로 존재한다 (FR-THM-001 AC-1)
-  - [ ] `--surface-2`와 `--border`가 토큰 참조(alias)로 표현된다 (FR-THM-001 AC-2)
-  - [ ] 상태 7종·심각도 4종·미터 3종 키가 존재하고 각각 비어 있지 않은 `icon` 메타데이터를 갖는다 (FR-TOK-005 AC-1~3, AC-5)
-  - [ ] semantic 토큰이 component 토큰을 참조하면 검사기가 종료 코드 1로 실패하고 위반 키 쌍을 출력한다 (FR-TOK-002 AC-4)
-  - [ ] 동일 계층 별칭(`surface.2` → `surface.subtle`, `border` → `border.default`, `status.running` → `accent`, `elevation.overlay` → `border.strong`)이 정상 참조로 통과한다 (FR-TOK-002 AC-2·AC-3, CR-008)
-  - [ ] primitive 토큰이 `@conductor/tokens` 진입점에 export되지 않는다 (FR-TOK-002 AC-5)
-- 검증 방법: `pnpm --filter @conductor/tokens test` 및 계층 위반 픽스처로 `pnpm build` 실패 확인
+  - [x] `agent-ai-platform/packages/web/src/styles/tokens.css`의 `:root` 커스텀 프로퍼티가 (별칭 2개 제외) 모두 다크 팔레트에 1:1로 존재한다 (FR-THM-001 AC-1)
+  - [x] `--surface-2`와 `--border`가 토큰 참조(alias)로 표현된다 (FR-THM-001 AC-2)
+  - [x] 상태 7종·심각도 4종·미터 3종 키가 존재하고 각각 비어 있지 않은 `icon` 메타데이터를 갖는다 (FR-TOK-005 AC-1~3, AC-5)
+  - [x] semantic 토큰이 component 토큰을 참조하면 검사기가 종료 코드 1로 실패하고 위반 키 쌍을 출력한다 (FR-TOK-002 AC-4)
+  - [x] 동일 계층 별칭(`surface.2` → `surface.subtle`, `border` → `border.default`, `status.running` → `accent`, `elevation.overlay` → `border.strong`)이 정상 참조로 통과한다 (FR-TOK-002 AC-2·AC-3, CR-008)
+  - [x] primitive 토큰이 `@conductor-by-89soone/tokens` 진입점에 export되지 않는다 (FR-TOK-002 AC-5)
+- 검증 방법: `pnpm --filter @conductor-by-89soone/tokens test` 및 계층 위반 픽스처로 `pnpm build` 실패 확인
 - 기록: WP-002 행, FR-TOK-001·FR-TOK-002·FR-TOK-005·FR-THM-001 매핑 갱신
 
 ## WP-003 토큰 참조 해석기와 CSS 산출
@@ -141,15 +141,15 @@ design-system/
   - TypeScript·JSON 산출 (WP-004)
   - 대비 검사 (WP-007)
 - 완료 기준(DoD):
-  - [ ] `surface.2` 별칭이 최종 CSS에서 `surface.subtle`의 실제 값으로 치환된다 (FR-TOK-003 AC-1)
-  - [ ] 순환 참조 픽스처가 종료 코드 1과 순환 경로 출력을 낸다 (FR-TOK-003 AC-3)
-  - [ ] 존재하지 않는 키 참조가 참조원과 대상 키를 출력하며 실패한다 (FR-TOK-003 AC-4)
-  - [ ] 산출 `tokens.css`의 모든 커스텀 프로퍼티가 `--cdt-`로 시작한다 (FR-TOK-004 AC-1)
-  - [ ] `surface.raised` → `--cdt-surface-raised` 변환이 확인된다 (FR-TOK-004 AC-2)
-  - [ ] primitive 토큰이 CSS로 산출되지 않는다 (FR-TOK-004 AC-4)
-  - [ ] 두 키가 같은 CSS 이름으로 변환되면 빌드가 충돌 키를 출력하며 실패한다 (FR-TOK-004 예외 처리)
-  - [ ] 참조 해석 실패 시 이전 산출물이 손상되지 않는다 (FR-TOK-003 예외 처리)
-- 검증 방법: `pnpm --filter @conductor/tokens build && pnpm --filter @conductor/tokens test`
+  - [x] `surface.2` 별칭이 최종 CSS에서 `surface.subtle`의 실제 값으로 치환된다 (FR-TOK-003 AC-1)
+  - [x] 순환 참조 픽스처가 종료 코드 1과 순환 경로 출력을 낸다 (FR-TOK-003 AC-3)
+  - [x] 존재하지 않는 키 참조가 참조원과 대상 키를 출력하며 실패한다 (FR-TOK-003 AC-4)
+  - [x] 산출 `tokens.css`의 모든 커스텀 프로퍼티가 `--cdt-`로 시작한다 (FR-TOK-004 AC-1)
+  - [x] `surface.raised` → `--cdt-surface-raised` 변환이 확인된다 (FR-TOK-004 AC-2)
+  - [x] primitive 토큰이 CSS로 산출되지 않는다 (FR-TOK-004 AC-4)
+  - [x] 두 키가 같은 CSS 이름으로 변환되면 빌드가 충돌 키를 출력하며 실패한다 (FR-TOK-004 예외 처리)
+  - [x] 참조 해석 실패 시 이전 산출물이 손상되지 않는다 (FR-TOK-003 예외 처리)
+- 검증 방법: `pnpm --filter @conductor-by-89soone/tokens build && pnpm --filter @conductor-by-89soone/tokens test`
 - 기록: WP-003 행, FR-TOK-003·FR-TOK-004 매핑 갱신
 
 ## WP-004 TypeScript·JSON 산출과 타입
@@ -165,12 +165,12 @@ design-system/
   - 타입 생성 실패 시 빌드 중단과 산출물 미보존
 - 제외: 대비 리포트(WP-007), 브레이크포인트 JS export(WP-005)
 - 완료 기준(DoD):
-  - [ ] `tokens.surface.raised`가 문자열 리터럴 타입으로 추론된다 (FR-TOK-006 AC-1)
-  - [ ] `tokens.surface.nonexistent` 접근이 TypeScript 컴파일 오류를 낸다 (FR-TOK-006 AC-2)
-  - [ ] `tokens.json`이 키·값·계층·용도 메타데이터를 포함한다 (FR-TOK-006 AC-3)
-  - [ ] 산출 `.d.ts`에 `any` 타입이 0건이다 (FR-TOK-006 AC-4, FR-DX-002 AC-2)
-  - [ ] 타입 생성 실패 시 이전 산출물이 남지 않는다 (FR-TOK-006 예외 처리)
-- 검증 방법: `pnpm --filter @conductor/tokens build && pnpm typecheck && node -e "require('@conductor/tokens')"`
+  - [x] `tokens.surface.raised`가 문자열 리터럴 타입으로 추론된다 (FR-TOK-006 AC-1)
+  - [x] `tokens.surface.nonexistent` 접근이 TypeScript 컴파일 오류를 낸다 (FR-TOK-006 AC-2)
+  - [x] `tokens.json`이 키·값·계층·용도 메타데이터를 포함한다 (FR-TOK-006 AC-3)
+  - [x] 산출 `.d.ts`에 `any` 타입이 0건이다 (FR-TOK-006 AC-4, FR-DX-002 AC-2)
+  - [x] 타입 생성 실패 시 이전 산출물이 남지 않는다 (FR-TOK-006 예외 처리)
+- 검증 방법: `pnpm --filter @conductor-by-89soone/tokens build && pnpm typecheck && node -e "require('@conductor-by-89soone/tokens')"`
 - 기록: WP-004 행, FR-TOK-006·FR-DX-002 매핑 갱신
 
 ## WP-005 타이포·z-index·브레이크포인트 스케일
@@ -188,11 +188,11 @@ design-system/
   - `breakpoints` 객체 JS export
 - 제외: 실제 미디어쿼리를 사용하는 CSS 규칙 (WP-008, WP-009)
 - 완료 기준(DoD):
-  - [ ] `font.size` 7단계와 대응 `font.lineHeight`가 존재한다 (FR-TOK-007 AC-1, AC-2)
-  - [ ] `z` 6단계가 존재하고 두 레이어가 같은 값을 갖지 않는다 (FR-TOK-008 AC-1, AC-3)
-  - [ ] `breakpoint` 3단계가 존재하고 `breakpoints` 객체가 export된다 (FR-TOK-009 AC-1, AC-3)
-  - [ ] 산출 CSS의 `@media` 조건에 `var(--cdt-breakpoint-*)`가 0건이다 (FR-TOK-009 AC-2)
-- 검증 방법: `pnpm --filter @conductor/tokens build && pnpm --filter @conductor/tokens test`
+  - [x] `font.size` 7단계와 대응 `font.lineHeight`가 존재한다 (FR-TOK-007 AC-1, AC-2)
+  - [x] `z` 6단계가 존재하고 두 레이어가 같은 값을 갖지 않는다 (FR-TOK-008 AC-1, AC-3)
+  - [x] `breakpoint` 3단계가 존재하고 `breakpoints` 객체가 export된다 (FR-TOK-009 AC-1, AC-3)
+  - [x] 산출 CSS의 `@media` 조건에 `var(--cdt-breakpoint-*)`가 0건이다 (FR-TOK-009 AC-2)
+- 검증 방법: `pnpm --filter @conductor-by-89soone/tokens build && pnpm --filter @conductor-by-89soone/tokens test`
 - 기록: WP-005 행, FR-TOK-007·FR-TOK-008·FR-TOK-009 매핑 갱신
 
 ## WP-006 토큰 린트와 계약 테스트
@@ -209,11 +209,11 @@ design-system/
   - `themeSpecific: true` 메타데이터를 가진 토큰의 검사 제외와 리포트 출력
 - 제외: 라이트 팔레트 자체 (WP-010)
 - 완료 기준(DoD):
-  - [ ] `packages/css`/`packages/react`에 색상 리터럴을 넣은 픽스처가 `pnpm lint:tokens`를 종료 코드 1로 실패시키고 파일 경로와 라인 번호를 출력한다 (FR-TOK-001 AC-1, AC-3)
-  - [ ] 리터럴 px/ms 검출이 동작한다 (FR-TOK-001 AC-2)
-  - [ ] 허용 주석이 있는 리터럴은 통과하고 `--report`에 나타난다 (FR-TOK-001 예외 처리)
-  - [ ] 한 테마에만 존재하는 키를 만든 픽스처가 계약 테스트를 실패시키고 누락 키를 테마별로 출력한다 (FR-QA-001 AC-1)
-  - [ ] 계약 테스트가 `pnpm test`와 CI 모두에서 실행된다 (FR-QA-001 AC-3)
+  - [x] `packages/css`/`packages/react`에 색상 리터럴을 넣은 픽스처가 `pnpm lint:tokens`를 종료 코드 1로 실패시키고 파일 경로와 라인 번호를 출력한다 (FR-TOK-001 AC-1, AC-3)
+  - [x] 리터럴 px/ms 검출이 동작한다 (FR-TOK-001 AC-2)
+  - [x] 허용 주석이 있는 리터럴은 통과하고 `--report`에 나타난다 (FR-TOK-001 예외 처리)
+  - [x] 한 테마에만 존재하는 키를 만든 픽스처가 계약 테스트를 실패시키고 누락 키를 테마별로 출력한다 (FR-QA-001 AC-1)
+  - [x] 계약 테스트가 `pnpm test`와 CI 모두에서 실행된다 (FR-QA-001 AC-3)
 - 검증 방법: `pnpm lint:tokens && pnpm test` + 위반 픽스처로 실패 확인
 - 기록: WP-006 행, FR-TOK-001·FR-QA-001 매핑 갱신
 
@@ -235,25 +235,25 @@ design-system/
   - **용도 제약 린트**: `text.faint`가 `surface.elevated` 위에 쓰이면 `pnpm lint:tokens` 실패
 - 제외: 라이트 팔레트 값 자체 (WP-010이 이 검사기를 통과시켜야 한다)
 - 완료 기준(DoD):
-  - [ ] 검사 대상 쌍이 `contrast-pairs.ts`에 명시적으로 선언된다 (FR-THM-004 AC-1)
-  - [ ] 각 쌍이 `body`/`large`/`nonText` 기준 중 하나를 갖는다 (FR-THM-004 AC-2)
-  - [ ] 미달 쌍 픽스처가 종료 코드 1과 쌍 이름·테마·측정값·기준값 출력을 낸다 (FR-THM-004 AC-3)
-  - [ ] alpha 색상이 배경과 합성된 뒤 계산된다 (FR-THM-004 AC-4)
-  - [ ] `decorative` 토큰이 검사에서 제외되고 `--report`에 제외 목록이 출력된다 (FR-A11Y-004 AC-3)
-  - [ ] 포커스 링과 `border.control`이 `nonText` 기준으로 검사된다 (FR-A11Y-004 AC-4)
-  - [ ] `focusRing`이 `surface.base` 위 3.93, `surface.raised` 위 3.56으로 측정된다 (FR-THM-005 AC-1)
-  - [ ] `border.control`이 `surface.raised` 위 3.23으로 측정된다 (FR-THM-005 AC-2)
-  - [ ] `text.faint`를 `surface.elevated` 위에 쓴 픽스처가 `pnpm lint:tokens`를 실패시킨다 (FR-THM-005 AC-3)
-  - [ ] `border.subtle`/`default`/`strong`이 `decorative`로 분류되어 검사 대상에서 빠진다 (FR-THM-005 AC-4)
-  - [ ] `status.queued`가 `nonText`로 분류되고 `surface.raised` 위 3.56, `surface.elevated` 위 3.25로 통과한다 (FR-THM-005 AC-5)
-  - [ ] `status.neutralEnd`가 `decorative`로 분류되어 검사 대상에서 빠지고, 제외 사유가 `--report`에 출력된다 (FR-THM-005 AC-6, CR-006)
-  - [ ] 다크 테마 전체에 대해 미달 0건을 보고한다 (FR-A11Y-004 AC-1)
+  - [x] 검사 대상 쌍이 `contrast-pairs.ts`에 명시적으로 선언된다 (FR-THM-004 AC-1)
+  - [x] 각 쌍이 `body`/`large`/`nonText` 기준 중 하나를 갖는다 (FR-THM-004 AC-2)
+  - [x] 미달 쌍 픽스처가 종료 코드 1과 쌍 이름·테마·측정값·기준값 출력을 낸다 (FR-THM-004 AC-3)
+  - [x] alpha 색상이 배경과 합성된 뒤 계산된다 (FR-THM-004 AC-4)
+  - [x] `decorative` 토큰이 검사에서 제외되고 `--report`에 제외 목록이 출력된다 (FR-A11Y-004 AC-3)
+  - [x] 포커스 링과 `border.control`이 `nonText` 기준으로 검사된다 (FR-A11Y-004 AC-4)
+  - [x] `focusRing`이 `surface.base` 위 3.93, `surface.raised` 위 3.56으로 측정된다 (FR-THM-005 AC-1)
+  - [x] `border.control`이 `surface.raised` 위 3.23으로 측정된다 (FR-THM-005 AC-2)
+  - [x] `text.faint`를 `surface.elevated` 위에 쓴 픽스처가 `pnpm lint:tokens`를 실패시킨다 (FR-THM-005 AC-3)
+  - [x] `border.subtle`/`default`/`strong`이 `decorative`로 분류되어 검사 대상에서 빠진다 (FR-THM-005 AC-4)
+  - [x] `status.queued`가 `nonText`로 분류되고 `surface.raised` 위 3.56, `surface.elevated` 위 3.25로 통과한다 (FR-THM-005 AC-5)
+  - [x] `status.neutralEnd`가 `decorative`로 분류되어 검사 대상에서 빠지고, 제외 사유가 `--report`에 출력된다 (FR-THM-005 AC-6, CR-006)
+  - [x] 다크 테마 전체에 대해 미달 0건을 보고한다 (FR-A11Y-004 AC-1)
 - 검증 방법: `pnpm check:contrast` + 미달 픽스처로 실패 확인
 - 기록: WP-007 행, FR-THM-004·FR-THM-005·FR-A11Y-004 매핑 갱신
 
-## WP-008 `@conductor/css` 레이어 골격과 리셋
+## WP-008 `@conductor-by-89soone/css` 레이어 골격과 리셋
 
-- 목표: 소비자가 `import "@conductor/css"` 한 줄로 리셋·베이스·모션 규칙을 얻고, 자신의 CSS로 Conductor를 덮어쓸 수 있다.
+- 목표: 소비자가 `import "@conductor-by-89soone/css"` 한 줄로 리셋·베이스·모션 규칙을 얻고, 자신의 CSS로 Conductor를 덮어쓸 수 있다.
 - 관련 요구사항: FR-CSS-001, FR-CSS-002, FR-CSS-005, FR-DX-003
 - 관련 화면/플로우: W-002 / —
 - 관련 API/데이터/잡: API-PKG-002 / — / JOB-BUILD-002
@@ -263,7 +263,7 @@ design-system/
   - `cdt.reset`: box-sizing, 폼 요소 `font: inherit`, `:focus-visible` 포커스 링, 스크롤바, `::selection`
   - `cdt.base`: 본문 타이포, 링크, 제목, `prefers-reduced-motion` 감소 모드(Conductor 스코프 셀렉터)
   - `cdt.utility`: `cdt-sr-only`, `cdt-skip-link`, `cdt-muted`, `cdt-mono`, `cdt-num`
-  - `@conductor/tokens`의 `tokens.css`를 번들에 포함
+  - `@conductor-by-89soone/tokens`의 `tokens.css`를 번들에 포함
   - `exports`: `.`(전체), `./component.css`(리셋 제외 진입점), `sideEffects: ["*.css"]`
   - `!important` 0건 강제 검사
 - 제외: 레이아웃 프리미티브(WP-009), 컴포넌트 클래스(WP-012 이후)
@@ -275,9 +275,9 @@ design-system/
   - [x] 산출물에 원격 폰트 참조(`@import url()`, `src: url(http...)`)가 0건이다 (FR-CSS-002 AC-4, NFR-002) — 리졸버 단계와 AST 단계 두 곳에서 차단
   - [x] 감소 모드에서 `transition-duration`·`animation-duration` 계산값이 `0s`, `scroll-behavior`가 `auto`다 (FR-CSS-005 AC-1, AC-3) — AST 단언과 WP-026 standalone Chromium 계산값 측정으로 확인했다 (CR-014)
   - [x] 감소 모드 규칙이 전역 `*` 대신 Conductor 스코프 셀렉터를 쓴다 (FR-CSS-005 AC-4) — `:root` / `[data-cdt-theme]` 스코프, `!important` 0건
-  - [x] `@conductor/css` 전체 gzip 크기가 20KB 이하다 (NFR-001) — 실측 gzip 2,575바이트. `packages/css/test/bundle.test.ts`가 단언한다. `pnpm size`(JOB-CI-004)로의 승격은 WP-025가 수행한다 (CR-010)
+  - [x] `@conductor-by-89soone/css` 전체 gzip 크기가 20KB 이하다 (NFR-001) — 실측 gzip 2,575바이트. `packages/css/test/bundle.test.ts`가 단언한다. `pnpm size`(JOB-CI-004)로의 승격은 WP-025가 수행한다 (CR-010)
   - [x] `./component.css` 진입점이 `exports`에 선언된다 (FR-CSS-002 예외 처리, FR-DX-003 AC-4)
-- 검증 방법: `pnpm --filter @conductor/css build && pnpm --filter @conductor/css test` (CR-010으로 `pnpm size` 제거 — 그 스크립트의 구현 범위는 WP-025가 소유하며 WP-008 시점에 존재하지 않는다)
+- 검증 방법: `pnpm --filter @conductor-by-89soone/css build && pnpm --filter @conductor-by-89soone/css test` (CR-010으로 `pnpm size` 제거 — 그 스크립트의 구현 범위는 WP-025가 소유하며 WP-008 시점에 존재하지 않는다)
 - 기록: WP-008 행, FR-CSS-001·FR-CSS-002·FR-CSS-005·FR-DX-003 매핑 갱신
 
 ## WP-009 레이아웃 프리미티브 클래스
@@ -295,7 +295,7 @@ design-system/
   - [x] `cdt-card-grid`가 최소 320px `auto-fill` 그리드이며 560px 미만에서 단일 컬럼이 된다 (FR-CSS-003 AC-3)
   - [x] 레이아웃 클래스가 색상 속성을 선언하지 않는다 (FR-CSS-003 AC-4)
   - [x] 브레이크포인트가 토큰(`sm` 560px, `md` 800px)에서 치환된 리터럴이며 CSS 변수 참조가 아니다 (FR-TOK-009 AC-2)
-- 검증 방법: `pnpm --filter @conductor/css build && pnpm --filter @conductor/css test` (CR-012: 현재 소스에서 산출물을 만든 뒤 AST로 레이아웃과 미디어쿼리를 단언)
+- 검증 방법: `pnpm --filter @conductor-by-89soone/css build && pnpm --filter @conductor-by-89soone/css test` (CR-012: 현재 소스에서 산출물을 만든 뒤 AST로 레이아웃과 미디어쿼리를 단언)
 - 기록: WP-009 행, FR-CSS-003 매핑 갱신
 
 ## WP-010 라이트 팔레트와 테마 결정 계약
@@ -325,7 +325,7 @@ design-system/
 - 검증 방법: `pnpm build && pnpm check:contrast && pnpm test`
 - 기록: WP-010 행, FR-THM-002·FR-THM-003·FR-QA-001 매핑 갱신
 
-## WP-011 `@conductor/react` 골격과 공통 계약
+## WP-011 `@conductor-by-89soone/react` 골격과 공통 계약
 
 - 목표: 컴포넌트 공통 계약이 코드로 강제되고, 공유 계약 테스트 스위트가 공개 컴포넌트 전수에 자동 적용된다.
 - 관련 요구사항: FR-CMP-001, FR-DX-002, FR-DX-003, FR-DX-004, FR-QA-002
@@ -349,7 +349,7 @@ design-system/
   - [x] `sideEffects: false`가 선언되고 선언되지 않은 내부 경로 import가 해석 오류를 낸다 (FR-DX-003 AC-1, AC-3)
   - [x] 모듈 최상위에서 `window`/`document`/`localStorage` 접근이 0건이다 (FR-DX-004 AC-2)
   - [x] 산출 `.d.ts`에 `any`가 0건이고 내부 타입이 누출되지 않는다 (FR-DX-002 AC-2, AC-4)
-- 검증 방법: `pnpm --filter @conductor/react build && pnpm --filter @conductor/react test && pnpm typecheck`
+- 검증 방법: `pnpm --filter @conductor-by-89soone/react build && pnpm --filter @conductor-by-89soone/react test && pnpm typecheck`
 - 기록: WP-011 행, FR-CMP-001·FR-DX-002·FR-DX-003·FR-DX-004 매핑 갱신
 
 ## WP-012 액션·표면 컴포넌트군
@@ -375,7 +375,7 @@ design-system/
   - [x] `:focus-visible` 포커스 링이 동일 `box-shadow` 계산값을 갖는다 (FR-A11Y-001 AC-1)
   - [x] 공유 계약 스위트를 통과한다 (FR-CMP-001 AC-5)
   - [x] `conductor_screen_qa_checklist.md`의 공통 QA와 접근성 QA 해당 항목이 닫힌다
-- 검증 방법: `pnpm --filter @conductor/react test -- action surface && pnpm lint:tokens`
+- 검증 방법: `pnpm --filter @conductor-by-89soone/react test -- action surface && pnpm lint:tokens`
 - 기록: WP-012 행, FR-CMP-002·FR-CMP-003·FR-CSS-004 매핑 갱신
 
 ## WP-013 상태 표시 컴포넌트군
@@ -394,7 +394,7 @@ design-system/
   - [x] `SeverityTag severity="destructive"`가 심각도색·경고 아이콘·텍스트를 렌더한다 (FR-CMP-004 AC-4)
   - [x] 그레이스케일 렌더 시 상태 7종이 텍스트로 구분된다 (FR-CMP-004 AC-5, FR-A11Y-003 AC-4)
   - [x] 공유 계약 스위트를 통과한다
-- 검증 방법: `pnpm --filter @conductor/react test -- status`
+- 검증 방법: `pnpm --filter @conductor-by-89soone/react test -- status`
 - 기록: WP-013 행, FR-CMP-004·FR-A11Y-003 매핑 갱신
 
 ## WP-014 데이터 표시 컴포넌트군
@@ -414,7 +414,7 @@ design-system/
   - [x] `caption`/`aria-label` 없는 `Table`이 개발 빌드 콘솔 경고를 낸다 (FR-CMP-005 AC-5)
   - [x] 포커스 링이 부모 `overflow: hidden`에 잘리지 않는다 (FR-A11Y-001 예외 처리)
   - [x] 공유 계약 스위트를 통과한다
-- 검증 방법: `pnpm --filter @conductor/react test -- data`
+- 검증 방법: `pnpm --filter @conductor-by-89soone/react test -- data`
 - 기록: WP-014 행, FR-CMP-005 매핑 갱신
 
 ## WP-015 오버레이 컴포넌트군
@@ -435,7 +435,7 @@ design-system/
   - [x] Radix가 제공하는 role/aria 속성을 덮어쓴 건수가 0건이다 (FR-A11Y-005 AC-4)
   - [x] CSS가 구조 셀렉터 없이 `data-*` 속성 셀렉터만 쓴다 (FR-CSS-004 AC-4, R-3 완화)
   - [x] 공유 계약 스위트를 통과한다
-- 검증 방법: `pnpm --filter @conductor/react test -- overlay`
+- 검증 방법: `pnpm --filter @conductor-by-89soone/react test -- overlay`
 - 기록: WP-015 행, FR-CMP-006·FR-A11Y-002 매핑 갱신
 
 ## WP-016 폼 컴포넌트군
@@ -454,7 +454,7 @@ design-system/
   - [x] `Switch`/`Checkbox`가 Space로 토글되고 `role`·`aria-checked`를 노출한다 (FR-CMP-007 AC-4)
   - [x] 폼 컨트롤 최소 높이가 40px, 560px 미만에서 42px다 (FR-CMP-007 AC-5)
   - [x] 공유 계약 스위트를 통과한다
-- 검증 방법: `pnpm --filter @conductor/react test -- form`
+- 검증 방법: `pnpm --filter @conductor-by-89soone/react test -- form`
 - 기록: WP-016 행, FR-CMP-007 매핑 갱신
 
 ## WP-017 피드백 컴포넌트군
@@ -473,7 +473,7 @@ design-system/
   - [x] `Meter`가 임계 초과 시 `meter.warning`/`meter.exceeded` 색으로 전환되고 `aria-valuenow`/`aria-valuemin`/`aria-valuemax`를 노출하며 수치 텍스트를 표시한다 (FR-CMP-008 AC-4, FR-A11Y-003 AC-3)
   - [x] 감소 모드에서 `Spinner`/`ProgressRing`이 애니메이션 대신 진행률 텍스트를 노출한다 (FR-CMP-008 AC-5, FR-CSS-005 예외 처리)
   - [x] 공유 계약 스위트를 통과한다
-- 검증 방법: `pnpm --filter @conductor/react test -- feedback`
+- 검증 방법: `pnpm --filter @conductor-by-89soone/react test -- feedback`
 - 기록: WP-017 행, FR-CMP-008 매핑 갱신
 
 ## WP-018 문서 사이트 셸과 테마 토글
@@ -486,14 +486,14 @@ design-system/
 - 구현 범위: Vite + React 정적 앱, 라우터, 사이드 내비 + 상단바 + 본문 셸, 테마 토글, 최초 페인트 깜빡임 방지 인라인 스니펫, 오프캔버스 모바일 내비
 - 제외: Foundations/카탈로그/토큰/패턴 화면 (WP-019 ~ WP-022)
 - 완료 기준(DoD):
-  - [ ] 문서 사이트가 `@conductor/react`·`@conductor/css`를 워크스페이스 의존성으로 설치해 사용하며 소스 상대경로 import가 0건이다 (FR-DOC-001 AC-1)
-  - [ ] 정적 파일로 빌드되고 서버 런타임 없이 동작한다 (FR-DOC-001 AC-3)
-  - [ ] 빌드 산출물이 실행 시 외부 도메인 네트워크 요청을 0건 발생시킨다 (FR-DOC-001 AC-4, NFR-002)
-  - [ ] 토글 조작 후 루트 `data-cdt-theme`가 바뀌고 새로고침 후에도 유지된다 (FR-DOC-005 AC-1, AC-2)
-  - [ ] 저장된 선택이 없으면 `prefers-color-scheme`을 따른다 (FR-DOC-005 AC-3)
-  - [ ] 최초 페인트 시 테마 깜빡임이 없다 (FR-DOC-005 AC-4)
-  - [ ] 토글이 `role="switch"` 또는 `aria-pressed`를 노출하고 키보드로 조작된다 (FR-DOC-005 AC-5)
-  - [ ] `localStorage` 차단 환경에서 예외가 렌더를 막지 않는다 (FR-DOC-005 예외 처리)
+  - [x] 문서 사이트가 `@conductor-by-89soone/react`·`@conductor-by-89soone/css`를 워크스페이스 의존성으로 설치해 사용하며 소스 상대경로 import가 0건이다 (FR-DOC-001 AC-1)
+  - [x] 정적 파일로 빌드되고 서버 런타임 없이 동작한다 (FR-DOC-001 AC-3)
+  - [x] 빌드 산출물이 실행 시 외부 도메인 네트워크 요청을 0건 발생시킨다 (FR-DOC-001 AC-4, NFR-002)
+  - [x] 토글 조작 후 루트 `data-cdt-theme`가 바뀌고 새로고침 후에도 유지된다 (FR-DOC-005 AC-1, AC-2)
+  - [x] 저장된 선택이 없으면 `prefers-color-scheme`을 따른다 (FR-DOC-005 AC-3)
+  - [x] 최초 페인트 시 테마 깜빡임이 없다 (FR-DOC-005 AC-4)
+  - [x] 토글이 `role="switch"` 또는 `aria-pressed`를 노출하고 키보드로 조작된다 (FR-DOC-005 AC-5)
+  - [x] `localStorage` 차단 환경에서 예외가 렌더를 막지 않는다 (FR-DOC-005 예외 처리)
 - 검증 방법: `pnpm --filter docs build && pnpm --filter docs test:e2e -- shell theme`
 - 기록: WP-018 행, FR-DOC-001·FR-DOC-005 매핑 갱신
 
@@ -507,11 +507,11 @@ design-system/
 - 구현 범위: W-002 설치 절차(SCN-001 3단계, 캐스케이드 레이어 예외 안내, SSR 스니펫), W-010 ~ W-014 Foundations 5화면. 값은 `tokens.json`에서 읽는다
 - 제외: 토큰 참조 표(W-030, WP-021)
 - 완료 기준(DoD):
-  - [ ] Foundations 화면에 하드코딩된 토큰 값이 0건이며 `tokens.json`에서 읽는다 (FR-DOC-002 AC-1)
-  - [ ] 토큰 소스에 토큰을 추가하고 재빌드하면 해당 화면에 자동으로 나타난다 (FR-DOC-002 AC-2)
-  - [ ] 각 토큰 행이 키·계층·현재 테마 값·용도 설명을 표시한다 (FR-DOC-002 AC-3)
-  - [ ] 용도 설명이 없는 토큰이 `설명 없음`으로 표시되고 빌드 경고가 출력된다 (FR-DOC-002 예외 처리)
-  - [ ] W-002의 설치 절차가 명령 3개 이하다 (M-5)
+  - [x] Foundations 화면에 하드코딩된 토큰 값이 0건이며 `tokens.json`에서 읽는다 (FR-DOC-002 AC-1)
+  - [x] 토큰 소스에 토큰을 추가하고 재빌드하면 해당 화면에 자동으로 나타난다 (FR-DOC-002 AC-2)
+  - [x] 각 토큰 행이 키·계층·현재 테마 값·용도 설명을 표시한다 (FR-DOC-002 AC-3)
+  - [x] 용도 설명이 없는 토큰이 `설명 없음`으로 표시되고 빌드 경고가 출력된다 (FR-DOC-002 예외 처리)
+  - [x] W-002의 설치 절차가 명령 3개 이하다 (M-5)
 - 검증 방법: `pnpm --filter docs test:e2e -- foundations` + 신규 토큰 추가 후 재빌드 확인
 - 기록: WP-019 행, FR-DOC-002 매핑 갱신
 
@@ -525,12 +525,12 @@ design-system/
 - 구현 범위: W-020 인덱스, W-021 동적 라우트(`/components/:componentId`), 라이브 프리뷰, 타입에서 props 표 생성, variant × tone 조합 전수 렌더, 프리뷰 오류 경계
 - 제외: 코드 복사 버튼(WP-022)
 - 완료 기준(DoD):
-  - [ ] 각 컴포넌트 화면이 컴포넌트를 실제로 마운트해 렌더하며 스크린샷 이미지가 0건이다 (FR-DOC-003 AC-1)
-  - [ ] props 표가 타입 정의에서 생성되고 수동 작성 행이 0건이다 (FR-DOC-003 AC-2, FR-DX-002)
-  - [ ] 모든 `variant`와 `tone` 조합이 프리뷰에 렌더된다 (FR-DOC-003 AC-3)
-  - [ ] 프리뷰가 현재 선택된 테마를 따른다 (FR-DOC-003 AC-4)
-  - [ ] 공개 진입점에 export되었으나 카탈로그에 화면이 없는 컴포넌트가 0건이며, 위반 시 빌드가 실패한다 (FR-DOC-003 AC-5)
-  - [ ] 프리뷰 렌더 예외가 오류 경계로 격리되고 나머지 화면이 계속 렌더된다 (FR-DOC-003 예외 처리)
+  - [x] 각 컴포넌트 화면이 컴포넌트를 실제로 마운트해 렌더하며 스크린샷 이미지가 0건이다 (FR-DOC-003 AC-1)
+  - [x] props 표가 타입 정의에서 생성되고 수동 작성 행이 0건이다 (FR-DOC-003 AC-2, FR-DX-002)
+  - [x] 모든 `variant`와 `tone` 조합이 프리뷰에 렌더된다 (FR-DOC-003 AC-3)
+  - [x] 프리뷰가 현재 선택된 테마를 따른다 (FR-DOC-003 AC-4)
+  - [x] 공개 진입점에 export되었으나 카탈로그에 화면이 없는 컴포넌트가 0건이며, 위반 시 빌드가 실패한다 (FR-DOC-003 AC-5)
+  - [x] 프리뷰 렌더 예외가 오류 경계로 격리되고 나머지 화면이 계속 렌더된다 (FR-DOC-003 예외 처리)
 - 검증 방법: `pnpm --filter docs build && pnpm --filter docs test:e2e -- catalog`
 - 기록: WP-020 행, FR-DOC-003 매핑 갱신
 
@@ -544,11 +544,11 @@ design-system/
 - 구현 범위: W-030 토큰 표, 키 문자열 필터, 다크/라이트 값 병렬 표시, `contrast-report.json` 소비, 장식 전용 표식과 제외 사유
 - 제외: 런타임 토큰 편집기 (Out of Scope)
 - 완료 기준(DoD):
-  - [ ] 토큰 키 문자열 필터가 일치 행만 남긴다 (FR-DOC-004 AC-1)
-  - [ ] 색상 토큰 행이 다크 값과 라이트 값을 나란히 표시한다 (FR-DOC-004 AC-2)
-  - [ ] 검사 대상 쌍의 토큰이 대비율 수치와 pass/fail 판정을 표시한다 (FR-DOC-004 AC-3)
-  - [ ] 제외 토큰이 `장식 전용` 표식과 제외 사유를 표시한다 (FR-DOC-004 AC-4)
-  - [ ] `contrast-report.json`이 없으면 `측정되지 않음`과 경고 배너를 표시한다 (FR-DOC-004 예외 처리)
+  - [x] 토큰 키 문자열 필터가 일치 행만 남긴다 (FR-DOC-004 AC-1)
+  - [x] 색상 토큰 행이 다크 값과 라이트 값을 나란히 표시한다 (FR-DOC-004 AC-2)
+  - [x] 검사 대상 쌍의 토큰이 대비율 수치와 pass/fail 판정을 표시한다 (FR-DOC-004 AC-3)
+  - [x] 제외 토큰이 `장식 전용` 표식과 제외 사유를 표시한다 (FR-DOC-004 AC-4)
+  - [x] `contrast-report.json`이 없으면 `측정되지 않음`과 경고 배너를 표시한다 (FR-DOC-004 예외 처리)
 - 검증 방법: `pnpm --filter docs test:e2e -- tokens` + 리포트 파일 삭제 후 폴백 확인
 - 기록: WP-021 행, FR-DOC-004 매핑 갱신
 
@@ -562,19 +562,19 @@ design-system/
 - 구현 범위: W-040 사용 규칙(상태 7종·심각도 4종·밀도·`Dialog` vs `Drawer` 선택 기준, 권장/금지 예를 실제 렌더로), W-050 접근성(대비 리포트, axe 허용 목록, 키보드 경로), W-021의 코드 복사 버튼
 - 제외: 시각 회귀 결과 표시 (WP-026)
 - 완료 기준(DoD):
-  - [ ] 각 규칙이 권장 예와 금지 예를 실제 렌더된 컴포넌트로 나란히 보여준다 (FR-DOC-007 AC-1)
-  - [ ] 금지 예에 금지 사유가 문장으로 기재된다 (FR-DOC-007 AC-2)
-  - [ ] 상태 7종·심각도 4종 각각의 사용 시점과 `Dialog`/`Drawer` 선택 기준이 기술된다 (FR-DOC-007 AC-3, AC-4)
-  - [ ] 복사 후 2초 이내에 `복사됨` 상태가 표시되고 원래 상태로 복귀한다 (FR-DOC-006 AC-1)
-  - [ ] 복사 완료가 `aria-live="polite"` 영역으로 알려진다 (FR-DOC-006 AC-2)
-  - [ ] Clipboard API 미지원 시 코드가 선택 가능한 상태로 남고 버튼이 `disabled`로 렌더된다 (FR-DOC-006 AC-3)
-  - [ ] W-050이 axe 허용 목록을 노출한다 (FR-A11Y-005 예외 처리, FR-QA-003 AC-4)
+  - [x] 각 규칙이 권장 예와 금지 예를 실제 렌더된 컴포넌트로 나란히 보여준다 (FR-DOC-007 AC-1)
+  - [x] 금지 예에 금지 사유가 문장으로 기재된다 (FR-DOC-007 AC-2)
+  - [x] 상태 7종·심각도 4종 각각의 사용 시점과 `Dialog`/`Drawer` 선택 기준이 기술된다 (FR-DOC-007 AC-3, AC-4)
+  - [x] 복사 후 2초 이내에 `복사됨` 상태가 표시되고 원래 상태로 복귀한다 (FR-DOC-006 AC-1)
+  - [x] 복사 완료가 `aria-live="polite"` 영역으로 알려진다 (FR-DOC-006 AC-2)
+  - [x] Clipboard API 미지원 시 코드가 선택 가능한 상태로 남고 버튼이 `disabled`로 렌더된다 (FR-DOC-006 AC-3)
+  - [x] W-050이 axe 허용 목록을 노출한다 (FR-A11Y-005 예외 처리, FR-QA-003 AC-4)
 - 검증 방법: `pnpm --filter docs test:e2e -- patterns accessibility copy`
 - 기록: WP-022 행, FR-DOC-006·FR-DOC-007 매핑 갱신
 
 ## WP-023 셸 컴포넌트군
 
-- **차단 해제됨. OD-004가 2026-07-10에 종결되었다**: 셸 컴포넌트군을 `@conductor/react`에 포함한다. `renderLink` props로 라우팅 비종속 API를 성립시킨다.
+- **차단 해제됨. OD-004가 2026-07-10에 종결되었다**: 셸 컴포넌트군을 `@conductor-by-89soone/react`에 포함한다. `renderLink` props로 라우팅 비종속 API를 성립시킨다.
 - 목표: 앱 골격을 라우팅 라이브러리 결합 없이 배포한다.
 - 관련 요구사항: FR-CMP-009, FR-A11Y-002, FR-CSS-002
 - 관련 화면/플로우: W-001, W-021 / FLOW-005
@@ -584,11 +584,11 @@ design-system/
 - 제외: 라우팅 라이브러리 의존성 추가
 - 완료 기준(DoD):
   - [x] `NavList`가 `renderLink` props로 링크 렌더를 위임한다 (FR-CMP-009 AC-1)
-  - [x] `@conductor/react` 의존성 목록에 라우팅 라이브러리가 0건이다 (FR-CMP-009 AC-2)
+  - [x] `@conductor-by-89soone/react` 의존성 목록에 라우팅 라이브러리가 0건이다 (FR-CMP-009 AC-2)
   - [x] 800px 미만에서 사이드 내비가 오프캔버스로 전환되고 오버레이 클릭 또는 Escape로 닫힌다 (FR-CMP-009 AC-3)
   - [x] `AppShell`이 `skip-link`를 렌더하고 본문으로 포커스를 이동시킨다 (FR-CMP-009 AC-4, FR-CSS-002 AC-5)
   - [x] 공유 계약 스위트를 통과한다
-- 검증 방법: `pnpm --filter @conductor/react test -- shell`
+- 검증 방법: `pnpm --filter @conductor-by-89soone/react test -- shell`
 - 기록: WP-023 행, FR-CMP-009 매핑 갱신, OD-004 종결 근거 기록
 
 ## WP-024 접근성 검사 CI 잡
@@ -617,11 +617,11 @@ design-system/
 - 관련 화면/플로우: 없음 (간접 노출: SFC-CI) / FLOW-003
 - 관련 API/데이터/잡: API-PKG-002, API-PKG-003 / — / JOB-CI-004
 - 선행 WP: WP-017
-- 구현 범위: `pnpm size` — `Button` 단독 import gzip 측정(React 제외), `@conductor/css` 전체 gzip 측정, 기준 초과 시 초과 모듈 목록 출력
+- 구현 범위: `pnpm size` — `Button` 단독 import gzip 측정(React 제외), `@conductor-by-89soone/css` 전체 gzip 측정, 기준 초과 시 초과 모듈 목록 출력
 - 제외: Lighthouse 성능 측정 (WP-028의 문서 사이트 배포 이후)
 - 완료 기준(DoD):
   - [x] `Button` 단독 import gzip이 4KB 이하다 (FR-DX-003 AC-3, NFR-001, M-7) — `size-limit` 실측 527바이트
-  - [x] `@conductor/css` 전체 gzip이 20KB 이하다 (NFR-001) — 실측 7,720바이트
+  - [x] `@conductor-by-89soone/css` 전체 gzip이 20KB 이하다 (NFR-001) — 실측 7,720바이트
   - [x] 기준 초과 시 CI가 실패하고 초과 모듈 목록을 출력한다 (FR-DX-003 예외 처리) — 1바이트 제한 음성 픽스처에서 exit 1과 기여 청크 목록 출력 확인
   - [x] `sideEffects` 선언이 검증된다 (FR-DX-003 AC-2) — React `false`, CSS `*.css` 보존 계약 확인
 - 검증 방법: `pnpm size`

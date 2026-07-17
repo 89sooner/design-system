@@ -1,6 +1,6 @@
 # Conductor Design System 시스템 아키텍처
 
-> 상태: review | 버전: v0.2 | 갱신일: 2026-07-10
+> 상태: review | 버전: v0.3 | 갱신일: 2026-07-17
 
 ## 1. 목적과 범위
 
@@ -22,9 +22,9 @@ Conductor는 실행되는 서버 애플리케이션이 아니다. 배포 산출�
                                         ▼
                     ┌───────────────────────────────────────┐
                     │  배포 산출물 (Conductor가 소유)         │
-                    │  · npm: @conductor/tokens             │
-                    │  · npm: @conductor/css                │
-                    │  · npm: @conductor/react              │
+                    │  · npm: @conductor-by-89soone/tokens             │
+                    │  · npm: @conductor-by-89soone/css                │
+                    │  · npm: @conductor-by-89soone/react              │
                     │  · 정적 파일: apps/docs 빌드 결과      │
                     └───────┬───────────────────┬───────────┘
                             │ pnpm add          │ 정적 호스팅
@@ -68,7 +68,7 @@ Conductor는 실행되는 서버 애플리케이션이 아니다. 배포 산출�
 ## 4. 패키지 경계와 의존 방향
 
 ```text
-@conductor/tokens ──▶ @conductor/css ──▶ @conductor/react ──▶ apps/docs
+@conductor-by-89soone/tokens ──▶ @conductor-by-89soone/css ──▶ @conductor-by-89soone/react ──▶ apps/docs
        │                    │                    │                 │
        │ tokens.json        │ index.css          │ ESM/CJS+d.ts    │ 정적 HTML
        │ tokens.css         │ component.css      │                 │
@@ -79,25 +79,25 @@ Conductor는 실행되는 서버 애플리케이션이 아니다. 배포 산출�
 
 | 패키지 | 책임 | 책임이 아닌 것 | 공개 계약 |
 | --- | --- | --- | --- |
-| `@conductor/tokens` | 3계층 토큰 소스, 참조 해석, CSS/TS/JSON 산출, 대비 검사 | 스타일 규칙, 컴포넌트 | API-PKG-001, API-TOK-001, API-TOK-002, API-TOK-003 |
-| `@conductor/css` | `@layer` 5단 스타일시트, 레이아웃/컴포넌트 클래스, 리셋 | React, DOM 구조 | API-PKG-002, API-THM-001 |
-| `@conductor/react` | 접근성 계약을 지킨 프리미티브 컴포넌트, props 타입 | 스타일 값, 애플리케이션 상태, 라우팅 | API-PKG-003, API-CMP-001 ~ API-CMP-009 |
+| `@conductor-by-89soone/tokens` | 3계층 토큰 소스, 참조 해석, CSS/TS/JSON 산출, 대비 검사 | 스타일 규칙, 컴포넌트 | API-PKG-001, API-TOK-001, API-TOK-002, API-TOK-003 |
+| `@conductor-by-89soone/css` | `@layer` 5단 스타일시트, 레이아웃/컴포넌트 클래스, 리셋 | React, DOM 구조 | API-PKG-002, API-THM-001 |
+| `@conductor-by-89soone/react` | 접근성 계약을 지킨 프리미티브 컴포넌트, props 타입 | 스타일 값, 애플리케이션 상태, 라우팅 | API-PKG-003, API-CMP-001 ~ API-CMP-009 |
 | `apps/docs` | Conductor의 첫 번째 소비자이자 참조 구현 | 재사용 가능한 코드 배포 | API-DOC-001 |
 
 의존 방향 강제는 두 겹이다. 첫째, pnpm workspace가 순환 의존을 검출해 `pnpm -r run build` 실행 전에 실패시킨다. 둘째, `pnpm check:deps` 스크립트가 각 `package.json`의 `dependencies`/`devDependencies`를 허용 간선 목록(`tokens → css → react → docs`)과 대조해 목록 밖 간선이 있으면 종료 코드 1을 반환한다. NFR-004의 "순환 패키지 의존 0건" 지표는 이 두 검사로 측정한다.
 
-`apps/docs`는 소스 상대경로가 아니라 workspace 프로토콜(`"@conductor/react": "workspace:*"`)로 세 패키지를 설치한다. FR-DOC-001 AC-1과 FR-DX-001 AC-4가 요구하는 "소스 상대경로 import 0건"은 이 설치 방식으로 구조적으로 보장되며, `apps/docs`의 `tsconfig.json`에 `paths` 별칭을 두지 않는 것으로 확인한다.
+`apps/docs`는 소스 상대경로가 아니라 workspace 프로토콜(`"@conductor-by-89soone/react": "workspace:*"`)로 세 패키지를 설치한다. FR-DOC-001 AC-1과 FR-DX-001 AC-4가 요구하는 "소스 상대경로 import 0건"은 이 설치 방식으로 구조적으로 보장되며, `apps/docs`의 `tsconfig.json`에 `paths` 별칭을 두지 않는 것으로 확인한다.
 
 ### 4.1 진입점 계약
 
-`@conductor/tokens`
+`@conductor-by-89soone/tokens`
 
 - `.` → `tokens`, `breakpoints`, 토큰 타입 (API-TOK-002). primitive 토큰은 export하지 않는다(FR-TOK-002 AC-5).
 - `./tokens.json` → 키·값·계층·용도 메타데이터 (FR-TOK-006 AC-3). W-030과 Foundations 화면의 유일한 데이터 출처다.
 - `./tokens.css` → semantic + component 커스텀 프로퍼티. primitive는 산출되지 않는다(FR-TOK-004 AC-4).
 - `bin`: `buildTokens`(API-TOK-001), `checkContrast`(API-TOK-003).
 
-`@conductor/css`
+`@conductor-by-89soone/css`
 
 - `.` → 토큰 + reset + base + layout + component + utility 전체
 - `./tokens.css` → 커스텀 프로퍼티 선언만
@@ -107,11 +107,11 @@ Conductor는 실행되는 서버 애플리케이션이 아니다. 배포 산출�
 
 `./component.css`는 리셋을 제외하되 토큰 커스텀 프로퍼티는 포함한다. 리셋만 제외하려는 소비자가 토큰까지 잃으면 컴포넌트가 값 없이 렌더되기 때문이다(FR-CSS-002 예외 처리의 의도).
 
-`@conductor/react`
+`@conductor-by-89soone/react`
 
 - `.` → 공개 컴포넌트와 props 타입 전량 (API-PKG-003). 하위 경로 import는 `exports`에 선언하지 않으므로 런타임 해석 오류가 된다(FR-DX-003 AC-1).
 - `sideEffects: false` (FR-DX-003 AC-3)
-- `peerDependencies`: `react` `^18.0.0 || ^19.0.0`, `lucide-react`. `@conductor/css`는 peer가 아니라 문서상의 필수 동반 설치다. 번들러가 CSS를 부수효과로 취급해야 하므로 소비자가 직접 import한다(SCN-001).
+- `peerDependencies`: `react` `^18.0.0 || ^19.0.0`, `lucide-react`. `@conductor-by-89soone/css`는 peer가 아니라 문서상의 필수 동반 설치다. 번들러가 CSS를 부수효과로 취급해야 하므로 소비자가 직접 import한다(SCN-001).
 
 ## 5. 빌드 파이프라인
 
@@ -133,7 +133,7 @@ JOB-CI-001  checkContrast          ─── 실패 시 파이프라인 중단 (
     │  산출: contrast-report.json (JOB-BUILD-004와 W-030이 소비)
     ▼
 JOB-BUILD-002  lightningcss
-    │  입력: packages/css/src/**.css, @conductor/tokens/tokens.css
+    │  입력: packages/css/src/**.css, @conductor-by-89soone/tokens/tokens.css
     │  @import 인라인, @layer 순서 보존, browserslist 타깃 다운레벨, 압축
     │  산출: index.css + 6개 부분 진입점
     │  검사: !important 0건(FR-CSS-001 AC-2), 전 규칙의 레이어 소속(AC-1),
@@ -173,16 +173,16 @@ FR-TOK-001 AC-3은 위반 파일 경로와 라인 번호를, FR-TOK-001 예외 �
 
 SCN-001의 기본 흐름은 명령 3개 이하(M-5)로 완료된다.
 
-1. `pnpm add @conductor/react @conductor/css @conductor/tokens`
-2. 진입 파일에 `import "@conductor/css";`
+1. `pnpm add @conductor-by-89soone/react @conductor-by-89soone/css @conductor-by-89soone/tokens`
+2. 진입 파일에 `import "@conductor-by-89soone/css";`
 3. 루트 요소에 `data-cdt-theme="dark"` (API-THM-001)
 
 | 통합 지점 | 계약 | 실패 시 동작 |
 | --- | --- | --- |
-| CSS 로드 | `import "@conductor/css"` 또는 `./component.css` | 개발 빌드에서 `--cdt-surface-base` 미해석을 감지해 콘솔 경고 1회. 컴포넌트는 스타일 없이 렌더된다(SCN-001 예외 흐름) |
+| CSS 로드 | `import "@conductor-by-89soone/css"` 또는 `./component.css` | 개발 빌드에서 `--cdt-surface-base` 미해석을 감지해 콘솔 경고 1회. 컴포넌트는 스타일 없이 렌더된다(SCN-001 예외 흐름) |
 | 테마 지정 | 루트의 `data-cdt-theme` 속성. 없으면 `prefers-color-scheme`, 값이 `dark`/`light` 이외면 다크 (FR-THM-003) | 없음. 항상 하나의 팔레트가 적용된다 |
-| SSR 첫 페인트 | 소비자가 `@conductor/css/theme-init.js`의 스니펫을 `<head>`에 인라인 | 스니펫을 넣지 않으면 첫 페인트가 다크로 시작한다. 패키지는 전역에 접근하지 않는다(FR-DX-004 예외 처리) |
-| React 없는 소비 | `cdt-btn cdt-btn--primary` 클래스 직접 사용 (FR-CSS-004 AC-3) | 없음. `@conductor/css`만 설치한다 |
+| SSR 첫 페인트 | 소비자가 `@conductor-by-89soone/css/theme-init.js`의 스니펫을 `<head>`에 인라인 | 스니펫을 넣지 않으면 첫 페인트가 다크로 시작한다. 패키지는 전역에 접근하지 않는다(FR-DX-004 예외 처리) |
+| React 없는 소비 | `cdt-btn cdt-btn--primary` 클래스 직접 사용 (FR-CSS-004 AC-3) | 없음. `@conductor-by-89soone/css`만 설치한다 |
 | 오버레이 위 레이어 | `z.popover`(50) 초과 값을 소비자가 직접 지정 (FR-TOK-008 예외 처리) | W-030이 이 사실을 문서화한다 |
 | 캐스케이드 재정의 | 레이어 밖 소비자 규칙이 동일 명시도에서 Conductor 규칙을 이긴다 (FR-CSS-001 AC-3) | `!important` 없이 재정의된다 |
 
@@ -216,7 +216,7 @@ OD-001은 이 검사의 대상 쌍 정의를 아직 확정하지 않았고, FR-T
 
 테마는 런타임 상태가 아니라 DOM 속성이다. `data-cdt-theme`이 바뀌면 CSS 커스텀 프로퍼티 값만 바뀌고 React 트리는 재마운트되지 않는다(FR-THM-003 AC-4). 이 성질이 NFR-001의 "테마 전환 후 재페인트 100ms 이하"를 성립시킨다. React 컨텍스트로 테마를 내려보내는 설계였다면 전 컴포넌트 리렌더가 발생하고 이 예산을 지킬 근거가 사라진다.
 
-`@conductor/react`에는 테마 관련 코드가 없다. 테마 토글은 `apps/docs`가 소유하며, 그 구현은 `conductor_frontend_architecture.md` 6.4절에 있다.
+`@conductor-by-89soone/react`에는 테마 관련 코드가 없다. 테마 토글은 `apps/docs`가 소유하며, 그 구현은 `conductor_frontend_architecture.md` 6.4절에 있다.
 
 두 팔레트의 semantic 키 집합은 대칭이어야 하고(FR-THM-002 AC-1), 이를 FR-QA-001의 계약 테스트가 검사한다. 라이트 테마는 기능이 아니라 3계층 토큰 설계의 반증 시험이다(PRD G-3). 라이트에서 값이 깨지는 컴포넌트가 나오면 그것은 컴포넌트가 semantic 계층을 건너뛰었다는 증거이며, 수정 대상은 팔레트가 아니라 컴포넌트 토큰이다(FR-THM-002 예외 처리).
 
@@ -224,7 +224,7 @@ OD-001은 이 검사의 대상 쌍 정의를 아직 확정하지 않았고, FR-T
 
 | 속성 | 목표 | 관련 요구사항 | 설계 영향 |
 | --- | --- | --- | --- |
-| 성능 | `Button` 단독 import gzip 4KB 이하, `@conductor/css` 전체 gzip 20KB 이하, 문서 사이트 LCP p75 2.5초 이하, `pnpm build` 3분 이하(4코어), 테마 전환 재페인트 100ms 이하 | NFR-001, M-7 | `sideEffects: false` + 배럴 파일에서 재수출만 수행. `@conductor/react`의 런타임 의존성 0개(클래스 병합은 내부 `cx` 헬퍼). 테마 전환은 속성 교체이므로 React 리렌더 없음. 문서 사이트는 프리렌더 HTML로 첫 페인트를 JS 없이 완료 |
+| 성능 | `Button` 단독 import gzip 4KB 이하, `@conductor-by-89soone/css` 전체 gzip 20KB 이하, 문서 사이트 LCP p75 2.5초 이하, `pnpm build` 3분 이하(4코어), 테마 전환 재페인트 100ms 이하 | NFR-001, M-7 | `sideEffects: false` + 배럴 파일에서 재수출만 수행. `@conductor-by-89soone/react`의 런타임 의존성 0개(클래스 병합은 내부 `cx` 헬퍼). 테마 전환은 속성 교체이므로 React 리렌더 없음. 문서 사이트는 프리렌더 HTML로 첫 페인트를 JS 없이 완료 |
 | 보안 | 런타임 외부 네트워크 요청 0건, high 이상 취약점 0건, 산출물 비밀값 0건, npm OIDC 배포 | NFR-002 | 원격 폰트·원격 스크립트 금지를 CSS 산출물 검사로 강제(FR-CSS-002 AC-4). 문서 사이트는 외부 도메인 요청 0건(FR-DOC-001 AC-4). 릴리스는 장기 토큰 없이 OIDC로 수행(ADR-010) |
 | 접근성 | WCAG 2.1 AA, 본문 4.5:1, 대형·비텍스트 3:1, axe serious 이상 0건, 키보드 도달 100% | NFR-003 | 대비는 토큰 빌드 게이트에서, 키보드·role은 Radix 위임과 axe 전수 검사로 확보(ADR-004). 두 테마 모두에서 검사(FR-QA-003 AC-3) |
 | 운영성 | 롤백 10분 이내, 파괴 변경 마이그레이션 노트 100%, CI 10분 이하, 공개 API `any` 0건, 순환 의존 0건 | NFR-004 | 롤백은 `npm dist-tag`로 이전 버전을 `latest`로 승격하고 문제 버전을 deprecate한다. `any` 0건은 api-extractor 리포트로, 순환 의존 0건은 pnpm 검출과 `check:deps`로 측정 |
@@ -255,11 +255,11 @@ OD-001은 이 검사의 대상 쌍 정의를 아직 확정하지 않았고, FR-T
 
 | 선택 | 얻는 것 | 잃는 것 | 수용 근거 |
 | --- | --- | --- | --- |
-| Vanilla CSS + 커스텀 프로퍼티 (ADR-002) | 프레임워크 비종속 소비, 런타임 스타일 비용 0, 테마 전환 시 리렌더 없음 | 타입 검사되는 스타일, 자동 데드 CSS 제거, 컴포넌트별 CSS 코드 분할 | 비-React 소비자가 `@conductor/css`를 직접 쓴다는 것이 NG-2의 전제다. CSS 전체 20KB gzip 예산 안에서 데드 코드 제거의 이득이 작다 |
+| Vanilla CSS + 커스텀 프로퍼티 (ADR-002) | 프레임워크 비종속 소비, 런타임 스타일 비용 0, 테마 전환 시 리렌더 없음 | 타입 검사되는 스타일, 자동 데드 CSS 제거, 컴포넌트별 CSS 코드 분할 | 비-React 소비자가 `@conductor-by-89soone/css`를 직접 쓴다는 것이 NG-2의 전제다. CSS 전체 20KB gzip 예산 안에서 데드 코드 제거의 이득이 작다 |
 | Radix 위임 (ADR-004) | 포커스 트랩·롤·키보드 내비게이션 자체 구현 0건 | Radix DOM 구조 변경에 대한 노출(R-3) | 자체 구현은 FR-A11Y-002·005를 만족시키는 데 드는 비용이 크고 결함 표면이 넓다. `data-*` 셀렉터만 사용해 결합면을 좁힌다 |
 | 자체 토큰 빌더 (ADR-003) | FR-TOK-002 AC-5, FR-TOK-003 AC-3, FR-TOK-004 AC-3의 검증을 1급 시민으로 구현 | Style Dictionary 생태계의 플러그인과 DTCG 호환 | Figma 연동이 NG-1로 제외되었으므로 DTCG 포맷의 이득이 v1에 없다 |
 | 문서 사이트 프리렌더 (ADR-007) | LCP 예산 확보, SSR 안전성의 빌드 타임 반증 | 라이브 프리뷰에 런타임 코드 편집기를 둘 수 없다 | 런타임 토큰/코드 편집기는 4.3 Out of Scope다. 예제는 소스 모듈을 그대로 마운트한다(FR-DOC-003 AC-1) |
-| 셸 컴포넌트군의 조건부 범위 (FR-CMP-009) | 라우팅 라이브러리 의존 0건 유지(AC-2) | `AppShell`이 소비자에게 `renderLink` 위임을 요구한다 | OD-004가 미해결이다. `@conductor/react`가 라우터에 결합되면 소비 가능성(G-5)이 무너진다 |
+| 셸 컴포넌트군의 조건부 범위 (FR-CMP-009) | 라우팅 라이브러리 의존 0건 유지(AC-2) | `AppShell`이 소비자에게 `renderLink` 위임을 요구한다 | OD-004가 미해결이다. `@conductor-by-89soone/react`가 라우터에 결합되면 소비 가능성(G-5)이 무너진다 |
 
 ## 11. 아키텍처 리스크
 

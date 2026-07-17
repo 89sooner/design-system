@@ -1,6 +1,6 @@
 # Conductor Design System 제품 IA 문서
 
-> 상태: review | 버전: v0.2 | 갱신일: 2026-07-10
+> 상태: review | 버전: v0.3 | 갱신일: 2026-07-17
 
 ## 1. 문서 범위와 상위 문서
 
@@ -19,8 +19,8 @@
 
 ## 2. IA 설계 원칙
 
-1. **토큰 산출물이 유일한 데이터원이다.** 모든 Foundations·Tokens 화면은 `@conductor/tokens/tokens.json`을 읽어 렌더하며 화면에 하드코딩된 토큰 값이 0건이다(FR-DOC-002 AC-1). 따라서 IA는 "토큰 카테고리"를 화면 경계로 삼는다.
-2. **문서 사이트는 Conductor의 첫 번째 소비자다.** 문서 사이트는 `@conductor/react`와 `@conductor/css`를 설치해 사용하고 소스 상대경로를 import하지 않는다(FR-DOC-001 AC-1). 문서 사이트가 필요로 하는 구조는 곧 소비자가 필요로 하는 구조다.
+1. **토큰 산출물이 유일한 데이터원이다.** 모든 Foundations·Tokens 화면은 `@conductor-by-89soone/tokens/tokens.json`을 읽어 렌더하며 화면에 하드코딩된 토큰 값이 0건이다(FR-DOC-002 AC-1). 따라서 IA는 "토큰 카테고리"를 화면 경계로 삼는다.
+2. **문서 사이트는 Conductor의 첫 번째 소비자다.** 문서 사이트는 `@conductor-by-89soone/react`와 `@conductor-by-89soone/css`를 설치해 사용하고 소스 상대경로를 import하지 않는다(FR-DOC-001 AC-1). 문서 사이트가 필요로 하는 구조는 곧 소비자가 필요로 하는 구조다.
 3. **공개 export 전수가 카탈로그에 대응한다.** 공개 진입점에 export되었으나 카탈로그에 화면이 없는 컴포넌트가 0건이며 위반 시 빌드가 실패한다(FR-DOC-003 AC-5). 컴포넌트 화면 집합은 사람이 관리하는 목록이 아니라 빌드가 강제하는 집합이다.
 4. **런타임 권한 경계가 없다.** 이 제품에는 런타임 인증/인가가 없다(SRS 6절). 진입 게이트 화면, 권한 없음 화면, 인증 만료 화면을 정의하지 않는다.
 5. **키보드 경로가 IA의 구성 요소다.** 모든 대화형 요소는 키보드만으로 도달·조작·이탈 가능해야 하고(FR-A11Y-002), 셸은 skip-link로 본문에 포커스를 이동시킨다(FR-CMP-009 AC-4). 내비게이션 순서는 Tab 순서와 일치한다.
@@ -32,9 +32,9 @@ Conductor가 배포하는 것은 npm 패키지 3종과 정적 문서 사이트 1
 ```text
 Product Surface
 ├─ npm 패키지 (UI 없음 · 표면 ID: SFC-PKG)
-│  ├─ @conductor/tokens   토큰 소스 → CSS / TypeScript / JSON 산출물
-│  ├─ @conductor/css      캐스케이드 레이어 기반 스타일시트
-│  └─ @conductor/react    React 프리미티브 컴포넌트
+│  ├─ @conductor-by-89soone/tokens   토큰 소스 → CSS / TypeScript / JSON 산출물
+│  ├─ @conductor-by-89soone/css      캐스케이드 레이어 기반 스타일시트
+│  └─ @conductor-by-89soone/react    React 프리미티브 컴포넌트
 │
 └─ 문서 사이트 (유일한 UI 표면 · 정적 빌드 · 서버 런타임 없음)
    ├─ Overview        W-001, W-002
@@ -82,7 +82,7 @@ Conductor의 유일한 사용자 인터페이스는 문서 사이트다. 화면 
 
 `/foundations`는 라우트가 아니라 내비게이션 그룹 라벨이다. 이 경로로 직접 진입하면 W-010으로 이동한다. 그룹 자체에 화면 ID를 부여하지 않는 이유는, 그룹에 대응하는 FR이 없고 FR-DOC-002가 다섯 개 화면만 요구하기 때문이다.
 
-`/components/:componentId`는 단일 화면 ID(W-021)를 갖는 동적 라우트다. 빌드가 컴포넌트 메타데이터(`ENT-CMP-001`)에서 경로를 전수 생성하므로 라우트 인스턴스 수는 `@conductor/react` 공개 export 수와 같다.
+`/components/:componentId`는 단일 화면 ID(W-021)를 갖는 동적 라우트다. 빌드가 컴포넌트 메타데이터(`ENT-CMP-001`)에서 경로를 전수 생성하므로 라우트 인스턴스 수는 `@conductor-by-89soone/react` 공개 export 수와 같다.
 
 ## 6. 전역 셸 구조
 
@@ -128,7 +128,7 @@ Conductor의 유일한 사용자 인터페이스는 문서 사이트다. 화면 
 | 오프캔버스 내비 | C-041 Drawer | FR-CMP-009 AC-3 |
 | skip-link | `cdt.utility` 레이어 유틸리티 클래스 | FR-CSS-002 AC-5, FR-CMP-009 AC-4 |
 
-FR-CMP-009는 우선순위 Should이며 OD-004가 열려 있다. OD-004가 (b) 문서 사이트 내부 컴포넌트로 결정되면 C-070 ~ C-072는 `@conductor/react` 공개 export에서 빠지고 문서 사이트 내부 컴포넌트로 강등된다. 셸의 시각 구조와 이 문서의 IA는 두 결정 중 어느 쪽에서도 바뀌지 않는다. 바뀌는 것은 W-020 카탈로그의 항목 수뿐이다(8절).
+FR-CMP-009는 우선순위 Should이며 OD-004가 열려 있다. OD-004가 (b) 문서 사이트 내부 컴포넌트로 결정되면 C-070 ~ C-072는 `@conductor-by-89soone/react` 공개 export에서 빠지고 문서 사이트 내부 컴포넌트로 강등된다. 셸의 시각 구조와 이 문서의 IA는 두 결정 중 어느 쪽에서도 바뀌지 않는다. 바뀌는 것은 W-020 카탈로그의 항목 수뿐이다(8절).
 
 ## 7. 내비게이션 그룹
 
@@ -148,7 +148,7 @@ FR-CMP-009는 우선순위 Should이며 OD-004가 열려 있다. OD-004가 (b) �
 1. W-021은 사이드 내비에 항목을 갖지 않는다. 컴포넌트 30종을 내비에 나열하면 Tab 순서가 카탈로그의 시각 순서와 이중화된다. W-021 진입은 W-020의 카드 또는 직접 URL로 한정한다.
 2. 그룹 헤더는 링크가 아니다. 클릭 대상이 아닌 요소는 Tab 순서에서 제외한다(FR-A11Y-002 AC-1).
 3. 현재 화면에 대응하는 내비 항목은 `aria-current="page"`를 갖는다.
-4. `NavList`는 링크 렌더를 `renderLink` props로 위임하므로 문서 사이트의 라우팅 선택이 `@conductor/react`로 새지 않는다(FR-CMP-009 AC-1, AC-2).
+4. `NavList`는 링크 렌더를 `renderLink` props로 위임하므로 문서 사이트의 라우팅 선택이 `@conductor-by-89soone/react`로 새지 않는다(FR-CMP-009 AC-1, AC-2).
 
 ## 8. 화면 목록과 관련 요구사항
 
@@ -169,7 +169,7 @@ FR-CMP-009는 우선순위 Should이며 OD-004가 열려 있다. OD-004가 (b) �
 | W-040 | Patterns | `/patterns` | 상태색·심각도·밀도·오버레이 선택의 사용 규칙을 권장/금지 예로 제시한다 | P2 | FR-TOK-005, FR-CMP-004, FR-DOC-007, FR-A11Y-003 |
 | W-050 | Accessibility | `/accessibility` | WCAG 2.1 AA 기준선, 포커스 링, 키보드 경로, 대비 결과, 검사 명령을 제시한다 | P1 | FR-THM-004, FR-A11Y-001 ~ FR-A11Y-005, FR-QA-002, FR-QA-003, FR-QA-004 |
 
-W-020과 W-021의 항목 수는 `@conductor/react` 공개 export 수와 같다(FR-DOC-003 AC-5). `conductor_ui_component_spec.md`가 정의한 컴포넌트 30종(C-001 ~ C-072)이 모두 export되면 카탈로그 항목은 30개, W-021 라우트 인스턴스는 30개다. OD-004가 (b)로 결정되어 C-070 AppShell, C-071 NavList, C-072 TopBar가 문서 사이트 내부 컴포넌트로 강등되면 두 수는 27로 줄어든다. 이 수는 문서가 아니라 빌드가 결정한다.
+W-020과 W-021의 항목 수는 `@conductor-by-89soone/react` 공개 export 수와 같다(FR-DOC-003 AC-5). `conductor_ui_component_spec.md`가 정의한 컴포넌트 30종(C-001 ~ C-072)이 모두 export되면 카탈로그 항목은 30개, W-021 라우트 인스턴스는 30개다. OD-004가 (b)로 결정되어 C-070 AppShell, C-071 NavList, C-072 TopBar가 문서 사이트 내부 컴포넌트로 강등되면 두 수는 27로 줄어든다. 이 수는 문서가 아니라 빌드가 결정한다.
 
 ## 9. 진입 경로
 

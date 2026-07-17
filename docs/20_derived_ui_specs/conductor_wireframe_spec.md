@@ -1,6 +1,6 @@
 # Conductor Design System 와이어프레임 사양서
 
-> 상태: review | 버전: v0.2 | 갱신일: 2026-07-10
+> 상태: review | 버전: v0.3 | 갱신일: 2026-07-17
 
 ## 1. 문서 위치와 책임
 
@@ -117,7 +117,7 @@
 │ CardGrid (C-011) · auto-fill · 최소 컬럼 320px             │
 │ ┌──────────────┐ ┌──────────────┐ ┌──────────────┐         │
 │ │ Card (C-010) │ │ Card (C-010) │ │ Card (C-010) │         │
-│ │ @conductor/  │ │ @conductor/  │ │ @conductor/  │         │
+│ │ @conductor-by-89soone/  │ │ @conductor-by-89soone/  │ │ @conductor-by-89soone/  │         │
 │ │   tokens     │ │   css        │ │   react      │         │
 │ │ → W-030      │ │ → W-002      │ │ → W-020      │         │
 │ └──────────────┘ └──────────────┘ └──────────────┘         │
@@ -166,7 +166,7 @@ C-010 Card(대화형, `href` 지정), C-011 CardGrid, C-012 Panel, C-001 Button.
 
 ### 구현 노트
 
-1. 최초 페인트 시 테마가 뒤바뀌어 보이는 깜빡임이 발생하지 않아야 한다(FR-DOC-005 AC-4). 문서 사이트는 `<head>`에 인라인 테마 결정 스니펫을 삽입한다. 스니펫은 `@conductor/css`가 자동 주입하지 않으며 W-002가 그 소스를 노출한다(FR-THM-003 예외/실패 처리). FLOW-002 참조.
+1. 최초 페인트 시 테마가 뒤바뀌어 보이는 깜빡임이 발생하지 않아야 한다(FR-DOC-005 AC-4). 문서 사이트는 `<head>`에 인라인 테마 결정 스니펫을 삽입한다. 스니펫은 `@conductor-by-89soone/css`가 자동 주입하지 않으며 W-002가 그 소스를 노출한다(FR-THM-003 예외/실패 처리). FLOW-002 참조.
 2. 저장된 선택이 없으면 `prefers-color-scheme`을 따른다(FR-DOC-005 AC-3). 속성값이 `dark`/`light` 이외이면 다크 팔레트를 적용한다(FR-THM-003 AC-3).
 3. NFR-001의 LCP 목표(p75 2.5초 이하)를 측정하는 화면이 W-001이다. 원격 폰트와 원격 스크립트를 로드하지 않는다(SRS 5.2, FR-DOC-001 AC-4).
 
@@ -220,7 +220,7 @@ C-010 Card(대화형, `href` 지정), C-011 CardGrid, C-012 Panel, C-001 Button.
 | --- | --- | --- |
 | 요구 환경 | Node 20 이상, pnpm 10 이상, React 18 또는 19 | SRS 5.1, NFR-005 |
 | 설치 | 패키지 3종 설치 명령 | SCN-001, M-5 |
-| 스타일 import | `import "@conductor/css"` | SCN-001, FR-CSS-001 |
+| 스타일 import | `import "@conductor-by-89soone/css"` | SCN-001, FR-CSS-001 |
 | 테마 속성 지정 | 루트에 `data-cdt-theme="dark"` | FR-THM-003 |
 | 공개 진입점 | `exports`에 선언된 경로, `sideEffects` 선언, 부분 진입점 `./component.css` | FR-DX-003 AC-2, AC-3, AC-4 |
 | 캐스케이드 레이어 순서 | `@layer cdt.reset, cdt.base, cdt.layout, cdt.component, cdt.utility` 한 줄과 소비자 오버라이드 규칙 | FR-CSS-001 AC-1, AC-3, AC-4 |
@@ -255,10 +255,10 @@ C-032 CodeBlock, C-002 IconButton(복사 버튼), C-030 Table, C-060 Banner, C-0
 
 ### 구현 노트
 
-1. 진입점 표는 각 패키지의 `package.json` `exports`에서 읽는다. 선언되지 않은 내부 경로 import는 런타임 해석 오류가 된다(FR-DX-003 AC-1). 표에 `@conductor/react/src/Button` 같은 금지 경로를 예시로 포함하고 금지 사유를 함께 표시한다.
+1. 진입점 표는 각 패키지의 `package.json` `exports`에서 읽는다. 선언되지 않은 내부 경로 import는 런타임 해석 오류가 된다(FR-DX-003 AC-1). 표에 `@conductor-by-89soone/react/src/Button` 같은 금지 경로를 예시로 포함하고 금지 사유를 함께 표시한다.
 2. 인라인 테마 스니펫은 문서 사이트가 자신의 `<head>`에서 실제로 사용하는 코드와 동일해야 한다. 문서 사이트가 Conductor의 첫 번째 소비자이기 때문이다(FR-DOC-001 AC-1).
-3. `@conductor/css`를 import하지 않으면 개발 빌드가 콘솔 경고를 1회 출력하고 컴포넌트는 스타일 없이 렌더된다(SCN-001 예외 흐름). 이 사실을 스타일 import 섹션에 명시한다.
-4. 리셋 제외가 필요한 소비자는 `@conductor/css/component.css`만 import한다(FR-CSS-002 예외/실패 처리).
+3. `@conductor-by-89soone/css`를 import하지 않으면 개발 빌드가 콘솔 경고를 1회 출력하고 컴포넌트는 스타일 없이 렌더된다(SCN-001 예외 흐름). 이 사실을 스타일 import 섹션에 명시한다.
+4. 리셋 제외가 필요한 소비자는 `@conductor-by-89soone/css/component.css`만 import한다(FR-CSS-002 예외/실패 처리).
 
 ---
 
@@ -268,7 +268,7 @@ C-032 CodeBlock, C-002 IconButton(복사 버튼), C-030 Table, C-060 Banner, C-0
 
 ### 화면 목적
 
-시맨틱 색 토큰과 상태·심각도·미터 토큰군을 계층 정보와 함께 조회한다. 값은 `@conductor/tokens/tokens.json`에서 읽으며 화면에 하드코딩된 토큰 값이 0건이다(FR-DOC-002 AC-1).
+시맨틱 색 토큰과 상태·심각도·미터 토큰군을 계층 정보와 함께 조회한다. 값은 `@conductor-by-89soone/tokens/tokens.json`에서 읽으며 화면에 하드코딩된 토큰 값이 0건이다(FR-DOC-002 AC-1).
 
 ### 진입 경로
 
@@ -346,7 +346,7 @@ C-030 Table, C-021 StatusBadge, C-022 SeverityTag, C-062 Meter, C-012 Panel.
 
 ### 구현 노트
 
-1. 프리미티브 토큰은 화면에 표시하지 않는다. `@conductor/tokens`의 공개 진입점으로 export되지 않으며(FR-TOK-002 AC-5) CSS로도 산출되지 않는다(FR-TOK-004 AC-4).
+1. 프리미티브 토큰은 화면에 표시하지 않는다. `@conductor-by-89soone/tokens`의 공개 진입점으로 export되지 않으며(FR-TOK-002 AC-5) CSS로도 산출되지 않는다(FR-TOK-004 AC-4).
 2. 계층 열은 `primitive`가 아닌 `semantic` 또는 `component` 두 값만 갖는다. 시맨틱 토큰은 프리미티브만, 컴포넌트 토큰은 시맨틱만 참조한다(FR-TOK-002 AC-2, AC-3).
 3. 용도 설명이 없는 토큰은 `설명 없음`으로 표시하고 빌드가 경고를 출력한다(FR-DOC-002 예외/실패 처리).
 4. 토큰 소스에 토큰을 추가하면 재빌드 후 이 화면에 자동으로 나타난다(FR-DOC-002 AC-2). 화면 코드에 토큰 키 목록을 나열하지 않는다.
@@ -519,7 +519,7 @@ C-030 Table, C-032 CodeBlock, C-060 Banner, C-012 Panel.
 
 1. 레이아웃 데모는 뷰포트가 아니라 컨테이너 폭에 반응하는 것처럼 보이면 안 된다. 전환 기준은 뷰포트 폭이다(FR-CSS-003 AC-2, AC-3). 데모 옆에 현재 뷰포트 폭과 활성 브레이크포인트를 표시해 관찰 가능하게 한다.
 2. 도메인 전용 레이아웃(`.thread-page`, `.tool-grid`)은 제공하지 않으며 이 화면에 등장하지 않는다(FR-CSS-003 예외/실패 처리).
-3. 브레이크포인트 값은 `@conductor/tokens`가 export하는 `breakpoints` 객체에서 읽는다. 화면에 560/800/1080을 리터럴로 쓰지 않는다(FR-TOK-009 AC-3, FR-DOC-002 AC-1).
+3. 브레이크포인트 값은 `@conductor-by-89soone/tokens`가 export하는 `breakpoints` 객체에서 읽는다. 화면에 560/800/1080을 리터럴로 쓰지 않는다(FR-TOK-009 AC-3, FR-DOC-002 AC-1).
 
 ---
 
@@ -691,13 +691,13 @@ C-030 Table, C-060 Banner, C-012 Panel, C-032 CodeBlock, C-001 Button, C-064 Spi
 
 ### 화면 목적
 
-`@conductor/react` 공개 진입점에 export된 컴포넌트 전수를 컴포넌트군별로 카탈로그화한다. 공개 진입점에 export되었으나 카탈로그에 화면이 없는 컴포넌트가 0건이며, 위반 시 빌드가 실패한다(FR-DOC-003 AC-5).
+`@conductor-by-89soone/react` 공개 진입점에 export된 컴포넌트 전수를 컴포넌트군별로 카탈로그화한다. 공개 진입점에 export되었으나 카탈로그에 화면이 없는 컴포넌트가 0건이며, 위반 시 빌드가 실패한다(FR-DOC-003 AC-5).
 
 ### 진입 경로
 
 - 직접 URL `/components`
 - 사이드 내비 `Components`
-- W-001 패키지 카드(`@conductor/react`) 및 다음 단계 버튼
+- W-001 패키지 카드(`@conductor-by-89soone/react`) 및 다음 단계 버튼
 - W-002 본문 링크
 - 존재하지 않는 `componentId` 경로 진입 시 `404.html`이 이 화면의 `not_found` 상태를 렌더한다(FLOW-001 딥링크 규칙)
 
@@ -707,7 +707,7 @@ C-030 Table, C-060 Banner, C-012 Panel, C-032 CodeBlock, C-001 Button, C-064 Spi
 <main id="content">
 ┌────────────────────────────────────────────────────────────┐
 │ H1  Components                                             │
-│ 카탈로그 항목 수 = @conductor/react 공개 export 수         │
+│ 카탈로그 항목 수 = @conductor-by-89soone/react 공개 export 수         │
 ├────────────────────────────────────────────────────────────┤
 │ § 액션 (FR-CMP-002)                                        │
 │  CardGrid (C-011)                                          │
@@ -864,7 +864,7 @@ C-011 CardGrid, C-010 Card(대화형, `href="/components/:componentId"`), C-060 
 ├────────────────────────────────────────────────────────────┤
 │ § props                                                    │
 │  Table (C-030)  이름 │ 타입 │ 기본값 │ 필수 │ 설명        │
-│  @conductor/react 타입 정의에서 생성 (FR-DOC-003 AC-2)     │
+│  @conductor-by-89soone/react 타입 정의에서 생성 (FR-DOC-003 AC-2)     │
 ├────────────────────────────────────────────────────────────┤
 │ § 공통 계약                                                │
 │  Table (C-030)  ref 전달 │ className 병합 │ data-*/aria-*  │
@@ -887,7 +887,7 @@ C-011 CardGrid, C-010 Card(대화형, `href="/components/:componentId"`), C-060 
 | 헤더 | 컴포넌트명, 컴포넌트군, 요약, 관련 FR ID, W-020 복귀 링크 | FR-DOC-003 |
 | 라이브 프리뷰 | 컴포넌트를 실제 DOM으로 마운트해 모든 `variant`와 `tone` 조합을 렌더한다. 스크린샷 이미지 0건 | FR-DOC-003 AC-1, AC-3, AC-4 |
 | 코드 스니펫 | 프리뷰의 소스 코드와 복사 버튼 | FR-DOC-006 |
-| props | `@conductor/react` 타입 정의에서 생성한 표. 수동 작성 행 0건 | FR-DOC-003 AC-2, FR-DX-002 |
+| props | `@conductor-by-89soone/react` 타입 정의에서 생성한 표. 수동 작성 행 0건 | FR-DOC-003 AC-2, FR-DX-002 |
 | 공통 계약 | ref 전달, `className` 병합, `data-*`/`aria-*` 통과, 네이티브 props 확장 | FR-CMP-001 AC-1 ~ AC-4 |
 | 사용 규칙 | 권장 예와 금지 예, 금지 사유. 컴포넌트군별 상세 규칙은 W-040 | FR-DOC-003, FR-DOC-007 |
 | CSS 클래스 | 대응 `cdt-` 클래스와 React 없이 동일 스타일을 얻는 방법 | FR-CSS-004 AC-2, AC-3 |
@@ -952,7 +952,7 @@ C-012 Panel, C-032 CodeBlock, C-002 IconButton, C-030 Table, C-020 Badge, C-001 
 
 - 직접 URL `/tokens`
 - 사이드 내비 `Tokens`
-- W-001 패키지 카드(`@conductor/tokens`)
+- W-001 패키지 카드(`@conductor-by-89soone/tokens`)
 - W-010의 대비율 안내 Panel, W-013의 겹침 순서 안내 Panel
 
 ### 레이아웃 구조

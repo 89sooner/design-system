@@ -17,9 +17,9 @@ Conductor extracts the visual language of `/home/roqkf/agent-ai-platform/package
 Planned code layout (does not exist until WP-001 lands):
 
 ```text
-packages/tokens/   # @conductor/tokens — token source, buildTokens & checkContrast CLIs
-packages/css/      # @conductor/css   — framework-agnostic stylesheet, @layer cdt.*
-packages/react/    # @conductor/react — Radix-based primitive components
+packages/tokens/   # @conductor-by-89soone/tokens — token source, buildTokens & checkContrast CLIs
+packages/css/      # @conductor-by-89soone/css   — framework-agnostic stylesheet, @layer cdt.*
+packages/react/    # @conductor-by-89soone/react — Radix-based primitive components
 apps/docs/         # static docs site — Conductor's first consumer
 docs/              # this planning document set (not code)
 ```
@@ -109,12 +109,12 @@ Code (once it exists):
 
 ```bash
 pnpm build          # tokens → css → react → docs, in that order
-pnpm typecheck      # RUN AFTER build — part of @conductor/tokens' type surface is generated (CR-009)
+pnpm typecheck      # RUN AFTER build — part of @conductor-by-89soone/tokens' type surface is generated (CR-009)
 pnpm test           # unit + contract tests
 pnpm lint:tokens    # no color/px/z-index literals outside the token source
 pnpm check:contrast # WCAG 2.1 AA per srs_final.md §12.1
 pnpm test:a11y      # axe-core, serious+ violations = 0
-pnpm size           # Button gzip ≤ 4KB, @conductor/css gzip ≤ 20KB
+pnpm size           # Button gzip ≤ 4KB, @conductor-by-89soone/css gzip ≤ 20KB
 ```
 
 `packages/tokens/src/tokens.ts` and `src/breakpoints.ts` are **generated** and gitignored. Never edit them; edit the token source (`schema.ts`, `primitives.ts`, `palette.dark.ts`, `scales.ts`, `components.ts`) and rebuild.
@@ -127,7 +127,7 @@ pnpm size           # Button gzip ≤ 4KB, @conductor/css gzip ≤ 20KB
 - Dark theme is canonical; light is the second palette over the same semantic keys.
 - OD-001 → minimal remediation: `focusRing` alpha 0.30 → 0.80 and a new `border.control` token. Everything else keeps its source value and is classified by `usage`. `srs_final.md` §12.1 is the authoritative table; FR-THM-005 enforces it.
 - OD-002 → visual regression (FR-QA-004) is `deferred` to REL-004. It is not a v1 release gate.
-- OD-004 → shell components (C-070 ~ C-072) ship inside `@conductor/react`.
+- OD-004 → shell components (C-070 ~ C-072) ship inside `@conductor-by-89soone/react`.
 
 ## Application Code Guidelines
 

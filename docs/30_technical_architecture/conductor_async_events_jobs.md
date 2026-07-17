@@ -1,6 +1,6 @@
 # Conductor Design System CI 잡과 릴리스 파이프라인
 
-> 상태: review | 버전: v0.2 | 갱신일: 2026-07-10
+> 상태: review | 버전: v0.3 | 갱신일: 2026-07-17
 
 ## 0. 문서 재해석
 
@@ -100,7 +100,7 @@ Conductor Design System에는 큐, 워커 런타임, dead letter queue, 사용�
 | Worker | 번들 분석 스크립트(size-limit류) |
 | 입력 | JOB-BUILD-002, JOB-BUILD-003 아티팩트 |
 | 출력 | `size-report.json` |
-| 실패 시 동작 | `Button` 단독 import gzip이 4KB 초과(React 제외, M-7) 또는 `@conductor/css` 전체 gzip이 20KB 초과(NFR-001)면 종료 코드 1, 초과 모듈 목록 출력(FR-DX-003 예외 처리) |
+| 실패 시 동작 | `Button` 단독 import gzip이 4KB 초과(React 제외, M-7) 또는 `@conductor-by-89soone/css` 전체 gzip이 20KB 초과(NFR-001)면 종료 코드 1, 초과 모듈 목록 출력(FR-DX-003 예외 처리) |
 | 아티팩트 | `size-report.json` |
 
 ### 2.9 JOB-REL-001 npm 배포
@@ -206,8 +206,8 @@ document.dispatchEvent(
 **롤백(NFR-004, 10분 이내).**
 
 1. 문제 버전을 확인한다.
-2. 이전 정상 버전을 `latest` dist-tag로 재승격한다: `npm dist-tag add @conductor/react@<이전버전> latest`(패키지별 반복).
-3. 문제 버전을 deprecate 표시한다: `npm deprecate @conductor/react@<문제버전> "<롤백 사유>"`.
+2. 이전 정상 버전을 `latest` dist-tag로 재승격한다: `npm dist-tag add @conductor-by-89soone/react@<이전버전> latest`(패키지별 반복).
+3. 문제 버전을 deprecate 표시한다: `npm deprecate @conductor-by-89soone/react@<문제버전> "<롤백 사유>"`.
 4. 배포 로그에 롤백 사유와 재승격된 버전을 기록한다.
 
 이 절차는 새 버전을 레지스트리에서 삭제하지 않고 dist-tag 재승격과 deprecate만으로 수행되므로, 이미 그 버전을 고정 설치한 소비자에게 영향을 주지 않으면서 신규 설치를 이전 버전으로 되돌린다.

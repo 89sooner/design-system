@@ -1,4 +1,4 @@
-import { AppShell, Banner, CodeBlock, IconButton, NavList, Panel, Switch, Table, TopBar } from "@conductor/react";
+import { AppShell, Banner, CodeBlock, IconButton, NavList, Panel, Switch, Table, TopBar } from "@conductor-by-89soone/react";
 import { Menu, Moon, Sun } from "lucide-react";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { Link, Route, Routes, useLocation, useParams } from "react-router-dom";
@@ -38,16 +38,17 @@ function Navigation({ close }: { readonly close?: () => void }) {
 }
 
 function Overview() {
-  return <section className="cdt-page" aria-labelledby="overview-title"><div><p className="docs-eyebrow">Design system</p><h1 id="overview-title">Conductor Design System</h1><p className="docs-lead">Reusable tokens, CSS, and React primitives for a focused operational interface.</p></div><div className="cdt-card-grid">{[["@conductor/tokens", "Theme-aware tokens and validation."], ["@conductor/css", "Layered, framework-agnostic styles."], ["@conductor/react", "Accessible composable primitives."]].map(([name, description]) => <article className="cdt-card" key={name}><h2>{name}</h2><p className="cdt-muted">{description}</p></article>)}</div></section>;
+  return <section className="cdt-page" aria-labelledby="overview-title"><div><p className="docs-eyebrow">Design system</p><h1 id="overview-title">Conductor Design System</h1><p className="docs-lead">Reusable tokens, CSS, and React primitives for a focused operational interface.</p></div><div className="cdt-card-grid">{[["@conductor-by-89soone/tokens", "Theme-aware tokens and validation."], ["@conductor-by-89soone/css", "Layered, framework-agnostic styles."], ["@conductor-by-89soone/react", "Accessible composable primitives."]].map(([name, description]) => <article className="cdt-card" key={name}><h2>{name}</h2><p className="cdt-muted">{description}</p></article>)}</div></section>;
 }
 
-const installCode = "pnpm add @conductor/tokens @conductor/css @conductor/react\npnpm add react react-dom lucide-react\npnpm run build";
-const styleCode = 'import "@conductor/css";';
+const installCode = "pnpm add @conductor-by-89soone/tokens @conductor-by-89soone/css @conductor-by-89soone/react\npnpm add react react-dom lucide-react\npnpm run build";
+const styleCode = 'import "@conductor-by-89soone/css";';
 const themeCode = '<html data-cdt-theme="dark">';
+const renderCode = 'import { Button } from "@conductor-by-89soone/react";\n\nexport function SaveAction() {\n  return <Button variant="primary">Save changes</Button>;\n}';
 const ssrThemeCode = 'try {\n  const saved = localStorage.getItem("conductor-theme");\n  document.documentElement.dataset.cdtTheme = saved === "light" || saved === "dark" ? saved : matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";\n} catch {\n  document.documentElement.dataset.cdtTheme = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";\n}';
 
 function GettingStarted() {
-  return <section className="cdt-page" aria-labelledby="getting-started-title"><h1 id="getting-started-title">Getting Started</h1><Panel as="section"><h2>Requirements</h2><Table caption="Consumer requirements"><Table.Head><Table.Row><Table.HeaderCell>Requirement</Table.HeaderCell><Table.HeaderCell>Value</Table.HeaderCell></Table.Row></Table.Head><Table.Body>{[["Node", "20 or later"], ["pnpm", "10 or later"], ["React", "18 or 19"]].map(([name, value]) => <Table.Row key={name}><Table.Cell>{name}</Table.Cell><Table.Cell>{value}</Table.Cell></Table.Row>)}</Table.Body></Table></Panel><section><h2>Install</h2><p className="cdt-muted">Use these three commands or fewer in a React application.</p><CodeBlock language="bash" code={installCode} /></section><section><h2>Import the stylesheet</h2><CodeBlock language="ts" code={styleCode} /></section><section><h2>Choose a theme</h2><CodeBlock language="html" code={themeCode} /></section><Panel as="section"><h2>Cascade layers</h2><CodeBlock language="css" code="@layer cdt.reset, cdt.base, cdt.layout, cdt.component, cdt.utility;" /><Banner tone="info">Radix CSS custom properties such as <code>--radix-*</code> are inline runtime values, not Conductor layer rules.</Banner></Panel><Panel as="section"><h2>SSR first paint</h2><CodeBlock language="js" code={ssrThemeCode} /><Banner tone="warning">Place this snippet in <code>&lt;head&gt;</code> before application JavaScript to avoid a theme flash.</Banner></Panel><Panel as="section"><h2>Build order</h2><p className="cdt-mono">tokens → css → react → docs</p></Panel></section>;
+  return <section className="cdt-page" aria-labelledby="getting-started-title"><h1 id="getting-started-title">Getting Started</h1><Panel as="section"><h2>Requirements</h2><Table caption="Consumer requirements"><Table.Head><Table.Row><Table.HeaderCell>Requirement</Table.HeaderCell><Table.HeaderCell>Value</Table.HeaderCell></Table.Row></Table.Head><Table.Body>{[["Node", "20 or later"], ["pnpm", "10 or later"], ["React", "18 or 19"]].map(([name, value]) => <Table.Row key={name}><Table.Cell>{name}</Table.Cell><Table.Cell>{value}</Table.Cell></Table.Row>)}</Table.Body></Table></Panel><section><h2>Install</h2><p className="cdt-muted">Use these three commands or fewer in a React application.</p><CodeBlock language="bash" code={installCode} /></section><section><h2>Import the stylesheet</h2><CodeBlock language="ts" code={styleCode} /><Banner tone="warning">If this import is missing, development builds warn once in the console and components render without Conductor styles.</Banner></section><section><h2>Choose a theme</h2><CodeBlock language="html" code={themeCode} /></section><section><h2>Render a component</h2><CodeBlock language="tsx" code={renderCode} /></section><Panel as="section"><h2>Cascade layers</h2><p>The generated stylesheet fixes this declaration as its first line.</p><CodeBlock language="css" code="@layer cdt.reset, cdt.base, cdt.layout, cdt.component, cdt.utility;" /><Banner tone="info">Radix CSS custom properties such as <code>--radix-*</code> are inline runtime values, not Conductor layer rules.</Banner></Panel><Panel as="section"><h2>SSR first paint</h2><p>Components avoid browser globals during server rendering. Run this browser-only snippet in the document head before hydration so the first paint uses the intended theme.</p><CodeBlock language="js" code={ssrThemeCode} /><Banner tone="warning">Place this snippet in <code>&lt;head&gt;</code> before application JavaScript to avoid a theme flash.</Banner></Panel><Panel as="section"><h2>Build order</h2><p className="cdt-mono">tokens → css → react → docs</p></Panel></section>;
 }
 
 function Placeholder({ title }: { readonly title: string }) {
@@ -57,7 +58,8 @@ function Placeholder({ title }: { readonly title: string }) {
 function ComponentRoute() {
   const { componentId } = useParams();
   const location = useLocation();
-  return <ComponentDetail name={componentId ?? ""} forceCopyUnavailable={new URLSearchParams(location.search).has("clipboard-unavailable")} />;
+  const params = new URLSearchParams(location.search);
+  return <ComponentDetail name={componentId ?? ""} forceCopyUnavailable={params.has("clipboard-unavailable")} forcePreviewError={params.has("preview-error")} />;
 }
 
 function TokenRoute() {
@@ -65,13 +67,20 @@ function TokenRoute() {
   return <TokenReference forceMissingReport={new URLSearchParams(location.search).has("metrics-unavailable")} />;
 }
 
+function AccessibilityRoute() {
+  const location = useLocation();
+  return <Accessibility forceMissingReport={new URLSearchParams(location.search).has("metrics-unavailable")} />;
+}
+
 export function App() {
-  const [theme, setTheme] = useState<Theme>(() => readTheme(window));
+  const location = useLocation();
+  const [theme, setTheme] = useState<Theme>("dark");
   const [navOpen, setNavOpen] = useState(false);
-  useEffect(() => applyTheme(theme, document), [theme]);
-  const toggleTheme = () => { const next = theme === "dark" ? "light" : "dark"; setTheme(next); persistTheme(next, window); };
+  useEffect(() => setTheme(readTheme(window)), []);
+  useEffect(() => window.scrollTo({ top: 0, left: 0 }), [location.pathname]);
+  const toggleTheme = () => { const next = theme === "dark" ? "light" : "dark"; setTheme(next); applyTheme(next, document); persistTheme(next, window); };
 
   const topBar = <TopBar menuButton={<IconButton aria-label="Open navigation" icon={<Menu />} variant="ghost" onClick={() => setNavOpen(true)} />} title={<Link className="docs-topbar__title" to="/">Conductor</Link>} actions={<div className="docs-theme-toggle">{theme === "dark" ? <Moon aria-hidden="true" size={16} /> : <Sun aria-hidden="true" size={16} />}<span className="cdt-sr-only">Use {theme === "dark" ? "light" : "dark"} theme</span><Switch checked={theme === "light"} onClick={toggleTheme} aria-label="Toggle color theme" /></div>} />;
 
-  return <AppShell className="docs-shell" nav={<Navigation close={() => setNavOpen(false)} />} topBar={topBar} navOpen={navOpen} onNavOpenChange={setNavOpen} skipLinkLabel="Skip to content" mainId="content"><Suspense fallback={<section className="cdt-page" aria-busy="true"><p className="cdt-muted">Loading…</p></section>}><Routes><Route path="/" element={<Overview />} /><Route path="/getting-started" element={<GettingStarted />} /><Route path="/foundations/color" element={<FoundationPage group="color" theme={theme} title="Color" />} /><Route path="/foundations/typography" element={<FoundationPage group="typography" theme={theme} title="Typography" />} /><Route path="/foundations/spacing" element={<FoundationPage group="spacing" theme={theme} title="Spacing & Layout" />} /><Route path="/foundations/elevation" element={<FoundationPage group="elevation" theme={theme} title="Radius & Elevation" />} /><Route path="/foundations/motion" element={<FoundationPage group="motion" theme={theme} title="Motion" />} /><Route path="/components" element={<CatalogIndex />} /><Route path="/components/:componentId" element={<ComponentRoute />} /><Route path="/tokens" element={<TokenRoute />} /><Route path="/tokens/reference" element={<TokenRoute />} /><Route path="/patterns" element={<Patterns />} /><Route path="/guidelines" element={<Patterns />} /><Route path="/accessibility" element={<Accessibility />} /><Route path="*" element={<Placeholder title="Not found" />} /></Routes></Suspense></AppShell>;
+  return <AppShell className="docs-shell" nav={<Navigation close={() => setNavOpen(false)} />} topBar={topBar} navOpen={navOpen} onNavOpenChange={setNavOpen} skipLinkLabel="Skip to content" mainId="content"><Suspense fallback={<section className="cdt-page" aria-busy="true"><p className="cdt-muted">Loading…</p></section>}><Routes><Route path="/" element={<Overview />} /><Route path="/getting-started" element={<GettingStarted />} /><Route path="/foundations/color" element={<FoundationPage group="color" theme={theme} title="Color" />} /><Route path="/foundations/typography" element={<FoundationPage group="typography" theme={theme} title="Typography" />} /><Route path="/foundations/spacing" element={<FoundationPage group="spacing" theme={theme} title="Spacing & Layout" />} /><Route path="/foundations/elevation" element={<FoundationPage group="elevation" theme={theme} title="Radius & Elevation" />} /><Route path="/foundations/motion" element={<FoundationPage group="motion" theme={theme} title="Motion" />} /><Route path="/components" element={<CatalogIndex />} /><Route path="/components/:componentId" element={<ComponentRoute />} /><Route path="/tokens" element={<TokenRoute />} /><Route path="/tokens/reference" element={<TokenRoute />} /><Route path="/patterns" element={<Patterns />} /><Route path="/guidelines" element={<Patterns />} /><Route path="/accessibility" element={<AccessibilityRoute />} /><Route path="*" element={<Placeholder title="Not found" />} /></Routes></Suspense></AppShell>;
 }

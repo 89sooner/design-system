@@ -2,19 +2,20 @@
   "name": "conductor-design-system",
   "version": "0.0.0",
   "private": true,
+  "license": "MIT",
   "type": "module",
   "packageManager": "pnpm@10.4.1",
   "engines": {
     "node": ">=20"
   },
   "scripts": {
-    "build": "pnpm lint:deps && pnpm --filter @conductor/tokens run build && pnpm --filter @conductor/css run build && pnpm --filter @conductor/react run build && pnpm --filter docs run build",
+    "build": "pnpm lint:deps && pnpm --filter @conductor-by-89soone/tokens run build && pnpm --filter @conductor-by-89soone/css run build && pnpm --filter @conductor-by-89soone/react run build && pnpm --filter docs run build",
     "test": "vitest run",
     "typecheck": "pnpm -r run typecheck",
     "lint": "eslint .",
     "lint:deps": "node scripts/check-deps.mjs",
     "lint:tokens": "node packages/tokens/bin/conductor-lint-tokens.mjs packages/css packages/react",
-    "check:contrast": "pnpm --filter @conductor/tokens run check:contrast",
+    "check:contrast": "pnpm --filter @conductor-by-89soone/tokens run check:contrast",
     "test:a11y": "vitest run --config vitest.a11y.config.ts",
     "test:visual": "node scripts/test-visual.mjs",
     "size": "node scripts/check-size.mjs",

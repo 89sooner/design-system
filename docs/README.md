@@ -21,9 +21,9 @@ Conductor는 실행되는 서버 애플리케이션이 아니다. 배포 산출�
 코드 레이아웃(WP-001부터 생성):
 
 ```text
-packages/tokens/   # @conductor/tokens
-packages/css/      # @conductor/css
-packages/react/    # @conductor/react
+packages/tokens/   # @conductor-by-89soone/tokens
+packages/css/      # @conductor-by-89soone/css
+packages/react/    # @conductor-by-89soone/react
 apps/docs/         # 정적 문서 사이트 (Conductor의 첫 소비자)
 docs/              # 이 계획 문서 세트 (코드 아님)
 ```
@@ -169,6 +169,6 @@ python3 ~/.claude/skills/build-srs-prd-env/scripts/validate_srs_prd_env.py --roo
 | --- | --- | --- |
 | OD-001 | 대비 검사 정책 = **최소 수정** | `focusRing` alpha 0.30 → 0.80, 신규 `border.control`. 나머지는 `usage`로 분류하고 값 보존. `srs_final.md` §12.1이 확정 표. FR-THM-005 신설 |
 | OD-002 | 시각 회귀 = **REL-004 이월** | FR-QA-004 상태 `deferred`. v1 릴리스 게이트 아님 |
-| OD-004 | 셸 컴포넌트군 = **패키지 포함** | C-070 ~ C-072이 `@conductor/react`에 포함. WP-023 실행 |
+| OD-004 | 셸 컴포넌트군 = **패키지 포함** | C-070 ~ C-072이 `@conductor-by-89soone/react`에 포함. WP-023 실행 |
 
 미해소: OD-003(필터/칩 컴포넌트군). FR이 부여되지 않아 baseline을 막지 않는다.

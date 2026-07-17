@@ -9,10 +9,10 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
 /** The only internal edges the architecture permits. Order in the array is the build order. */
 const ALLOWED_EDGES = {
-  "@conductor/tokens": [],
-  "@conductor/css": ["@conductor/tokens"],
-  "@conductor/react": ["@conductor/tokens", "@conductor/css"],
-  docs: ["@conductor/tokens", "@conductor/css", "@conductor/react"],
+  "@conductor-by-89soone/tokens": [],
+  "@conductor-by-89soone/css": ["@conductor-by-89soone/tokens"],
+  "@conductor-by-89soone/react": ["@conductor-by-89soone/tokens", "@conductor-by-89soone/css"],
+  docs: ["@conductor-by-89soone/tokens", "@conductor-by-89soone/css", "@conductor-by-89soone/react"],
 };
 
 const DEPENDENCY_FIELDS = [

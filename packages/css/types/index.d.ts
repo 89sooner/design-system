@@ -1,8 +1,8 @@
 /**
- * `@conductor/css` is consumed as a side-effect stylesheet import:
+ * `@conductor-by-89soone/css` is consumed as a side-effect stylesheet import:
  *
  * ```ts
- * import "@conductor/css";
+ * import "@conductor-by-89soone/css";
  * ```
  *
  * The package ships no JavaScript. This declaration is what `exports["."].types`

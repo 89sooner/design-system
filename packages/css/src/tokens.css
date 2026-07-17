@@ -1,11 +1,11 @@
 /* FR 범위: FR-DX-001, FR-THM-001 */
 
 /*
- * The token custom properties enter through @conductor/tokens' public entry
+ * The token custom properties enter through @conductor-by-89soone/tokens' public entry
  * point, never through a source-relative path into its src/ or dist/
  * (FR-DX-001 AC-4). `layer(cdt.base)` lands the `:root` declarations inside
  * cdt.base, so a consumer can still override a single token from outside every
  * layer: `:root { --cdt-accent: … }` wins over an unlayered-vs-layered
  * comparison regardless of specificity (ADR-005, brief §4.1).
  */
-@import "@conductor/tokens/tokens.css" layer(cdt.base);
+@import "@conductor-by-89soone/tokens/tokens.css" layer(cdt.base);

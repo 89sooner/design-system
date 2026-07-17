@@ -1,6 +1,6 @@
 # Conductor Design System 최종 요구사항 정의서
 
-> 상태: baseline | 버전: v1.2 | 갱신일: 2026-07-10
+> 상태: baseline | 버전: v1.3 | 갱신일: 2026-07-17
 
 ## 1. 문서 개요
 
@@ -10,7 +10,7 @@
 
 ## 2. 통합 결론
 
-Conductor는 `agent-ai-platform/packages/web`의 시각 언어를 3개 npm 패키지(`@conductor/tokens`, `@conductor/css`, `@conductor/react`)와 1개 정적 문서 사이트로 추출한다. 다크 테마는 기준 팔레트로 보존하고, 라이트 테마를 두 번째 팔레트로 추가해 토큰 계층이 실제로 테마를 분리함을 증명한다. 접근성 기준선은 WCAG 2.1 AA다. 백엔드 런타임은 존재하지 않으며, 이 제품이 배포하는 것은 패키지와 정적 사이트다.
+Conductor는 `agent-ai-platform/packages/web`의 시각 언어를 3개 npm 패키지(`@conductor-by-89soone/tokens`, `@conductor-by-89soone/css`, `@conductor-by-89soone/react`)와 1개 정적 문서 사이트로 추출한다. 다크 테마는 기준 팔레트로 보존하고, 라이트 테마를 두 번째 팔레트로 추가해 토큰 계층이 실제로 테마를 분리함을 증명한다. 접근성 기준선은 WCAG 2.1 AA다. 백엔드 런타임은 존재하지 않으며, 이 제품이 배포하는 것은 패키지와 정적 사이트다.
 
 ## 3. 제품 비전과 목표
 
@@ -49,14 +49,14 @@ Conductor는 `agent-ai-platform/packages/web`의 시각 언어를 3개 npm 패�
 | --- | --- | --- | --- |
 | F-CMP-010 필터/칩 컴포넌트군 | REL-003 종료 시점에 잔여 용량이 있을 때. 현재 승인되지 않았으므로 FR을 부여하지 않는다 | REL-003 종료 | OD-003 (open) |
 
-FR-QA-004(시각 회귀)와 FR-CMP-009(셸 컴포넌트군)는 2026-07-10에 OD-002·OD-004가 종결되어 조건부 범위에서 빠졌다. FR-QA-004는 REL-004로 이월된 `deferred` 항목이고, FR-CMP-009는 `@conductor/react`에 포함되는 승인 항목이다. 14.1절 참조.
+FR-QA-004(시각 회귀)와 FR-CMP-009(셸 컴포넌트군)는 2026-07-10에 OD-002·OD-004가 종결되어 조건부 범위에서 빠졌다. FR-QA-004는 REL-004로 이월된 `deferred` 항목이고, FR-CMP-009는 `@conductor-by-89soone/react`에 포함되는 승인 항목이다. 14.1절 참조.
 
 ### 4.3 Out of Scope
 
 | 제외 항목 | 제외 사유 |
 | --- | --- |
 | Figma 양방향 동기화 | 외부 도구 의존과 DTCG 포맷 채택이 선행되어야 한다. v1의 토큰 소스는 코드가 유일한 출처다 |
-| Vue / Svelte / Web Components 어댑터 | 소비자가 React 단일이다. 비-React 소비자는 `@conductor/css`를 직접 사용한다 |
+| Vue / Svelte / Web Components 어댑터 | 소비자가 React 단일이다. 비-React 소비자는 `@conductor-by-89soone/css`를 직접 사용한다 |
 | Tailwind preset | ADR-002가 Vanilla CSS + 커스텀 프로퍼티를 확정했다. preset은 소비자를 Tailwind에 결속한다 |
 | 자체 아이콘 세트 제작 | `lucide-react`를 peer dependency로 둔다 |
 | 차트/데이터 시각화 컴포넌트 | 범위가 독립적이고 크다. `Meter`, `ProgressRing`까지만 포함한다 |
@@ -109,8 +109,8 @@ FR-QA-004(시각 회귀)와 FR-CMP-009(셸 컴포넌트군)는 2026-07-10에 OD-
 
 - 목표: 빈 React 앱에 Conductor의 시각을 입힌다.
 - 시작 조건: Vite + React + TypeScript 프로젝트가 존재한다.
-- 기본 흐름: 패키지 설치 → `import "@conductor/css"` → 루트에 `data-cdt-theme="dark"` 지정 → `Button` 렌더.
-- 예외 흐름: `@conductor/css`를 import하지 않으면 개발 빌드가 콘솔 경고 1회를 출력하고, 컴포넌트는 스타일 없이 렌더된다.
+- 기본 흐름: 패키지 설치 → `import "@conductor-by-89soone/css"` → 루트에 `data-cdt-theme="dark"` 지정 → `Button` 렌더.
+- 예외 흐름: `@conductor-by-89soone/css`를 import하지 않으면 개발 빌드가 콘솔 경고 1회를 출력하고, 컴포넌트는 스타일 없이 렌더된다.
 - 관련 요구사항: FR-DX-003, FR-CSS-001, FR-THM-003, FR-CMP-001
 
 ### SCN-002 관리자가 상태색을 변경한다
@@ -177,7 +177,7 @@ FR-QA-004(시각 회귀)와 FR-CMP-009(셸 컴포넌트군)는 2026-07-10에 OD-
 | 우선순위 | Must |
 | 출처 | F-TOK-002 |
 | 요구사항 | 시스템은 항상 토큰을 primitive, semantic, component 3계층으로 분류하고, 토큰이 자기 계층 또는 하위 계층의 토큰만 참조하도록 강제하여야 한다. |
-| 수용 기준 | AC-1: primitive 토큰은 다른 토큰을 참조하지 않는다. AC-2: semantic 토큰은 primitive 토큰 또는 다른 semantic 토큰만 참조한다. component 토큰을 참조하면 빌드 오류다(CR-008). AC-3: component 토큰은 semantic 토큰 또는 다른 component 토큰만 참조한다. 상위 계층 참조는 빌드 오류다(CR-008). AC-4: 상위 계층으로의 역방향 참조가 존재하면 빌드가 종료 코드 1로 실패하고 위반 토큰 키 쌍을 출력한다. AC-5: primitive 토큰은 `@conductor/tokens`의 공개 진입점으로 export되지 않는다. AC-6: 동일 계층 내 참조가 순환을 이루면 FR-TOK-003 AC-3의 순환 검출이 빌드를 실패시킨다. |
+| 수용 기준 | AC-1: primitive 토큰은 다른 토큰을 참조하지 않는다. AC-2: semantic 토큰은 primitive 토큰 또는 다른 semantic 토큰만 참조한다. component 토큰을 참조하면 빌드 오류다(CR-008). AC-3: component 토큰은 semantic 토큰 또는 다른 component 토큰만 참조한다. 상위 계층 참조는 빌드 오류다(CR-008). AC-4: 상위 계층으로의 역방향 참조가 존재하면 빌드가 종료 코드 1로 실패하고 위반 토큰 키 쌍을 출력한다. AC-5: primitive 토큰은 `@conductor-by-89soone/tokens`의 공개 진입점으로 export되지 않는다. AC-6: 동일 계층 내 참조가 순환을 이루면 FR-TOK-003 AC-3의 순환 검출이 빌드를 실패시킨다. |
 | 검증 방법 | test |
 | 관련 화면 | 없음(간접 노출: W-010 색상 페이지의 계층 표시) |
 | 관련 API/데이터 | API-TOK-002 / ENT-TOK-001, ENT-TOK-002 |
@@ -233,7 +233,7 @@ FR-QA-004(시각 회귀)와 FR-CMP-009(셸 컴포넌트군)는 2026-07-10에 OD-
 | 우선순위 | Must |
 | 출처 | F-TOK-006 |
 | 요구사항 | 토큰 빌드가 실행되면, 시스템은 semantic 및 component 토큰을 타입이 부여된 TypeScript 중첩 객체와 JSON 파일로 산출하여야 한다. |
-| 수용 기준 | AC-1: `import { tokens } from "@conductor/tokens"` 후 `tokens.surface.raised`가 문자열 리터럴 타입으로 추론된다. AC-2: 존재하지 않는 키 접근 `tokens.surface.nonexistent`가 TypeScript 컴파일 오류를 발생시킨다. AC-3: `@conductor/tokens/tokens.json`이 토큰 키·값·계층·용도 메타데이터를 포함한다. AC-4: 산출된 `.d.ts`에 `any` 타입이 0건이다. |
+| 수용 기준 | AC-1: `import { tokens } from "@conductor-by-89soone/tokens"` 후 `tokens.surface.raised`가 문자열 리터럴 타입으로 추론된다. AC-2: 존재하지 않는 키 접근 `tokens.surface.nonexistent`가 TypeScript 컴파일 오류를 발생시킨다. AC-3: `@conductor-by-89soone/tokens/tokens.json`이 토큰 키·값·계층·용도 메타데이터를 포함한다. AC-4: 산출된 `.d.ts`에 `any` 타입이 0건이다. |
 | 검증 방법 | test |
 | 관련 화면 | 없음(간접 노출: W-030이 이 JSON을 읽어 렌더한다) |
 | 관련 API/데이터 | API-PKG-001, API-TOK-002 / ENT-TOK-001 |
@@ -275,7 +275,7 @@ FR-QA-004(시각 회귀)와 FR-CMP-009(셸 컴포넌트군)는 2026-07-10에 OD-
 | 우선순위 | Should |
 | 출처 | F-TOK-009 |
 | 요구사항 | 시스템은 항상 반응형 기준점을 `breakpoint.<이름>` 토큰 3단계로 제공하고, 빌드 시 미디어쿼리 조건에 리터럴로 치환하여야 한다. |
-| 수용 기준 | AC-1: `breakpoint` 하위 키가 `sm`(560px), `md`(800px), `lg`(1080px) 3개로 존재한다. AC-2: 산출된 CSS의 `@media` 조건에 `var(--cdt-breakpoint-*)`가 0건이며 리터럴 px가 사용된다. AC-3: `@conductor/tokens`가 `breakpoints` 객체를 export하여 JS에서 동일 값을 읽을 수 있다. |
+| 수용 기준 | AC-1: `breakpoint` 하위 키가 `sm`(560px), `md`(800px), `lg`(1080px) 3개로 존재한다. AC-2: 산출된 CSS의 `@media` 조건에 `var(--cdt-breakpoint-*)`가 0건이며 리터럴 px가 사용된다. AC-3: `@conductor-by-89soone/tokens`가 `breakpoints` 객체를 export하여 JS에서 동일 값을 읽을 수 있다. |
 | 검증 방법 | test |
 | 관련 화면 | 없음(간접 노출: W-012) |
 | 관련 API/데이터 | API-TOK-001, API-TOK-002 / ENT-TOK-001 |
@@ -323,7 +323,7 @@ FR-QA-004(시각 회귀)와 FR-CMP-009(셸 컴포넌트군)는 2026-07-10에 OD-
 | 검증 방법 | test |
 | 관련 화면 | W-001, W-030 |
 | 관련 API/데이터 | API-THM-001 / ENT-THM-001 |
-| 예외/실패 처리 | 서버 렌더링 환경에서 최초 페인트 시 테마 불일치 깜빡임을 막기 위해, `@conductor/css`는 `<head>`에 인라인으로 삽입 가능한 테마 결정 스니펫을 문서 사이트 W-002에 제공한다. 스니펫은 패키지가 자동 주입하지 않는다. |
+| 예외/실패 처리 | 서버 렌더링 환경에서 최초 페인트 시 테마 불일치 깜빡임을 막기 위해, `@conductor-by-89soone/css`는 `<head>`에 인라인으로 삽입 가능한 테마 결정 스니펫을 문서 사이트 W-002에 제공한다. 스니펫은 패키지가 자동 주입하지 않는다. |
 
 #### FR-THM-004 테마별 대비 검증
 
@@ -363,7 +363,7 @@ FR-QA-004(시각 회귀)와 FR-CMP-009(셸 컴포넌트군)는 2026-07-10에 OD-
 | 우선순위 | Must |
 | 출처 | F-CSS-001 / R-4 |
 | 요구사항 | 시스템은 항상 자체 스타일 전부를 `@layer cdt.reset, cdt.base, cdt.layout, cdt.component, cdt.utility` 안에 선언하고 `!important`를 사용하지 않아야 한다. |
-| 수용 기준 | AC-1: `@conductor/css` 산출물의 모든 규칙이 위 5개 레이어 중 하나에 속한다. AC-2: 산출물의 `!important` 출현 횟수가 0건이다. AC-3: 레이어 밖에서 선언된 소비자 규칙이 동일 명시도에서 Conductor 규칙을 덮어쓴다. AC-4: 레이어 선언 순서가 산출물 최상단 한 줄에 고정된다. |
+| 수용 기준 | AC-1: `@conductor-by-89soone/css` 산출물의 모든 규칙이 위 5개 레이어 중 하나에 속한다. AC-2: 산출물의 `!important` 출현 횟수가 0건이다. AC-3: 레이어 밖에서 선언된 소비자 규칙이 동일 명시도에서 Conductor 규칙을 덮어쓴다. AC-4: 레이어 선언 순서가 산출물 최상단 한 줄에 고정된다. |
 | 검증 방법 | test |
 | 관련 화면 | 없음(간접 노출: W-002 설치 안내) |
 | 관련 API/데이터 | API-PKG-002 / — |
@@ -381,7 +381,7 @@ FR-QA-004(시각 회귀)와 FR-CMP-009(셸 컴포넌트군)는 2026-07-10에 OD-
 | 검증 방법 | test |
 | 관련 화면 | 없음(간접 노출: 모든 문서 사이트 화면) |
 | 관련 API/데이터 | API-PKG-002 / — |
-| 예외/실패 처리 | 리셋이 소비자의 기존 전역 스타일과 충돌하면, 소비자는 `@conductor/css/component.css`만 import해 리셋을 제외할 수 있다. 이 진입점을 FR-DX-003의 `exports`에 선언한다. |
+| 예외/실패 처리 | 리셋이 소비자의 기존 전역 스타일과 충돌하면, 소비자는 `@conductor-by-89soone/css/component.css`만 import해 리셋을 제외할 수 있다. 이 진입점을 FR-DX-003의 `exports`에 선언한다. |
 
 #### FR-CSS-003 레이아웃 프리미티브 클래스
 
@@ -543,11 +543,11 @@ FR-QA-004(시각 회귀)와 FR-CMP-009(셸 컴포넌트군)는 2026-07-10에 OD-
 
 | 항목 | 내용 |
 | --- | --- |
-| 상태 | approved (OD-004, 2026-07-10 종결: `@conductor/react`에 포함한다) |
+| 상태 | approved (OD-004, 2026-07-10 종결: `@conductor-by-89soone/react`에 포함한다) |
 | 우선순위 | Should |
 | 출처 | F-CMP-009 / SRC-AAP `.app-shell`, `.app-nav`, `.app-topbar` |
 | 요구사항 | 라우팅 비종속 API가 성립하는 경우, 시스템은 `AppShell`, `NavList`, `TopBar`를 제공하여야 한다. |
-| 수용 기준 | AC-1: `NavList`가 링크 렌더를 `renderLink` props로 위임해 라우팅 라이브러리에 의존하지 않는다. AC-2: `@conductor/react`의 의존성 목록에 라우팅 라이브러리가 0건이다. AC-3: 뷰포트 800px 미만에서 사이드 내비가 오프캔버스로 전환되고, 오버레이 클릭 또는 Escape로 닫힌다. AC-4: `AppShell`이 `skip-link`를 렌더하고 본문 영역에 포커스를 이동시킨다. |
+| 수용 기준 | AC-1: `NavList`가 링크 렌더를 `renderLink` props로 위임해 라우팅 라이브러리에 의존하지 않는다. AC-2: `@conductor-by-89soone/react`의 의존성 목록에 라우팅 라이브러리가 0건이다. AC-3: 뷰포트 800px 미만에서 사이드 내비가 오프캔버스로 전환되고, 오버레이 클릭 또는 Escape로 닫힌다. AC-4: `AppShell`이 `skip-link`를 렌더하고 본문 영역에 포커스를 이동시킨다. |
 | 검증 방법 | test |
 | 관련 화면 | W-001, W-021 |
 | 관련 API/데이터 | API-CMP-009 / ENT-CMP-001 |
@@ -563,7 +563,7 @@ FR-QA-004(시각 회귀)와 FR-CMP-009(셸 컴포넌트군)는 2026-07-10에 OD-
 | 우선순위 | Must |
 | 출처 | F-DOC-001 / SRC-USER |
 | 요구사항 | 시스템은 항상 문서 사이트에 사이드 내비게이션, 상단바, 본문 영역으로 구성된 셸을 제공하여야 한다. |
-| 수용 기준 | AC-1: 문서 사이트가 `@conductor/react`와 `@conductor/css`를 소비자로서 설치해 사용한다(소스 상대경로 import 0건). AC-2: 모든 문서 화면(W-001 ~ W-050)이 셸 안에서 렌더된다. AC-3: 사이트가 정적 파일로 빌드되며 서버 런타임 없이 동작한다. AC-4: 빌드 산출물이 실행 시 외부 도메인으로 네트워크 요청을 0건 발생시킨다. |
+| 수용 기준 | AC-1: 문서 사이트가 `@conductor-by-89soone/react`와 `@conductor-by-89soone/css`를 소비자로서 설치해 사용한다(소스 상대경로 import 0건). AC-2: 모든 문서 화면(W-001 ~ W-050)이 셸 안에서 렌더된다. AC-3: 사이트가 정적 파일로 빌드되며 서버 런타임 없이 동작한다. AC-4: 빌드 산출물이 실행 시 외부 도메인으로 네트워크 요청을 0건 발생시킨다. |
 | 검증 방법 | test |
 | 관련 화면 | W-001 |
 | 관련 API/데이터 | API-DOC-001 / ENT-DOC-001, JOB-BUILD-004 |
@@ -577,7 +577,7 @@ FR-QA-004(시각 회귀)와 FR-CMP-009(셸 컴포넌트군)는 2026-07-10에 OD-
 | 우선순위 | Must |
 | 출처 | F-DOC-002 |
 | 요구사항 | 시스템은 항상 색상, 타이포그래피, 간격/레이아웃, 반경/고도, 모션 다섯 개의 Foundations 화면을 토큰 빌드 산출물로부터 생성하여야 한다. |
-| 수용 기준 | AC-1: 각 화면의 값이 `@conductor/tokens/tokens.json`에서 읽히며 화면에 하드코딩된 토큰 값이 0건이다. AC-2: 토큰 소스에 토큰을 추가하면 재빌드 후 해당 Foundations 화면에 자동으로 나타난다. AC-3: 각 토큰 행이 토큰 키, 계층, 현재 테마 값, 용도 설명을 표시한다. |
+| 수용 기준 | AC-1: 각 화면의 값이 `@conductor-by-89soone/tokens/tokens.json`에서 읽히며 화면에 하드코딩된 토큰 값이 0건이다. AC-2: 토큰 소스에 토큰을 추가하면 재빌드 후 해당 Foundations 화면에 자동으로 나타난다. AC-3: 각 토큰 행이 토큰 키, 계층, 현재 테마 값, 용도 설명을 표시한다. |
 | 검증 방법 | test |
 | 관련 화면 | W-010, W-011, W-012, W-013, W-014 |
 | 관련 API/데이터 | API-TOK-002 / ENT-TOK-001, ENT-DOC-001 |
@@ -591,7 +591,7 @@ FR-QA-004(시각 회귀)와 FR-CMP-009(셸 컴포넌트군)는 2026-07-10에 OD-
 | 우선순위 | Must |
 | 출처 | F-DOC-003 / SCN-003 |
 | 요구사항 | 시스템은 항상 각 공개 컴포넌트에 대해 실제 DOM으로 렌더되는 라이브 프리뷰, props 표, 사용 규칙을 제공하여야 한다. |
-| 수용 기준 | AC-1: 각 컴포넌트 화면이 해당 컴포넌트를 실제로 마운트해 렌더한다(스크린샷 이미지 0건). AC-2: props 표가 `@conductor/react`의 타입 정의에서 생성되며, 수동으로 작성한 props 행이 0건이다. AC-3: 각 컴포넌트의 모든 `variant`와 `tone` 조합이 프리뷰에 렌더된다. AC-4: 프리뷰가 현재 선택된 테마를 따른다. AC-5: 공개 진입점에 export되었으나 카탈로그에 화면이 없는 컴포넌트가 0건이며, 위반 시 빌드가 실패한다. |
+| 수용 기준 | AC-1: 각 컴포넌트 화면이 해당 컴포넌트를 실제로 마운트해 렌더한다(스크린샷 이미지 0건). AC-2: props 표가 `@conductor-by-89soone/react`의 타입 정의에서 생성되며, 수동으로 작성한 props 행이 0건이다. AC-3: 각 컴포넌트의 모든 `variant`와 `tone` 조합이 프리뷰에 렌더된다. AC-4: 프리뷰가 현재 선택된 테마를 따른다. AC-5: 공개 진입점에 export되었으나 카탈로그에 화면이 없는 컴포넌트가 0건이며, 위반 시 빌드가 실패한다. |
 | 검증 방법 | test |
 | 관련 화면 | W-020, W-021 |
 | 관련 API/데이터 | API-PKG-003, API-DOC-001 / ENT-CMP-001, ENT-DOC-001 |
@@ -763,7 +763,7 @@ FR-QA-004(시각 회귀)와 FR-CMP-009(셸 컴포넌트군)는 2026-07-10에 OD-
 | 우선순위 | Must |
 | 출처 | F-DX-003 / SCN-001 |
 | 요구사항 | 시스템은 항상 각 패키지의 `package.json` `exports` 필드에 선언된 경로로만 import를 허용하여야 한다. |
-| 수용 기준 | AC-1: `@conductor/react/src/Button`처럼 선언되지 않은 내부 경로 import가 런타임 해석 오류를 발생시킨다. AC-2: `@conductor/css`가 `sideEffects: ["*.css"]`를 선언한다. AC-3: `@conductor/react`가 `sideEffects: false`를 선언하고, `Button` 단독 import 시 gzip 4KB 이하(React 제외)다. AC-4: `@conductor/css`의 부분 진입점(`./component.css`)이 `exports`에 선언된다. |
+| 수용 기준 | AC-1: `@conductor-by-89soone/react/src/Button`처럼 선언되지 않은 내부 경로 import가 런타임 해석 오류를 발생시킨다. AC-2: `@conductor-by-89soone/css`가 `sideEffects: ["*.css"]`를 선언한다. AC-3: `@conductor-by-89soone/react`가 `sideEffects: false`를 선언하고, `Button` 단독 import 시 gzip 4KB 이하(React 제외)다. AC-4: `@conductor-by-89soone/css`의 부분 진입점(`./component.css`)이 `exports`에 선언된다. |
 | 검증 방법 | test |
 | 관련 화면 | 없음(간접 노출: W-002) |
 | 관련 API/데이터 | API-PKG-001, API-PKG-002, API-PKG-003 / — |
@@ -777,7 +777,7 @@ FR-QA-004(시각 회귀)와 FR-CMP-009(셸 컴포넌트군)는 2026-07-10에 OD-
 | 우선순위 | Must |
 | 출처 | F-DX-004 |
 | 요구사항 | 시스템은 항상 모듈 최상위 실행 경로에서 `window`, `document`, `localStorage`에 접근하지 않아야 한다. |
-| 수용 기준 | AC-1: Node 환경에서 `@conductor/react`의 모든 컴포넌트를 `renderToString`으로 렌더할 때 예외가 0건이다. AC-2: 브라우저 전역 접근이 `useEffect` 또는 이벤트 핸들러 내부에서만 발생한다. AC-3: 서버와 클라이언트의 첫 렌더 결과가 일치해 hydration 경고가 0건이다. |
+| 수용 기준 | AC-1: Node 환경에서 `@conductor-by-89soone/react`의 모든 컴포넌트를 `renderToString`으로 렌더할 때 예외가 0건이다. AC-2: 브라우저 전역 접근이 `useEffect` 또는 이벤트 핸들러 내부에서만 발생한다. AC-3: 서버와 클라이언트의 첫 렌더 결과가 일치해 hydration 경고가 0건이다. |
 | 검증 방법 | test |
 | 관련 화면 | 없음(간접 노출: W-002) |
 | 관련 API/데이터 | API-PKG-003 / — |
@@ -884,7 +884,7 @@ FR-QA-004(시각 회귀)와 FR-CMP-009(셸 컴포넌트군)는 2026-07-10에 OD-
 | 지표 | 목표 | 측정 방법 | 관련 화면/API |
 | --- | --- | --- | --- |
 | `Button` 단독 import gzip 크기 (React 제외) | 4KB 이하 | 번들 분석 리포트 (`pnpm size`) | API-PKG-003 |
-| `@conductor/css` 전체 gzip 크기 | 20KB 이하 | 빌드 산출물 측정 | API-PKG-002 |
+| `@conductor-by-89soone/css` 전체 gzip 크기 | 20KB 이하 | 빌드 산출물 측정 | API-PKG-002 |
 | 문서 사이트 LCP (p75, 로컬 프로덕션 빌드, Fast 3G 스로틀) | 2.5초 이하 | Lighthouse CI | W-001 |
 | `pnpm build` 전체 소요 시간 (4코어) | 3분 이하 | CI 잡 소요 시간 | JOB-BUILD-001~004 |
 | 테마 전환 후 재페인트 완료 시간 | 100ms 이하 | Performance API 측정 | W-030 |
@@ -972,13 +972,13 @@ OD-001(2026-07-10 종결)이 확정한 정책이다. 소스 팔레트를 실측�
 | OD-001 | 대비율 검사 대상 전경/배경 쌍을 어떻게 정의하는가? 소스 팔레트에서 WCAG 2.1 AA 미달 5건이 실측되었다 | FR-THM-004, FR-A11Y-004 | Accessibility Reviewer | REL-001 착수 전 | **closed (2026-07-10)** |
 | OD-002 | 시각 회귀 검사를 v1 릴리스 게이트에 포함하는가? | FR-QA-004 (Should) | QA | REL-003 착수 시점 | **closed (2026-07-10)** |
 | OD-003 | 필터/칩 컴포넌트군(F-CMP-010)을 v1에 넣는가? | 없음 (FR 미부여) | Product | REL-003 종료 | open |
-| OD-004 | 셸 컴포넌트군을 `@conductor/react`에 넣는가, 문서 사이트 내부 컴포넌트로 두는가? | FR-CMP-009 (Should) | System Maintainer | REL-003 착수 시점 | **closed (2026-07-10)** |
+| OD-004 | 셸 컴포넌트군을 `@conductor-by-89soone/react`에 넣는가, 문서 사이트 내부 컴포넌트로 두는가? | FR-CMP-009 (Should) | System Maintainer | REL-003 착수 시점 | **closed (2026-07-10)** |
 
 ### 14.1 종결된 결정
 
 - **OD-001 → 최소 수정**: 접근성 결함인 `focusRing`과 폼 컨트롤 경계만 값을 교정하고, 나머지는 `usage` 메타데이터로 분류하되 값을 보존한다. 12.1절 표가 결정 내용이며 FR-THM-005가 이를 강제한다. 근거: 포커스 표시자(WCAG 2.4.11)는 장식으로 분류할 수 없어 값 보존이 불가능하고, 카드 경계는 표면색 차이로 식별되므로 WCAG 1.4.11 예외에 해당한다. 전면 조정은 `text.faint`를 `text.muted`와 구분 불가능하게 만들고 제품 목표 G-1(시각 보존)과 M-1(시각 회귀 1%)을 동시에 깨뜨린다.
 - **OD-002 → REL-004로 이월**: 시각 회귀 검사(FR-QA-004)를 v1 릴리스 게이트에서 제외한다. 폰트 렌더 차이로 diff가 불안정해질 위험(R-2)이 v1 일정 위험보다 크다. v1은 수동 시각 확인으로 대체한다. FR-QA-004의 상태를 `deferred`로 표시한다. 결과: M-1은 v1에서 자동 측정되지 않으며, REL-004 완료 시점에 처음 측정된다.
-- **OD-004 → 패키지에 포함**: 셸 컴포넌트군(C-070 ~ C-072)을 `@conductor/react`에 포함한다. `renderLink` props로 링크 렌더를 위임하면 라우팅 비종속 API가 성립한다(FR-CMP-009 AC-1, AC-2). 소스의 사이드 내비와 상단바는 Conductor 시각 언어에서 가장 특징적인 표면이다. WP-023을 실행한다.
+- **OD-004 → 패키지에 포함**: 셸 컴포넌트군(C-070 ~ C-072)을 `@conductor-by-89soone/react`에 포함한다. `renderLink` props로 링크 렌더를 위임하면 라우팅 비종속 API가 성립한다(FR-CMP-009 AC-1, AC-2). 소스의 사이드 내비와 상단바는 Conductor 시각 언어에서 가장 특징적인 표면이다. WP-023을 실행한다.
 
 ### 14.2 baseline 전 확인
 

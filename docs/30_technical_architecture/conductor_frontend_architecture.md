@@ -1,6 +1,6 @@
 # Conductor Design System 프론트엔드 아키텍처
 
-> 상태: review | 버전: v0.2 | 갱신일: 2026-07-10
+> 상태: review | 버전: v0.3 | 갱신일: 2026-07-17
 
 ## 1. 목적과 두 개의 프론트엔드
 
@@ -8,7 +8,7 @@
 
 | 구분 | (a) 컴포넌트 라이브러리 | (b) 문서 사이트 |
 | --- | --- | --- |
-| 산출물 | npm 패키지 `@conductor/react` | `apps/docs`의 정적 HTML/JS/CSS |
+| 산출물 | npm 패키지 `@conductor-by-89soone/react` | `apps/docs`의 정적 HTML/JS/CSS |
 | 실행 위치 | 소비자 애플리케이션 안 | 정적 호스트 |
 | 상태 소유 | 소유하지 않는다. 소비자가 소유한다 | 소유한다(테마, 필터, 복사 상태) |
 | 라우팅 | 없다. 라우팅 라이브러리 의존 0건 | React Router 7.x |
@@ -19,7 +19,7 @@
 
 ---
 
-# Part A. 컴포넌트 라이브러리 `@conductor/react`
+# Part A. 컴포넌트 라이브러리 `@conductor-by-89soone/react`
 
 ## 2. 기술 스택
 
@@ -27,7 +27,7 @@
 | --- | --- | --- | --- |
 | 언어 | TypeScript 5.x, `strict: true` | 공개 API `any` 0건 (FR-DX-002 AC-2, NFR-004) | ADR-008 |
 | React | peer `^18.0.0 \|\| ^19.0.0` | NFR-005, SRS 10절 | — |
-| 스타일 | Vanilla CSS + CSS 커스텀 프로퍼티. `@conductor/css`가 별도 배포 | FR-CSS-001 ~ 005 | ADR-002 |
+| 스타일 | Vanilla CSS + CSS 커스텀 프로퍼티. `@conductor-by-89soone/css`가 별도 배포 | FR-CSS-001 ~ 005 | ADR-002 |
 | 접근성 동작 | `@radix-ui/react-*` 1.x, 정확 버전 고정 | FR-CMP-006 AC-5, R-3 | ADR-004 |
 | 아이콘 | `lucide-react` peer dependency | SRS 10절 | ADR-004 |
 | 번들러 | tsup 8.x → ESM + CJS + `.d.ts` | FR-DX-002, FR-DX-003 | ADR-008 |
@@ -96,13 +96,13 @@ type ButtonProps = React.ComponentPropsWithoutRef<"button"> & {
 | 네이티브 props 확장 | `React.ComponentPropsWithoutRef<T>` 교차 타입 | AC-4 |
 | 전수 검증 | `contract.test.tsx`가 공개 export를 순회하며 위 4개를 검사 | AC-5 |
 
-공유 계약 스위트는 `@conductor/react`의 공개 export 객체를 런타임에 순회한다. 계약을 만족하지 못하는 컴포넌트는 export하지 않으며, 스위트 실패는 빌드 실패다(FR-CMP-001 예외 처리).
+공유 계약 스위트는 `@conductor-by-89soone/react`의 공개 export 객체를 런타임에 순회한다. 계약을 만족하지 못하는 컴포넌트는 export하지 않으며, 스위트 실패는 빌드 실패다(FR-CMP-001 예외 처리).
 
 Radix가 소유하는 컴포넌트(C-040 ~ C-043, C-053 ~ C-055)에서는 Radix가 부여한 `role`과 `aria-*`를 Conductor가 덮어쓰지 않는다(FR-A11Y-005 AC-4). 스프레드 순서를 `{...radixProps} {...userProps}`가 아니라 `{...userProps} {...radixProps}`로 두어 사용자 props가 접근성 속성을 이길 수 없게 한다. 다만 `className`과 `style`은 명시적으로 병합한다.
 
 `IconButton`의 `aria-label`은 선택이 아니라 필수다. `Omit<ButtonProps, "aria-label"> & { "aria-label": string }`으로 타입을 좁혀 누락 시 컴파일 오류가 나게 한다(FR-CMP-002 AC-3).
 
-`StatusBadge`의 `status`는 FR-TOK-005의 7개 리터럴 유니언, `SeverityTag`의 `severity`는 4개 리터럴 유니언이다. 유니언은 `tokens.json`에서 생성하지 않고 `@conductor/tokens`가 export하는 타입에서 파생하므로, 토큰 소스에 상태가 추가되면 타입이 자동으로 넓어진다(FR-CMP-004 AC-3).
+`StatusBadge`의 `status`는 FR-TOK-005의 7개 리터럴 유니언, `SeverityTag`의 `severity`는 4개 리터럴 유니언이다. 유니언은 `tokens.json`에서 생성하지 않고 `@conductor-by-89soone/tokens`가 export하는 타입에서 파생하므로, 토큰 소스에 상태가 추가되면 타입이 자동으로 넓어진다(FR-CMP-004 AC-3).
 
 ### 4.1 개발 빌드 전용 경고
 
@@ -126,20 +126,20 @@ SRS는 여섯 곳에서 개발 빌드 콘솔 경고를 요구한다: 토큰 미�
 
 내부 상태를 갖는 컴포넌트는 세 개뿐이다. `Button`의 `loading`은 props로 받고, `Card`의 hover는 CSS가 처리하며, 실제 `useState`는 `Timeline`의 비제어 선택, `CodeBlock`의 스크롤 그림자, `Meter`의 임계 계산 캐시에만 존재한다. 셋 다 제어 모드 props를 함께 노출한다.
 
-`NavList`가 `renderLink: (props: NavLinkRenderProps) => ReactNode`로 링크 렌더를 위임하므로 `@conductor/react`의 `dependencies`에 라우팅 라이브러리가 0건이다(FR-CMP-009 AC-2). 이 API가 성립하지 않으면 FR-CMP-009는 `deprecated`가 되고 셸은 문서 사이트 내부 컴포넌트로 강등된다(OD-004).
+`NavList`가 `renderLink: (props: NavLinkRenderProps) => ReactNode`로 링크 렌더를 위임하므로 `@conductor-by-89soone/react`의 `dependencies`에 라우팅 라이브러리가 0건이다(FR-CMP-009 AC-2). 이 API가 성립하지 않으면 FR-CMP-009는 `deprecated`가 되고 셸은 문서 사이트 내부 컴포넌트로 강등된다(OD-004).
 
 ## 6. SSR 안전성 (FR-DX-004)
 
 | 규칙 | 강제 방법 |
 | --- | --- |
-| 모듈 최상위에서 `window`, `document`, `localStorage` 접근 금지 | `@conductor/react` 전체를 Node 환경에서 import하는 테스트. 접근 시 즉시 예외 |
+| 모듈 최상위에서 `window`, `document`, `localStorage` 접근 금지 | `@conductor-by-89soone/react` 전체를 Node 환경에서 import하는 테스트. 접근 시 즉시 예외 |
 | 브라우저 전역 접근은 `useEffect` 또는 이벤트 핸들러 안에서만 | ESLint `no-restricted-globals` + 코드 리뷰 |
 | 서버/클라이언트 첫 렌더 일치 | 공개 컴포넌트 전수를 `renderToString`으로 렌더하는 테스트(AC-1). `apps/docs` 프리렌더가 동일 코드를 두 번째로 검증 |
 | ID 생성 | `Math.random()`이나 증가 카운터 대신 React `useId`. `Field`의 label/description/error 연결 ID가 서버와 클라이언트에서 일치한다 |
 
-`@conductor/react`의 엔트리 상단에 `"use client"` 배너를 tsup으로 삽입한다. 모든 공개 컴포넌트가 훅 또는 이벤트 핸들러를 갖거나 그런 컴포넌트를 합성하므로 패키지 전체가 클라이언트 경계다. 배너를 넣지 않으면 React Server Components 소비자가 매 import마다 래퍼를 만들어야 한다. `"use client"`는 SSR을 막지 않으므로 FR-DX-004 AC-1과 충돌하지 않는다.
+`@conductor-by-89soone/react`의 엔트리 상단에 `"use client"` 배너를 tsup으로 삽입한다. 모든 공개 컴포넌트가 훅 또는 이벤트 핸들러를 갖거나 그런 컴포넌트를 합성하므로 패키지 전체가 클라이언트 경계다. 배너를 넣지 않으면 React Server Components 소비자가 매 import마다 래퍼를 만들어야 한다. `"use client"`는 SSR을 막지 않으므로 FR-DX-004 AC-1과 충돌하지 않는다.
 
-테마 결정처럼 첫 페인트 이전에 브라우저 정보가 필요한 경우, 패키지가 전역에 접근하는 대신 소비자가 `@conductor/css/theme-init.js`의 스니펫을 인라인한다(FR-THM-003 예외 처리).
+테마 결정처럼 첫 페인트 이전에 브라우저 정보가 필요한 경우, 패키지가 전역에 접근하는 대신 소비자가 `@conductor-by-89soone/css/theme-init.js`의 스니펫을 인라인한다(FR-THM-003 예외 처리).
 
 ## 7. 트리셰이킹과 번들 예산 (FR-DX-003)
 
@@ -149,14 +149,14 @@ SRS는 여섯 곳에서 개발 빌드 콘솔 경고를 요구한다: 토큰 미�
 | 배럴 파일 | `src/index.ts`는 재수출만 한다. 부수효과 있는 초기화 코드를 두지 않는다 |
 | ESM 우선 | `exports.import`가 ESM, `exports.require`가 CJS. 번들러는 ESM을 골라 정적 분석한다 |
 | 런타임 의존성 0개 | `cx`는 내부 구현. 아이콘은 peer |
-| 하위 경로 import 차단 | `exports`에 `.`만 선언. `@conductor/react/src/Button`은 해석 오류다(AC-1) |
-| 예산 검사 | size-limit 11.x가 `import { Button } from "@conductor/react"`를 React를 external로 두고 번들해 gzip 4KB를 검사한다(JOB-CI-004). 초과 시 CI가 초과 모듈 목록을 출력한다 |
+| 하위 경로 import 차단 | `exports`에 `.`만 선언. `@conductor-by-89soone/react/src/Button`은 해석 오류다(AC-1) |
+| 예산 검사 | size-limit 11.x가 `import { Button } from "@conductor-by-89soone/react"`를 React를 external로 두고 번들해 gzip 4KB를 검사한다(JOB-CI-004). 초과 시 CI가 초과 모듈 목록을 출력한다 |
 
 `StatusBadge`와 `SeverityTag`는 상태·심각도별 기본 아이콘을 `lucide-react`에서 이름으로 import한다. peer dependency이므로 Conductor 번들에 아이콘이 실리지 않고, 소비자 번들러가 사용된 아이콘만 남긴다. `icon` props로 아이콘 컴포넌트를 주입하면 기본값을 대체한다(SRS 10절의 "아이콘 컴포넌트를 props로 주입받는다"). `Button`은 아이콘을 import하지 않으므로 M-7의 4KB 예산이 이 결정에 영향받지 않는다.
 
 ## 8. CSS 전달 방식과 테마 주입
 
-`@conductor/react`는 CSS를 import하지 않고 번들하지도 않는다. 컴포넌트는 `cdt-` 클래스 이름만 출력한다. 이 분리가 세 가지를 동시에 성립시킨다: 비-React 소비자가 같은 클래스를 직접 쓸 수 있고(FR-CSS-004 AC-3), `sideEffects: false`가 참이 되며, 소비자가 리셋을 제외한 부분 진입점을 고를 수 있다(FR-CSS-002 예외 처리).
+`@conductor-by-89soone/react`는 CSS를 import하지 않고 번들하지도 않는다. 컴포넌트는 `cdt-` 클래스 이름만 출력한다. 이 분리가 세 가지를 동시에 성립시킨다: 비-React 소비자가 같은 클래스를 직접 쓸 수 있고(FR-CSS-004 AC-3), `sideEffects: false`가 참이 되며, 소비자가 리셋을 제외한 부분 진입점을 고를 수 있다(FR-CSS-002 예외 처리).
 
 Radix가 소유하는 DOM에는 구조 셀렉터를 쓰지 않고 `data-state`, `data-side`, `data-disabled` 같은 속성 셀렉터만 사용한다(R-3, FR-CSS-004 AC-4). Radix가 인라인으로 주입하는 `--radix-*` 커스텀 프로퍼티는 `@layer` 대상이 아니며, 이 예외는 W-002에 문서화된다(FR-CSS-001 예외 처리).
 
@@ -193,7 +193,7 @@ Radix가 소유하는 DOM에는 구조 셀렉터를 쓰지 않고 `data-state`, 
 | Conductor 소비 | `workspace:*` 프로토콜로 세 패키지 설치 | FR-DOC-001 AC-1 |
 | 폰트 | 시스템 폰트 스택. 원격 폰트 0건 | NFR-002, FR-CSS-002 AC-4 |
 
-프리렌더는 세 가지를 동시에 얻는다. 첫째, 서버 런타임 없이 라우트마다 완성된 HTML이 나온다(FR-DOC-001 AC-3). 둘째, 첫 페인트가 JS 실행을 기다리지 않으므로 LCP p75 2.5초 예산에 여유가 생긴다(NFR-001). 셋째, 모든 공개 컴포넌트가 Node 환경에서 렌더되므로 FR-DX-004 AC-1의 SSR 안전성이 매 빌드마다 반증된다. `@conductor/react`에 브라우저 전역 접근이 새로 들어오면 문서 사이트 빌드가 깨진다.
+프리렌더는 세 가지를 동시에 얻는다. 첫째, 서버 런타임 없이 라우트마다 완성된 HTML이 나온다(FR-DOC-001 AC-3). 둘째, 첫 페인트가 JS 실행을 기다리지 않으므로 LCP p75 2.5초 예산에 여유가 생긴다(NFR-001). 셋째, 모든 공개 컴포넌트가 Node 환경에서 렌더되므로 FR-DX-004 AC-1의 SSR 안전성이 매 빌드마다 반증된다. `@conductor-by-89soone/react`에 브라우저 전역 접근이 새로 들어오면 문서 사이트 빌드가 깨진다.
 
 Storybook을 쓰지 않는 이유는 ADR-007에 기록한다. 요약하면 FR-DOC-002(토큰 산출물에서 생성하는 Foundations), FR-DOC-004(테마별 값과 대비율 표), FR-DOC-007(권장/금지 예 병치)이 컴포넌트 카탈로그가 아니라 데이터 기반 문서 화면이며, Storybook 위에서는 이 화면들이 애드온 또는 별도 사이트가 된다.
 
@@ -226,7 +226,7 @@ Storybook을 쓰지 않는 이유는 ADR-007에 기록한다. 요약하면 FR-DO
 | --- | --- | --- | --- |
 | `tokens.json` | JOB-BUILD-001 `buildTokens` | W-010 ~ W-014, W-030 | FR-TOK-006 AC-3, FR-DOC-002 AC-1 |
 | `contrast-report.json` | JOB-CI-001 `checkContrast --report --json` | W-030, W-050 | FR-DOC-004 AC-3, FR-A11Y-004 AC-3 |
-| `props.generated.json` | react-docgen-typescript 2.x가 `@conductor/react`의 `.d.ts`를 읽어 생성 | W-021 | FR-DOC-003 AC-2, FR-DX-002 |
+| `props.generated.json` | react-docgen-typescript 2.x가 `@conductor-by-89soone/react`의 `.d.ts`를 읽어 생성 | W-021 | FR-DOC-003 AC-2, FR-DX-002 |
 | 컴포넌트 레지스트리 | `apps/docs/src/registry.ts` (C-### ↔ 컴포넌트 ↔ FR ID ↔ 예제 모듈) | W-020, W-021 | ENT-CMP-001 |
 | 예제 소스 원문 | Vite `?raw` import로 예제 모듈의 텍스트를 그대로 읽는다 | W-021 | FR-DOC-006 |
 | axe 허용 목록 | `axe-allowlist.json` (규칙 ID + 사유) | W-050 | FR-QA-003 AC-4, FR-A11Y-005 예외 처리 |
@@ -235,7 +235,7 @@ Foundations 화면에는 토큰 값 하드코딩이 0건이다(FR-DOC-002 AC-1).
 
 W-021의 props 표는 손으로 쓰지 않는다. 수동 작성 행이 0건임은 `props.generated.json` 밖의 props 데이터를 화면이 참조하지 않는다는 사실로 성립한다(FR-DOC-003 AC-2).
 
-FR-DOC-003 AC-5의 "공개 export이면서 카탈로그 화면이 없는 컴포넌트 0건"은 빌드 시 검사한다. `Object.keys(await import("@conductor/react"))`와 레지스트리 키 집합의 대칭 차집합이 비어 있지 않으면 JOB-BUILD-004가 종료 코드 1로 실패한다.
+FR-DOC-003 AC-5의 "공개 export이면서 카탈로그 화면이 없는 컴포넌트 0건"은 빌드 시 검사한다. `Object.keys(await import("@conductor-by-89soone/react"))`와 레지스트리 키 집합의 대칭 차집합이 비어 있지 않으면 JOB-BUILD-004가 종료 코드 1로 실패한다.
 
 ## 13. 라이브 프리뷰 구현
 
@@ -286,7 +286,7 @@ React 오류 경계는 서버 렌더 중에는 동작하지 않는다. 따라서
 
 해결은 두 단계다.
 
-**1단계 — 페인트 이전에 속성을 확정한다.** `apps/docs`의 루트 HTML `<head>`에 `@conductor/css/theme-init.js`의 스니펫을 인라인한다. 스니펫은 스타일시트가 적용되기 전에 동기 실행되어 `document.documentElement.dataset.cdtTheme`을 확정한다.
+**1단계 — 페인트 이전에 속성을 확정한다.** `apps/docs`의 루트 HTML `<head>`에 `@conductor-by-89soone/css/theme-init.js`의 스니펫을 인라인한다. 스니펫은 스타일시트가 적용되기 전에 동기 실행되어 `document.documentElement.dataset.cdtTheme`을 확정한다.
 
 ```js
 try {
@@ -298,7 +298,7 @@ if (t !== "dark" && t !== "light") {
 document.documentElement.setAttribute("data-cdt-theme", t);
 ```
 
-색은 전적으로 이 속성에서 나오므로 React가 언제 hydrate되든 시각적 깜빡임이 없다. `localStorage` 접근이 차단되면 `try` 블록이 삼키고 `prefers-color-scheme`으로 떨어진다(FR-DOC-005 AC-3, 예외 처리). 이 스니펫은 `@conductor/css`가 자동 주입하지 않는다. 문서 사이트가 소비자로서 직접 삽입하고, W-002가 같은 절차를 소비자에게 문서화한다(FR-THM-003 예외 처리).
+색은 전적으로 이 속성에서 나오므로 React가 언제 hydrate되든 시각적 깜빡임이 없다. `localStorage` 접근이 차단되면 `try` 블록이 삼키고 `prefers-color-scheme`으로 떨어진다(FR-DOC-005 AC-3, 예외 처리). 이 스니펫은 `@conductor-by-89soone/css`가 자동 주입하지 않는다. 문서 사이트가 소비자로서 직접 삽입하고, W-002가 같은 절차를 소비자에게 문서화한다(FR-THM-003 예외 처리).
 
 **2단계 — React는 DOM을 상태의 출처로 삼는다.** 토글 컴포넌트는 `useSyncExternalStore`로 `data-cdt-theme` 속성을 읽는다.
 
@@ -333,7 +333,7 @@ document.documentElement.setAttribute("data-cdt-theme", t);
 | 테마 전환 후 재페인트 | 100ms 이하 | 속성 교체 → 커스텀 프로퍼티 재해석. React 리렌더 트리는 토글 컴포넌트 1개 |
 | 라우트별 JS | W-030을 제외한 전 라우트에서 `tokens.json`을 싣지 않는다 | 라우트 단위 코드 분할(`lazy`). `tokens.json`은 Foundations와 W-030 청크에만 포함 |
 | 외부 네트워크 요청 | 0건 | 원격 폰트·원격 스크립트·분석 스크립트 금지(FR-DOC-001 AC-4, NFR-002) |
-| CSS | `@conductor/css` gzip 20KB 이하 + 문서 전용 `docs` 레이어 | NFR-001 |
+| CSS | `@conductor-by-89soone/css` gzip 20KB 이하 + 문서 전용 `docs` 레이어 | NFR-001 |
 
 `contrast-report.json`은 W-030과 W-050에만 필요하다. 두 화면의 청크에서만 import하고, 파일이 없을 때의 결손 처리는 14.2절에 있다.
 

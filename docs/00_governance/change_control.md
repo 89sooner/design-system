@@ -38,6 +38,12 @@
 | CR-016 | 2026-07-13 | implementation | `DEV-009` (WP-028 구현) | 인프라 운영 문서 §8은 문서 사이트 배포를 "커밋 SHA 디렉터리 업로드 → 별칭(pointer) 전환 → 직전 5개 버전 보존"으로 규정한다. GitHub Pages는 배포 단위가 사이트 스냅샷 전체이며 버전 디렉터리와 별칭 전환 API를 제공하지 않는다. 대신 각 배포가 원자적 스냅샷 교체이므로 §8의 실제 불변식(방문자가 신·구 자산이 섞인 상태를 받지 않는다)은 그대로 성립한다. 롤백은 별칭 되돌리기 대신 "직전 정상 커밋 ref 재배포"로 정정한다. lockfile 고정 재빌드는 결정적이며 10분 예산(NFR-004) 안에 끝난다 | DEV-009, WP-028, FR-DOC-001, NFR-004, JOB-BUILD-004 | `conductor_infrastructure_operations.md`, `.github/workflows/deploy-docs.yml`, delivery ledger | closed |
 | CR-017 | 2026-07-13 | implementation | `DEV-010` (WP-028 LCP 측정) | NFR-001의 문서 사이트 LCP 지표를 Lighthouse 기본 스로틀(lantern 시뮬레이션)로 재면 프리렌더된 첫 페인트를 모델링하지 못해 3,002ms로 나오고, 같은 스로틀 계수를 실제 브라우저에 적용해 관측하면 1,793ms다. 두 값이 예산 2.5초의 양쪽에 놓여 판정을 뒤집는다. SRS가 명시한 측정 조건은 "로컬 프로덕션 빌드, Fast 3G 스로틀"이므로, 시뮬레이션 예측이 아니라 DevTools Fast 3G 프리셋(RTT 150ms, 1.6Mbps, CPU 4x)을 실제로 적용해 관측한 값을 지표로 삼는다. 두 값을 모두 원장에 기록한다. 목표치·요구사항은 변경하지 않는다 | DEV-010, WP-028, NFR-001, FR-DOC-001 | `scripts/check-lighthouse.mjs`, delivery ledger | closed |
 | CR-018 | 2026-07-15 | design | 사용자 요청 (컴포넌트 심미성·시인성·가독성 개선) + `DEV-011` | 공개 API와 Radix 접근성 책임은 유지하면서 컴포넌트의 시각 언어를 "차분한 깊이 + 명확한 정보 위계"로 정비한다. 검증된 단색 Primary 액션과 대비 교정값은 보존하고, Card·Overlay의 글래스/고도 표현, Button·Form의 상호작용 피드백, Table의 구조적 위계, Banner의 중립 표면 + 상태색 가장자리, Feedback의 트랙/레이블 판독성을 강화한다. 문서 카탈로그 예시는 실제 구성 계층이 보이도록 현실적인 콘텐츠로 교체하고, 다크·라이트 시각 기준선을 갱신한다. 시각 검수에서 발견한 `DEV-011`을 함께 해소한다: 명세에만 있고 소스에 빠진 additive `radius.pill` 토큰을 복구하고, `Select.Content`가 자식을 버리던 결함과 Button의 variant×tone 우선순위 오류를 수정한다. 요구사항·공개 React API의 삭제/변경 없음 | DEV-011, FR-CSS-004, FR-CMP-002~008, FR-THM-002, FR-THM-005, FR-QA-003, FR-QA-004, WP-005, WP-008, WP-012~017, WP-020, WP-024, WP-026 | `conductor_ui_component_spec.md`, `conductor_design_system_tokens.md`, token/CSS/React source, docs catalog, unit/CSS tests, visual baselines, delivery ledger | closed |
+| CR-019 | 2026-07-15 | design | 사용자 요청 (만족도가 높은 UI 컴포넌트 조사 기반 재정제) + `DEV-012` | Radix Themes·Primer·Atlassian Design System·Spectrum·Carbon·shadcn/ui·W3C 문서와 채택 신호를 교차 조사해 "강조의 희소성, 명확한 포커스, 가시 라벨, 실제 구성 맥락"을 2차 정제 원칙으로 채택한다. 실제 Chromium에서 `:focus-visible`이 참이어도 `cdt.component`의 장식용 `box-shadow`가 `cdt.reset`의 포커스 링을 덮는 결함과 이를 놓치는 테스트를 확인했다. shadow를 가진 핵심 컨트롤이 포커스 시 전체 `focusRing` 계산값을 복원하도록 하고, Button 라벨을 14px로 높이며 Field 라벨 위계를 강화한다. 대화형 Card에 pressed 피드백을 추가하고, 문서 카탈로그의 대화형 Card 안에 live control을 중첩하던 구성을 정적 Panel + 명시적 링크로 바꾼다. 폼 예시는 가시 라벨·설명과 해결 지향 문구를 사용한다. 요구사항 범위와 공개 React API 변경 없음 | DEV-012, FR-CSS-002, FR-CSS-004, FR-CMP-002, FR-CMP-003, FR-CMP-007, FR-A11Y-001, FR-A11Y-003, FR-DOC-003, FR-QA-003, FR-QA-004, WP-005, WP-008, WP-012, WP-016, WP-020, WP-024, WP-026 | `conductor_ui_component_spec.md`, `conductor_design_system_tokens.md`, token/CSS source, docs catalog, CSS/a11y/E2E tests, visual baselines, delivery ledger | closed |
+| CR-020 | 2026-07-15 | correction | 남은 문서 작업 감사 + `DEV-013` | 파생 화면 상태 매트릭스와 QA-193이 최상위 SRS에 없는 `tokens.json` 부재 런타임 폴백을 FR-DOC-002의 예외로 추가했다. FR-DOC-002는 토큰 산출물을 Foundations의 필수 빌드 입력으로 규정하고 예외는 용도 설명 누락만 정의한다. 정적 사이트는 토큰 JSON을 번들에 포함하므로 빌드 입력 부재는 화면 상태가 아니라 빌드 실패다. 범위를 발명한 상태 행을 제거하고 안정 ID인 QA-193은 폐기 표시한다. 요구사항·코드·공개 API 변경 없음 | DEV-013, FR-DOC-002, QA-193, W-010~W-014, W-030 | `conductor_screen_state_matrix.md`, `conductor_screen_qa_checklist.md`, delivery ledger | closed |
+| CR-021 | 2026-07-15 | correction | 남은 QA 순차 실행 + `DEV-014` | 승인된 화면 QA를 실제 소스와 대조해 SCN-001 CSS 누락 경고, Getting Started 전체 흐름, Foundations 타이포·레이아웃·모션 실물 예시, React 없는 CSS 예시, 이상 흐름 테스트를 완성한다. 루트 전용 프리렌더 HTML을 딥링크에서도 hydration해 셸을 교체하던 결함은 루트만 hydrate하고 딥링크는 client mount하도록 경계를 분리한다. 12개 화면의 두 테마·세 폭 레이아웃과 두 테마 Tab/focus 경로를 브라우저에서 검증하고, WP·REL·QA 체크리스트의 과거 미동기화 상태를 실제 증거와 일치시킨다. 요구사항 범위와 공개 React API의 삭제/변경 없음 | DEV-014, SCN-001, FR-DOC-001~007, FR-DX-004, FR-CSS-003~005, FR-A11Y-001~005, FR-QA-001~004, QA-001~QA-200, WP-001~WP-028, REL-001~REL-004 | docs app/source/tests, 화면 QA, WP, 릴리스 계획, delivery ledger | closed |
+| CR-022 | 2026-07-15 | implementation | 실제 릴리스 권한 감사 + `DEV-015`·`DEV-016` | npm의 현재 Trusted Publishing 요구사항을 실제 워크플로와 대조했다. release job의 Node 20은 최소 Node 22.14.0/npm 11.5.1을 충족하지 못하고, private GitHub 저장소에서는 public npm 패키지라도 provenance가 생성되지 않는다. 또한 미게시 패키지는 Trusted Publisher를 등록할 수 없어 `@conductor/*` 3종을 `bootstrap` dist-tag로 최초 1회 생성한 뒤 패키지별 신뢰 관계를 등록해야 한다. release job을 Node 22.14.0/npm 11.18.0으로 고정하고 private repository를 provenance preflight에서 차단한다. 최초 namespace bootstrap은 npm 2FA 대화형 인증으로만 수행하며 장기 토큰을 저장하지 않는다. 공개 전 secret scan이 현재 추적 파일만 검사하던 편차도 작업 트리 전체와 Git 이력 검사로 해소한다. 요구사항·공개 API 변경 없음 | DEV-015, DEV-016, WP-027, FR-DX-005, NFR-002, NFR-004, JOB-REL-001 | release workflow, secret scanner, infrastructure/security/ADR, release plan, delivery ledger | closed |
+| CR-023 | 2026-07-17 | scope | 사용자 결정 (공개 npm organization 확정) | 제3자가 소유한 `@conductor` 대신 사용자가 생성한 npm organization `conductor-by-89soone`을 공개 배포 namespace로 확정한다. 세 패키지와 모든 소비자 import·의존성·Changesets·릴리스 태그 계약을 `@conductor-by-89soone/*`로 일괄 전환한다. 첫 공개 릴리스 전 변경이므로 기존 게시 소비자 마이그레이션은 없으며, 제품명 Conductor와 CSS 계약 `--cdt-*`·`cdt-*`는 변경하지 않는다. 저장소는 MIT로 배포하고 패키지별 설치·사용 README를 포함한다 | SCN-001, FR-DX-001~005, FR-DOC-001~007, API-PKG-001~003, JOB-BUILD-001~004, JOB-CI-001~004, JOB-REL-001, WP-001~028, REL-001~004 | SRS, PRD, glossary, traceability, derived UI, architecture, delivery, agent briefs, repository source/config/workflows | closed |
+| CR-024 | 2026-07-17 | implementation | CR-023 릴리스 게이트 + `DEV-017` | 라이트 테마의 열린 Dialog에서 axe `color-contrast` serious 위반 1건을 재현했다. 명세는 `Dialog.Close`의 `cdt-dialog__close` 클래스를 요구하지만 구현은 Radix 원시 버튼을 그대로 노출해 브라우저 기본 ButtonFace/텍스트 색을 사용했다. `asChild` 소비자 스타일은 보존하고 원시 `Dialog.Close`·`Drawer.Close`에만 기존 Conductor secondary compact Button 클래스를 기본 적용한다. Radix의 닫기 동작·포커스 복귀·role 책임과 공개 props 타입은 변경하지 않는다 | DEV-017, FR-CMP-006, FR-A11Y-004, FR-QA-003, C-040, C-041, WP-015, WP-024, WP-026 | overlay source/unit/a11y tests, component spec, delivery ledger | closed |
 
 유형: `scope`(범위 변경), `design`(설계 변경), `implementation`(구현 편차 DEV-### 처리), `correction`(문서 오류 수정)
 
@@ -240,6 +246,66 @@ WP-009 완료 검증에서 발견한 작업 패키지 검증 명령의 문서 �
 - [x] 대비/예산 — 다크·라이트 80/80, Button 527B/4KB, CSS 8.11KiB/20KiB
 - [x] `docs/40_delivery/conductor_implementation_traceability.md` — DEV-011 종결과 교차 WP 검증 근거 기록(v0.5)
 - [x] validator: 구조·추적성 오류 0건, `--report`·`--strict` 통과
+
+### CR-019 cascade
+
+- [x] `docs/20_derived_ui_specs/conductor_ui_component_spec.md` — 강조 희소성·즉시 포커스·가시 라벨·카탈로그 합성 규칙 추가(v0.4)
+- [x] `docs/20_derived_ui_specs/conductor_design_system_tokens.md` — `button.fontSize`를 14px로, `input.label.text`를 `text.secondary`로 정제(v0.6)
+- [x] `packages/tokens/src/components.ts`, `packages/css/src/components.css` — 라벨 위계, Card pressed 상태, shadow-bearing control의 즉시 `focusRing` 복원 구현
+- [x] `apps/docs/src/catalog.tsx`, `docs.css` — 정적 Panel + 명시적 제목 링크, compact Button, 가시 Field 라벨·설명, 행동 문구 예제 구현
+- [x] CSS/React/브라우저 — CSS 78/78, React 142/142, 전체 Vitest 488/488, axe/keyboard 134 passed + 1 skipped, 문서 E2E 16/16
+- [x] 시각/대비/예산 — 고정 Chromium 25/25(diff 0), 다크·라이트 80/80, Button 527B/4KB, CSS 8.15KiB/20KiB
+- [x] 정적 게이트 — build·typecheck·lint·lint:deps·lint:tokens(42파일, 위반 0)·check:api(3리포트, `any` 0)·check:changesets·check:secrets 통과
+- [x] `docs/40_delivery/conductor_implementation_traceability.md` — DEV-012 종결과 교차 WP 검증 근거 기록(v0.6)
+- [x] validator: 구조·추적성 오류 0건, `--report`·`--strict` 통과
+
+### CR-020 cascade
+
+- [x] `docs/10_requirements/srs_final.md` — FR-DOC-002의 승인 범위와 예외를 재확인했으며 변경 없음
+- [x] `docs/20_derived_ui_specs/conductor_screen_state_matrix.md` — SRS에 없는 `토큰 빌드 산출물 누락` 화면 상태 제거(v0.3)
+- [x] `docs/20_derived_ui_specs/conductor_screen_qa_checklist.md` — QA-193 ID를 보존한 채 `deprecated` 처리(v0.3)
+- [x] `docs/40_delivery/conductor_implementation_traceability.md` — DEV-013 문서 편차 종결 기록(v0.7)
+- [x] validator: 최종 문서 동기화 후 `--report`·`--strict` 실행
+
+### CR-021 cascade
+
+- [x] `packages/react/src/stylesheet-warning.ts`, `cx.ts` — 개발 빌드에서 `@conductor/css` 누락을 1회 경고하고 단위 테스트로 고정
+- [x] `apps/docs/src/App.tsx`, `foundation-page.tsx`, `catalog.tsx`, `guides.tsx`, `docs.css` — Getting Started·Foundation 실물 예시·framework-agnostic CSS·대비 리포트 예외 화면 완성
+- [x] `apps/docs/src/main.tsx` — 루트 프리렌더 hydration과 딥링크 client mount 경계를 분리하고 경로 전환 시 스크롤을 복원
+- [x] `apps/docs/e2e/*`, `apps/docs/visual/visual.spec.ts` — 화면 12개×테마 2×폭 3, 화면별 Tab/focus, hydration, 이상 흐름, 그레이스케일 전수 검증 추가
+- [x] `docs/20_derived_ui_specs/conductor_screen_qa_checklist.md` — QA-001~QA-200을 실제 브라우저·단위·계약 증거와 동기화(v0.4)
+- [x] `docs/40_delivery/conductor_work_packages.md`, `conductor_release_validation_plan.md` — WP-001~028의 완료 상태를 원장과 일치시키고 실게시·OIDC·롤백 3항목만 미완료로 보존
+- [x] `docs/40_delivery/conductor_implementation_traceability.md` — DEV-014 및 최종 게이트 결과 기록(v0.8)
+- [x] 전체 로컬 게이트와 validator `--report`·`--strict` 통과 — Vitest 489/489, E2E 37/37, axe/hydration 164 passed + 1 skipped, 시각 회귀 27/27, LCP p75 1,917ms
+
+### CR-022 cascade
+
+- [x] `docs/10_requirements/srs_final.md` — NFR-002의 OIDC·장기 토큰 금지와 FR-DX-005의 정식 릴리스 요구사항을 재확인했으며 변경 없음
+- [x] `.github/workflows/release.yml` — publish job을 Node 22.14.0/npm 11.18.0으로 고정하고 private source repository의 provenance 누락을 preflight로 차단
+- [x] `scripts/scan-secrets.mjs` — 추적·미추적 작업 트리 247개 파일과 전체 Git 이력을 검사하고 합성 PAT 음성 픽스처 exit 1 확인
+- [x] `docs/30_technical_architecture/conductor_infrastructure_operations.md`, `conductor_security_privacy_architecture.md`, `conductor_architecture_decision_records.md` — 최초 namespace bootstrap과 현재 npm OIDC/provenance 제약 기록
+- [x] `docs/40_delivery/conductor_release_validation_plan.md`, `conductor_implementation_traceability.md` — 사용자 권한 경계·DEV-015·외부 잔여 게이트 기록(v0.9)
+- [x] 세 패키지 `bootstrap` publish dry-run, workspace 의존성 `0.0.0` 치환, release YAML parse/Prettier, lint·secret positive/negative·validator `--report`·`--strict` 통과
+
+### CR-023 cascade
+
+- [x] `docs/10_requirements/srs_final.md` — 공개 패키지 3종을 `@conductor-by-89soone/*`로 전환(v1.3), 사용자 승인에 따라 `baseline` 상태 유지
+- [x] PRD·feature·glossary·요구사항 추적성 → 파생 UI → 기술 아키텍처 → delivery → AI agent brief 순서로 설치/import/패키지/릴리스 태그 계약을 cascade
+- [x] workspace manifests·lockfile·TypeScript 경로·Vitest·소스 import·테스트·Changesets·CI/release workflow·API reports·롤백 스크립트를 새 namespace로 전환
+- [x] 루트와 세 패키지에 동일한 MIT `LICENSE`를 포함하고, 패키지별 설치·사용·요구 런타임 README와 npm description/homepage/license 메타데이터 추가
+- [x] 활성 저장소에서 과거 변경 기록과 handoff/session archive를 제외한 기존 `@conductor/` 참조 0건. 제품명 Conductor와 `--cdt-*`·`cdt-*` 계약은 보존
+- [x] 세 실제 tarball에 README/LICENSE가 포함되고 CSS/React의 `workspace:*`가 `0.0.0`으로 치환됨을 검사. tokens → css → react `bootstrap` publish dry-run 통과
+- [x] build·typecheck·lint·lint:tokens(45파일)·test(490개)·contrast(80쌍)·API(3리포트, `any` 0)·changesets·secrets(254파일+Git 이력)·size·E2E(37개)·visual(27개)·Lighthouse(LCP p75 1,952ms, CLS 0) 통과
+- [x] validator `--report`·`--strict`: 구조·추적성 오류 0건, FR 49개·매트릭스/아키텍처/WP 매핑 각 100%
+
+### CR-024 cascade
+
+- [x] `packages/react/src/overlay.tsx` — 원시 Dialog/Drawer Close에 marker + secondary compact Button 클래스를 적용하고 `asChild` variant/size를 보존
+- [x] `packages/react/src/testing/overlay.test.tsx` — 기본 Close 클래스, `asChild` Primary 보존, Drawer marker 계약을 단위 테스트로 고정(React 144/144)
+- [x] `docs/20_derived_ui_specs/conductor_ui_component_spec.md` — C-040/C-041 Close 기본 스타일과 `asChild` 예외를 명시
+- [x] `docs/40_delivery/conductor_implementation_traceability.md` — DEV-017 원인·해소·검증 증거 기록
+- [x] Chromium 전체 접근성 게이트 164 passed + 음성 fixture 1 skipped, 두 테마 Dialog 개별 시각 기준선과 전체 visual 27/27 통과
+- [x] Radix 원본 `DialogCloseProps`를 직접 사용해 공개 API 리포트 드리프트 0건 유지
 
 ## 6. 미해소 오픈 결정
 

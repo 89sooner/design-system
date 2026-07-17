@@ -1,5 +1,5 @@
 // Refs: WP-019 FR-DOC-002
-import tokenArtifact from "@conductor/tokens/tokens.json";
+import tokenArtifact from "@conductor-by-89soone/tokens/tokens.json";
 import type { Theme } from "./theme";
 
 export interface FoundationToken {

@@ -12,9 +12,9 @@ Planned code layout (created by WP-001 onward):
 
 | Path | Package | Role |
 | --- | --- | --- |
-| `packages/tokens/` | `@conductor/tokens` | Token source, `buildTokens` and `checkContrast` CLIs |
-| `packages/css/` | `@conductor/css` | Framework-agnostic stylesheet, `@layer cdt.*` |
-| `packages/react/` | `@conductor/react` | Radix-based primitive components |
+| `packages/tokens/` | `@conductor-by-89soone/tokens` | Token source, `buildTokens` and `checkContrast` CLIs |
+| `packages/css/` | `@conductor-by-89soone/css` | Framework-agnostic stylesheet, `@layer cdt.*` |
+| `packages/react/` | `@conductor-by-89soone/react` | Radix-based primitive components |
 | `apps/docs/` | (private) | Static docs site — Conductor's first consumer |
 
 Dependency direction is strictly `tokens → css → react → docs`. A reverse reference is a build error (FR-DX-001 AC-1).
@@ -63,7 +63,7 @@ Dependency direction is strictly `tokens → css → react → docs`. A reverse 
 | Theme | Dark is canonical; light is a second palette over the same semantic keys | FR-THM-001, FR-THM-002 |
 | Contrast policy | Minimal remediation: `focusRing` alpha 0.30 → 0.80, new `border.control`. All other source values preserved and classified by `usage`. `srs_final.md` §12.1 is authoritative | OD-001, FR-THM-005 |
 | Visual regression | `deferred` to REL-004. Not a v1 release gate | OD-002, FR-QA-004 |
-| Shell components | C-070 ~ C-072 ship inside `@conductor/react` | OD-004, FR-CMP-009 |
+| Shell components | C-070 ~ C-072 ship inside `@conductor-by-89soone/react` | OD-004, FR-CMP-009 |
 
 ## Testing Requirements
 
@@ -80,12 +80,12 @@ Code (once it exists):
 
 ```bash
 pnpm build          # tokens → css → react → docs, in that order
-pnpm typecheck      # RUN AFTER build — part of @conductor/tokens' type surface is generated (CR-009)
+pnpm typecheck      # RUN AFTER build — part of @conductor-by-89soone/tokens' type surface is generated (CR-009)
 pnpm test
 pnpm lint:tokens    # no color/px/z-index literals outside the token source
 pnpm check:contrast # WCAG 2.1 AA per srs_final.md §12.1
 pnpm test:a11y      # axe-core, serious+ violations = 0
-pnpm size           # Button gzip ≤ 4KB, @conductor/css gzip ≤ 20KB
+pnpm size           # Button gzip ≤ 4KB, @conductor-by-89soone/css gzip ≤ 20KB
 ```
 
 `packages/tokens/src/tokens.ts` and `src/breakpoints.ts` are **generated** and gitignored. Never edit them; edit the token source and rebuild.

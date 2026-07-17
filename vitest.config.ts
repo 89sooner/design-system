@@ -9,8 +9,8 @@ const fromRoot = (path: string): string => fileURLToPath(new URL(path, import.me
  * through each package's `exports` map.
  */
 const alias = {
-  "@conductor/tokens": fromRoot("./packages/tokens/src/index.ts"),
-  "@conductor/react": fromRoot("./packages/react/src/index.ts"),
+  "@conductor-by-89soone/tokens": fromRoot("./packages/tokens/src/index.ts"),
+  "@conductor-by-89soone/react": fromRoot("./packages/react/src/index.ts"),
 };
 
 export default defineConfig({

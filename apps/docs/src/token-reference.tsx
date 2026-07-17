@@ -1,5 +1,5 @@
 // Refs: WP-021 FR-DOC-004 FR-A11Y-004 FR-QA-001 FR-TOK-008
-import { Banner, EmptyState, Panel, Table, TextField } from "@conductor/react";
+import { Banner, EmptyState, Panel, Table, TextField } from "@conductor-by-89soone/react";
 import { useState } from "react";
 import contrastReport from "./generated/contrast-report";
 import { allPublicTokens, type FoundationToken } from "./foundations";

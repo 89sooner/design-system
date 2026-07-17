@@ -65,8 +65,8 @@ async function main() {
       cssSideEffectsDeclared: Array.isArray(cssManifest.sideEffects) && cssManifest.sideEffects.includes("*.css"),
     };
     const budgets = [
-      { name: "@conductor/react Button", gzipBytes: button.bytes, limitBytes: BUTTON_BUDGET, passed: button.bytes <= BUTTON_BUDGET, modules: button.modules },
-      { name: "@conductor/css index.css", gzipBytes: css.bytes, limitBytes: CSS_BUDGET, passed: css.bytes <= CSS_BUDGET, modules: css.modules },
+      { name: "@conductor-by-89soone/react Button", gzipBytes: button.bytes, limitBytes: BUTTON_BUDGET, passed: button.bytes <= BUTTON_BUDGET, modules: button.modules },
+      { name: "@conductor-by-89soone/css index.css", gzipBytes: css.bytes, limitBytes: CSS_BUDGET, passed: css.bytes <= CSS_BUDGET, modules: css.modules },
     ];
     const report = {
       generatedAt: new Date().toISOString(),
@@ -83,8 +83,8 @@ async function main() {
     console.log(`[size] ${contracts.reactSideEffectsFalse && contracts.cssSideEffectsDeclared ? "PASS" : "FAIL"} sideEffects contracts`);
 
     const failures = budgets.filter((budget) => !budget.passed);
-    if (!contracts.reactSideEffectsFalse) failures.push({ name: "@conductor/react sideEffects must be false", modules: [] });
-    if (!contracts.cssSideEffectsDeclared) failures.push({ name: "@conductor/css sideEffects must include *.css", modules: [] });
+    if (!contracts.reactSideEffectsFalse) failures.push({ name: "@conductor-by-89soone/react sideEffects must be false", modules: [] });
+    if (!contracts.cssSideEffectsDeclared) failures.push({ name: "@conductor-by-89soone/css sideEffects must include *.css", modules: [] });
     if (failures.length === 0) return;
 
     console.error(`error[SIZE_LIMIT]: ${failures.length} budget or package contract exceeded`);

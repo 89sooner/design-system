@@ -14,7 +14,7 @@ if (badVersion === undefined || goodVersion === undefined) {
   process.exit(2);
 }
 
-const PACKAGES = ["@conductor/tokens", "@conductor/css", "@conductor/react"];
+const PACKAGES = ["@conductor-by-89soone/tokens", "@conductor-by-89soone/css", "@conductor-by-89soone/react"];
 const message = reason ?? `${badVersion}에 결함이 있다. ${goodVersion}(으)로 롤백하십시오.`;
 const steps = [
   ...PACKAGES.map((name) => ["deprecate", `${name}@${badVersion}`, message]),

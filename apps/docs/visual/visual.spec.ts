@@ -77,3 +77,44 @@ test("FR-CSS-005 AC-1: reduced-motion durations resolve to zero in Chromium", as
     animationDuration: "0s",
   });
 });
+
+test("FR-A11Y-003 AC-4: every public component remains identifiable in grayscale", async ({ page }) => {
+  await page.emulateMedia({ colorScheme: "dark", reducedMotion: "reduce" });
+  await page.addInitScript(() => {
+    window.localStorage.setItem("conductor-theme", "dark");
+    document.documentElement.dataset.cdtTheme = "dark";
+  });
+  await page.goto("/components");
+  await expect(page.locator(".docs-component-tile")).toHaveCount(30);
+  await page.addStyleTag({ content: "#root { filter: grayscale(1); }" });
+  await expect(page.locator("#root")).toHaveCSS("filter", "grayscale(1)");
+  await expect(page.locator(".cdt-page")).toHaveScreenshot("AllComponents-grayscale-dark.png", {
+    animations: "disabled",
+    caret: "hide",
+    maxDiffPixelRatio: 0.01,
+  });
+});
+
+test("FR-CMP-004 AC-5 / FR-A11Y-003 AC-4: status and severity labels remain distinct in grayscale", async ({ page }) => {
+  await page.emulateMedia({ colorScheme: "dark", reducedMotion: "reduce" });
+  await page.addInitScript(() => {
+    window.localStorage.setItem("conductor-theme", "dark");
+    document.documentElement.dataset.cdtTheme = "dark";
+  });
+  await page.goto("/patterns");
+  for (const label of ["queued", "running", "waiting", "success", "partial", "danger", "neutralEnd", "read", "write", "destructive", "blocked"]) {
+    await expect(page.getByRole("cell", { name: label, exact: true }).first()).toBeVisible();
+  }
+  await page.addStyleTag({ content: "#root { filter: grayscale(1); }" });
+  await expect(page.locator("#root")).toHaveCSS("filter", "grayscale(1)");
+  await expect(page.getByRole("table", { name: "Status usage" })).toHaveScreenshot("Statuses-grayscale-dark.png", {
+    animations: "disabled",
+    caret: "hide",
+    maxDiffPixelRatio: 0.01,
+  });
+  await expect(page.getByRole("table", { name: "Severity usage" })).toHaveScreenshot("Severities-grayscale-dark.png", {
+    animations: "disabled",
+    caret: "hide",
+    maxDiffPixelRatio: 0.01,
+  });
+});

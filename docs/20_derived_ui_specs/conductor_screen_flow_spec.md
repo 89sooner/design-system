@@ -1,6 +1,6 @@
 # Conductor Design System 화면 플로우 명세서
 
-> 상태: review | 버전: v0.2 | 갱신일: 2026-07-10
+> 상태: review | 버전: v0.3 | 갱신일: 2026-07-17
 
 ## 1. 문서 위치와 책임
 
@@ -51,7 +51,7 @@ Conductor의 오버레이는 `Dialog`(C-040), `Drawer`(C-041), `Tooltip`(C-042),
 
 ## 5. 딥링크 규칙
 
-정적 빌드가 모든 화면 경로를 사전 생성한다. `/components/:componentId`의 라우트 인스턴스는 컴포넌트 메타데이터(`ENT-CMP-001`)에서 전수 생성되므로, 산출물에 존재하는 `componentId` 집합은 `@conductor/react` 공개 export 집합과 같다(FR-DOC-003 AC-5).
+정적 빌드가 모든 화면 경로를 사전 생성한다. `/components/:componentId`의 라우트 인스턴스는 컴포넌트 메타데이터(`ENT-CMP-001`)에서 전수 생성되므로, 산출물에 존재하는 `componentId` 집합은 `@conductor-by-89soone/react` 공개 export 집합과 같다(FR-DOC-003 AC-5).
 
 | 진입 대상 | 동작 |
 | --- | --- |
@@ -171,7 +171,7 @@ FR-THM-003의 예외 처리와 FR-DOC-005 AC-4가 이 흐름을 규정한다. �
 
 스니펫의 결정 순서는 저장된 선택 → `prefers-color-scheme` → 다크다(FR-DOC-005 AC-3, FR-THM-003 AC-2, AC-3).
 
-스니펫은 `@conductor/css`가 자동 주입하지 않는다. 패키지가 자동 주입하면 모듈 최상위에서 `document`와 `localStorage`에 접근하게 되어 FR-DX-004를 위반한다. 소비자가 `<head>`에 직접 삽입하며, 삽입 가능한 스니펫 소스는 W-002가 제공한다(FR-THM-003 예외/실패 처리).
+스니펫은 `@conductor-by-89soone/css`가 자동 주입하지 않는다. 패키지가 자동 주입하면 모듈 최상위에서 `document`와 `localStorage`에 접근하게 되어 FR-DX-004를 위반한다. 소비자가 `<head>`에 직접 삽입하며, 삽입 가능한 스니펫 소스는 W-002가 제공한다(FR-THM-003 예외/실패 처리).
 
 스니펫을 삽입하지 않은 소비자는 최초 페인트에서 다크 팔레트를 보고, hydration 이후 저장된 선택으로 전환된다. 이 결과와 삽입 방법을 W-002가 `Banner tone="warning"`으로 명시한다.
 
@@ -313,7 +313,7 @@ FR-THM-003의 예외 처리와 FR-DOC-005 AC-4가 이 흐름을 규정한다. �
 
 뷰포트 폭이 800px(**breakpoint.md**) 미만이다. 사이드 내비가 오프캔버스로 전환되고 상단바에 내비 열기 버튼(C-002 IconButton)이 나타난다.
 
-FR-CMP-009는 우선순위 Should이며 OD-004가 열려 있다. OD-004의 결정과 무관하게 이 플로우는 성립한다. 셸이 `@conductor/react`에 있든 문서 사이트 내부에 있든, 문서 사이트의 오프캔버스 동작은 동일하다.
+FR-CMP-009는 우선순위 Should이며 OD-004가 열려 있다. OD-004의 결정과 무관하게 이 플로우는 성립한다. 셸이 `@conductor-by-89soone/react`에 있든 문서 사이트 내부에 있든, 문서 사이트의 오프캔버스 동작은 동일하다.
 
 ### 단계별 전이
 

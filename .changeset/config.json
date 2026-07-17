@@ -3,7 +3,13 @@
   "changelog": "@changesets/cli/changelog",
   "commit": false,
   "fixed": [],
-  "linked": [["@conductor/tokens", "@conductor/css", "@conductor/react"]],
+  "linked": [
+    [
+      "@conductor-by-89soone/tokens",
+      "@conductor-by-89soone/css",
+      "@conductor-by-89soone/react"
+    ]
+  ],
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",

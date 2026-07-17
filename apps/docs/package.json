@@ -12,9 +12,9 @@
     "test:e2e": "playwright test"
   },
   "dependencies": {
-    "@conductor/css": "workspace:*",
-    "@conductor/react": "workspace:*",
-    "@conductor/tokens": "workspace:*",
+    "@conductor-by-89soone/css": "workspace:*",
+    "@conductor-by-89soone/react": "workspace:*",
+    "@conductor-by-89soone/tokens": "workspace:*",
     "@vitejs/plugin-react": "^4.3.4",
     "lucide-react": "^0.468.0",
     "react": "^19.0.0",

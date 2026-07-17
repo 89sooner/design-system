@@ -1,6 +1,6 @@
 # Conductor Design System 인프라 및 운영 아키텍처
 
-> 상태: review | 버전: v0.4 | 갱신일: 2026-07-13
+> 상태: review | 버전: v0.6 | 갱신일: 2026-07-17
 
 ## 1. 범위 재정의: 서버가 없는 인프라
 
@@ -21,10 +21,10 @@ Conductor Design System은 서버 런타임, 컴퓨팅 인스턴스, 오토스�
 
 | Job | 단계 | 소비하는 산출물 | 생성하는 산출물 |
 | --- | --- | --- | --- |
-| JOB-BUILD-001 토큰 빌드 | 1 | `packages/tokens/src/` 토큰 소스 | `@conductor/tokens`의 CSS 커스텀 프로퍼티, TypeScript 객체, `tokens.json` |
-| JOB-BUILD-002 CSS 빌드 | 2 | JOB-BUILD-001 산출물 | `@conductor/css`의 레이어별 스타일시트 |
-| JOB-BUILD-003 React 빌드 | 3 | JOB-BUILD-001, JOB-BUILD-002 산출물 | `@conductor/react`의 ESM 번들과 `.d.ts` |
-| JOB-BUILD-004 문서 정적 빌드 | 4 | JOB-BUILD-001~003 산출물(`@conductor/*`를 소비자로서 설치) | 문서 사이트 정적 파일 |
+| JOB-BUILD-001 토큰 빌드 | 1 | `packages/tokens/src/` 토큰 소스 | `@conductor-by-89soone/tokens`의 CSS 커스텀 프로퍼티, TypeScript 객체, `tokens.json` |
+| JOB-BUILD-002 CSS 빌드 | 2 | JOB-BUILD-001 산출물 | `@conductor-by-89soone/css`의 레이어별 스타일시트 |
+| JOB-BUILD-003 React 빌드 | 3 | JOB-BUILD-001, JOB-BUILD-002 산출물 | `@conductor-by-89soone/react`의 ESM 번들과 `.d.ts` |
+| JOB-BUILD-004 문서 정적 빌드 | 4 | JOB-BUILD-001~003 산출물(`@conductor-by-89soone/*`를 소비자로서 설치) | 문서 사이트 정적 파일 |
 
 역방향 의존(예: `tokens`가 `react`를 참조)이 존재하면 빌드가 종료 코드 1로 실패한다(FR-DX-001 AC-1). 한 패키지 빌드가 실패하면 후속 패키지를 실행하지 않는다(FR-DX-001 예외/실패 처리).
 
@@ -33,7 +33,7 @@ Conductor Design System은 서버 런타임, 컴퓨팅 인스턴스, 오토스�
 | 통제 | 결정 | 근거 |
 | --- | --- | --- |
 | 패키지 관리자 lockfile | `pnpm-lock.yaml`을 저장소에 커밋하고, CI는 `pnpm install --frozen-lockfile`로만 설치한다 | lockfile 없이 설치하면 전이 의존성 버전이 실행마다 달라져 빌드 재현성이 깨진다 |
-| Node 버전 매트릭스 | CI는 Node 20과 Node 22 두 버전으로 빌드·테스트 매트릭스를 실행해 NFR-005("Node 20 이상")를 검증한다. 릴리스 빌드(JOB-REL-001)는 Node 20 LTS 한 버전으로 고정한다 | 매트릭스는 호환성 범위를 검증하고, 단일 고정 버전은 배포 산출물의 재현성을 보장한다. 두 목적을 하나의 버전으로 합치면 어느 쪽도 검증되지 않는다 |
+| Node 버전 매트릭스 | CI는 Node 20과 Node 22 두 버전으로 빌드·테스트 매트릭스를 실행해 NFR-005("Node 20 이상")를 검증한다. 릴리스 빌드(JOB-REL-001)는 npm Trusted Publishing 최소 버전인 Node 22.14.0과 npm 11.18.0으로 고정한다(CR-022) | 매트릭스는 소비자 호환성 범위를 검증하고, 릴리스 고정 버전은 OIDC 토큰 교환의 현재 최소 조건과 배포 산출물 재현성을 보장한다 |
 | 빌드 컨테이너 이미지 | CI 잡은 `node:20-bookworm-slim`과 `node:22-bookworm-slim` 이미지를 다이제스트(`sha256:`) 단위로 고정해 사용한다 | 부동 태그(`node:20`)는 베이스 이미지가 갱신될 때 빌드 환경이 통보 없이 바뀌어 시각 회귀 검사(JOB-CI-003)의 재현성을 해친다(R-2와 연결) |
 | pnpm 버전 고정 | `package.json`의 `packageManager` 필드로 pnpm 버전을 고정한다 | pnpm 10 이상 가정(`../10_requirements/srs_final.md` 5.1)을 CI와 로컬 환경에서 동일하게 강제한다 |
 
@@ -51,11 +51,12 @@ Conductor Design System은 서버 런타임, 컴퓨팅 인스턴스, 오토스�
 
 ## 6. 릴리스 절차
 
+0. **최초 namespace bootstrap만** npm 계정 2FA를 켜고 무료 public organization `conductor`를 만든다. 아직 존재하지 않는 패키지는 Trusted Publisher를 등록할 수 없으므로, 공개 저장소의 현재 `0.0.0` 패키지 3종을 `tokens → css → react` 순서로 `bootstrap` dist-tag에 대화형 게시한다. 장기 토큰이나 저장소 secret을 만들지 않는다. 각 패키지가 생성되면 npm 11.18.0의 `npm trust github <package> --file release.yml --repository 89sooner/design-system --allow-publish --yes`로 패키지별 신뢰 관계를 등록한다(웹 package Settings에서 같은 값을 입력해도 된다). 이후 모든 정식 릴리스는 아래 OIDC 절차만 사용하고 bootstrap 세션은 `npm logout`으로 폐기한다(CR-022).
 1. 기여자가 변경과 함께 changeset을 작성한다: `pnpm changeset`(변경 유형과 영향받는 패키지를 선택하면 `.changeset/*.md` 파일이 생성된다).
 2. PR이 `main`에 병합되면, 릴리스 자동화가 열려 있는 changeset들을 모아 버전 상승 PR을 별도로 생성한다: `pnpm changeset version`(각 패키지의 `package.json` 버전을 올리고 저장소의 CHANGELOG 파일을 갱신한다).
 3. 버전 상승 PR의 병합이 릴리스의 수동 승인이다. 병합 뒤 maintainer가 릴리스 워크플로를 수동 실행(workflow_dispatch)하거나 릴리스 태그를 push하면 배포 잡(JOB-REL-001)이 트리거된다. `GITHUB_TOKEN`이 push한 태그는 재귀 방지 정책으로 워크플로를 트리거하지 않으므로, 릴리스 태그의 생성과 push는 배포 잡이 게시 후 수행한다(CR-015).
 4. 배포 잡은 `pnpm build`로 전체 빌드를 재실행한 뒤(로컬/PR 빌드 산출물을 신뢰하지 않는다) `NPM_CONFIG_PROVENANCE=true`로 `pnpm changeset publish`를 실행한다. 이 명령은 레지스트리에 없는 버전만 게시해 재실행에 안전하고, 게시한 버전마다 git 태그를 만든다(CR-015).
-5. npm 레지스트리는 OIDC 클레임을 검증해 배포를 승인한다(`conductor_security_privacy_architecture.md` 4절, ADR-010).
+5. npm 레지스트리는 OIDC 클레임을 검증해 배포를 승인한다(`conductor_security_privacy_architecture.md` 4절, ADR-010). provenance는 public source repository에서만 생성되므로 release job은 저장소가 private이면 게시 전에 실패한다(CR-022).
 6. 파괴 변경(breaking change)이 포함된 changeset은 major 버전을 올리고 CHANGELOG 파일에 마이그레이션 노트 항목을 강제로 요구한다(FR-DX-005 AC-4). 마이그레이션 노트 없이는 changeset이 `major` 유형으로 등록되지 않는다.
 
 ## 7. 롤백
@@ -67,28 +68,28 @@ npm은 게시된 버전을 삭제할 수 없으므로(`unpublish`는 72시간 �
 1. 결함이 확인된 버전을 deprecate 처리해 신규 설치를 경고한다.
 
    ```
-   npm deprecate @conductor/react@1.5.0 "1.5.0에 결함이 있다. 1.4.2로 롤백하십시오."
+   npm deprecate @conductor-by-89soone/react@1.5.0 "1.5.0에 결함이 있다. 1.4.2로 롤백하십시오."
    ```
 
 2. `latest` dist-tag를 직전 정상 버전으로 승격한다.
 
    ```
-   npm dist-tag add @conductor/react@1.4.2 latest
-   npm dist-tag add @conductor/css@1.4.2 latest
-   npm dist-tag add @conductor/tokens@1.4.2 latest
+   npm dist-tag add @conductor-by-89soone/react@1.4.2 latest
+   npm dist-tag add @conductor-by-89soone/css@1.4.2 latest
+   npm dist-tag add @conductor-by-89soone/tokens@1.4.2 latest
    ```
 
 3. 세 패키지의 버전이 동일 릴리스 사이클(`1.4.2`)로 정렬됐는지 확인한다.
 
    ```
-   npm view @conductor/react dist-tags
-   npm view @conductor/css dist-tags
-   npm view @conductor/tokens dist-tags
+   npm view @conductor-by-89soone/react dist-tags
+   npm view @conductor-by-89soone/css dist-tags
+   npm view @conductor-by-89soone/tokens dist-tags
    ```
 
 4. 저장소 `main`에 롤백 사실과 사유를 기록하는 커밋 또는 이슈를 남긴다. 근본 원인이 해결되면 패치 버전(`1.5.1`)으로 재배포한다.
 
-이 절차는 범위를 고정하지 않고 설치한 신규 소비자(`pnpm add @conductor/react`)에게만 즉시 적용된다. 이미 `1.5.0`을 `package.json`에 고정한 기존 소비자는 영향을 받지 않으며, deprecate 메시지로 별도 안내한다.
+이 절차는 범위를 고정하지 않고 설치한 신규 소비자(`pnpm add @conductor-by-89soone/react`)에게만 즉시 적용된다. 이미 `1.5.0`을 `package.json`에 고정한 기존 소비자는 영향을 받지 않으며, deprecate 메시지로 별도 안내한다.
 
 ## 8. 문서 사이트 배포와 롤백
 
