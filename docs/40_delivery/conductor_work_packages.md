@@ -1,6 +1,6 @@
 # Conductor Design System 작업 패키지
 
-> 상태: review | 버전: v0.8 | 갱신일: 2026-07-17
+> 상태: review | 버전: v0.9 | 갱신일: 2026-07-17
 
 ## 1. 목적
 
@@ -653,14 +653,14 @@ design-system/
 - 관련 화면/플로우: 없음 (간접 노출: SFC-REL) / —
 - 관련 API/데이터/잡: — / — / JOB-REL-001
 - 선행 WP: WP-017
-- 구현 범위: Changesets 설정, LF/CRLF에 독립적인 변경 이력 검사, 변경 이력 생성, 공개 API 추출 리포트로 파괴 변경 검출, npm OIDC 배포 워크플로, `pnpm audit --audit-level high` 게이트, 시크릿 스캔, 롤백 절차(dist-tag 승격)
+- 구현 범위: Changesets 설정, LF/CRLF에 독립적인 변경 이력 검사, 구조 검증된 version commit 분류, 변경 이력 생성, 공개 API 추출 리포트로 파괴 변경 검출, npm OIDC 배포 워크플로, `pnpm audit --audit-level high` 게이트, 시크릿 스캔, 롤백 절차(dist-tag 승격)
 - 제외: 문서 사이트 배포(WP-028)
 - 완료 기준(DoD):
   - [x] 공개 API 파괴 변경이 포함된 릴리스가 major를 올린다 (FR-DX-005 AC-1) — `check:api`가 리포트 드리프트에서 exit 1(export 제거 픽스처 실증), major 등록은 `check:changesets`가 마이그레이션 노트와 함께 강제
   - [x] 각 릴리스에 변경 항목과 관련 FR/WP ID가 기재된 변경 이력이 생성된다 (FR-DX-005 AC-2) — `changeset version` 실험에서 CHANGELOG가 본문 `Refs:` 줄 포함, Refs 없는 changeset은 exit 1
   - [x] 변경 이력 항목 없는 패키지는 버전이 오르지 않는다 (FR-DX-005 AC-3) — react-only changeset 실험에서 react 0.1.0, tokens/css 0.0.0 유지
   - [x] 파괴 변경 릴리스에 마이그레이션 노트가 포함된다 (FR-DX-005 AC-4, NFR-004) — major에 `## Migration` 절이 없으면 `check:changesets` exit 1
-  - [x] 변경 이력 없이 병합된 변경이 발견되면 릴리스가 중단되고 누락 목록을 출력한다 (FR-DX-005 예외 처리) — version 잡의 `changeset status --since <직전 태그>` + publish 잡의 `--require-empty`. changeset 없는 패키지 변경에서 status exit 1과 누락 목록 실측
+  - [x] 변경 이력 없이 병합된 변경이 발견되면 릴리스가 중단되고 누락 목록을 출력한다 (FR-DX-005 예외 처리) — 일반 source commit은 version 잡의 `changeset status --since <직전 태그>`, publish 잡은 `--require-empty`를 강제한다. Changeset을 이미 소비한 bot version commit만 작성자·제목·허용 파일 집합을 검증해 이중 검사를 skip한다(CR-030)
   - [x] 배포가 OIDC 기반이며 장기 토큰을 사용하지 않는다 (NFR-002) — publish 잡만 `id-token: write`, 저장소에 `NPM_TOKEN` 참조 0건. Release run 29569125471에서 npm Trusted Publishing으로 0.1.0 3종을 게시했고 SLSA provenance v1 확인
   - [x] `pnpm audit --audit-level high`가 0건이다 (NFR-002) — 실측 exit 0(high 이상 0건, low 1건은 게이트 밖)
   - [x] 롤백 리허설이 10분 이내에 끝난다 (NFR-004) — 실제 npm deprecate + 3종 `latest: 0.1.0 → 0.0.0` 9단계 323.8초. 레지스트리 원문 검증 후 deprecation 해제와 `latest=0.1.0` 복구 완료
