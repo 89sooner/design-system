@@ -31,7 +31,7 @@ Set `data-cdt-theme="dark"` or `data-cdt-theme="light"` on the document root. De
 
 ## Requirements
 
-Node.js 20 or newer, React 18 or 19, React DOM 18 or 19, and `lucide-react`.
+Node.js 20 or newer, React 18 or 19, React DOM 18 or 19, and `lucide-react` 0.400.0 or newer (below 2.0.0).
 
 ## License
 

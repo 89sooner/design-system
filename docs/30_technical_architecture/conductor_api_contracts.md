@@ -1,6 +1,6 @@
 # Conductor Design System 패키지 공개 API 계약
 
-> 상태: review | 버전: v0.3 | 갱신일: 2026-07-17
+> 상태: review | 버전: v0.4 | 갱신일: 2026-07-17
 
 ## 0. 문서 재해석
 
@@ -101,7 +101,7 @@ Conductor Design System에는 HTTP API, 요청/응답 엔드포인트, 인증 �
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0",
     "react-dom": "^18.0.0 || ^19.0.0",
-    "lucide-react": "^0.400.0"
+    "lucide-react": ">=0.400.0 <2"
   },
   "exports": {
     ".": {

@@ -1,6 +1,6 @@
 # Conductor Design System 릴리스 검증 계획
 
-> 상태: review | 버전: v0.5 | 갱신일: 2026-07-17
+> 상태: review | 버전: v0.6 | 갱신일: 2026-07-17
 
 ## 1. 목적과 범위
 
@@ -76,22 +76,22 @@ Conductor Design System은 `@conductor-by-89soone/tokens`, `@conductor-by-89soon
 
 ### REL-004 릴리스 자동화·시각 회귀
 
-- [ ] 릴리스 실행 시 semver 버전 부여 및 변경 이력 생성, 파괴 변경 릴리스에 마이그레이션 노트 포함(FR-DX-005)
+- [x] 릴리스 실행 시 semver 버전 부여 및 변경 이력 생성, 파괴 변경 릴리스에 마이그레이션 노트 포함(FR-DX-005) — version PR #2가 세 패키지를 0.1.0으로 올리고 **CHANGELOG.md**에 Refs를 생성했으며, main CI run 29567731136 통과
 - [x] OD-002의 REL-004 이월에 따라 `pnpm test:visual`에서 12개 컴포넌트 × 2테마 = 24 스냅샷 비교, 픽셀 차이 1% 이하(FR-QA-004) — 3회 연속 diff 0건
 - [x] FR-QA-004가 `deferred`로 표시되어 REL-001~REL-003 게이트에서는 생략됐고, REL-004의 JOB-CI-003으로 활성화됐음을 원장에 기록
 - [x] `Button` 단독 gzip 4KB 이하, `@conductor-by-89soone/css` gzip 20KB 이하(NFR-001, JOB-CI-004)
 - [x] `pnpm audit --audit-level high` 취약점 0건(NFR-002) — 실측 high 이상 0건(2026-07-13)
-- [ ] npm 배포 인증이 OIDC 기반이며 장기 토큰을 사용하지 않음(NFR-002, JOB-REL-001) — 선행: npm 2FA + 무료 public org `conductor` 생성, 공개 GitHub 저장소에서 `0.0.0` 3종을 `bootstrap` tag로 1회 대화형 게시, npm 11.18.0 `trust github`로 각 패키지에 `89sooner/design-system` + `release.yml` + publish 허용 등록, bootstrap 세션 logout. 정식 릴리스에서 OIDC·provenance 확인(CR-022)
-- [ ] 롤백 리허설이 10분 이내에 완료된 기록 존재(NFR-004)
+- [x] npm 배포 인증이 OIDC 기반이며 장기 토큰을 사용하지 않음(NFR-002, JOB-REL-001) — public org `conductor-by-89soone`의 0.0.0 bootstrap 3종과 패키지별 Trusted Publisher 등록 후 Release run 29569125471이 OIDC로 0.1.0 3종을 게시. 세 버전 모두 SLSA provenance v1 attestation을 노출하고 저장소에 `NPM_TOKEN` 참조 0건
+- [x] 롤백 리허설이 10분 이내에 완료된 기록 존재(NFR-004) — npm 3종을 실제로 deprecate하고 `latest: 0.1.0 → 0.0.0`으로 전환한 9단계가 323.8초에 완료됐으며, 레지스트리 원문 검증 후 deprecation 해제와 `latest=0.1.0` 복구 완료. Pages는 직전 정상 커밋 재배포 run 29568304495(214초)와 main 복원 run 29568605076(203초) 모두 성공
 
 ## 4. 롤아웃 절차
 
-0. 최초 게시 전에 저장소를 public으로 전환하고, §3의 namespace bootstrap과 패키지별 Trusted Publisher 등록을 완료한다. 이미 세 패키지가 존재하면 이 단계는 반복하지 않는다.
-1. `pnpm build`로 `tokens → css → react → docs` 순서로 산출물을 생성하고 §2 통합 계층 게이트를 통과시킨다.
-2. `@conductor-by-89soone/tokens`, `@conductor-by-89soone/css`, `@conductor-by-89soone/react`를 이 순서로 `npm publish --tag next --access public`으로 발행한다.
-3. `next` 태그 버전을 별도 소비자 프로젝트에 설치해 스모크 테스트를 실행한다(SCN-001 기본 흐름 재현: 설치 → `@conductor-by-89soone/css` import → `data-cdt-theme` 지정 → `Button` 렌더).
-4. 스모크 테스트 통과 시 `npm dist-tag add @conductor-by-89soone/tokens@<버전> latest`, 이어서 `@conductor-by-89soone/css`, `@conductor-by-89soone/react` 순서로 `latest` 태그를 승격한다.
-5. 문서 사이트 정적 빌드 산출물을 정적 호스팅 대상에 배포한다. 배포 산출물이 `latest`로 승격된 패키지 버전을 참조하는지 확인한다.
+0. 최초 게시 전에 저장소를 public으로 전환하고, npm org `conductor-by-89soone`의 namespace bootstrap과 패키지별 Trusted Publisher 등록을 완료한다. 이미 세 패키지가 존재하면 이 단계는 반복하지 않는다.
+1. changeset이 포함된 변경 PR을 병합하고 version PR이 semver와 **CHANGELOG.md**를 갱신하게 한다. version PR 병합을 정식 릴리스의 수동 승인으로 취급한다.
+2. Release 워크플로를 `workflow_dispatch`로 실행한다. 잡은 `pnpm build`로 `tokens → css → react → docs` 순서의 산출물을 새로 만들고, audit·secret·API 게이트 뒤 `pnpm changeset publish`를 OIDC/provenance와 함께 실행한다.
+3. 세 패키지의 현재 manifest 버전에 해당하는 annotated git tag가 로컬과 원격에 존재하며, npm 버전에 SLSA provenance v1 attestation이 연결됐는지 확인한다(CR-025).
+4. 별도 소비자 프로젝트가 npm 레지스트리 버전을 설치해 SCN-001 기본 흐름을 스모크한다: 설치 → `@conductor-by-89soone/css` import → `data-cdt-theme` 지정 → `Button` 렌더 → `tsc --noEmit`.
+5. 문서 사이트 정적 빌드 산출물을 GitHub Pages에 배포하고 HTTP 200, 현재 패키지 scope, 외부 요청 0건을 확인한다.
 6. `FR-DX-005`에 따라 생성된 변경 이력에 릴리스 버전과 관련 FR/WP ID가 기재되어 있는지 확인한다.
 
 ## 5. 롤백 절차

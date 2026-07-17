@@ -30,7 +30,7 @@ describe("@conductor-by-89soone/react package contract", () => {
     expect(manifest.peerDependencies).toMatchObject({
       react: "^18.0.0 || ^19.0.0",
       "react-dom": "^18.0.0 || ^19.0.0",
-      "lucide-react": "^0.400.0",
+      "lucide-react": ">=0.400.0 <2",
     });
   });
 

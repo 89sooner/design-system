@@ -14,7 +14,8 @@ if (badVersion === undefined || goodVersion === undefined) {
   process.exit(2);
 }
 
-const PACKAGES = ["@conductor-by-89soone/tokens", "@conductor-by-89soone/css", "@conductor-by-89soone/react"];
+// Roll back the consumer-facing package first, then its dependencies.
+const PACKAGES = ["@conductor-by-89soone/react", "@conductor-by-89soone/css", "@conductor-by-89soone/tokens"];
 const message = reason ?? `${badVersion}에 결함이 있다. ${goodVersion}(으)로 롤백하십시오.`;
 const steps = [
   ...PACKAGES.map((name) => ["deprecate", `${name}@${badVersion}`, message]),

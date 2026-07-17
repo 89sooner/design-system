@@ -125,10 +125,23 @@ jobs:
 
       # changeset publish는 레지스트리에 없는 버전만 게시하므로 재실행에 안전하고,
       # 게시한 버전마다 git 태그를 만든다. provenance 증명을 함께 발행한다.
+      # Changesets는 annotated tag 생성 실패를 publish 실패로 전파하지 않으므로,
+      # tagger identity를 명시하고 생성 결과를 별도 게이트로 검증한다(CR-025).
+      - name: configure release tag identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
       - name: publish with provenance
         run: pnpm changeset publish
         env:
           NPM_CONFIG_PROVENANCE: "true"
 
+      - name: verify local release tags
+        run: pnpm check:release-tags
+
       - name: push release tags
         run: git push origin --tags
+
+      - name: verify pushed release tags
+        run: pnpm check:release-tags -- --remote origin
