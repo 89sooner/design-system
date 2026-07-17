@@ -50,7 +50,7 @@ lantern 시뮬레이션은 프리렌더된 첫 페인트를 모델링하지 못�
 
 - docs는 배포 서버가 없는 Vite 정적 앱이다. 이전 tsup package placeholder는 제거했고 React Router는 docs 앱 내부 의존성으로만 둔다.
 - first paint theme는 `index.html` 인라인 스니펫이 저장값 → OS 선호 순서로 루트 `data-cdt-theme`를 정한다. React 토글은 그 속성만 바꾸며 localStorage read/write 실패를 삼킨다.
-- Foundations와 token reference는 사람이 값을 복사하지 않고 `@conductor/tokens` 빌드 산출물에서 읽는다. contrast 화면도 브라우저에서 재계산하지 않고 build report 판정을 표시한다.
+- Foundations와 token reference는 사람이 값을 복사하지 않고 `@conductor-by-89soone/tokens` 빌드 산출물에서 읽는다. contrast 화면도 브라우저에서 재계산하지 않고 build report 판정을 표시한다.
 - component catalog metadata는 `packages/react/dist/index.d.ts`를 TypeScript AST로 읽어 만든다. 공개 export에 preview가 없으면 docs build가 실패한다.
 - WP-018~022를 done으로 기록한 흔적은 충분하지만, root test와 lint가 red인 현재 상태에서는 새 WP를 시작하기 전에 통합 green과 DoD ledger sync를 우선한다.
 - `vitest.config.ts`의 tokens jsdom 전환은 docs Playwright 구현과 직접 관계가 없고 file-URL 테스트를 깨뜨린다. handoff refresh에서는 수정하지 않고 최소 복구 후보로 기록했다.
@@ -82,7 +82,7 @@ lantern 시뮬레이션은 프리렌더된 첫 페인트를 모델링하지 못�
 
 | 결정 | 선택 | 기각한 대안 | 이유 |
 | --- | --- | --- | --- |
-| 이름/네임스페이스 | **Conductor** (`@conductor/*`, `--cdt-*`) | Katakuri, Halo | 소스 `tokens.css` 첫 줄이 이미 "Conductor product UI tokens"였다. 계보가 명확 |
+| 이름/네임스페이스 | **Conductor** (`@conductor-by-89soone/*`, `--cdt-*`) | Katakuri, Halo | 소스 `tokens.css` 첫 줄이 이미 "Conductor product UI tokens"였다. 계보가 명확 |
 | 산출물 범위 | **토큰 + React 컴포넌트 + 문서 사이트** | 토큰만 / 토큰+컴포넌트 / +Figma 동기화 | Figma 동기화는 외부 도구 의존과 DTCG 포맷 채택이 선행돼야 함 (F-X-001로 명시 제외) |
 | 테마 | **다크 우선 + 라이트 추가** | 다크 전용 / +고대비 | 라이트는 토큰 계층이 실제로 테마를 분리하는지 검증하는 테스트 케이스다. 고대비는 팔레트 3벌 유지 비용 회피 |
 | 스타일 엔진 | **Vanilla CSS + CSS 커스텀 프로퍼티** | Tailwind v4 preset, CSS Modules, vanilla-extract | 소스와 동일. 프레임워크 비종속, 런타임 0. preset은 소비자를 Tailwind에 결속 (ADR-002) |
@@ -94,7 +94,7 @@ lantern 시뮬레이션은 프리렌더된 첫 페인트를 모델링하지 못�
 | OD-001 | 소스 팔레트의 WCAG 미달 5건 처리 | **최소 수정**: 접근성 결함(포커스 링, 폼 경계)만 값 교정. 나머지는 `usage` 메타데이터로 분류하고 값 보존 | closed (CR-005) |
 | OD-002 | 시각 회귀 검사를 v1 게이트에 넣는가 | **REL-004로 이월**. FR-QA-004 = `deferred` | closed |
 | OD-003 | 필터/칩 컴포넌트군을 v1에 넣는가 | 미결. FR 미부여, WP 없음 | **open (비차단)** |
-| OD-004 | 셸 컴포넌트군을 패키지에 넣는가 | **`@conductor/react`에 포함**. `renderLink` props로 라우팅 비종속 API 성립 | closed |
+| OD-004 | 셸 컴포넌트군을 패키지에 넣는가 | **`@conductor-by-89soone/react`에 포함**. `renderLink` props로 라우팅 비종속 API 성립 | closed |
 
 ### OD-001을 "최소 수정"으로 고른 이유
 
@@ -128,7 +128,7 @@ FR-TOK-002 AC-2("semantic은 primitive만 참조")와 FR-THM-001 AC-2(별칭 `su
 
 ### CR-009 — CI 순서 (DEV-002)
 
-`@conductor/tokens`의 공개 타입 표면 일부(`src/tokens.ts`, `src/breakpoints.ts`)를 토큰 빌드가 **생성**한다. WP-001이 세운 CI 순서는 `typecheck`를 `build`보다 먼저 돌렸다.
+`@conductor-by-89soone/tokens`의 공개 타입 표면 일부(`src/tokens.ts`, `src/breakpoints.ts`)를 토큰 빌드가 **생성**한다. WP-001이 세운 CI 순서는 `typecheck`를 `build`보다 먼저 돌렸다.
 
 - 정정: `install → lint → lint:deps → build → typecheck → test → lint:tokens → check:contrast`
 - 생성 파일을 `.gitignore`에 추가. 커밋된 생성물은 두 번째 진실 공급원이 되어 FR-TOK-001("토큰 소스가 유일한 입력")을 무력화한다
@@ -137,10 +137,10 @@ FR-TOK-002 AC-2("semantic은 primitive만 참조")와 FR-THM-001 AC-2(별칭 `su
 
 ### CR-010 — WP-008 검증 명령 (DEV-003, 2026-07-11)
 
-WP-008 검증 방법 `pnpm --filter @conductor/css build && pnpm --filter @conductor/css test && pnpm size` 중 두 단계가 고장나 있었다.
+WP-008 검증 방법 `pnpm --filter @conductor-by-89soone/css build && pnpm --filter @conductor-by-89soone/css test && pnpm size` 중 두 단계가 고장나 있었다.
 
 - `pnpm size`는 존재하지 않는다. 그 스크립트를 만드는 것은 **WP-025의 구현 범위**(선행 WP-017)라 WP-008 시점에 있을 수 없다. → 검증 명령에서 제거. gzip 20KB 게이트(NFR-001)는 `packages/css/test/bundle.test.ts`가 실제 zlib 측정으로 강제.
-- `packages/css`에 `test` 스크립트가 없어 `pnpm --filter @conductor/css test`가 아무것도 안 하고 exit 0. **CR-009에서 지운 "절대 실패할 수 없는 검사"와 같은 결함.** → `"test": "vitest run --project css --config ../../vitest.config.ts"` 추가.
+- `packages/css`에 `test` 스크립트가 없어 `pnpm --filter @conductor-by-89soone/css test`가 아무것도 안 하고 exit 0. **CR-009에서 지운 "절대 실패할 수 없는 검사"와 같은 결함.** → `"test": "vitest run --project css --config ../../vitest.config.ts"` 추가.
 - **기각한 대안**: WP-008에서 css 전용 `pnpm size` 축소판을 만드는 것. 브리프 §7-3(구현 범위 안에서만) 위반이고 WP-025를 반쯤 구현한 상태로 남긴다.
 
 ### CR-011 — CI 재현성 단계 fileMode (DEV-004, 2026-07-11)
@@ -155,7 +155,7 @@ CR-009가 넣은 마지막 CI 단계가 **깨끗한 체크아웃에서도 항상
 
 WP-009의 공식 검증 명령이 test-only로 해석될 수 있었다. `packages/css` 테스트는 `dist` 산출물을 읽기 때문에 build 없이 실행하면 오래된 CSS를 검증할 수 있다.
 
-- 정정: `pnpm --filter @conductor/css build && pnpm --filter @conductor/css test`.
+- 정정: `pnpm --filter @conductor-by-89soone/css build && pnpm --filter @conductor-by-89soone/css test`.
 - 이유: 레이아웃 소스와 breakpoint 치환기는 빌드 단계에서만 산출물에 반영된다.
 - 기각한 대안: 테스트가 매번 내부에서 빌드를 호출하게 만들기. 패키지 테스트와 빌드 책임을 섞고 전체 test 비용을 늘린다. WP 검증 명령에서 build를 명시하는 편이 단순하다.
 
@@ -178,7 +178,7 @@ Conductor에는 **서버 런타임·DB·큐·인증이 없다.** 스캐폴드가
 | ID | 제외 항목 | 이유 |
 | --- | --- | --- |
 | F-X-001 | Figma 양방향 동기화 | 외부 도구 의존, DTCG 포맷 선행 필요 |
-| F-X-002 | Vue/Svelte/Web Components 어댑터 | 소비자가 React 단일. `@conductor/css`가 비-React 대안 |
+| F-X-002 | Vue/Svelte/Web Components 어댑터 | 소비자가 React 단일. `@conductor-by-89soone/css`가 비-React 대안 |
 | F-X-003 | Tailwind preset | ADR-002가 Vanilla CSS 확정 |
 | F-X-004 | 자체 아이콘 세트 | `lucide-react`를 peer dependency로 |
 | F-X-005 | 차트/시각화 컴포넌트 | `Meter`/`ProgressRing`까지만 |
@@ -212,7 +212,7 @@ AppShell은 페이지 shell이므로 modal focus trap을 걸지 않는다. `Dial
 
 ### 라우팅 비종속 NavList
 
-`NavList.renderLink`가 `href`, `className`, `aria-current`, children을 소비자 링크에 전달한다. `@conductor/react`에 React Router를 넣지 않는다. docs는 이 callback에서 `NavLink`를 렌더한다.
+`NavList.renderLink`가 `href`, `className`, `aria-current`, children을 소비자 링크에 전달한다. `@conductor-by-89soone/react`에 React Router를 넣지 않는다. docs는 이 callback에서 `NavLink`를 렌더한다.
 
 ### TopBar title 이름 충돌
 

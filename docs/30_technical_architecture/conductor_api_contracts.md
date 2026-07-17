@@ -1,10 +1,10 @@
 # Conductor Design System 패키지 공개 API 계약
 
-> 상태: review | 버전: v0.2 | 갱신일: 2026-07-10
+> 상태: review | 버전: v0.3 | 갱신일: 2026-07-17
 
 ## 0. 문서 재해석
 
-Conductor Design System에는 HTTP API, 요청/응답 엔드포인트, 인증 토큰 기반 authz가 없다(`srs_final.md` 4.3, 10절). 이 문서는 표준 아키텍처 문서 세트의 `api_contracts.md` 자리를 차지하지만, 여기서 "API 계약"은 **npm 패키지의 공개 표면**을 의미한다: 각 패키지 `package.json`의 `exports`/`sideEffects` 선언, CLI 인터페이스(`buildTokens`, `checkContrast`), `@conductor/tokens`가 노출하는 TypeScript 값의 타입 시그니처, `@conductor/react`의 컴포넌트 props 계약, `data-cdt-theme` DOM 속성 계약이 그 대상이다. "요청"은 CLI 실행 또는 모듈 import로, "응답"은 stdout/stderr/종료 코드 또는 렌더된 DOM으로 대응한다.
+Conductor Design System에는 HTTP API, 요청/응답 엔드포인트, 인증 토큰 기반 authz가 없다(`srs_final.md` 4.3, 10절). 이 문서는 표준 아키텍처 문서 세트의 `api_contracts.md` 자리를 차지하지만, 여기서 "API 계약"은 **npm 패키지의 공개 표면**을 의미한다: 각 패키지 `package.json`의 `exports`/`sideEffects` 선언, CLI 인터페이스(`buildTokens`, `checkContrast`), `@conductor-by-89soone/tokens`가 노출하는 TypeScript 값의 타입 시그니처, `@conductor-by-89soone/react`의 컴포넌트 props 계약, `data-cdt-theme` DOM 속성 계약이 그 대상이다. "요청"은 CLI 실행 또는 모듈 import로, "응답"은 stdout/stderr/종료 코드 또는 렌더된 DOM으로 대응한다.
 
 ## 1. 목적
 
@@ -12,7 +12,7 @@ Conductor Design System에는 HTTP API, 요청/응답 엔드포인트, 인증 �
 
 ## 2. 공통 원칙
 
-1. 공개 API는 각 패키지 `package.json`의 `exports` 필드에 선언된 경로로만 노출된다. 선언되지 않은 내부 경로(`@conductor/react/src/Button`)의 import는 런타임 해석 오류를 발생시킨다(FR-DX-003 AC-1).
+1. 공개 API는 각 패키지 `package.json`의 `exports` 필드에 선언된 경로로만 노출된다. 선언되지 않은 내부 경로(`@conductor-by-89soone/react/src/Button`)의 import는 런타임 해석 오류를 발생시킨다(FR-DX-003 AC-1).
 2. 모든 진입점은 타입 선언(`.d.ts`)을 동반하며, 공개 선언 파일에 `any`가 0건이다(FR-DX-002).
 3. 조회성 API(토큰 값 읽기, props 타입)와 실행형 API(CLI)를 분리한다. CLI는 부수효과(파일 쓰기)를 명시적으로 문서화한다.
 4. 모든 CLI 오류는 기계 판독 가능한 오류 코드(`error[<CODE>]:` 접두사)와 사람이 읽을 수 있는 조치 힌트를 stderr에 함께 출력한다.
@@ -23,9 +23,9 @@ Conductor Design System에는 HTTP API, 요청/응답 엔드포인트, 인증 �
 
 | API ID | 종류 | 대상 | 목적 | 관련 요구사항 |
 | --- | --- | --- | --- | --- |
-| API-PKG-001 | package exports | `@conductor/tokens` | 토큰 JS/JSON/타입 진입점 | FR-DX-002, FR-DX-003, FR-TOK-006 |
-| API-PKG-002 | package exports | `@conductor/css` | 스타일시트 진입점(전체/부분) | FR-DX-003, FR-CSS-001, FR-CSS-002 |
-| API-PKG-003 | package exports | `@conductor/react` | React 컴포넌트 진입점 | FR-DX-002, FR-DX-003, FR-CMP-001 |
+| API-PKG-001 | package exports | `@conductor-by-89soone/tokens` | 토큰 JS/JSON/타입 진입점 | FR-DX-002, FR-DX-003, FR-TOK-006 |
+| API-PKG-002 | package exports | `@conductor-by-89soone/css` | 스타일시트 진입점(전체/부분) | FR-DX-003, FR-CSS-001, FR-CSS-002 |
+| API-PKG-003 | package exports | `@conductor-by-89soone/react` | React 컴포넌트 진입점 | FR-DX-002, FR-DX-003, FR-CMP-001 |
 | API-TOK-001 | CLI | `buildTokens`(bin: `conductor-build-tokens`) | 토큰 소스 → 산출물 빌드 | FR-TOK-003, JOB-BUILD-001 |
 | API-TOK-002 | JS export | `tokens`, `breakpoints` | 타입 부여된 토큰/브레이크포인트 값 | FR-TOK-006, FR-TOK-009 |
 | API-TOK-003 | CLI | `checkContrast`(bin: `conductor-check-contrast`) | 테마별 대비 검사 | FR-THM-004, FR-A11Y-004, JOB-CI-001 |
@@ -43,11 +43,11 @@ Conductor Design System에는 HTTP API, 요청/응답 엔드포인트, 인증 �
 
 ## 4. API 상세 규격
 
-### API-PKG-001 `@conductor/tokens` exports
+### API-PKG-001 `@conductor-by-89soone/tokens` exports
 
 ```json
 {
-  "name": "@conductor/tokens",
+  "name": "@conductor-by-89soone/tokens",
   "version": "0.1.0",
   "type": "module",
   "sideEffects": false,
@@ -70,11 +70,11 @@ Conductor Design System에는 HTTP API, 요청/응답 엔드포인트, 인증 �
 
 `sideEffects: false`는 primitive 계층이 export되지 않는 것과 별개로, `tokens`/`breakpoints` 객체가 트리쉐이킹 대상이 되어야 함을 선언한다. `./tokens.json`은 빌드 산출물 원본을 그대로 노출하며 문서 사이트가 소비한다(`API-TOK-002`, `conductor_data_model.md` 5절).
 
-### API-PKG-002 `@conductor/css` exports
+### API-PKG-002 `@conductor-by-89soone/css` exports
 
 ```json
 {
-  "name": "@conductor/css",
+  "name": "@conductor-by-89soone/css",
   "version": "0.1.0",
   "sideEffects": ["*.css"],
   "files": ["dist"],
@@ -88,11 +88,11 @@ Conductor Design System에는 HTTP API, 요청/응답 엔드포인트, 인증 �
 
 `.`(기본 진입점)은 `cdt.reset`부터 `cdt.utility`까지 5개 레이어를 모두 포함한다(FR-CSS-001). `./component.css`는 `cdt.reset` 레이어를 제외한 산출물이며, 소비자의 기존 전역 리셋과 충돌할 때 사용한다(FR-CSS-002 예외 처리). `sideEffects: ["*.css"]`는 번들러가 미사용으로 판단해 CSS import를 제거하지 않도록 보장한다.
 
-### API-PKG-003 `@conductor/react` exports
+### API-PKG-003 `@conductor-by-89soone/react` exports
 
 ```json
 {
-  "name": "@conductor/react",
+  "name": "@conductor-by-89soone/react",
   "version": "0.1.0",
   "type": "module",
   "sideEffects": false,
@@ -113,11 +113,11 @@ Conductor Design System에는 HTTP API, 요청/응답 엔드포인트, 인증 �
 }
 ```
 
-`sideEffects: false`와 named export 전용 구조(default export 금지)가 결합해 `import { Button } from "@conductor/react"` 단독 사용 시 다른 컴포넌트가 번들에 포함되지 않는다. `Button` 단독 import gzip 크기는 React를 제외하고 4KB 이하여야 한다(M-7, FR-DX-003 AC-3).
+`sideEffects: false`와 named export 전용 구조(default export 금지)가 결합해 `import { Button } from "@conductor-by-89soone/react"` 단독 사용 시 다른 컴포넌트가 번들에 포함되지 않는다. `Button` 단독 import gzip 크기는 React를 제외하고 4KB 이하여야 한다(M-7, FR-DX-003 AC-3).
 
 ### API-TOK-001 `buildTokens` CLI
 
-- 실행: `pnpm --filter @conductor/tokens run build` (내부적으로 `conductor-build-tokens` bin 호출)
+- 실행: `pnpm --filter @conductor-by-89soone/tokens run build` (내부적으로 `conductor-build-tokens` bin 호출)
 - 인자: 없음(소스 위치는 `packages/tokens/src/`로 고정)
 - 플래그:
 
@@ -191,7 +191,7 @@ export declare const breakpoints: {
 
 ### API-TOK-003 `checkContrast` CLI
 
-- 실행: `pnpm --filter @conductor/tokens run check:contrast`
+- 실행: `pnpm --filter @conductor-by-89soone/tokens run check:contrast`
 - 인자: 없음
 - 플래그:
 
@@ -246,7 +246,7 @@ theme=light pair=text.body/surface.base   ratio=15.01  threshold=4.50(body)     
 | 2 | 속성 없음, `prefers-color-scheme: light` | 라이트(AC-2) |
 | 3 | 속성값이 `dark`/`light` 이외 | 다크(`:root` 기본값으로 귀결, AC-3) |
 
-테마 전환은 `data-cdt-theme` 값만 바꾸며 CSS 커스텀 프로퍼티 재계산으로 반영되므로 컴포넌트가 재마운트되지 않는다(AC-4). SSR 초기 페인트 깜빡임을 막기 위한 인라인 스니펫은 `@conductor/css`의 공개 export가 아니라 문서 사이트 W-002 페이지에 복사 가능한 코드 예제로 게시한다(FR-THM-003 예외 처리) — 패키지가 `<head>`에 자동 주입하지 않는다.
+테마 전환은 `data-cdt-theme` 값만 바꾸며 CSS 커스텀 프로퍼티 재계산으로 반영되므로 컴포넌트가 재마운트되지 않는다(AC-4). SSR 초기 페인트 깜빡임을 막기 위한 인라인 스니펫은 `@conductor-by-89soone/css`의 공개 export가 아니라 문서 사이트 W-002 페이지에 복사 가능한 코드 예제로 게시한다(FR-THM-003 예외 처리) — 패키지가 `<head>`에 자동 주입하지 않는다.
 
 ### API-CMP-001 공통 컴포넌트 계약
 
@@ -434,7 +434,7 @@ export interface TopBarProps extends Omit<React.HTMLAttributes<HTMLElement>, "ch
 }
 ```
 
-`renderLink`로 링크 렌더를 위임해 `@conductor/react`가 라우팅 라이브러리에 의존하지 않는다(AC-1, AC-2). `AppShell`의 모바일 내비는 exact `@radix-ui/react-dialog`의 non-modal `DismissableLayer`에 Escape와 outside pointer dismissal을 위임한다. OD-004는 2026-07-10에 패키지 포함으로 종결되었다.
+`renderLink`로 링크 렌더를 위임해 `@conductor-by-89soone/react`가 라우팅 라이브러리에 의존하지 않는다(AC-1, AC-2). `AppShell`의 모바일 내비는 exact `@radix-ui/react-dialog`의 non-modal `DismissableLayer`에 Escape와 outside pointer dismissal을 위임한다. OD-004는 2026-07-10에 패키지 포함으로 종결되었다.
 
 ### API-DOC-001 문서 사이트 라우트 계약
 

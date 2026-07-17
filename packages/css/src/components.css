@@ -172,6 +172,12 @@
     transform: translateY(-2px); /* cdt-allow-literal: FR-CMP-003 AC-2 상승량 */
   }
 
+  .cdt-card--interactive:active {
+    border-color: var(--cdt-card-interactive-border-hover);
+    box-shadow: inset 0 1px 0 var(--cdt-border-strong), var(--cdt-card-shadow); /* cdt-allow-literal: pressed surface keeps its material edge */
+    transform: translateY(0);
+  }
+
   .cdt-panel {
     overflow: hidden;
     padding: var(--cdt-card-padding);
@@ -542,7 +548,7 @@
   .cdt-field__label {
     color: var(--cdt-input-label-text);
     font-size: var(--cdt-input-label-font-size);
-    font-weight: 500;
+    font-weight: 600;
   }
 
   .cdt-field__required,
@@ -768,6 +774,19 @@
   .cdt-spinner__indicator { stroke: var(--cdt-spinner-indicator-stroke); stroke-dasharray: 66; /* cdt-allow-literal: spinner visible arc */ stroke-linecap: round; }
   .cdt-spinner svg { animation: cdt-spin var(--cdt-motion-standard) linear infinite; }
   .cdt-spinner__label { position: absolute; inline-size: 1px; /* cdt-allow-literal: screen-reader-only clipping geometry */ block-size: 1px; /* cdt-allow-literal: screen-reader-only clipping geometry */ overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+
+  /* cdt.component outranks cdt.reset, so shadow-bearing controls must restate the complete ring. */
+  .cdt-btn:focus-visible,
+  .cdt-card--interactive:focus-visible,
+  .cdt-input:focus-visible,
+  .cdt-textarea:focus-visible,
+  .cdt-select__trigger:focus-visible,
+  .cdt-switch:focus-visible,
+  .cdt-checkbox:focus-visible {
+    box-shadow: var(--cdt-focus-ring);
+    transition: none;
+  }
+
   @keyframes cdt-spin { to { transform: rotate(270deg); } }
 
   @keyframes cdt-overlay-enter {

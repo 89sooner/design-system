@@ -120,7 +120,7 @@ describe("JSON token artifact", () => {
 });
 
 describe("breakpoints artifact", () => {
-  test("FR-TOK-009 AC-3: `@conductor/tokens` exports a `breakpoints` object of literal pixels", () => {
+  test("FR-TOK-009 AC-3: `@conductor-by-89soone/tokens` exports a `breakpoints` object of literal pixels", () => {
     expect(breakpoints).toEqual({ sm: 560, md: 800, lg: 1080 });
   });
 

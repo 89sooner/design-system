@@ -18,8 +18,8 @@
     "noEmit": true,
     "baseUrl": ".",
     "paths": {
-      "@conductor/tokens": ["./packages/tokens/src/index.ts"],
-      "@conductor/react": ["./packages/react/src/index.ts"]
+      "@conductor-by-89soone/tokens": ["./packages/tokens/src/index.ts"],
+      "@conductor-by-89soone/react": ["./packages/react/src/index.ts"]
     }
   }
 }

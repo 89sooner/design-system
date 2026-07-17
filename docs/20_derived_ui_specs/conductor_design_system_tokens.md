@@ -1,6 +1,6 @@
 # Conductor Design System 토큰 명세
 
-> 상태: review | 버전: v0.5 | 갱신일: 2026-07-15
+> 상태: review | 버전: v0.7 | 갱신일: 2026-07-17
 
 ## 0. 문서 성격과 범위 경계
 
@@ -130,7 +130,7 @@ FR-THM-001 AC-2는 소스의 별칭 2개를 토큰 참조로 표현할 것을 �
 
 ## 4. Primitive 팔레트
 
-primitive 토큰은 CSS로 산출되지 않고 `@conductor/tokens` 공개 진입점으로 export되지 않는다(FR-TOK-002 AC-5, FR-TOK-004 AC-4). 소비자가 직접 참조하는 경로는 없다.
+primitive 토큰은 CSS로 산출되지 않고 `@conductor-by-89soone/tokens` 공개 진입점으로 export되지 않는다(FR-TOK-002 AC-5, FR-TOK-004 AC-4). 소비자가 직접 참조하는 경로는 없다.
 
 아래 ramp는 소스 `tokens.css`와 `app.css`에 실제로 등장하는 원시 색을 계열별로 재구성한 것이다. 라이트 팔레트가 필요로 하는 값은 6절의 파생 규칙으로 산출해 같은 ramp에 편입했다.
 
@@ -464,7 +464,7 @@ FR-TOK-007 AC-4는 제목이 `font.size.xl` 이상과 `clamp()` 기반 반응형
 | **breakpoint.md** | `800px` | `app.css:988` | `cdt-split-layout` 단일 컬럼 전환, `Table` 가로 스크롤 활성, 오프캔버스 내비 (FR-CSS-003 AC-2, FR-CMP-005 AC-1, FR-CMP-009 AC-3) |
 | `breakpoint.lg` | `1080px` | `app.css:973` | 내비 폭 축소, 카드 그리드 최소 컬럼 폭 축소 |
 
-`@conductor/tokens`는 `breakpoints` 객체를 export해 JS에서 같은 값을 읽게 한다(AC-3). 이는 `tokens` 객체와 별개의 named export다.
+`@conductor-by-89soone/tokens`는 `breakpoints` 객체를 export해 JS에서 같은 값을 읽게 한다(AC-3). 이는 `tokens` 객체와 별개의 named export다.
 
 ---
 
@@ -644,7 +644,7 @@ component 토큰은 semantic 토큰만 참조한다(FR-TOK-002 AC-3). 아래 표
 | `button.paddingBlock` | `{space.2}` | | FR-CSS-004 |
 | `button.paddingInline` | `14px` | | FR-CSS-004 |
 | `button.radius` | `{radius.md}` | | FR-CSS-004 |
-| `button.fontSize` | `{font.size.base}` | | FR-TOK-007 AC-3 |
+| `button.fontSize` | `{font.size.md}` | | FR-TOK-007 AC-3, CR-019 |
 | `button.gap` | `{space.2}` | | FR-CSS-004 |
 | `button.transition` | `{motion.fast}` | | FR-CSS-005 |
 | `button.primary.background` | `{accent}` | | FR-CMP-002 AC-1 |
@@ -680,6 +680,8 @@ component 토큰은 semantic 토큰만 참조한다(FR-TOK-002 AC-3). 아래 표
 **`button.policyDisabled.text`가 테마별로 다른 이유.** 다크는 어두운 amber 채움(`#422006`) 위에 밝은 붉은 글자가 필요하다 — `{meter.exceeded}`(`#f87171`)가 5.27:1로 통과한다(`{status.danger}` `#ef4444`는 3.87:1로 미달). 라이트는 밝은 amber 채움(`#fef3c7`) 위에 어두운 붉은 글자가 필요하므로 `{severity.destructive}`(`#b91c1c`)를 참조한다. 두 참조 모두 semantic 토큰이며 primitive를 건너뛰지 않는다. 이 라이트 참조는 5.8절의 "심각도는 배경 전용" 제약의 예외가 아니다 — `severity.destructive`가 배경이 아닌 곳은 여기뿐이며, `state.disabledPolicy` 채움 위 5.81:1로 본문 기준을 넘는다. 이 조합은 8절 CP-041로 선언해 검사한다.
 
 **`button.secondary.border`가 `{border.control}`이 아닌 이유.** `border.control`의 적용 대상은 `TextField`·`TextArea`·`Select`·`Switch`·`Checkbox` 다섯 컴포넌트로 한정된다(FR-THM-005 AC-2). 버튼은 그 목록에 없다. 버튼은 경계선 없이도 채움(`surface.raised`), 라벨 텍스트, 포커스 링으로 식별되므로 `border.strong`(`decorative`)을 계속 참조한다. 소스 `.btn`도 `border: 1px solid var(--border-strong)`을 쓴다. 이 판단은 SRS 12.1절이 세 경계 토큰에 부여한 WCAG 1.4.11 예외 근거와 같은 논리다.
+
+**CR-019에서 `button.fontSize`를 14px로 높인 이유.** 버튼은 빈번하게 스캔하는 동작 라벨이며 Conductor 본문도 14px를 사용한다. 13px 원본 값의 보존보다 본문과의 판독 일관성을 우선하되, 높이·패딩·공개 API는 바꾸지 않아 밀도와 레이아웃 계약을 유지한다.
 
 ### 7.2 `card.*`
 
@@ -817,7 +819,7 @@ CR-018 이전 구현은 상태 semantic 색을 배경 전체에 적용하고 `te
 | `input.paddingBlock` | `9px` | | FR-CSS-004 |
 | `input.paddingInline` | `{space.3}` | | FR-CSS-004 |
 | `input.focusRing` | `{focusRing}` | | FR-A11Y-001 AC-1 |
-| `input.label.text` | `{text.muted}` | | FR-CMP-007 AC-1 |
+| `input.label.text` | `{text.secondary}` | | FR-CMP-007 AC-1, CR-019 |
 | `input.label.fontSize` | `{font.size.base}` | | FR-TOK-007 AC-3 |
 | `input.error.text` | `{status.danger}` | | FR-A11Y-003 AC-2 |
 | `input.transition` | `{motion.fast}` | | FR-CSS-005 |
@@ -826,7 +828,7 @@ CR-018 이전 구현은 상태 semantic 색을 배경 전체에 적용하고 `te
 
 `input.border`는 소스의 `border-default`(다크 1.30:1)가 아니라 신규 `{border.control}`(다크 3.23:1)을 참조한다. 입력 요소는 배경이 주변 표면과 거의 같고 라벨이 요소 바깥에 있으므로, 경계선이 사라지면 입력 영역의 범위를 알 방법이 없다. 이것이 SRS 12.1절의 두 교정 대상 중 하나다.
 
-`input.placeholder`가 `{text.faint}`를 참조하는 것은 소스와 일치하며(`app.css:752-755`), SRS 12.1절이 placeholder를 `text.faint`의 명시적 허용 용도로 나열한다. 필드의 설명은 placeholder가 아니라 `input.label.text`(`{text.muted}`, 다크 5.22:1)가 전달한다 — `Field`가 라벨을 `htmlFor`/`id`로 연결하기 때문이다(FR-CMP-007 AC-1).
+`input.placeholder`가 `{text.faint}`를 참조하는 것은 소스와 일치하며(`app.css:752-755`), SRS 12.1절이 placeholder를 `text.faint`의 명시적 허용 용도로 나열한다. 필드의 라벨은 placeholder가 아니라 `input.label.text`(`{text.secondary}`, 다크 `surface.base` 위 12.51:1)가 전달한다 — `Field`가 라벨을 `htmlFor`/`id`로 연결하기 때문이다(FR-CMP-007 AC-1). 설명은 별도 `text.muted` 단계에 남겨 라벨과 보조 정보의 위계를 분리한다(CR-019).
 
 `text.faint`의 `surface.elevated` 금지 규칙(5.3절)과 이 참조는 충돌하지 않는다. 그 금지는 다크 측정값 2.94:1에서 나왔고, 다크 `input.background`는 `{surface.base}`다. 라이트에서만 `input.background`가 `{surface.elevated}`를 참조하는데, 라이트 `text.faint`(`#6b788c`)는 흰 배경 위에서 4.48:1이다. 금지 조합이 실제로 렌더되는 경로가 없다.
 
@@ -1137,7 +1139,7 @@ FR-THM-005가 강제한 두 교정이 9건의 미달을 제거했다. `focusRing
 
 - component 토큰이 primitive를 참조하면 빌드가 실패하고 위반 토큰 키 쌍을 출력한다(FR-TOK-002 AC-3, AC-4). component는 semantic만 참조한다.
 - primitive 토큰은 CSS로 산출되지 않는다(FR-TOK-004 AC-4). `var(--cdt-ink-900)`은 존재하지 않는 프로퍼티다.
-- primitive 토큰은 `@conductor/tokens`의 공개 진입점으로 export되지 않는다(FR-TOK-002 AC-5). 소비자가 `ink.900`에 도달하는 경로가 없다.
+- primitive 토큰은 `@conductor-by-89soone/tokens`의 공개 진입점으로 export되지 않는다(FR-TOK-002 AC-5). 소비자가 `ink.900`에 도달하는 경로가 없다.
 - semantic 토큰이 다른 semantic 토큰을 참조하는 것은 허용된다(`surface.2` → `surface.subtle`, `status.running` → `accent`). 이는 같은 계층 내부의 참조이며 방향 위반이 아니다. 단, 순환 참조는 빌드 오류다(FR-TOK-003 AC-3).
 
 ### 10.3 테마 이름을 담은 토큰
@@ -1180,4 +1182,4 @@ FR-THM-005는 OD-001(2026-07-10 종결, CR-005)이 낳은 요구사항이고, �
 
 CR-006은 `status.neutralEnd`의 `usage`를 `nonText`에서 `decorative`로 낮췄다(FR-THM-005 AC-6). 값 `#475569`는 보존된다. 이 문서에 남은 흔적은 5.6절의 분류 표, 7.3절의 마커 형태, 8.2절의 제거된 CP-025 행, 8.4절의 제외 사유, 8.5절의 결정 기록, 그리고 8.5절 말미의 알려진 제약이다.
 
-이 문서는 `W-010`(색상), `W-011`(타이포그래피), `W-012`(간격/레이아웃), `W-013`(반경/고도), `W-014`(모션), `W-030`(토큰 참조 페이지)의 값 근거다. 문서 사이트는 이 문서가 아니라 `@conductor/tokens/tokens.json`을 읽어 렌더한다(FR-DOC-002 AC-1). 두 산출물이 어긋나면 토큰 소스가 옳고 이 문서를 고친다.
+이 문서는 `W-010`(색상), `W-011`(타이포그래피), `W-012`(간격/레이아웃), `W-013`(반경/고도), `W-014`(모션), `W-030`(토큰 참조 페이지)의 값 근거다. 문서 사이트는 이 문서가 아니라 `@conductor-by-89soone/tokens/tokens.json`을 읽어 렌더한다(FR-DOC-002 AC-1). 두 산출물이 어긋나면 토큰 소스가 옳고 이 문서를 고친다.

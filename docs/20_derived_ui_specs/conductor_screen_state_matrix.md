@@ -1,6 +1,6 @@
 # Conductor Design System 화면 상태 매트릭스
 
-> 상태: review | 버전: v0.2 | 갱신일: 2026-07-10
+> 상태: review | 버전: v0.3 | 갱신일: 2026-07-15
 
 ## 1. 목적과 범위
 
@@ -27,11 +27,10 @@ Conductor는 3개 npm 패키지와 1개 정적 문서 사이트를 배포하며,
 
 ### 3.1 정의
 
-공통 분류 중 적용 대상인 4종(loading_initial, empty, partial_failure, recoverable_error, operation_pending)은 아래 6개의 제품 고유 상태로 구체화된다. 각 상태는 어느 공통 분류를 구체화하는지 표기한다.
+공통 분류 중 적용 대상인 5종(loading_initial, empty, partial_failure, recoverable_error, operation_pending)은 아래 5개의 제품 고유 상태로 구체화된다. 각 상태는 어느 공통 분류를 구체화하는지 표기한다.
 
 | 고유 상태 | 구체화하는 공통 분류 | 정의 | 발생 근거(FR) |
 | --- | --- | --- | --- |
-| 토큰 빌드 산출물 누락 | empty | `packages/tokens`의 빌드가 실행되지 않았거나 실패해 `tokens.json`이 존재하지 않는 상태. Foundations 화면과 Tokens Reference 화면은 이 파일에서 값을 읽는다(FR-DOC-002 AC-1) | FR-TOK-006 예외처리(타입 생성 실패 시 이전 산출물을 남기지 않는다), FR-DOC-002 |
 | 대비 검사 결과 파일 없음 | partial_failure | `pnpm check:contrast`가 실행되지 않아 대비율 측정 결과 파일이 없는 상태. 토큰 값 자체는 표시되지만 대비율 열만 비어 있다 | FR-DOC-004 예외처리 |
 | 프리뷰 렌더 실패 | partial_failure | 컴포넌트 라이브 프리뷰 마운트 중 예외가 발생한 상태. 오류 경계가 해당 프리뷰 영역만 격리한다 | FR-DOC-003 예외처리 |
 | 클립보드 미지원 | recoverable_error의 완화형(사용자 개입 없이 자동으로 기능이 축소된다) | 브라우저 환경에 Clipboard API가 없는 상태. 복사 버튼이 처음부터 비활성으로 렌더된다 | FR-DOC-006 AC-3 |
@@ -46,20 +45,20 @@ Conductor는 3개 npm 패키지와 1개 정적 문서 사이트를 배포하며,
 
 `O`는 해당 화면에 상태가 적용됨을, `-`는 적용되지 않음을 뜻한다. 표에 없는 화면 ID는 존재하지 않는다(추가 화면을 만들지 않는다).
 
-| 화면 ID | 화면명 | loading_initial | empty | partial_failure | recoverable_error | operation_pending | 토큰빌드산출물누락 | 대비검사결과파일없음 | 프리뷰렌더실패 | 클립보드미지원 | localStorage차단 | 감소모션활성 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| W-001 | Overview | O | - | - | - | O | - | - | - | - | O | - |
-| W-002 | Getting Started | O | - | - | - | - | - | - | - | - | - | - |
-| W-010 | Foundations · Color | O | - | - | - | - | O | - | - | - | - | - |
-| W-011 | Foundations · Typography | O | - | - | - | - | O | - | - | - | - | - |
-| W-012 | Foundations · Spacing & Layout | O | - | - | - | - | O | - | - | - | - | - |
-| W-013 | Foundations · Radius & Elevation | O | - | - | - | - | O | - | - | - | - | - |
-| W-014 | Foundations · Motion | O | - | - | - | - | O | - | - | - | - | O |
-| W-020 | Components Index | O | - | O | - | - | - | - | O | - | - | - |
-| W-021 | Component Detail | O | - | O | O | O | - | - | O | O | - | - |
-| W-030 | Tokens Reference | O | O | - | - | O | O | O | - | - | O | - |
-| W-040 | Patterns | O | - | O | - | - | - | - | O | - | - | - |
-| W-050 | Accessibility | O | - | - | - | - | - | O | - | - | - | - |
+| 화면 ID | 화면명 | loading_initial | empty | partial_failure | recoverable_error | operation_pending | 대비검사결과파일없음 | 프리뷰렌더실패 | 클립보드미지원 | localStorage차단 | 감소모션활성 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| W-001 | Overview | O | - | - | - | O | - | - | - | O | - |
+| W-002 | Getting Started | O | - | - | - | - | - | - | - | - | - |
+| W-010 | Foundations · Color | O | - | - | - | - | - | - | - | - | - |
+| W-011 | Foundations · Typography | O | - | - | - | - | - | - | - | - | - |
+| W-012 | Foundations · Spacing & Layout | O | - | - | - | - | - | - | - | - | - |
+| W-013 | Foundations · Radius & Elevation | O | - | - | - | - | - | - | - | - | - |
+| W-014 | Foundations · Motion | O | - | - | - | - | - | - | - | - | O |
+| W-020 | Components Index | O | - | O | - | - | - | O | - | - | - |
+| W-021 | Component Detail | O | - | O | O | O | - | O | O | - | - |
+| W-030 | Tokens Reference | O | O | - | - | O | O | - | - | O | - |
+| W-040 | Patterns | O | - | O | - | - | - | O | - | - | - |
+| W-050 | Accessibility | O | - | - | - | - | O | - | - | - | - |
 
 ### 4.2 화면별 상세
 
@@ -84,35 +83,30 @@ Conductor는 3개 npm 패키지와 1개 정적 문서 사이트를 배포하며,
 | 상태 | 발생 조건 | 화면 표현 | 복구 경로 |
 | --- | --- | --- | --- |
 | loading_initial | 화면 최초 페인트 구간 | 토큰 값이 확정된 이후 색상 스와치가 표시된다 | 자동 완료 |
-| 토큰 빌드 산출물 누락 | `tokens.json`이 존재하지 않는 빌드/개발 환경에서 화면에 접근할 때 | 색상 토큰 행이 비어 있고 화면 상단에 `토큰 산출물 없음` 안내가 표시된다. 값을 추정해 채우지 않는다 | `pnpm build` 실행 후 새로고침 |
 
 #### W-011 Foundations · Typography
 
 | 상태 | 발생 조건 | 화면 표현 | 복구 경로 |
 | --- | --- | --- | --- |
 | loading_initial | 화면 최초 페인트 구간 | 타이포 스케일 표가 확정된 값으로 표시된다 | 자동 완료 |
-| 토큰 빌드 산출물 누락 | `tokens.json`이 존재하지 않을 때 | `font.size`/`font.lineHeight` 표가 비어 있고 `토큰 산출물 없음` 안내가 표시된다 | `pnpm build` 실행 후 새로고침 |
 
 #### W-012 Foundations · Spacing & Layout
 
 | 상태 | 발생 조건 | 화면 표현 | 복구 경로 |
 | --- | --- | --- | --- |
 | loading_initial | 화면 최초 페인트 구간 | 브레이크포인트 표와 레이아웃 예시가 확정된 값으로 표시된다 | 자동 완료 |
-| 토큰 빌드 산출물 누락 | `tokens.json`이 존재하지 않을 때 | `breakpoint` 표가 비어 있고 `토큰 산출물 없음` 안내가 표시된다 | `pnpm build` 실행 후 새로고침 |
 
 #### W-013 Foundations · Radius & Elevation
 
 | 상태 | 발생 조건 | 화면 표현 | 복구 경로 |
 | --- | --- | --- | --- |
 | loading_initial | 화면 최초 페인트 구간 | 반경/고도 예시가 확정된 값으로 표시된다 | 자동 완료 |
-| 토큰 빌드 산출물 누락 | `tokens.json`이 존재하지 않을 때 | 반경/고도 표가 비어 있고 `토큰 산출물 없음` 안내가 표시된다 | `pnpm build` 실행 후 새로고침 |
 
 #### W-014 Foundations · Motion
 
 | 상태 | 발생 조건 | 화면 표현 | 복구 경로 |
 | --- | --- | --- | --- |
 | loading_initial | 화면 최초 페인트 구간 | 모션 토큰 표가 확정된 값으로 표시된다 | 자동 완료 |
-| 토큰 빌드 산출물 누락 | `tokens.json`이 존재하지 않을 때 | 모션 토큰 표가 비어 있고 `토큰 산출물 없음` 안내가 표시된다 | `pnpm build` 실행 후 새로고침 |
 | 감소 모션 활성 | OS `prefers-reduced-motion: reduce`가 켜져 있을 때 | 이 화면의 전환/애니메이션 예시가 지속 시간 0s로 표시되고, hover/focus/selected의 최종 시각 결과는 감소 모드가 아닐 때와 동일하게 유지된다(FR-CSS-005 AC-1, AC-2) | 정상 상태이므로 복구 대상이 아니다. OS 설정에서 해제하면 애니메이션이 복원된다 |
 
 #### W-020 Components Index
@@ -138,7 +132,6 @@ Conductor는 3개 npm 패키지와 1개 정적 문서 사이트를 배포하며,
 | --- | --- | --- | --- |
 | loading_initial | 화면 최초 페인트 구간 | 토큰 표가 확정된 값으로 채워진다 | 자동 완료 |
 | empty | 토큰 키 필터 입력값과 일치하는 행이 0건일 때 | 일치하는 토큰 행이 없다는 안내와 함께 필터 초기화 경로가 표시된다(FR-DOC-004 AC-1) | 필터 조건 수정 또는 필터 초기화 |
-| 토큰 빌드 산출물 누락 | `tokens.json`이 존재하지 않을 때 | 토큰 표 전체가 비어 있고 `토큰 산출물 없음` 안내가 표시된다 | `pnpm build` 실행 후 새로고침 |
 | 대비 검사 결과 파일 없음 | `pnpm check:contrast` 산출물이 없을 때 | 토큰 값 자체는 표시되지만 대비율 열이 `측정되지 않음`으로 표시되고 화면 상단에 경고 배너가 노출된다(FR-DOC-004 예외처리) | `pnpm check:contrast` 실행 후 새로고침 |
 | localStorage 차단 | 테마 토글로 선택한 값을 저장할 수 없을 때 | 예외를 삼키고 `prefers-color-scheme`으로 대체하며 화면 렌더는 막히지 않는다(FR-DOC-005 예외처리) | 사용자 조치 불필요 |
 | operation_pending | 테마 토글 조작 직후 | 대비율 열을 포함한 토큰 값이 선택된 테마 기준으로 재계산되어 표시된다 | 100ms 이내 자동 완료(NFR-001) |
@@ -180,7 +173,6 @@ W-001과 W-021의 뷰포트 800px 미만 오프캔버스 내비게이션(FR-CMP-
 | recoverable_error(클립보드 쓰기 거부) | 브라우저 클립보드 권한 재설정 후 재시도, 또는 코드 텍스트를 직접 선택해 복사 | 복사 동작이 완료되거나 수동 복사로 대체된다 |
 | operation_pending(코드 복사) | 대기(2초 이내) | 복사 버튼이 원래 상태로 복귀한다 |
 | operation_pending(테마 리페인트) | 대기(100ms 이내, NFR-001) | 선택한 테마의 토큰 값으로 재페인트가 완료된다 |
-| 토큰 빌드 산출물 누락 | `pnpm build` 실행 | `tokens.json`이 생성되고 Foundations 화면과 Tokens Reference 화면이 정상 값으로 렌더된다 |
 | 대비 검사 결과 파일 없음 | `pnpm check:contrast` 실행 | 대비율 수치와 pass/fail 판정이 채워지고 경고 배너가 사라진다 |
 | 클립보드 미지원 | 코드 블록 텍스트를 직접 드래그로 선택해 복사 | 복사 버튼 없이도 코드를 얻으며, 버튼은 계속 `disabled`로 유지된다 |
 | localStorage 차단 | 없음(자동으로 `prefers-color-scheme`이 적용된다) | 세션 내 테마는 OS 설정을 따르며 화면 렌더는 막히지 않는다 |

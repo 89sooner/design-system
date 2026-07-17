@@ -1,6 +1,6 @@
 # Conductor Design System Execution Brief for AI Agent
 
-> 상태: review | 버전: v0.2 | 갱신일: 2026-07-10
+> 상태: review | 버전: v0.3 | 갱신일: 2026-07-17
 
 ## 1. 이 브리프의 지위
 
@@ -41,9 +41,9 @@ design-system/
   pnpm-workspace.yaml
   tsconfig.base.json
   packages/
-    tokens/               # @conductor/tokens
-    css/                  # @conductor/css
-    react/                # @conductor/react
+    tokens/               # @conductor-by-89soone/tokens
+    css/                  # @conductor-by-89soone/css
+    react/                # @conductor-by-89soone/react
   apps/
     docs/                 # 문서 사이트 (Conductor의 첫 소비자)
   docs/                   # 계획 문서 세트 (코드 아님)
@@ -146,7 +146,7 @@ design-system/
 | --- | --- | --- |
 | OD-001 (closed) | 대비 검사 정책은 **최소 수정**이다 | `srs_final.md` 12.1절 표를 그대로 구현한다. `focusRing`은 accent alpha 0.80, 신규 `border.control`은 slate `#94a3b8` alpha 0.60. 나머지 토큰은 값을 보존하고 `usage` 메타데이터로 분류한다. FR-THM-005가 이를 강제한다 |
 | OD-002 (closed) | 시각 회귀 검사를 REL-004로 이월한다 | FR-QA-004의 상태는 `deferred`다. v1 릴리스 게이트가 아니다. WP-026은 REL-001 ~ REL-003 완료 후에 착수한다. v1 기간에는 수동 시각 확인으로 대체하고 그 사실을 추적 원장 §5에 남긴다 |
-| OD-004 (closed) | 셸 컴포넌트군을 `@conductor/react`에 포함한다 | C-070 AppShell, C-071 NavList, C-072 TopBar를 패키지에 넣는다. `renderLink` props로 링크 렌더를 위임해 라우팅 라이브러리 의존 0건을 지킨다. WP-023을 실행한다 |
+| OD-004 (closed) | 셸 컴포넌트군을 `@conductor-by-89soone/react`에 포함한다 | C-070 AppShell, C-071 NavList, C-072 TopBar를 패키지에 넣는다. `renderLink` props로 링크 렌더를 위임해 라우팅 라이브러리 의존 0건을 지킨다. WP-023을 실행한다 |
 | OD-003 (open) | 필터/칩 컴포넌트군(F-CMP-010)을 v1에 넣는가 | **FR이 부여되지 않았으므로 구현 대상이 아니다.** REL-003 종료 시점에 Product가 결정한다. 이 결정은 어떤 Must FR도 차단하지 않는다 |
 
 ## 11. 제출 형식

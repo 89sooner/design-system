@@ -1,6 +1,6 @@
 # Conductor Design System 구현 요청서 for AI Agent
 
-> 상태: review | 버전: v0.2 | 갱신일: 2026-07-10
+> 상태: review | 버전: v0.3 | 갱신일: 2026-07-17
 
 ## 1. 목적과 이 문서의 지위
 
@@ -10,9 +10,9 @@ Conductor는 `agent-ai-platform/packages/web`의 시각 언어를 npm 패키지 
 
 | 산출물 | 워크스페이스 경로 | 성격 |
 | --- | --- | --- |
-| `@conductor/tokens` | `packages/tokens` | 3계층 디자인 토큰 소스와 빌더 |
-| `@conductor/css` | `packages/css` | 프레임워크 비종속 스타일시트 |
-| `@conductor/react` | `packages/react` | React 프리미티브 컴포넌트 |
+| `@conductor-by-89soone/tokens` | `packages/tokens` | 3계층 디자인 토큰 소스와 빌더 |
+| `@conductor-by-89soone/css` | `packages/css` | 프레임워크 비종속 스타일시트 |
+| `@conductor-by-89soone/react` | `packages/react` | React 프리미티브 컴포넌트 |
 | 문서 사이트 | `apps/docs` | 정적 사이트. Conductor의 첫 번째 소비자 |
 
 패키지 의존 방향은 `tokens → css → react → docs` 단방향이며 역방향 참조는 빌드 오류다. 서버 런타임, 데이터베이스, 인증 서버, 메시지 큐는 이 제품에 존재하지 않는다. 배포되는 것은 npm 패키지와 정적 파일이다.
@@ -90,9 +90,9 @@ Conductor는 `agent-ai-platform/packages/web`의 시각 언어를 npm 패키지 
 
 | 산출물 | 진입점 | 산출 규칙 |
 | --- | --- | --- |
-| `@conductor/tokens` | `.`(라이브러리), `./tokens.json`, 실행 파일 `buildTokens`·`checkContrast` | semantic·component 토큰만 export한다. primitive 토큰은 공개 진입점에 나타나지 않는다(FR-TOK-002 AC-5) |
-| `@conductor/css` | `.`(전체), `./component.css`(리셋 제외) | `sideEffects: ["*.css"]`를 선언한다(FR-DX-003 AC-2) |
-| `@conductor/react` | `.` | `sideEffects: false`를 선언한다. `Button` 단독 import gzip 4KB 이하(React 제외, FR-DX-003 AC-3) |
+| `@conductor-by-89soone/tokens` | `.`(라이브러리), `./tokens.json`, 실행 파일 `buildTokens`·`checkContrast` | semantic·component 토큰만 export한다. primitive 토큰은 공개 진입점에 나타나지 않는다(FR-TOK-002 AC-5) |
+| `@conductor-by-89soone/css` | `.`(전체), `./component.css`(리셋 제외) | `sideEffects: ["*.css"]`를 선언한다(FR-DX-003 AC-2) |
+| `@conductor-by-89soone/react` | `.` | `sideEffects: false`를 선언한다. `Button` 단독 import gzip 4KB 이하(React 제외, FR-DX-003 AC-3) |
 | 문서 사이트 | 정적 파일 산출물 | 서버 런타임 없이 동작하고 실행 시 외부 도메인 네트워크 요청이 0건이다(FR-DOC-001 AC-3, AC-4) |
 
 각 패키지의 `package.json`은 `exports`와 `types`를 선언한다. 선언되지 않은 내부 경로 import는 해석 오류가 되어야 한다(FR-DX-003 AC-1).
@@ -156,7 +156,7 @@ WP의 DoD가 지목하는 명령을 실행하고 종료 코드를 확인한다. 
 | `pnpm lint:tokens` | 색상 리터럴, 리터럴 px/ms, `z-index` 숫자, `font-size` px 검출. 위반 시 파일 경로와 라인 번호 출력 | FR-TOK-001, FR-TOK-007, FR-TOK-008 |
 | `pnpm check:contrast` | 두 테마 전경/배경 쌍의 WCAG 2.1 대비율. 미달 시 쌍 이름·테마·측정값·기준값 출력 | FR-THM-004, FR-THM-005, FR-A11Y-004 |
 | `pnpm test:a11y` | axe-core serious 이상 위반 0건. 컴포넌트 주요 상태 × 테마 2종 | FR-QA-003, FR-A11Y-005 |
-| `pnpm size` | `Button` 단독 import gzip 4KB 이하(React 제외), `@conductor/css` 전체 gzip 20KB 이하 | FR-DX-003, NFR-001 |
+| `pnpm size` | `Button` 단독 import gzip 4KB 이하(React 제외), `@conductor-by-89soone/css` 전체 gzip 20KB 이하 | FR-DX-003, NFR-001 |
 
 보조 게이트: `pnpm check:deps`(의존 간선 검사, FR-DX-001 AC-1), `pnpm audit --audit-level high`(취약점 0건, NFR-002), `pnpm changeset status`(변경 이력 누락 검출, FR-DX-005), `pnpm test:visual`(REL-004에서만 활성. FR-QA-004는 `deferred`).
 

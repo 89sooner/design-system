@@ -64,7 +64,7 @@ export function formatExclusions(report: ContrastReport): string[] {
 export function renderReportJson(report: ContrastReport): string {
   return `${JSON.stringify(
     {
-      $generatedBy: "@conductor/tokens conductor-check-contrast",
+      $generatedBy: "@conductor-by-89soone/tokens conductor-check-contrast",
       themes: report.themes,
       thresholds: report.thresholds,
       summary: report.summary,

@@ -1,6 +1,6 @@
 # Conductor Design System 관측성 및 신뢰성
 
-> 상태: review | 버전: v0.2 | 갱신일: 2026-07-10
+> 상태: review | 버전: v0.3 | 갱신일: 2026-07-17
 
 ## 1. 범위 재정의: 서비스 SLO가 아니라 파이프라인 관측성
 
@@ -37,7 +37,7 @@ Conductor는 소비자의 빌드 파이프라인 내부에서 실행되므로, �
 | --- | --- | --- | --- |
 | 빌드 종료 코드 1 | 토큰 순환 참조, 대비 미달, 접두사 없는 커스텀 프로퍼티, 타입 생성 실패 등 | Conductor 자체 CI 로그(빌드 잡을 직접 실행하는 경우) | FR-TOK-003, FR-TOK-004, FR-THM-004 |
 | TypeScript 컴파일 오류 | 존재하지 않는 토큰 키 접근, `IconButton`에 `aria-label` 누락 등 | 소비자의 `tsc` 실행 결과 | FR-TOK-006 AC-2, FR-CMP-002 AC-3 |
-| 개발 빌드 콘솔 경고(1회) | `@conductor/css` 미import 상태에서 컴포넌트 렌더 | 소비자 브라우저 개발자 콘솔 | SCN-001 예외 흐름 |
+| 개발 빌드 콘솔 경고(1회) | `@conductor-by-89soone/css` 미import 상태에서 컴포넌트 렌더 | 소비자 브라우저 개발자 콘솔 | SCN-001 예외 흐름 |
 | 개발 빌드 콘솔 경고 | 라벨 없는 `TextField`, `caption`/`aria-label` 없는 `Table`, 중첩 대화형 `Card`, 액션 슬롯 없는 위험 `Banner` | 소비자 브라우저 개발자 콘솔(프로덕션 빌드에서는 스트립) | FR-CMP-003, FR-CMP-005 AC-5, FR-CMP-007 AC-3, FR-CMP-008 AC-2 |
 | `aria-live`/`aria-busy` 상태 전환 | 비동기 상태 변화(`loading` → 완료) | 보조기술(스크린리더) | FR-A11Y-005 AC-5 |
 
@@ -90,9 +90,9 @@ Critical은 릴리스를 즉시 차단하고 System Maintainer에게 통보한�
 2. 3개 패키지 중 일부만 배포된 경우, 각 패키지의 현재 배포 버전을 확인한다.
 
    ```
-   npm view @conductor/tokens version
-   npm view @conductor/css version
-   npm view @conductor/react version
+   npm view @conductor-by-89soone/tokens version
+   npm view @conductor-by-89soone/css version
+   npm view @conductor-by-89soone/react version
    ```
 
 3. 배포되지 않은 패키지가 있으면, 원인을 해결한 뒤 동일 태그로 재시도하지 않고 패치 버전을 새로 발행한다(태그 재사용은 provenance 기록의 일관성을 깨뜨린다).

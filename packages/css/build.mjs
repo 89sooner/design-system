@@ -10,7 +10,7 @@ import { fileURLToPath } from "node:url";
 import { gzipSync } from "node:zlib";
 import browserslist from "browserslist";
 import { browserslistToTargets, bundleAsync } from "lightningcss";
-import { breakpoints } from "@conductor/tokens/breakpoints";
+import { breakpoints } from "@conductor-by-89soone/tokens/breakpoints";
 import { formatViolations, inspectBundle } from "./checks.mjs";
 
 const PACKAGE_ROOT = dirname(fileURLToPath(import.meta.url));
@@ -72,7 +72,7 @@ const substituteBreakpoints = (css, filename) =>
   });
 
 /**
- * `@conductor/tokens/tokens.css` resolves through the tokens package's `exports`
+ * `@conductor-by-89soone/tokens/tokens.css` resolves through the tokens package's `exports`
  * map — its public entry point, never a reach into its src/ or dist/
  * (FR-DX-001 AC-4). Entry files are synthesised in memory so that src/ holds
  * only the layer sources JOB-BUILD-002 names.
@@ -90,7 +90,7 @@ const makeResolver = (entries) => ({
       throw resolverError;
     }
 
-    return specifier.startsWith("@conductor/")
+    return specifier.startsWith("@conductor-by-89soone/")
       ? require.resolve(specifier)
       : resolve(dirname(from), specifier);
   },

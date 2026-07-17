@@ -285,9 +285,9 @@ describe("FR-CMP-009 shell components", () => {
 });
 
 describe("FR-DX-001 / NFR-001 packaging", () => {
-  test("FR-DX-001 AC-4: the stylesheet consumes @conductor/tokens through its public entry point", () => {
+  test("FR-DX-001 AC-4: the stylesheet consumes @conductor-by-89soone/tokens through its public entry point", () => {
     const source = readSource("../src/tokens.css");
-    expect(source).toContain('@import "@conductor/tokens/tokens.css" layer(cdt.base);');
+    expect(source).toContain('@import "@conductor-by-89soone/tokens/tokens.css" layer(cdt.base);');
     expect(source).not.toMatch(/\.\.\/\.\.\/tokens/);
     expect(source).not.toMatch(/tokens\/(?:src|dist)\//);
 
@@ -321,12 +321,26 @@ describe("FR-CSS-004 action and surface primitives", () => {
     for (const rule of components) expect(rule.selector).not.toMatch(/\s[>+]\s|:nth-child/);
   });
 
-  test("FR-A11Y-001 AC-1: components do not override the shared reset focus-visible ring", () => {
+  test("FR-A11Y-001 AC-1: shadow-bearing components restore the shared focus ring in the component layer", () => {
     const focus = ruleFor(index, "cdt.reset", /:focus-visible/);
     expect(focus?.decls["box-shadow"]).toBe("var(--cdt-focus-ring)");
-    for (const rule of components.filter((entry) => entry.selector.includes(":focus-visible"))) {
-      expect(rule.decls["box-shadow"]).toBeUndefined();
-      expect(rule.decls.outline).toBeUndefined();
+
+    const composedFocus = components.find((entry) =>
+      entry.selector.includes(".cdt-btn:focus-visible") &&
+      entry.selector.includes(".cdt-input:focus-visible"),
+    );
+    expect(composedFocus?.decls["box-shadow"]).toBe("var(--cdt-focus-ring)");
+    expect(composedFocus?.decls.transition).toBe("none");
+    for (const selector of [
+      ".cdt-btn:focus-visible",
+      ".cdt-card--interactive:focus-visible",
+      ".cdt-input:focus-visible",
+      ".cdt-textarea:focus-visible",
+      ".cdt-select__trigger:focus-visible",
+      ".cdt-switch:focus-visible",
+      ".cdt-checkbox:focus-visible",
+    ]) {
+      expect(composedFocus?.selector.split(",").map((part) => part.trim())).toContain(selector);
     }
   });
 });

@@ -22,13 +22,13 @@ const exportTargets = (entry: unknown): string[] => {
 
 const allTargets = [...new Set(Object.values(exportsMap).flatMap(exportTargets))];
 
-describe("@conductor/css package contract", () => {
-  test("FR-DX-002 AC-1: @conductor/css declares types entry", () => {
+describe("@conductor-by-89soone/css package contract", () => {
+  test("FR-DX-002 AC-1: @conductor-by-89soone/css declares types entry", () => {
     expect(manifest.types).toBe("./types/index.d.ts");
     expect(exportsMap["."]).toMatchObject({ types: "./types/index.d.ts" });
   });
 
-  test('FR-DX-003 AC-2: @conductor/css declares sideEffects: ["*.css"]', () => {
+  test('FR-DX-003 AC-2: @conductor-by-89soone/css declares sideEffects: ["*.css"]', () => {
     expect(manifest.sideEffects).toEqual(["*.css"]);
   });
 
@@ -36,7 +36,7 @@ describe("@conductor/css package contract", () => {
     expect(exportsMap["./component.css"]).toMatchObject({ default: "./dist/component.css" });
   });
 
-  test("FR-DX-003 AC-1: @conductor/css exposes only declared entry points", () => {
+  test("FR-DX-003 AC-1: @conductor-by-89soone/css exposes only declared entry points", () => {
     // Asserted as rules, not as a snapshot of the key list: at WP-003 a snapshot
     // assertion failed for an entry point that was legitimately added.
     for (const required of [".", "./component.css", "./package.json"]) {

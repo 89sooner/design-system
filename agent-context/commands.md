@@ -48,7 +48,7 @@ node scripts/release-rollback.mjs 1.5.0 1.4.2 --execute  # 실제 dist-tag 롤�
 pnpm check:api        # error[API-REPORT-DRIFT] exit 1
 
 # changeset 규약
-printf -- '---\n"@conductor/react": patch\n---\n\nFix.\n' > .changeset/probe.md
+printf -- '---\n"@conductor-by-89soone/react": patch\n---\n\nFix.\n' > .changeset/probe.md
 pnpm check:changesets # error[CHANGESET-CONVENTION]: Refs 줄 없음 exit 1
 # major + 마이그레이션 노트 없음 → 같은 코드로 exit 1
 
@@ -61,10 +61,10 @@ CONDUCTOR_LH_FIXTURE=1 pnpm lighthouse          # error[LH-LCP-BUDGET] exit 1
 
 ### 소비자 스모크 (M-5 / QA-205, FR-DX-002 AC-3)
 
-문서(W-002)가 지시하는 3개 명령을 workspace 밖 신규 Vite React 앱에서 그대로 실행했다. 미게시 상태라 `@conductor/*`는 `pnpm pack` tarball로 해석되게 `pnpm.overrides`를 뒀다.
+문서(W-002)가 지시하는 3개 명령을 workspace 밖 신규 Vite React 앱에서 그대로 실행했다. 미게시 상태라 `@conductor-by-89soone/*`는 `pnpm pack` tarball로 해석되게 `pnpm.overrides`를 뒀다.
 
 ```bash
-pnpm add @conductor/tokens @conductor/css @conductor/react   # (tarball로 대체)
+pnpm add @conductor-by-89soone/tokens @conductor-by-89soone/css @conductor-by-89soone/react   # (tarball로 대체)
 pnpm add react react-dom lucide-react
 pnpm run build                                                # tsc --noEmit && vite build
 ```
@@ -149,7 +149,7 @@ git diff --check exit=0        LF -> CRLF warnings only
 ## 유용한 개별 명령
 
 ```bash
-pnpm --filter @conductor/tokens run build       # ★ CLI를 먼저 재번들한다. 소스 변경 반영에 필수
+pnpm --filter @conductor-by-89soone/tokens run build       # ★ CLI를 먼저 재번들한다. 소스 변경 반영에 필수
 node packages/tokens/bin/conductor-build-tokens.mjs      # 번들된 dist/cli.js 실행 (소스 변경 미반영!)
 pnpm lint:tokens --report                       # 허용 주석(allow-list) 목록 출력
 pnpm check:contrast                             # dist/contrast-report.json 재생성
@@ -162,12 +162,12 @@ pnpm check:contrast                             # dist/contrast-report.json 재�
 ### 의존 방향 (FR-DX-001 AC-1)
 
 ```bash
-# packages/tokens/package.json 에 "@conductor/react": "workspace:*" 주입
+# packages/tokens/package.json 에 "@conductor-by-89soone/react": "workspace:*" 주입
 node scripts/check-deps.mjs
 ```
 ```text
-error[DEP_DIRECTION]: @conductor/tokens -> @conductor/react
-error[DEP_CYCLE]: @conductor/css → @conductor/tokens → @conductor/react → @conductor/css
+error[DEP_DIRECTION]: @conductor-by-89soone/tokens -> @conductor-by-89soone/react
+error[DEP_CYCLE]: @conductor-by-89soone/css → @conductor-by-89soone/tokens → @conductor-by-89soone/react → @conductor-by-89soone/css
 [check-deps] 2 violation(s)         exit=1
 # 되돌리면: [check-deps] 4 workspace packages, 6 internal edges, 0 violations   exit=0
 ```
@@ -176,7 +176,7 @@ error[DEP_CYCLE]: @conductor/css → @conductor/tokens → @conductor/react → 
 
 ```bash
 # palette.dark.ts: surface.base -> alias "surface.canvas", surface.canvas -> alias "surface.base"
-pnpm --filter @conductor/tokens run build
+pnpm --filter @conductor-by-89soone/tokens run build
 ```
 ```text
 error[TOK-CYCLE]: circular token reference detected
@@ -229,7 +229,7 @@ error[TOK-LITERAL]: 2 hardcoded value(s) outside the token source
 
 ```bash
 # palette.dark.ts: text.muted "#8290a3" -> "#3a4555"
-pnpm --filter @conductor/tokens run build     # exit=1 — 대비 검사가 빌드에 물려 있다
+pnpm --filter @conductor-by-89soone/tokens run build     # exit=1 — 대비 검사가 빌드에 물려 있다
 pnpm check:contrast
 ```
 ```text
@@ -271,7 +271,7 @@ disagreements (>0.02 or verdict mismatch): 0
 
 | 명령 | 증상 | 원인 | 해결 |
 | --- | --- | --- | --- |
-| `node packages/tokens/bin/conductor-build-tokens.mjs` (소스 변조 후) | exit 0, 아무 변화 없음 | **bin은 번들된 `dist/cli.js`를 실행한다.** 소스 변경이 반영 안 됨 | `pnpm --filter @conductor/tokens run build` 사용 |
+| `node packages/tokens/bin/conductor-build-tokens.mjs` (소스 변조 후) | exit 0, 아무 변화 없음 | **bin은 번들된 `dist/cli.js`를 실행한다.** 소스 변경이 반영 안 됨 | `pnpm --filter @conductor-by-89soone/tokens run build` 사용 |
 | `pnpm typecheck` (클린 체크아웃) | `TS2307: Cannot find module './tokens'` ×4, exit 2 | 타입 표면 일부가 빌드 생성물 | CI 순서를 `build → typecheck`로 반전 (CR-009) |
 | `pnpm test` (WP-003 직후) | `expect(Object.keys(exports)).toEqual([".", "./package.json"])` 실패 | WP-001 테스트가 **스냅샷**을 단언. WP-003/004가 정당하게 진입점 추가 | 규칙 기반 단언으로 교체(필수 진입점 존재 / `./src/` 미노출 / 대상 파일 실재) |
 | `pnpm test` (WP-005 직후) | `substituteBreakpoints`가 `{breakpoint.sm}` 미치환 | `var(--cdt-breakpoint-sm)` 형태만 처리 | 두 형태 모두 처리하도록 수정 |
@@ -304,7 +304,7 @@ test("FR-CMP-002 AC-2: loading 상태에서 클릭 핸들러가 호출되지 않
 | `pnpm lint` | 통과 |
 | `pnpm lint:tokens` | 40 files, 0 violations, 57 allowances |
 | `pnpm check:contrast` | dark/light 합계 80/80 |
-| `pnpm --filter @conductor/react test -- shell` | 12 files, 142/142. 현재 script는 project 전체 실행 |
+| `pnpm --filter @conductor-by-89soone/react test -- shell` | 12 files, 142/142. 현재 script는 project 전체 실행 |
 | CSS test | 3 files, 76/76 |
 | docs Playwright | 16/16. 600px scrim click, Escape, skip focus 포함 |
 | validator `--report`, `--strict` | issue 0 |

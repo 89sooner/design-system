@@ -28,8 +28,8 @@ function exportTargets(entry: unknown): string[] {
 
 const allTargets = Object.values(exportsMap).flatMap(exportTargets);
 
-describe("@conductor/tokens package contract", () => {
-  test("FR-DX-002 AC-1: @conductor/tokens declares types entry", () => {
+describe("@conductor-by-89soone/tokens package contract", () => {
+  test("FR-DX-002 AC-1: @conductor-by-89soone/tokens declares types entry", () => {
     expect(manifest.types).toBe("./dist/index.d.ts");
     expect(exportsMap["."]).toMatchObject({ types: "./dist/index.d.ts" });
   });
@@ -57,7 +57,7 @@ describe("@conductor/tokens package contract", () => {
     }
   });
 
-  test("FR-DX-001 AC-4, FR-CSS-002: `./tokens.css` exposes the stylesheet @conductor/css bundles", () => {
+  test("FR-DX-001 AC-4, FR-CSS-002: `./tokens.css` exposes the stylesheet @conductor-by-89soone/css bundles", () => {
     expect(exportsMap["./tokens.css"]).toBe("./dist/tokens.css");
   });
 
@@ -85,7 +85,7 @@ describe("@conductor/tokens package contract", () => {
   });
 
   /**
-   * `checkContrast` runs inside `pnpm --filter @conductor/tokens build`, after the token build and
+   * `checkContrast` runs inside `pnpm --filter @conductor-by-89soone/tokens build`, after the token build and
    * before the bundling pass. FR-THM-004 phrases the check as something that happens once the
    * token build completes, and the entry point above must resolve to a file the build produced —
    * an exported subpath that only `pnpm check:contrast` creates would 404 in a published package.
@@ -97,10 +97,10 @@ describe("@conductor/tokens package contract", () => {
 
   /**
    * `["*.css"]`, not `false`, because this package now exports a stylesheet. Under
-   * `sideEffects: false` a bundler is entitled to drop `import "@conductor/tokens/tokens.css"`
+   * `sideEffects: false` a bundler is entitled to drop `import "@conductor-by-89soone/tokens/tokens.css"`
    * as dead code, since the import binds no value. The array form marks only the CSS as
    * side-effectful and leaves `tokens.js` and `breakpoints.js` tree-shakeable — the same
-   * reasoning FR-DX-003 AC-2 applies to `@conductor/css`. (`package.json` admits no comments,
+   * reasoning FR-DX-003 AC-2 applies to `@conductor-by-89soone/css`. (`package.json` admits no comments,
    * so the rationale lives at the assertion that enforces it.)
    */
   test("FR-DX-003 AC-2: sideEffects marks the stylesheet so a bundler cannot drop the CSS import", () => {

@@ -3,7 +3,7 @@
  *
  * Targets are positional paths, resolved against the working directory. The root
  * `pnpm lint:tokens` script passes `packages/css packages/react`; keeping them out of this package
- * is what lets `@conductor/tokens` lint its consumers without depending on them.
+ * is what lets `@conductor-by-89soone/tokens` lint its consumers without depending on them.
  *
  * Exit codes: 0 clean · 1 at least one violation · 3 bad arguments.
  *

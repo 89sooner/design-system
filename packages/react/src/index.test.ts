@@ -16,13 +16,13 @@ const manifest = JSON.parse(
   peerDependencies?: Record<string, string>;
 };
 
-describe("@conductor/react package contract", () => {
-  test("FR-DX-002 AC-1: @conductor/react declares types entry", () => {
+describe("@conductor-by-89soone/react package contract", () => {
+  test("FR-DX-002 AC-1: @conductor-by-89soone/react declares types entry", () => {
     expect(manifest.types).toBe("./dist/index.d.ts");
     expect(manifest.exports?.["."]).toMatchObject({ types: "./dist/index.d.ts" });
   });
 
-  test("FR-DX-003 AC-3: @conductor/react declares sideEffects: false", () => {
+  test("FR-DX-003 AC-3: @conductor-by-89soone/react declares sideEffects: false", () => {
     expect(manifest.sideEffects).toBe(false);
   });
 
@@ -34,16 +34,16 @@ describe("@conductor/react package contract", () => {
     });
   });
 
-  test("FR-DX-003 AC-1: @conductor/react exposes only declared entry points", () => {
+  test("FR-DX-003 AC-1: @conductor-by-89soone/react exposes only declared entry points", () => {
     expect(Object.keys(manifest.exports ?? {})).toEqual([".", "./package.json"]);
   });
 
-  test("FR-DX-001 AC-4: @conductor/react consumes @conductor/tokens as a workspace package", () => {
-    expect(manifest.dependencies?.["@conductor/tokens"]).toBe("workspace:*");
-    expect(CONSUMED_PACKAGES).toContain("@conductor/tokens");
+  test("FR-DX-001 AC-4: @conductor-by-89soone/react consumes @conductor-by-89soone/tokens as a workspace package", () => {
+    expect(manifest.dependencies?.["@conductor-by-89soone/tokens"]).toBe("workspace:*");
+    expect(CONSUMED_PACKAGES).toContain("@conductor-by-89soone/tokens");
   });
 
-  test("FR-CMP-009 AC-2: @conductor/react has no routing-library dependency", () => {
+  test("FR-CMP-009 AC-2: @conductor-by-89soone/react has no routing-library dependency", () => {
     expect(Object.keys(manifest.dependencies ?? {}).filter((name) => /router|routing/i.test(name))).toEqual([]);
   });
 

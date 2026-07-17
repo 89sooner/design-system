@@ -55,6 +55,6 @@ python3 ~/.claude/skills/build-srs-prd-env/scripts/validate_srs_prd_env.py --roo
 - `srs_final.md` baseline 의미를 바꾸면 CR을 먼저 등록하고 cascade한다.
 - 생성 파일(`packages/tokens/src/tokens.ts`, `src/breakpoints.ts`, `apps/docs/src/generated/*`)을 직접 편집하지 않는다.
 - docs 검증 전 workspace dependency `dist`가 최신인지 확인한다. 가장 안전한 기준은 루트 `pnpm build`다.
-- `@conductor/react`에 라우팅 라이브러리를 추가하지 않는다. 링크는 `renderLink`로 위임한다.
+- `@conductor-by-89soone/react`에 라우팅 라이브러리를 추가하지 않는다. 링크는 `renderLink`로 위임한다.
 - 브라우저를 띄우는 도구를 새로 붙였으면 끝나고 `git status`로 트리 오염을 확인한다.
 - 공개 API를 바꿨으면 `pnpm check:api --update`로 리포트를 갱신하고, 파괴 변경이면 major changeset과 마이그레이션 노트를 함께 커밋한다.

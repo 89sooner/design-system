@@ -8,4 +8,4 @@
 export const CDT_PREFIX = "cdt-" as const;
 
 /** Published name of this package. */
-export const PACKAGE_NAME = "@conductor/tokens" as const;
+export const PACKAGE_NAME = "@conductor-by-89soone/tokens" as const;

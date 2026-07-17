@@ -1,6 +1,6 @@
 # Conductor Design System 용어집
 
-> 상태: review | 버전: v0.2 | 갱신일: 2026-07-10
+> 상태: review | 버전: v0.3 | 갱신일: 2026-07-17
 
 ## 1. 목적
 
@@ -69,7 +69,7 @@
 3. **TypeScript export**: 토큰 소스 키를 camelCase 중첩 객체로 노출한다. 예: `tokens.surface.raised`.
 4. **CSS 클래스**: `cdt-<블록>[__<요소>][--<변형>]`. 예: `cdt-btn`, `cdt-btn--primary`, `cdt-card__header`.
 5. **React 컴포넌트**: PascalCase 단수형. 파일명은 컴포넌트명과 동일. 예: `Button.tsx` → `export function Button`.
-6. **패키지**: `@conductor/<역할>` 소문자 단수형. `@conductor/tokens`, `@conductor/css`, `@conductor/react`.
+6. **패키지**: `@conductor-by-89soone/<역할>` 소문자 단수형. `@conductor-by-89soone/tokens`, `@conductor-by-89soone/css`, `@conductor-by-89soone/react`.
 7. **props**: 시각 변종은 `variant`, 의미 색상은 `tone`, 크기는 `size`. 다른 이름을 새로 만들지 않는다.
 8. **금지**: 축약형 식별자(`btn` 대신 `Button`), 동의어 혼용, 테마 이름을 값에 하드코딩하는 토큰(`--cdt-dark-surface`).
 

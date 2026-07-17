@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const CHANGESET_DIR = resolve(ROOT, ".changeset");
-const KNOWN_PACKAGES = new Set(["@conductor/tokens", "@conductor/css", "@conductor/react"]);
+const KNOWN_PACKAGES = new Set(["@conductor-by-89soone/tokens", "@conductor-by-89soone/css", "@conductor-by-89soone/react"]);
 const REFS_PATTERN = /^Refs:.*\b(?:WP-\d{3}|FR-[A-Z]+-\d{3}|NFR-\d{3})\b/m;
 const MIGRATION_PATTERN = /^#{2,3} Migration\b|^Migration:|마이그레이션/m;
 const requireEmpty = process.argv.includes("--require-empty");

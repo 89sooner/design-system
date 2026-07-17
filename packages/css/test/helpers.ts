@@ -2,12 +2,12 @@ import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import postcss from "postcss";
 
-/** Read a file that only exists after `pnpm --filter @conductor/css build`. */
+/** Read a file that only exists after `pnpm --filter @conductor-by-89soone/css build`. */
 export const readBuilt = (relativePath: string): string => {
   const path = fileURLToPath(new URL(relativePath, import.meta.url));
   if (!existsSync(path)) {
     throw new Error(
-      `${relativePath} is missing. Run \`pnpm --filter @conductor/css build\` first ` +
+      `${relativePath} is missing. Run \`pnpm --filter @conductor-by-89soone/css build\` first ` +
         `(CI runs build before test — see CR-009).`,
     );
   }

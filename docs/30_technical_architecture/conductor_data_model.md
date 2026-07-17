@@ -1,6 +1,6 @@
 # Conductor Design System 토큰/메타데이터 스키마
 
-> 상태: review | 버전: v0.2 | 갱신일: 2026-07-10
+> 상태: review | 버전: v0.3 | 갱신일: 2026-07-17
 
 ## 0. 문서 재해석
 
@@ -51,7 +51,7 @@ interface TokenDefinition {
 4. 불변식 2·3을 하나의 문장으로 줄이면: **토큰은 자기 계층 또는 하위 계층의 토큰만 참조한다.** 상위 계층으로 올라가는 참조가 발견되면 빌드가 종료 코드 1로 실패하고 위반 토큰 키 쌍을 출력한다(AC-4). 동일 계층 참조가 순환을 이루면 FR-TOK-003 AC-3의 순환 검출이 잡는다(AC-6).
 
 > **CR-008 (DEV-001).** 이 문서의 이전 판은 불변식 2에서 "semantic 토큰이 다른 semantic 토큰을 재사용하면 그 토큰을 `component` 계층으로 정의한다"고 규정했다. 이 재분류 규칙은 성립하지 않는다. `elevation.overlay`(semantic)가 `{border.strong}`(semantic)을 포함하는데, `overlay.shadow`(component)가 `{elevation.overlay}`를 참조한다. 전자를 component로 재분류하면 후자가 component → component 참조가 되어 같은 규칙이 다시 금지한다. 재분류는 모순을 옮길 뿐 없애지 못한다. CR-008이 FR-TOK-002 AC-2·AC-3을 정정해 동일 계층 참조를 허용했고, 이 문서의 불변식을 그에 맞춰 갱신했다. `surface.2`와 `border`는 semantic 계층에 그대로 둔다.
-5. `tier === "primitive"`인 키는 `@conductor/tokens`의 공개 진입점(`API-PKG-001`)에서 export되지 않는다(AC-5). `tokens.js`/`tokens.d.ts`는 semantic·component 계층만 노출한다.
+5. `tier === "primitive"`인 키는 `@conductor-by-89soone/tokens`의 공개 진입점(`API-PKG-001`)에서 export되지 않는다(AC-5). `tokens.js`/`tokens.d.ts`는 semantic·component 계층만 노출한다.
 6. `key`가 `status.*` 또는 `severity.*`로 시작하면 `icon`이 존재하고 빈 문자열이 아니어야 한다(FR-TOK-005 AC-5).
 7. `key`는 토큰 소스 전체에서 유일하다. 중복 키가 발견되면 빌드가 실패한다.
 
@@ -124,7 +124,7 @@ interface ComponentMeta {
 
 **소유권과 생성 방식.** `name`, `filePath`, `propsTypeName`, `variants`, `tones`, `sizes`는 컴포넌트 소스 코드(TypeScript 타입 정의)에서 빌드 시 정적 추출한다. `hasTestFile`, `hasCatalogPage`는 파일 시스템 존재 여부 검사로 채운다. 이 엔티티는 사람이 직접 편집하는 파일을 갖지 않는다 — 소스 오브 트루스는 컴포넌트 구현 코드 자체다.
 
-**불변식.** `@conductor/react`의 공개 진입점에서 export된 모든 컴포넌트는 대응하는 `ComponentMeta`를 가지며, `hasTestFile`과 `hasCatalogPage`가 모두 `true`여야 한다. 하나라도 `false`면 각각 FR-QA-002 AC-1, FR-DOC-003 AC-5에 따라 빌드가 실패한다.
+**불변식.** `@conductor-by-89soone/react`의 공개 진입점에서 export된 모든 컴포넌트는 대응하는 `ComponentMeta`를 가지며, `hasTestFile`과 `hasCatalogPage`가 모두 `true`여야 한다. 하나라도 `false`면 각각 FR-QA-002 AC-1, FR-DOC-003 AC-5에 따라 빌드가 실패한다.
 
 ### 3.6 ENT-DOC-001 DocPage
 
@@ -184,7 +184,7 @@ TokenAlias[] (빌드 중간 표현) ──해석 완료 시 소멸, resolvedValu
 | `ComponentMeta.propsTypeName`의 필수 prop 추가/제거 | 파괴 변경 | semver major, `conductor_api_contracts.md` 6절 버저닝 규칙을 따른다 |
 | `usage`/`themeSpecific`/`description` 메타데이터만 변경 | 비파괴 변경 | semver patch |
 
-토큰 키는 사람이 읽는 식별자이자 공개 API 표면(semantic·component 계층은 `@conductor/tokens`에서 export됨)이므로, rename은 값 변경과 달리 소비자 코드의 컴파일을 깨뜨린다. 이 때문에 rename만 별도로 파괴 변경으로 분류한다.
+토큰 키는 사람이 읽는 식별자이자 공개 API 표면(semantic·component 계층은 `@conductor-by-89soone/tokens`에서 export됨)이므로, rename은 값 변경과 달리 소비자 코드의 컴파일을 깨뜨린다. 이 때문에 rename만 별도로 파괴 변경으로 분류한다.
 
 ## 7. 보존/재현성
 

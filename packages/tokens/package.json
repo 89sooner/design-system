@@ -1,16 +1,28 @@
 {
-  "name": "@conductor/tokens",
+  "name": "@conductor-by-89soone/tokens",
   "version": "0.0.0",
+  "description": "Theme-aware design tokens and validation CLIs for Conductor.",
+  "license": "MIT",
+  "homepage": "https://89sooner.github.io/design-system/",
   "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/89sooner/design-system.git",
     "directory": "packages/tokens"
   },
-  "publishConfig": { "access": "public" },
-  "sideEffects": ["*.css"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "sideEffects": [
+    "*.css"
+  ],
   "types": "./dist/index.d.ts",
-  "files": ["dist", "bin"],
+  "files": [
+    "dist",
+    "bin",
+    "README.md",
+    "LICENSE"
+  ],
   "bin": {
     "conductor-build-tokens": "./bin/conductor-build-tokens.mjs",
     "conductor-check-contrast": "./bin/conductor-check-contrast.mjs",

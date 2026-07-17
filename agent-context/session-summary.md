@@ -11,9 +11,9 @@
 **제품**: Conductor Design System. `agent-ai-platform/packages/web`의 시각 언어(조밀한 운영용 다크 UI)를 재사용 가능한 npm 패키지 3종 + 정적 문서 사이트로 추출한다.
 
 ```
-packages/tokens/   @conductor/tokens   토큰 소스 + 빌드 + CLI 3종   [REL-001 완료]
-packages/css/      @conductor/css      프레임워크 비종속 스타일시트  [WP-008~009 미착수]
-packages/react/    @conductor/react    Radix 기반 컴포넌트 30개      [WP-011~017 미착수]
+packages/tokens/   @conductor-by-89soone/tokens   토큰 소스 + 빌드 + CLI 3종   [REL-001 완료]
+packages/css/      @conductor-by-89soone/css      프레임워크 비종속 스타일시트  [WP-008~009 미착수]
+packages/react/    @conductor-by-89soone/react    Radix 기반 컴포넌트 30개      [WP-011~017 미착수]
 apps/docs/         (private)           정적 문서 사이트              [WP-018~022 미착수]
 docs/              SRS/PRD 문서 세트 41개 — 코드가 아님
 ```
@@ -40,13 +40,13 @@ docs/              SRS/PRD 문서 세트 41개 — 코드가 아님
 | 대비 검사 | 다크 40/40 통과, 미달 0건, 제외 165 토큰 |
 | 산출 `.d.ts`의 `any` | 0건 |
 
-`@conductor/tokens` 공개 표면:
+`@conductor-by-89soone/tokens` 공개 표면:
 - exports: `.`, `./tokens.css`, `./tokens.json`, `./contrast-report.json`, `./breakpoints`, `./package.json`
 - bin: `conductor-build-tokens`, `conductor-check-contrast`, `conductor-lint-tokens`
 - `sideEffects: ["*.css"]`
 
 ### 미착수
-WP-008 ~ WP-028 (REL-002/003/004). 다음 단계는 **WP-008**(`@conductor/css` 레이어 골격) 또는 **WP-010**(라이트 팔레트).
+WP-008 ~ WP-028 (REL-002/003/004). 다음 단계는 **WP-008**(`@conductor-by-89soone/css` 레이어 골격) 또는 **WP-010**(라이트 팔레트).
 
 ## 이 세션의 핵심 성과 — 결함 5건을 코드 이전에 잡았다
 

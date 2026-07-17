@@ -4,8 +4,10 @@ import { cleanup, render, waitFor } from "@testing-library/react";
 import axe, { type Result } from "axe-core";
 import { afterAll, afterEach, describe, expect, test } from "vitest";
 import allowListSource from "../../../../axe-allowlist.json";
-import "@conductor/css";
+import "@conductor-by-89soone/css";
 import { Button } from "../action";
+import { Checkbox, Switch, TextField } from "../form";
+import { Card } from "../surface";
 import { a11yScenarios, AppShellKeyboardFixture, keyboardScenarios } from "./a11y-scenarios";
 import { publicComponents } from "./public-components";
 
@@ -162,14 +164,24 @@ test("FR-A11Y-002 AC-2: AppShell mobile navigation releases focus after Escape",
 });
 
 for (const theme of themes) {
-  test(`FR-A11Y-001 AC-1: ${theme} theme exposes a visible keyboard focus ring`, async () => {
+  test(`FR-A11Y-001 AC-1: ${theme} theme preserves the complete keyboard focus ring over component shadows`, async () => {
     setTheme(theme);
-    const { container } = render(<><button data-focus-start="">Start</button><Button>Target</Button></>);
+    const { container } = render(<><button data-focus-start="">Start</button><Button>Button target</Button><Card as="a" href="#focus-card">Card target</Card><TextField aria-label="Text field target" /><Switch aria-label="Switch target" /><Checkbox aria-label="Checkbox target" /></>);
     container.querySelector<HTMLButtonElement>("[data-focus-start]")?.focus();
-    await userEvent.tab();
-    const target = container.querySelector<HTMLElement>(".cdt-btn");
-    expect(document.activeElement).toBe(target);
-    expect(getComputedStyle(target as Element).boxShadow).not.toBe("none");
+
+    const probe = document.createElement("div");
+    probe.style.boxShadow = getComputedStyle(document.documentElement).getPropertyValue("--cdt-focus-ring");
+    document.body.append(probe);
+    const expectedRing = getComputedStyle(probe).boxShadow;
+    probe.remove();
+
+    for (const selector of [".cdt-btn", ".cdt-card--interactive", ".cdt-input", ".cdt-switch", ".cdt-checkbox"]) {
+      await userEvent.tab();
+      const target = container.querySelector<HTMLElement>(selector);
+      expect(document.activeElement).toBe(target);
+      expect(target?.matches(":focus-visible")).toBe(true);
+      expect(getComputedStyle(target as Element).boxShadow).toBe(expectedRing);
+    }
   });
 }
 

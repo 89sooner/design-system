@@ -1,6 +1,6 @@
 # Conductor Design System UI 컴포넌트 명세서
 
-> 상태: review | 버전: v0.3 | 갱신일: 2026-07-15
+> 상태: review | 버전: v0.5 | 갱신일: 2026-07-17
 
 ## 0. 문서 위치와 범위
 
@@ -42,7 +42,7 @@
 
 1. 열림/닫힘, 체크 여부, 입력 값은 controlled props와 uncontrolled 기본값을 모두 지원하되, 기본 동작은 Radix 프리미티브가 제공한다.
 2. Conductor는 상태를 저장하는 전역 스토어, Context Provider, 테마 Provider를 배포하지 않는다. 테마는 DOM 속성 `data-cdt-theme`이 결정한다(FR-THM-003).
-3. 유일한 내부 Context는 `Field`(C-050)의 id/설명/오류 연결 Context다. 이 Context는 공개 API가 아니며 `@conductor/react` 진입점으로 export하지 않는다.
+3. 유일한 내부 Context는 `Field`(C-050)의 id/설명/오류 연결 Context다. 이 Context는 공개 API가 아니며 `@conductor-by-89soone/react` 진입점으로 export하지 않는다.
 4. 모듈 최상위에서 `window`, `document`, `localStorage`에 접근하지 않는다(FR-DX-004).
 
 ### 1.4 접근성 소유권
@@ -70,6 +70,16 @@
 4. Table은 컨테이너·caption·header·body의 표면 및 타이포 위계를 갖고, Feedback 컴포넌트는 제목·설명·수치 레이블을 서로 다른 텍스트 단계로 표현한다.
 5. 메뉴와 선택 항목의 `[data-highlighted]`는 `accent.soft` 배경 + `text.primary` 조합을 사용한다. 강조색 전체 채움은 사용자의 현재 위치보다 Primary 액션처럼 읽히므로 탐색 하이라이트에 사용하지 않는다.
 
+#### CR-019 사용성 근거 기반 정제 규칙
+
+Radix Themes·Primer·Atlassian Design System·Spectrum·Carbon·shadcn/ui·W3C의 공통 패턴을 Conductor의 기존 범위 안에서 다음처럼 적용한다.
+
+1. 강조는 희소하게 사용한다. Button 라벨은 색상명이나 명사보다 짧은 동작 동사를 사용하고, 한 작업 그룹의 최우선 행동 하나만 Primary로 표현한다. 기본 버튼 글자 크기는 본문과 같은 14px로 높여 빠른 스캔과 판독을 돕는다.
+2. 폼 예시는 항상 가시 라벨을 우선하고, 사용자가 값을 결정하는 데 필요한 조건은 placeholder가 아니라 설명으로 제공한다. Field 라벨은 `text.secondary`와 600 굵기를 사용해 보조 설명과 명확히 구분한다.
+3. `box-shadow`를 재질 표현에 사용하는 Button·대화형 Card·TextField·TextArea·Select Trigger·Switch·Checkbox는 `:focus-visible`에서 장식 그림자 대신 공통 `focusRing` 계산값을 즉시 복원하고 그림자 전환을 적용하지 않는다. `cdt.reset`의 전역 규칙만으로는 상위 `cdt.component` 레이어의 그림자를 이길 수 없으므로 컴포넌트 레이어가 이를 명시한다(DEV-012).
+4. 대화형 Card의 hover는 상승, active는 기본 평면으로 복귀해 누름을 표현한다. 한 상태에서 표면색 변화와 고도 변화를 중복 적용하지 않는다.
+5. W-020 카탈로그 타일은 정적 Panel과 제목 링크를 합성한다. live Button·입력·링크를 대화형 Card 안에 중첩하지 않으며, 타일 전체가 링크라는 모호한 접근 가능한 이름을 만들지 않는다.
+
 ### 1.6 props 네이밍 고정
 
 | 축 | props 이름 | 의미 | 금지 대체어 |
@@ -84,7 +94,7 @@
 
 ## 2. 공통 계약 (API-CMP-001)
 
-FR-CMP-001을 만족하지 않는 컴포넌트는 `@conductor/react`의 공개 진입점에서 export하지 않는다. 아래 4개 조항은 공유 테스트 스위트가 공개 컴포넌트 전수에 대해 실행하며, 하나라도 실패하면 빌드가 실패한다(FR-CMP-001 AC-5, 예외/실패 처리).
+FR-CMP-001을 만족하지 않는 컴포넌트는 `@conductor-by-89soone/react`의 공개 진입점에서 export하지 않는다. 아래 4개 조항은 공유 테스트 스위트가 공개 컴포넌트 전수에 대해 실행하며, 하나라도 실패하면 빌드가 실패한다(FR-CMP-001 AC-5, 예외/실패 처리).
 
 ### 2.1 조항
 
@@ -200,6 +210,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   - `app.css:783-796` — `.filter-bar .btn` 34px 높이, 투명 배경, `[aria-pressed="true"]` 선택 시각. `sm` 크기와 `ghost` 변종의 근거.
   - `app.css:1097-1099` — 뷰포트 560px 미만에서 `min-height: 42px`.
   - **CR-018 결정**: `variant`가 채움 전략을 항상 우선한다. `primary`는 neutral/accent에서 accent 채움, danger에서 danger 채움을 사용한다. `secondary`는 표면 + 경계를 유지하고 accent/danger는 경계와 전경으로 tone을 나타낸다. `ghost`는 세 tone 모두 투명 경계를 유지한다. tone 클래스가 variant를 덮어써 Secondary/Ghost를 Primary처럼 만들지 않는다(DEV-011).
+  - **CR-019 결정**: 기본 라벨은 14px(**font.size.md**)를 사용한다. 예제 라벨은 `accent`, `danger` 같은 시각 토큰명이 아니라 `Deploy`, `Delete`처럼 결과가 분명한 동작 문구를 사용한다.
 
 | 이름 | 타입 | 기본값 | 필수 | 설명 |
 | --- | --- | --- | --- | --- |
@@ -266,6 +277,7 @@ export type IconButtonProps = PolymorphicProps<"button", IconButtonOwnProps> & {
   - `app.css:1058-1061` — `.card:has(> .table) { overflow-x: auto }`. FR-CMP-003 AC-4의 근거.
   - `app.css:1084` — 뷰포트 560px 미만에서 패딩 축소, 반경 `--radius-md`로 축소.
   - **CR-018 결정**: 초기 구현이 `card.background`과 `card.shadow`만 적용해 원본의 글래스 그라디언트와 재질 깊이를 잃었다. `surface.tint.1`에서 투명으로 사라지는 그라디언트, 얇은 내부 하이라이트, 라이트에서 0px로 재정의되는 글래스 blur를 복원한다. Primary 액션의 대비를 해치는 accent 그라디언트는 추가하지 않는다.
+  - **CR-019 결정**: 대화형 Card의 active 상태는 hover의 `-2px` 상승을 해제하고 기본 평면으로 돌아온다. 카탈로그처럼 내부에 live control이 필요한 경우 대화형 Card 대신 정적 Panel과 별도 링크를 합성한다.
 
 | 이름 | 타입 | 기본값 | 필수 | 설명 |
 | --- | --- | --- | --- | --- |
@@ -336,7 +348,7 @@ export type IconButtonProps = PolymorphicProps<"button", IconButtonOwnProps> & {
 - **근거 CSS**:
   - `app.css:497-507` — `.badge` `display: inline-flex`, `gap: 6px`, `border-radius: 9999px`, `padding: 4px 10px`, `font-size: 12px`, `font-weight: 600`, `letter-spacing: 0.5px`, `text-transform: uppercase`.
   - **결정**: 소스 `.badge`는 형태만 선언하고 색상을 선언하지 않는다(호출부가 인라인으로 지정했다). 따라서 `tone`별 색은 component 토큰으로 새로 정의하고, semantic 상태 토큰을 참조한다. `info`는 `status.running`, `success`는 `status.success`, `warning`은 `status.waiting`, `danger`는 `status.danger`, `accent`는 `accent`, `neutral`은 `text.muted` + `border.default`를 참조한다(`tokens.css:33-39`, `tokens.css:27-30`, `tokens.css:17`).
-  - **결정**: `border-radius: 9999px`는 리터럴이므로 `--cdt-radius-pill` 토큰을 요구한다. 이 토큰은 `tokens.css`의 반경 스케일(`tokens.css:65-69`)에 없으므로 `@conductor/tokens`가 새로 정의해야 한다.
+  - **결정**: `border-radius: 9999px`는 리터럴이므로 `--cdt-radius-pill` 토큰을 요구한다. 이 토큰은 `tokens.css`의 반경 스케일(`tokens.css:65-69`)에 없으므로 `@conductor-by-89soone/tokens`가 새로 정의해야 한다.
 
 | 이름 | 타입 | 기본값 | 필수 | 설명 |
 | --- | --- | --- | --- | --- |
@@ -562,6 +574,7 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
 - **상태**: `closed`, `open`. Radix가 `[data-state="open"]`/`[data-state="closed"]`를 부여하고 CSS가 애니메이션을 건다.
 - **접근성 책임**: role(`dialog`), `aria-modal`, 포커스 트랩, Escape 닫기, 포커스 복귀, 배경 스크롤 잠금은 모두 **Radix**가 제공한다(FR-CMP-006 AC-1, AC-2). accessible name은 **소비자**가 `Dialog.Title`로 제공한다. `z-index` 토큰 적용은 **Conductor**가 한다.
 - **사용 규칙**: `Dialog.Content` 안에 `Dialog.Title`이 없으면 Radix가 개발 빌드 경고를 출력한다. 설명이 없으면 `Dialog.Description` 대신 `aria-describedby={undefined}`를 Radix props로 전달한다.
+- **Close 기본 스타일**: `Dialog.Close`를 원시 버튼으로 렌더하면 `cdt-dialog__close`와 secondary compact Button 클래스가 기본 적용된다. `asChild`로 소비자 Button을 전달하면 `cdt-dialog__close`만 합성하고 소비자가 선택한 variant·size를 보존한다(CR-024, DEV-017).
 - **금지**: Radix가 부여한 `role`, `aria-modal`, `aria-labelledby`를 덮어쓰지 않는다(FR-A11Y-005 AC-4). 자체 `useEffect`로 `document.body.style.overflow`를 조작하지 않는다. 중첩 `Dialog`를 열지 않는다.
 - **관련**: FR-CMP-006, FR-TOK-008, FR-A11Y-002 / W-020, W-021.
 
@@ -591,6 +604,7 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
 - **상태**: `closed`, `open`.
 - **접근성 책임**: **Radix**가 role(`dialog`), 포커스 트랩, Escape, 포커스 복귀, 배경 스크롤 잠금을 제공한다. accessible name은 **소비자**가 `Drawer.Title`로 제공한다.
 - **사용 규칙**: 긴 내용은 `Drawer.Content` 자체가 세로 스크롤한다(`overflow: auto`).
+- **Close 기본 스타일**: `Drawer.Close`는 `Dialog.Close`와 같은 원시 버튼 기본 스타일/`asChild` 보존 규칙을 사용하고 marker class만 `cdt-drawer__close`로 분리한다(CR-024, DEV-017).
 - **금지**: `Drawer`와 `Dialog`를 동시에 열지 않는다. `side` 값을 `top`/`bottom`으로 확장하지 않는다. 소스에 근거가 없다.
 - **관련**: FR-CMP-006, FR-TOK-008, FR-A11Y-002 / W-020, W-021.
 
@@ -676,6 +690,7 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
 - **근거 CSS**:
   - `app.css:1166-1172` — `.form-label` `display: block`, `font-size: 13px`, `font-weight: 500`, `color: var(--text-muted)`, `margin-bottom: 8px`.
   - **결정**: 소스에 필드 래퍼, 설명, 오류 메시지 클래스가 없다. 래퍼는 `display: grid; gap: var(--space-2)`로 정의하고(`.form-label`의 8px 하단 여백을 그리드 간격으로 이관), 설명은 `text.muted` + `font.size.sm`, 오류는 `status.danger` + `font.size.sm`으로 정의한다. 오류 색은 `.banner-error`(`app.css:637`)의 전경 처리를 따른다.
+  - **CR-019 결정**: 가시 라벨은 `text.secondary` + 600 굵기로 설명의 `text.muted`와 분리한다. placeholder는 예시 형식만 전달하며 라벨이나 입력 조건을 대신하지 않는다.
 
 `Field`는 내부 Context로 `id`, `descriptionId`, `errorId`, `invalid`, `required`를 하위 컨트롤에 전달한다. 이 Context는 공개 API가 아니다(1.3 3항).
 
@@ -692,7 +707,7 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
 - **이벤트**: 없음.
 - **상태**: `default`, `error`, `disabled`(자식이 `disabled`일 때 라벨 시각이 흐려진다).
 - **접근성 책임**: 라벨-컨트롤 연결(`htmlFor`/`id`), 설명·오류의 `aria-describedby` 연결, `aria-invalid` 부여는 모두 **Conductor**가 수행한다. `useId()`는 React 18/19가 제공하며 SSR 안전하다(FR-DX-004). 문자열은 **소비자**가 제공한다. Radix는 관여하지 않는다.
-- **사용 규칙**: `error`가 존재하는 동안 `description`도 함께 `aria-describedby`에 남긴다. 오류 메시지는 색상 외에 텍스트로 원인을 전달한다(FR-A11Y-003 AC-2).
+- **사용 규칙**: `error`가 존재하는 동안 `description`도 함께 `aria-describedby`에 남긴다. 오류 메시지는 색상 외에 텍스트로 원인을 전달한다(FR-A11Y-003 AC-2). 문서와 제품 예시는 `Field`의 가시 라벨을 기본으로 사용한다.
 - **금지**: `Field` 안에 컨트롤을 2개 이상 넣지 않는다. `placeholder`를 라벨 대용으로 쓰지 않는다.
 - **관련**: FR-CMP-007, FR-A11Y-003, FR-A11Y-005 / W-020, W-021.
 
@@ -982,7 +997,7 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
 
 ### 3.8 셸 컴포넌트군 (FR-CMP-009 / API-CMP-009, OD-004 조건부)
 
-이 군은 우선순위 `Should`이며 OD-004가 2026-07-10에 "패키지에 포함"으로 종결되었다. C-070 ~ C-072는 `@conductor/react` 공개 진입점에 포함하며, 의존성 목록의 라우팅 라이브러리 0건을 유지한다(FR-CMP-009 AC-2). 이 조건이 깨지면 SRS 예외 처리에 따라 FR-CMP-009를 `deprecated`로 표시하고 세 컴포넌트를 문서 사이트 내부 컴포넌트로 강등한다.
+이 군은 우선순위 `Should`이며 OD-004가 2026-07-10에 "패키지에 포함"으로 종결되었다. C-070 ~ C-072는 `@conductor-by-89soone/react` 공개 진입점에 포함하며, 의존성 목록의 라우팅 라이브러리 0건을 유지한다(FR-CMP-009 AC-2). 이 조건이 깨지면 SRS 예외 처리에 따라 FR-CMP-009를 `deprecated`로 표시하고 세 컴포넌트를 문서 사이트 내부 컴포넌트로 강등한다.
 
 #### C-070 AppShell
 
@@ -1064,7 +1079,7 @@ export interface NavLinkRenderProps {
 - **상태**: `default`, `hover`, `focus`, `active`(현재 경로).
 - **접근성 책임**: `aria-current="page"` 계산과 전달은 **Conductor**가 수행한다(`item.active`에서 파생). 링크 요소의 role은 **소비자**가 `renderLink`에서 생성한 요소가 제공한다. 목록 이름은 **소비자**가 제공한다. 활성 표시자 `::before`는 장식이며 색상 외에 `aria-current`가 상태를 전달한다.
 - **사용 규칙**: `renderLink`에서 라우터의 `Link` 컴포넌트를 반환한다. `props.className`을 그대로 전달해야 시각이 적용된다.
-- **금지**: `NavList`가 `href` 비교로 활성 항목을 판정하지 않는다. 판정은 소비자가 `item.active`로 넘긴다. `@conductor/react`가 라우팅 라이브러리를 import하지 않는다(FR-CMP-009 AC-2).
+- **금지**: `NavList`가 `href` 비교로 활성 항목을 판정하지 않는다. 판정은 소비자가 `item.active`로 넘긴다. `@conductor-by-89soone/react`가 라우팅 라이브러리를 import하지 않는다(FR-CMP-009 AC-2).
 - **관련**: FR-CMP-009, FR-A11Y-002, FR-A11Y-003 / W-001, W-021.
 
 #### C-072 TopBar
@@ -1221,7 +1236,7 @@ component 토큰은 semantic 토큰만 참조한다(FR-TOK-002 AC-3). 아래 표
 | C-071 NavList | `--cdt-nav-list-background`, `--cdt-nav-list-border`, `--cdt-nav-item-text`, `--cdt-nav-item-text-active`, `--cdt-nav-item-background-hover`, `--cdt-nav-item-background-active`, `--cdt-nav-item-indicator`, `--cdt-nav-section-label-text`, `--cdt-font-weight-section-label` | `surface.raised`, `surface.canvas`, `border.subtle`, `text.muted`, `text.primary`, `state.hover`, `state.selected`, `accent`, `accent.soft`, `text.faint` |
 | C-072 TopBar | `--cdt-topbar-background`, `--cdt-topbar-border`, `--cdt-topbar-eyebrow-text`, `--cdt-topbar-title-text`, `--cdt-topbar-min-height` | `surface.glass`, `border.subtle`, `text.faint`, `text.secondary` |
 
-### 6.3 이 문서가 `@conductor/tokens`에 요구하는 신규 semantic 토큰
+### 6.3 이 문서가 `@conductor-by-89soone/tokens`에 요구하는 신규 semantic 토큰
 
 아래 4개 키는 `tokens.css`에 존재하지 않으나 컴포넌트 구현에 필요하다. `packages/tokens/src/`에 정의하고 두 테마 모두에 값을 부여한다(FR-QA-001 AC-1).
 
@@ -1233,9 +1248,6 @@ component 토큰은 semantic 토큰만 참조한다(FR-TOK-002 AC-3). 아래 표
 | `elevation.accent` | 강조 버튼의 색 있는 그림자 | `app.css:468`(`.btn-primary`), `app.css:474`(hover) |
 
 `font.weight.*` 스케일은 FR-TOK-007이 다루지 않으므로, `--cdt-font-weight-section-label`은 component 토큰으로 두고 semantic 토큰을 신설하지 않는다.
-
-
-
 
 
 

@@ -148,7 +148,7 @@ WP-008 ~ WP-012이 완료됐다.
 | `packages/css/src/base.css` | 토큰 기반 base 스타일 |
 | `packages/css/src/layout.css` | WP-009 레이아웃 프리미티브. 색 속성 금지 |
 | `packages/css/src/components.css` | WP-012 버튼·카드·패널 `cdt.component` 클래스 |
-| `packages/css/src/tokens.css` | `@conductor/tokens/tokens.css` 공개 진입점 import |
+| `packages/css/src/tokens.css` | `@conductor-by-89soone/tokens/tokens.css` 공개 진입점 import |
 | `packages/css/src/utility.css` | 낮은 범위의 utility |
 | `packages/css/build.mjs` | lightningcss 빌드, `index.css`/`component.css`, `{breakpoint.*}` 치환 |
 | `packages/css/checks.mjs` | CSS 산출물 정적 검사. `!important`, 레이어, media var 잔존 등 |

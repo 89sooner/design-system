@@ -62,13 +62,13 @@ importers:
 
   apps/docs:
     dependencies:
-      '@conductor/css':
+      '@conductor-by-89soone/css':
         specifier: workspace:*
         version: link:../../packages/css
-      '@conductor/react':
+      '@conductor-by-89soone/react':
         specifier: workspace:*
         version: link:../../packages/react
-      '@conductor/tokens':
+      '@conductor-by-89soone/tokens':
         specifier: workspace:*
         version: link:../../packages/tokens
       '@vitejs/plugin-react':
@@ -111,7 +111,7 @@ importers:
 
   packages/css:
     dependencies:
-      '@conductor/tokens':
+      '@conductor-by-89soone/tokens':
         specifier: workspace:*
         version: link:../tokens
     devDependencies:
@@ -133,10 +133,10 @@ importers:
 
   packages/react:
     dependencies:
-      '@conductor/css':
+      '@conductor-by-89soone/css':
         specifier: workspace:*
         version: link:../css
-      '@conductor/tokens':
+      '@conductor-by-89soone/tokens':
         specifier: workspace:*
         version: link:../tokens
       '@radix-ui/react-checkbox':

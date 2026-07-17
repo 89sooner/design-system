@@ -2,7 +2,7 @@
  * `lintTokens` — the engine behind `pnpm lint:tokens` (FR-TOK-001, FR-TOK-008 AC-2,
  * FR-THM-005 AC-3).
  *
- * The rules live in `@conductor/tokens` because the token source is what defines what a legal
+ * The rules live in `@conductor-by-89soone/tokens` because the token source is what defines what a legal
  * value is: the `--cdt-` naming, the `usage` classification and the `text.faint` restriction all
  * come from here. The *targets* do not. They arrive as command-line paths, so this package never
  * names `packages/css` or `packages/react` and the dependency direction

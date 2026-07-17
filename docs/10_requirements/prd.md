@@ -1,6 +1,6 @@
 # Conductor Design System PRD
 
-> 상태: review | 버전: v0.2 | 갱신일: 2026-07-10
+> 상태: review | 버전: v0.3 | 갱신일: 2026-07-17
 
 ## 1. 문서 개요
 
@@ -17,12 +17,12 @@ Conductor Design System(이하 Conductor)은 `agent-ai-platform`의 `packages/we
 - **G-2 의미 계층 확보**: 하드코딩된 값을 프리미티브 → 시맨틱 → 컴포넌트 3계층 토큰으로 재구성해, 팔레트를 교체해도 컴포넌트 코드가 바뀌지 않게 한다.
 - **G-3 두 번째 테마 증명**: 라이트 테마를 추가해 토큰 계층이 실제로 테마를 분리하는지 검증한다. 라이트 테마는 계층 설계의 테스트 케이스다.
 - **G-4 접근성 기준선**: 색상 단독 정보 전달을 제거하고 WCAG 2.1 AA 대비율을 두 테마 모두에서 만족시킨다.
-- **G-5 소비 가능성**: 새 애플리케이션이 `pnpm add @conductor/react`만으로 Conductor의 시각을 얻을 수 있게 한다.
+- **G-5 소비 가능성**: 새 애플리케이션이 `pnpm add @conductor-by-89soone/react`만으로 Conductor의 시각을 얻을 수 있게 한다.
 
 ### 2.1 비목표 (Non-goals)
 
 - **NG-1**: 디자인 도구(Figma) 연동. 토큰 소스는 코드가 유일한 출처다.
-- **NG-2**: React 외 프레임워크 어댑터. 비-React 소비자는 `@conductor/css`를 직접 사용한다.
+- **NG-2**: React 외 프레임워크 어댑터. 비-React 소비자는 `@conductor-by-89soone/css`를 직접 사용한다.
 - **NG-3**: agent-ai-platform의 도메인 컴포넌트(`.thread-page`, `.approval-card-*`, `.run-summary`, `.tool-grid`) 이식. 재사용되지 않는 결합을 만든다.
 - **NG-4**: agent-ai-platform 저장소를 Conductor로 마이그레이션하는 작업. Conductor v1은 독립 저장소로만 성립한다. 마이그레이션은 별도 제품 결정이다.
 - **NG-5**: 차트/데이터 시각화 라이브러리.
@@ -47,7 +47,7 @@ Conductor Design System(이하 Conductor)은 `agent-ai-platform`의 `packages/we
 | M-4 접근성 위반 | axe-core 심각도 serious 이상 위반 0건 (컴포넌트 전수) | `pnpm test:a11y` |
 | M-5 소비 경로 | 빈 Vite React 앱에서 설치부터 첫 화면 렌더까지 명령 3개 이하 | 문서 사이트 Getting Started 절차 실행 |
 | M-6 타입 안전성 | 공개 API의 `any` 노출 0건 | `pnpm typecheck` + API 추출 리포트 |
-| M-7 번들 비용 | `@conductor/react`의 `Button` 단독 import 시 gzip 4KB 이하 (React 제외) | 번들 분석 리포트 |
+| M-7 번들 비용 | `@conductor-by-89soone/react`의 `Button` 단독 import 시 gzip 4KB 이하 (React 제외) | 번들 분석 리포트 |
 
 ## 5. 범위
 
@@ -77,7 +77,7 @@ Conductor Design System(이하 Conductor)은 `agent-ai-platform`의 `packages/we
 | 제외 항목 | 제외 사유 |
 | --- | --- |
 | Figma 양방향 동기화 | 외부 도구 의존과 DTCG 포맷 채택이 선행되어야 한다. v1의 토큰 소스는 코드다 |
-| Vue / Svelte / Web Components 어댑터 | 현재 소비자는 React 단일. `@conductor/css`가 비-React 대안을 제공한다 |
+| Vue / Svelte / Web Components 어댑터 | 현재 소비자는 React 단일. `@conductor-by-89soone/css`가 비-React 대안을 제공한다 |
 | Tailwind preset | ADR-002가 Vanilla CSS + 커스텀 프로퍼티를 확정했다. preset은 소비자를 Tailwind에 결속한다 |
 | 자체 아이콘 세트 | `lucide-react`를 peer dependency로 둔다. 아이콘 디자인은 v1 목표가 아니다 |
 | 차트/데이터 시각화 컴포넌트 | 독립적이고 큰 범위. `Meter`/`ProgressRing`까지만 포함한다 |
@@ -93,12 +93,12 @@ Conductor Design System(이하 Conductor)은 `agent-ai-platform`의 `packages/we
 
 - 시작 조건: 빈 Vite + React + TypeScript 프로젝트가 있다.
 - 기본 흐름:
-  1. `pnpm add @conductor/react @conductor/css @conductor/tokens`
-  2. 진입 파일에서 `import "@conductor/css"` 한 줄을 추가한다.
+  1. `pnpm add @conductor-by-89soone/react @conductor-by-89soone/css @conductor-by-89soone/tokens`
+  2. 진입 파일에서 `import "@conductor-by-89soone/css"` 한 줄을 추가한다.
   3. 루트 요소에 `data-cdt-theme="dark"`를 붙인다.
-  4. `import { Button } from "@conductor/react"`로 첫 컴포넌트를 렌더한다.
-- 대체 흐름: React를 쓰지 않는 경우 `@conductor/css`만 설치하고 `cdt-btn cdt-btn--primary` 클래스를 직접 쓴다.
-- 오류 흐름: `@conductor/css`를 import하지 않으면 컴포넌트가 스타일 없이 렌더된다. 개발 빌드에서 토큰 미주입을 감지해 콘솔 경고를 1회 출력한다.
+  4. `import { Button } from "@conductor-by-89soone/react"`로 첫 컴포넌트를 렌더한다.
+- 대체 흐름: React를 쓰지 않는 경우 `@conductor-by-89soone/css`만 설치하고 `cdt-btn cdt-btn--primary` 클래스를 직접 쓴다.
+- 오류 흐름: `@conductor-by-89soone/css`를 import하지 않으면 컴포넌트가 스타일 없이 렌더된다. 개발 빌드에서 토큰 미주입을 감지해 콘솔 경고를 1회 출력한다.
 - 관련 요구사항: FR-DX-003, FR-CSS-001, FR-THM-003, FR-CMP-001
 
 ### SCN-002 관리자가 상태색 하나를 바꾼다
@@ -230,7 +230,7 @@ Conductor Design System(이하 Conductor)은 `agent-ai-platform`의 `packages/we
 | OD-001 | 대비율 검사 대상 전경/배경 쌍을 어떻게 정의하는가? 소스 팔레트에서 WCAG 2.1 AA 미달 5건이 실측되었다 | **최소 수정**: `focusRing`(alpha 0.30 → 0.80)과 신규 `border.control`(slate alpha 0.60)만 값을 교정하고, `text.faint`·`border.*`는 `decorative`로, `status.queued`·`status.neutralEnd`는 `nonText`로 분류해 값을 보존한다. `srs_final.md` 12.1절이 확정 표이며 FR-THM-005가 강제한다 | 2026-07-10 | Accessibility Reviewer | closed |
 | OD-002 | 시각 회귀 검사를 v1 릴리스 게이트에 포함하는가? | **REL-004로 이월**. FR-QA-004를 `deferred`로 표시한다. v1은 수동 시각 확인으로 대체한다. R-2(폰트 렌더 flake)가 v1 일정 위험보다 크다 | 2026-07-10 | QA | closed |
 | OD-003 | 필터/칩 컴포넌트군(F-CMP-010)을 v1에 넣는가? | (a) 포함 (b) v1.1로 이월 | REL-003 종료 | Product | open |
-| OD-004 | 셸 컴포넌트군을 배포 패키지에 넣는가, 문서 사이트 내부 컴포넌트로 두는가? | **`@conductor/react`에 포함**. `renderLink` props로 라우팅 비종속 API가 성립한다. WP-023을 실행한다 | 2026-07-10 | System Maintainer | closed |
+| OD-004 | 셸 컴포넌트군을 배포 패키지에 넣는가, 문서 사이트 내부 컴포넌트로 두는가? | **`@conductor-by-89soone/react`에 포함**. `renderLink` props로 라우팅 비종속 API가 성립한다. WP-023을 실행한다 | 2026-07-10 | System Maintainer | closed |
 
 Must 우선순위 FR을 차단하는 open OD: **없음.** OD-001이 2026-07-10에 종결되어 FR-THM-004와 FR-A11Y-004의 차단이 해제되었다. OD-003은 FR이 부여되지 않은 후보에만 관련되므로 baseline을 막지 않는다.
 

@@ -1,10 +1,10 @@
 # Conductor Design System 빌드 파이프라인 아키텍처
 
-> 상태: review | 버전: v0.2 | 갱신일: 2026-07-10
+> 상태: review | 버전: v0.3 | 갱신일: 2026-07-17
 
 ## 0. 문서 재해석
 
-이 문서는 표준 아키텍처 문서 세트의 `backend_architecture.md` 자리를 차지하지만, Conductor Design System에는 서버 런타임, 도메인 API 서비스, 데이터베이스, 메시지 큐, 인증 서버가 존재하지 않는다(`srs_final.md` 4.3 Out of Scope, 5.1 가정 4). 이 제품이 배포하는 것은 3개 npm 패키지(`@conductor/tokens`, `@conductor/css`, `@conductor/react`)와 1개 정적 문서 사이트뿐이다.
+이 문서는 표준 아키텍처 문서 세트의 `backend_architecture.md` 자리를 차지하지만, Conductor Design System에는 서버 런타임, 도메인 API 서비스, 데이터베이스, 메시지 큐, 인증 서버가 존재하지 않는다(`srs_final.md` 4.3 Out of Scope, 5.1 가정 4). 이 제품이 배포하는 것은 3개 npm 패키지(`@conductor-by-89soone/tokens`, `@conductor-by-89soone/css`, `@conductor-by-89soone/react`)와 1개 정적 문서 사이트뿐이다.
 
 따라서 이 문서는 "백엔드 아키텍처"를 **빌드 파이프라인 아키텍처**로 재해석한다: 토큰 소스에서 최종 배포 산출물에 이르는 4단계 빌드(토큰 → CSS → React → 문서 정적 빌드)의 모듈 경계, 각 단계의 입출력과 실패 처리, 순서 강제 방식, 그리고 빌드 시점에 실행되는 해석·검사 알고리즘을 정의한다. `actor context`, `permission check`, `idempotency key`, `audit event` 같은 런타임 백엔드 개념은 이 제품에 적용되지 않으므로 이 문서에 포함하지 않는다.
 
@@ -73,9 +73,9 @@ packages/docs/src/    ──[JOB-BUILD-004]──>  packages/docs/dist/  (정적
 | 항목 | 내용 |
 | --- | --- |
 | 책임 모듈 | `packages/docs/scripts/build.ts`(정적 사이트 생성기) |
-| 입력 | `@conductor/react`, `@conductor/css`(소비자로서 설치, FR-DOC-001 AC-1), `packages/tokens/dist/tokens.json`, `packages/docs/src/**/*.mdx`(사용 규칙·정적 페이지) |
+| 입력 | `@conductor-by-89soone/react`, `@conductor-by-89soone/css`(소비자로서 설치, FR-DOC-001 AC-1), `packages/tokens/dist/tokens.json`, `packages/docs/src/**/*.mdx`(사용 규칙·정적 페이지) |
 | 출력 | `dist/`(정적 HTML/JS/CSS 번들, 서버 런타임 없이 배포 가능) |
-| 처리 순서 | ① `@conductor/react`의 공개 진입점에서 export된 컴포넌트 목록과 `packages/docs/src/catalog/**`의 카탈로그 페이지 목록을 대조(FR-DOC-003 AC-5) → ② Foundations 페이지를 `tokens.json`에서 생성(FR-DOC-002) → ③ props 표를 `@conductor/react`의 `.d.ts`에서 추출해 생성(FR-DOC-003 AC-2) → ④ 정적 빌드 실행(외부 도메인 네트워크 요청 0건 검증 포함, FR-DOC-001 AC-4) |
+| 처리 순서 | ① `@conductor-by-89soone/react`의 공개 진입점에서 export된 컴포넌트 목록과 `packages/docs/src/catalog/**`의 카탈로그 페이지 목록을 대조(FR-DOC-003 AC-5) → ② Foundations 페이지를 `tokens.json`에서 생성(FR-DOC-002) → ③ props 표를 `@conductor-by-89soone/react`의 `.d.ts`에서 추출해 생성(FR-DOC-003 AC-2) → ④ 정적 빌드 실행(외부 도메인 네트워크 요청 0건 검증 포함, FR-DOC-001 AC-4) |
 | 실패 처리 | ①에서 카탈로그 페이지가 없는 공개 컴포넌트가 발견되면 빌드가 실패하고 누락된 컴포넌트 이름을 출력한다(FR-DOC-003 AC-5). |
 
 ## 4. 순서 강제 (FR-DX-001)
@@ -87,7 +87,7 @@ packages/docs/src/    ──[JOB-BUILD-004]──>  packages/docs/dist/  (정적
 ```json
 {
   "scripts": {
-    "build": "node scripts/check-build-order.mjs && pnpm --filter @conductor/tokens run build && pnpm --filter @conductor/css run build && pnpm --filter @conductor/react run build && pnpm --filter @conductor/docs run build"
+    "build": "node scripts/check-build-order.mjs && pnpm --filter @conductor-by-89soone/tokens run build && pnpm --filter @conductor-by-89soone/css run build && pnpm --filter @conductor-by-89soone/react run build && pnpm --filter @conductor-by-89soone/docs run build"
   }
 }
 ```
@@ -98,14 +98,14 @@ packages/docs/src/    ──[JOB-BUILD-004]──>  packages/docs/dist/  (정적
 
 ```ts
 const ALLOWED_DEPS: Record<string, string[]> = {
-  "@conductor/tokens": [],
-  "@conductor/css": ["@conductor/tokens"],
-  "@conductor/react": ["@conductor/tokens", "@conductor/css"],
-  "@conductor/docs": ["@conductor/tokens", "@conductor/css", "@conductor/react"],
+  "@conductor-by-89soone/tokens": [],
+  "@conductor-by-89soone/css": ["@conductor-by-89soone/tokens"],
+  "@conductor-by-89soone/react": ["@conductor-by-89soone/tokens", "@conductor-by-89soone/css"],
+  "@conductor-by-89soone/docs": ["@conductor-by-89soone/tokens", "@conductor-by-89soone/css", "@conductor-by-89soone/react"],
 };
 
 for (const [pkg, manifest] of packageManifests) {
-  const deps = Object.keys(manifest.dependencies ?? {}).filter((d) => d.startsWith("@conductor/"));
+  const deps = Object.keys(manifest.dependencies ?? {}).filter((d) => d.startsWith("@conductor-by-89soone/"));
   const forbidden = deps.filter((d) => !ALLOWED_DEPS[pkg].includes(d));
   if (forbidden.length > 0) {
     console.error(`error[BUILD-ORDER]: "${pkg}" declares forbidden dependency on ${forbidden.join(", ")}`);

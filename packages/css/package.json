@@ -1,15 +1,27 @@
 {
-  "name": "@conductor/css",
+  "name": "@conductor-by-89soone/css",
   "version": "0.0.0",
+  "description": "Framework-agnostic layered styles for Conductor.",
+  "license": "MIT",
+  "homepage": "https://89sooner.github.io/design-system/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/89sooner/design-system.git",
     "directory": "packages/css"
   },
-  "publishConfig": { "access": "public" },
-  "sideEffects": ["*.css"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "sideEffects": [
+    "*.css"
+  ],
   "types": "./types/index.d.ts",
-  "files": ["dist", "types"],
+  "files": [
+    "dist",
+    "types",
+    "README.md",
+    "LICENSE"
+  ],
   "exports": {
     ".": {
       "types": "./types/index.d.ts",
@@ -34,7 +46,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
-    "@conductor/tokens": "workspace:*"
+    "@conductor-by-89soone/tokens": "workspace:*"
   },
   "devDependencies": {
     "browserslist": "^4.24.4",
