@@ -2,14 +2,16 @@ name: Deploy Docs
 
 # JOB-BUILD-004 산출물의 정적 배포. Refs: WP-028 FR-DOC-001 NFR-001 NFR-002 NFR-004
 #
-# - 수동 실행(workflow_dispatch)이 배포 승인이다. `ref` 입력으로 임의 커밋을
-#   재배포할 수 있고, 롤백은 직전 정상 커밋을 ref로 지정한 재배포다. lockfile로
-#   고정된 재빌드는 결정적이며 10분 예산(NFR-004) 안에 끝난다 (CR-016).
+# - main push는 검증된 문서 artifact를 자동으로 배포한다. `workflow_dispatch`의
+#   `ref` 입력은 임의 커밋 재배포와 롤백에만 사용한다. lockfile로 고정된 재빌드는
+#   결정적이며 10분 예산(NFR-004) 안에 끝난다 (CR-016).
 # - GitHub Pages 배포는 원자적 스냅샷 교체라 방문자가 신·구 자산이 섞인 상태를
 #   받지 않는다. 디렉터리 포인터 전환의 의도를 스냅샷 단위로 충족한다 (CR-016).
 # - 업로드 전에 Lighthouse LCP 게이트(NFR-001)와 외부 도메인 요청 0건(NFR-002)을
 #   통과해야 한다.
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
     inputs:
       ref:
@@ -37,7 +39,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.ref }}
+          # Manual runs can deploy an explicit rollback ref. Push runs must build
+          # the exact triggering commit, not the default branch's later HEAD.
+          ref: ${{ inputs.ref || github.sha }}
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4

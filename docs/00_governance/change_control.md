@@ -51,6 +51,7 @@
 | CR-029 | 2026-07-17 | implementation | 로컬 릴리스 게이트 재검증 + `DEV-022` | 저장소 blob의 LF Changeset은 CI에서 통과하지만 `core.autocrlf=true` 환경에서 CRLF로 체크아웃되면 `check-changesets.mjs`의 LF 전용 frontmatter 정규식이 유효한 항목을 누락으로 오판했다. 파싱 전에 CRLF와 단독 CR을 LF로 정규화해 Git 줄바꿈 정책과 무관하게 같은 계약을 검사한다. Changeset 형식·버전 정책·패키지 API 변경 없음 | DEV-022, FR-DX-005, WP-027, JOB-REL-001 | changeset checker, async architecture, work package, delivery ledger | closed |
 | CR-030 | 2026-07-17 | implementation | 0.1.1 version PR 병합 + `DEV-023` | version PR이 Changeset을 package.json/CHANGELOG로 소비하고 삭제한 정상 커밋에서도 version 잡이 `changeset status --since <직전 태그>`를 실행해 “Changeset 없음”으로 실패했다. Changesets bot 작성자, 고정 제목, Changeset 삭제, 영향 패키지의 manifest/CHANGELOG만 바뀐 파일 집합을 모두 만족하는 version commit을 별도 분류하고, 이 경우 version PR 생성·누락 검사를 skip해 수동 publish를 기다린다. 일반 소스 커밋의 누락 Changeset 검사는 유지한다. 제품 API·버전 정책 변경 없음 | DEV-023, FR-DX-005, WP-027, JOB-REL-001 | release workflow, version commit classifier, async architecture, work package, delivery ledger | closed |
 | CR-031 | 2026-07-18 | design + implementation | 사용자 요청 (원본 시각 언어 정제 및 Pages 빈 화면) + `DEV-024` | 원본 앱의 두 ambient glow와 glass navigation을 공용 `AppShell` 계약으로 승격한다. 기존 CSS가 참조하던 정의되지 않은 `surface.tint.1`을 포함해 장식 전용 tint 2개를 두 테마에 추가한다. GitHub Pages path rewrite/404 응답에 문서 라우팅을 의존하지 않도록 HashRouter와 legacy path → hash 404 fallback을 사용한다. 대비 쌍·공개 React API·화면/기능 범위는 변경하지 않는다 | DEV-024, FR-THM-001~002, FR-CSS-003~004, FR-CMP-009, FR-DOC-001, WP-008, WP-023, WP-028 | derived UI specs, frontend/infrastructure architecture, token/CSS/docs source, delivery ledger | open |
+| CR-032 | 2026-07-18 | implementation | 사용자 확인 (문서 사이트는 main 반영만으로 완성되어야 함) + `DEV-025` | 문서 배포가 수동 `workflow_dispatch`만 받는 탓에 CI가 통과해도 Pages artifact가 갱신되지 않았다. `main` push마다 triggering SHA를 자동 배포하고, 수동 `ref` 실행은 명시적 롤백/재배포 경로로 유지한다. Pages 빌드·Lighthouse·원자적 스냅샷 배포 게이트는 그대로 둔다 | DEV-025, FR-DOC-001, NFR-001~002, NFR-004, WP-028, JOB-BUILD-004 | infrastructure operations, deploy workflow, delivery ledger | open |
 
 유형: `scope`(범위 변경), `design`(설계 변경), `implementation`(구현 편차 DEV-### 처리), `correction`(문서 오류 수정)
 
@@ -361,6 +362,12 @@ WP-009 완료 검증에서 발견한 작업 패키지 검증 명령의 문서 �
 - [x] `conductor_screen_flow_spec.md`, `conductor_ui_component_spec.md`, `conductor_design_system_tokens.md` — hash URL 정규화, AppShell ambient surface, `surface.tint.1`/`.2` 계약을 기록
 - [x] token/CSS/docs source와 문서 E2E/visual route fixtures — 두 theme tint, AppShell gradient/glass, HashRouter 경로 및 404 artifact 생성 구현
 - [ ] Chromium visual/a11y 및 GitHub Pages 실제 URL 확인 — 제한 sandbox의 browser/port 권한으로 CI에서 실행 필요
+
+### CR-032 cascade
+
+- [x] `.github/workflows/deploy-docs.yml` — `main` push trigger, triggering SHA checkout, 수동 `ref` 롤백 경로 유지
+- [x] `conductor_infrastructure_operations.md`, `conductor_implementation_traceability.md` — 자동 배포/수동 롤백 계약 기록
+- [ ] main push의 실제 Pages deploy run과 URL 확인
 
 ## 6. 미해소 오픈 결정
 

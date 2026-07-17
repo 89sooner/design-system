@@ -58,7 +58,7 @@ WP-001 ~ WP-028의 이름·REL·선행 관계는 `conductor_work_packages.md`에
 | WP-025 | 번들 크기 검사 CI 잡 | REL-003 | done | `f0318f9` | `size-limit` 11.2 기반 `pnpm size` 게이트. Button 단독 527바이트/4KB, CSS 7,720바이트/20KB, React·CSS `sideEffects` 계약을 검증한다. 1바이트 제한 음성 픽스처는 exit 1과 기여 청크를, 누락 진입점 픽스처는 측정 실패 exit 1을 실증한다. `size-report.json`은 CI 아티팩트로 30일 보존 | 2026-07-12 |
 | WP-026 | 시각 회귀 검사 | REL-004 | done | `6a5d5a4` | digest 고정 Playwright 1.61.1 Noble 컨테이너에서 대표 12개 컴포넌트×2테마=24 기준 이미지를 비교한다. 정상 3회가 각 25/25(diff 0), 36% Button 차이 픽스처는 exit 1과 actual/expected/diff를 생성했다. 일반 실행은 기준 이미지를 갱신하지 않고 `--update`만 허용한다 | 2026-07-12 |
 | WP-027 | Changesets와 npm 배포 워크플로 | REL-004 | done | `4411aa1` | version PR #2와 OIDC Release run 29569125471로 0.1.0 3종·SLSA provenance v1 게시, actual rollback 323.8초. React 0.1.1도 version PR #4와 Release run 29586062062로 OIDC 게시·provenance·annotated tag 검증을 통과했다. DEV-018 tag 무음 실패는 CR-025, DEV-022 CRLF 파싱은 CR-029, DEV-023 version commit 이중 Changeset 검사는 구조 분류 후 skip하는 CR-030으로 해소 | 2026-07-17 |
-| WP-028 | 문서 사이트 정적 배포 | REL-004 | done | `705410e` | 라우트 코드 분할(첫 청크 361kB→셸만)과 랜딩 프리렌더로 Fast 3G LCP p75 1,793ms/2,500ms 달성. `pnpm lighthouse`가 정적 서빙 렌더·외부 도메인 요청 0건·LCP 예산을 게이트하고, `deploy-docs.yml`이 수동 승인·`ref` 지정 배포/롤백으로 GitHub Pages에 원자적 스냅샷을 올린다. 프리렌더 격리 A/B에서 클라이언트 전용은 3,580ms로 예산 초과 | 2026-07-13 |
+| WP-028 | 문서 사이트 정적 배포 | REL-004 | done | `705410e` | 라우트 코드 분할(첫 청크 361kB→셸만)과 랜딩 프리렌더로 Fast 3G LCP p75 1,793ms/2,500ms 달성. `pnpm lighthouse`가 정적 서빙 렌더·외부 도메인 요청 0건·LCP 예산을 게이트하고, `deploy-docs.yml`이 main push의 triggering SHA를 GitHub Pages 원자적 스냅샷으로 자동 배포한다. 수동 `ref`는 롤백/재배포에만 쓴다(CR-032). 프리렌더 격리 A/B에서 클라이언트 전용은 3,580ms로 예산 초과 | 2026-07-18 |
 
 상태값: `todo` / `in_progress` / `done` / `blocked`
 
