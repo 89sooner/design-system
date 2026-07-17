@@ -289,12 +289,21 @@ const page: TokenDefinition[] = [
 ];
 
 const shell: TokenDefinition[] = [
+  component(
+    "appShell.background",
+    value("radial-gradient(circle at 82% -10%, {surface.tint.1}, transparent 34rem), radial-gradient(circle at 10% 85%, {surface.tint.2}, transparent 30rem), {surface.base}"),
+    "Ambient app-shell surface derived from the source application background.",
+  ),
   component("appShell.navWidth", ref("page.shellNavWidth"), "AppShell desktop navigation width."),
   component("appShell.mainMaxWidth", value("1480px"), "AppShell main content maximum width."),
   component("appShell.overlayBackground", ref("surface.overlay"), "Mobile navigation scrim."),
   component("skipLink.background", ref("accent.DEFAULT"), "Skip-link fill."),
   component("skipLink.text", ref("text.inverse"), "Skip-link label."),
-  component("navList.background", ref("surface.raised"), "Navigation surface."),
+  component(
+    "navList.background",
+    value("linear-gradient(180deg, {surface.glass}, {surface.canvas})"),
+    "Glass navigation surface over the app-shell ambient background.",
+  ),
   component("navList.border", ref("border.subtle"), "Navigation surface edge."),
   component("navItem.text", ref("text.muted"), "Navigation item label."),
   component("navItem.textActive", ref("text.primary"), "Active navigation item label."),

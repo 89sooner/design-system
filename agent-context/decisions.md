@@ -1,5 +1,43 @@
 # 확정 결정과 그 이유
 
+## 실제 공개 릴리스와 안정화 결정 (2026-07-18)
+
+### 게시 완료 판정은 registry version 하나로 끝내지 않는다
+
+첫 0.1.0 publish는 npm에는 성공했지만 git identity 부재로 Changesets의 annotated tag 생성만 실패했고, 그 실패는 전체 job을 red로 만들지 않았다(DEV-018 / CR-025). 따라서 릴리스 완료 조건은 다음 증거의 교집합이다.
+
+- npm version과 `latest` dist-tag
+- deprecation, peer dependency metadata
+- SLSA provenance v1 attestation과 npm signature
+- 로컬·원격 annotated git tag object와 대상 merge commit
+- workspace link가 없는 registry consumer의 type/runtime smoke
+
+release job에는 bot identity를 설정했고 `scripts/check-release-tags.mjs`가 현재 공개 3개 package tag를 검증한다. 앞으로도 “publish 출력이 성공했다”만으로 릴리스를 닫지 않는다.
+
+### 장기 npm token 대신 package별 Trusted Publisher를 사용한다
+
+`@conductor-by-89soone/tokens`, `css`, `react` 각각이 `89sooner/design-system`의 `.github/workflows/release.yml`을 신뢰한다. publish job만 `id-token: write`를 가진다는 기존 THR-002 분리는 유지한다. 로컬 npm session은 실제 롤백 복원 뒤 logout했다.
+
+### `lucide-react` peer는 `>=0.400.0 <2`다
+
+`^0.400.0`은 semver 0.x에서 `<0.401.0`이라 repo의 실제 0.468과 소비자의 후속 0.x를 거부한다. 지원 하한 0.400.0을 registry smoke로 검증하고 상한을 2 미만으로 명시했다(DEV-019 / CR-026). React 0.1.1에 공개됐다.
+
+### axe는 finite animation 완료 뒤 실행한다
+
+light/open Dialog의 Node 22 flake는 진입 애니메이션 중간 프레임을 axe가 샘플링한 문제였다(DEV-021 / CR-028). 한 rAF 뒤 finite Web Animations의 `finished`를 기다린다. Spinner의 infinite animation은 기다리지 않지만 audit 대상에서는 빼지 않는다. motion disable, fixed sleep, axe rule disable은 기각했다.
+
+### changeset parser는 checkout 줄바꿈을 의미로 취급하지 않는다
+
+로컬 `core.autocrlf=true`에서 CRLF가 된 유효 changeset을 LF 전용 parser가 거부했다(DEV-022 / CR-029). 입력 경계에서 `\r\n?`를 `\n`으로 정규화한다. CRLF 양성 fixture와 `Refs:` 누락 음성 fixture를 모두 유지한다.
+
+### bot version commit만 중복 release preparation을 건너뛴다
+
+version PR merge commit은 changeset을 이미 소비한다. 이 커밋에서 다시 `changeset status --since`를 강제하면 실제 publish 전에 거짓 실패한다(DEV-023 / CR-030). 다만 제목만으로 우회하면 공격/오분류 위험이 있다. classifier는 exact subject, Changesets bot author, deleted changeset, paired manifest/CHANGELOG, 다른 경로 없음까지 모두 확인한다. 일반 source commit에서는 기존 status/action 경로를 그대로 실행한다.
+
+### 선택적 maintenance는 release scope와 분리한다
+
+Actions의 deprecated Node 20 runtime warning은 action 구현의 런타임 문제이며 패키지의 Node 20 지원 정책이 아니다. action major upgrade는 공식 호환성을 확인하는 별도 PR로 처리한다. OD-003 FilterBar/Chip도 FR/WP와 사용자 승인이 없으므로 구현하지 않는다.
+
 ## WP-027 릴리스 자동화 결정 (2026-07-13)
 
 ### 파괴 변경 판정의 근거는 커밋 메시지가 아니라 API 리포트다

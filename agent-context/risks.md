@@ -1,5 +1,41 @@
 # 리스크 / 불확실한 가정 / 검증에서 속을 뻔한 지점
 
+## 2026-07-18 공개 릴리스 세션에서 추가된 함정
+
+### AA. npm publish 성공과 git release 완료는 같은 사건이 아니다
+
+첫 release run에서 npm 0.1.0 세 package는 게시됐지만 runner git identity가 없어 Changesets의 annotated tag 생성이 실패했다. Changesets가 이 실패를 전체 job 실패로 전파하지 않아 registry만 보면 정상처럼 보였다.
+
+완화: release job bot identity + `scripts/check-release-tags.mjs`. local ref 존재만 보지 않고 local/remote tag object가 annotated인지, 대상 commit이 맞는지 확인한다. publish log 한 줄로 릴리스를 닫지 않는다.
+
+### AB. semver 0.x의 caret은 예상보다 좁다
+
+`lucide-react: ^0.400.0`은 `<0.401.0`이다. “0.400 이상”이 아니다. repo의 0.468도 거부하는 잘못된 peer였다. `>=0.400.0 <2`로 교정하고 실제 하한 0.400.0 registry 소비자를 검증했다. 0.x peer 범위를 쓸 때 npm semver 계산을 직관으로 판단하지 않는다.
+
+### AC. 접근성 도구도 애니메이션 중간 프레임을 본다
+
+Node 22 light/open Dialog의 axe 대비 실패는 색 토큰 회귀가 아니라 `cdt-dialog-enter` 도중 약 4.6% opacity frame이었다. fixed sleep은 머신 속도에 따라 다시 흔들리고 motion disable은 실제 reduced-motion이 아닌 동작을 숨긴다. finite animation의 `finished`를 기다리되 infinite animation은 기다리지 않는 것이 현재 계약이다.
+
+### AD. OS checkout 정책이 유효한 changeset을 깨뜨릴 수 있다
+
+전역 `core.autocrlf=true`에서 working tree changeset은 CRLF다. LF 전용 정규식은 유효 frontmatter를 거부했다. text protocol/parser는 입력 경계에서 줄바꿈을 정규화하고, 양성 CRLF와 음성 규약 fixture를 같이 둔다.
+
+### AE. version commit과 일반 source commit은 release 전제 상태가 다르다
+
+Changesets version PR은 changeset을 소비·삭제한다. version merge 뒤 `status --since`를 똑같이 강제하면 게시해야 할 커밋이 오히려 거짓 실패한다. 반대로 제목만 보고 gate를 생략하면 일반 커밋이 우회될 수 있다. 현재 classifier의 author/path/delete/paired file 조건을 느슨하게 만들지 않는다.
+
+### AF. bot의 PR 업데이트는 최신 head CI를 자동으로 만들지 않을 수 있다
+
+Changesets action이 `GITHUB_TOKEN`으로 기존 version PR을 갱신하면 GitHub의 재귀 방지로 pull_request workflow가 시작되지 않을 수 있다. “체크 없음”을 green으로 읽지 않는다. 이번에는 PR close/reopen으로 최신 head CI를 생성했다. 자동화한다면 명시적 workflow dispatch 또는 별도 권한 모델을 설계한다.
+
+### AG. action runtime 경고와 package runtime 지원은 별개다
+
+checkout/setup-node/upload-artifact/pnpm action이 deprecated Node 20 action runtime 경고를 낸다. 이는 action 구현의 런타임이며 소비 package의 `Node >=20` 계약이나 CI Node 20 matrix를 제거할 근거가 아니다. 공식 action major 호환성을 확인한 별도 maintenance로 처리한다.
+
+### AH. sandbox 실패를 제품 실패로 일반화하지 않는다
+
+제한 환경에서는 Corepack cache write가 EROFS, Node child `git`가 EPERM일 수 있다. 같은 source의 GitHub Actions와 권한 있는 로컬 결과를 대조한다. 다만 환경 탓으로 분류하기 전에 명령·입력·working tree가 동일한지 확인해야 한다.
+
 ## 2026-07-13 (WP-024~028) 세션에서 추가된 함정
 
 ### Q. CI가 게이트를 돌릴 브라우저를 갖고 있지 않았다

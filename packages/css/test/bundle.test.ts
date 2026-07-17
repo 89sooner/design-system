@@ -278,6 +278,7 @@ describe("FR-CMP-009 shell components", () => {
   });
 
   test("C-071 / C-072: shell visuals resolve through public tokens", () => {
+    expect(ruleFor(index, "cdt.component", /^\.cdt-app-shell$/)?.decls.background).toBe("var(--cdt-app-shell-background)");
     expect(ruleFor(index, "cdt.component", /^\.cdt-nav-list$/)?.decls.background).toBe("var(--cdt-nav-list-background)");
     expect(ruleFor(index, "cdt.component", /^\.cdt-topbar$/)?.decls.background).toBe("var(--cdt-top-bar-background)");
     expect(componentRules.find((rule) => rule.selector === ".cdt-app-shell__main")?.decls["max-inline-size"]).toBe("var(--cdt-app-shell-main-max-width)");

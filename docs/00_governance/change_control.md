@@ -50,6 +50,7 @@
 | CR-028 | 2026-07-17 | implementation | main CI 접근성 게이트 + `DEV-021` | 동일 SHA의 PR 및 Node 20 잡은 통과했지만 main Node 22 잡에서 라이트 테마의 열린 Dialog가 axe `color-contrast` serious 위반을 간헐적으로 냈다. 실패 색상은 정지 상태 토큰이 아니라 `cdt-dialog-enter`가 약 4.6% 진행된 opacity 합성값이었다. axe 실행 전에 브라우저가 애니메이션을 등록할 한 프레임을 보장하고 유한 애니메이션의 `finished`를 기다리되 Spinner 같은 무한 상태 표시는 제외한다. 제품 CSS·토큰·공개 API·접근성 허용 목록은 변경하지 않는다 | DEV-021, FR-QA-003, FR-A11Y-005, WP-024, JOB-CI-002 | frontend/async architecture, a11y browser test, work package, delivery ledger | closed |
 | CR-029 | 2026-07-17 | implementation | 로컬 릴리스 게이트 재검증 + `DEV-022` | 저장소 blob의 LF Changeset은 CI에서 통과하지만 `core.autocrlf=true` 환경에서 CRLF로 체크아웃되면 `check-changesets.mjs`의 LF 전용 frontmatter 정규식이 유효한 항목을 누락으로 오판했다. 파싱 전에 CRLF와 단독 CR을 LF로 정규화해 Git 줄바꿈 정책과 무관하게 같은 계약을 검사한다. Changeset 형식·버전 정책·패키지 API 변경 없음 | DEV-022, FR-DX-005, WP-027, JOB-REL-001 | changeset checker, async architecture, work package, delivery ledger | closed |
 | CR-030 | 2026-07-17 | implementation | 0.1.1 version PR 병합 + `DEV-023` | version PR이 Changeset을 package.json/CHANGELOG로 소비하고 삭제한 정상 커밋에서도 version 잡이 `changeset status --since <직전 태그>`를 실행해 “Changeset 없음”으로 실패했다. Changesets bot 작성자, 고정 제목, Changeset 삭제, 영향 패키지의 manifest/CHANGELOG만 바뀐 파일 집합을 모두 만족하는 version commit을 별도 분류하고, 이 경우 version PR 생성·누락 검사를 skip해 수동 publish를 기다린다. 일반 소스 커밋의 누락 Changeset 검사는 유지한다. 제품 API·버전 정책 변경 없음 | DEV-023, FR-DX-005, WP-027, JOB-REL-001 | release workflow, version commit classifier, async architecture, work package, delivery ledger | closed |
+| CR-031 | 2026-07-18 | design + implementation | 사용자 요청 (원본 시각 언어 정제 및 Pages 빈 화면) + `DEV-024` | 원본 앱의 두 ambient glow와 glass navigation을 공용 `AppShell` 계약으로 승격한다. 기존 CSS가 참조하던 정의되지 않은 `surface.tint.1`을 포함해 장식 전용 tint 2개를 두 테마에 추가한다. GitHub Pages path rewrite/404 응답에 문서 라우팅을 의존하지 않도록 HashRouter와 legacy path → hash 404 fallback을 사용한다. 대비 쌍·공개 React API·화면/기능 범위는 변경하지 않는다 | DEV-024, FR-THM-001~002, FR-CSS-003~004, FR-CMP-009, FR-DOC-001, WP-008, WP-023, WP-028 | derived UI specs, frontend/infrastructure architecture, token/CSS/docs source, delivery ledger | open |
 
 유형: `scope`(범위 변경), `design`(설계 변경), `implementation`(구현 편차 DEV-### 처리), `correction`(문서 오류 수정)
 
@@ -354,6 +355,12 @@ WP-009 완료 검증에서 발견한 작업 패키지 검증 명령의 문서 �
 - [x] `scripts/is-version-packages-commit.mjs` — bot 작성자·제목·Changeset 삭제·manifest/CHANGELOG 쌍·허용 파일 외 변경 0건을 모두 검사. version commit 2개(`1c6f628`, `15024d2`)는 통과하고 일반 source commit `a6f8502`는 exit 1
 - [x] `.github/workflows/release.yml` — 검증된 version commit에서는 이미 소비된 Changeset을 다시 요구하지 않고 version action을 skip해 수동 OIDC publish를 기다림. 일반 커밋은 기존 `status --since` 게이트 유지
 - [x] 수동 Release run 29586062062로 React 0.1.1 OIDC publish·SLSA v1 provenance·annotated tag 원격 일치 완료. 격리 레지스트리 소비자 typecheck·React 19 SSR 통과
+
+### CR-031 cascade
+
+- [x] `conductor_screen_flow_spec.md`, `conductor_ui_component_spec.md`, `conductor_design_system_tokens.md` — hash URL 정규화, AppShell ambient surface, `surface.tint.1`/`.2` 계약을 기록
+- [x] token/CSS/docs source와 문서 E2E/visual route fixtures — 두 theme tint, AppShell gradient/glass, HashRouter 경로 및 404 artifact 생성 구현
+- [ ] Chromium visual/a11y 및 GitHub Pages 실제 URL 확인 — 제한 sandbox의 browser/port 권한으로 CI에서 실행 필요
 
 ## 6. 미해소 오픈 결정
 

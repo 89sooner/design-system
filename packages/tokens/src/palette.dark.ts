@@ -95,6 +95,18 @@ const surface: TokenDefinition[] = [
     value: "rgba(255, 255, 255, 0.05)",
     description: "Progress and meter track, matching the source 1:1.",
   }),
+  darkToken({
+    key: "surface.tint.1",
+    usage: "decorative",
+    value: "rgba(109, 124, 255, 0.11)",
+    description: "Primary ambient glow from the source application background. Decorative only.",
+  }),
+  darkToken({
+    key: "surface.tint.2",
+    usage: "decorative",
+    value: "rgba(20, 184, 166, 0.055)",
+    description: "Secondary ambient glow from the source application background. Decorative only.",
+  }),
 ];
 
 const text: TokenDefinition[] = [

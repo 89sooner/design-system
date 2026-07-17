@@ -1005,6 +1005,7 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
 - **CSS 클래스**: `cdt-app-shell`, `cdt-app-shell__nav`, `cdt-app-shell__content`, `cdt-app-shell__main`, `cdt-app-shell__overlay`, `cdt-skip-link`.
 - **근거 CSS**:
   - `app.css:131-135` — `.app-shell` `display: flex`, `min-height: 100vh`, `isolation: isolate`.
+  - `app.css:14-19` — indigo와 teal의 저농도 radial glow가 base surface 위에 놓인다. CR-031은 이를 `surface.tint.1`/`.2` 장식 토큰과 AppShell background로 일반화한다.
   - `app.css:137-147` — `.app-nav-wrapper` 폭 272px, `position: sticky`, `height: 100vh`, `z-index: 30`.
   - `app.css:252-257` — `.app-content-wrapper` `flex: 1`, 세로 방향, `min-width: 0`.
   - `app.css:338-344` — `.app-main` `flex: 1`, `padding: clamp(24px, 4vw, 48px)`, `max-width: 1480px`, 중앙 정렬.
@@ -1232,7 +1233,7 @@ component 토큰은 semantic 토큰만 참조한다(FR-TOK-002 AC-3). 아래 표
 | C-062 Meter | `--cdt-feedback-meter-track-background`, `--cdt-feedback-meter-fill-normal`, `--cdt-feedback-meter-fill-warning`, `--cdt-feedback-meter-fill-exceeded`, `--cdt-feedback-meter-height` | `surface.track`, `meter.normal`, `meter.warning`, `meter.exceeded` |
 | C-063 ProgressRing | `--cdt-progress-ring-track-stroke`, `--cdt-progress-ring-indicator-stroke`, `--cdt-progress-ring-label-text` | `surface.track`, `accent`, `text.primary` |
 | C-064 Spinner | `--cdt-spinner-track-stroke`, `--cdt-spinner-indicator-stroke` | `surface.track`, `accent` |
-| C-070 AppShell | `--cdt-app-shell-nav-width`, `--cdt-app-shell-main-max-width`, `--cdt-app-shell-overlay-background`, `--cdt-skip-link-background`, `--cdt-skip-link-text` | `surface.overlay`, `accent`, `text.inverse` |
+| C-070 AppShell | `--cdt-app-shell-background`, `--cdt-app-shell-nav-width`, `--cdt-app-shell-main-max-width`, `--cdt-app-shell-overlay-background`, `--cdt-skip-link-background`, `--cdt-skip-link-text` | `surface.base`, `surface.tint.1`, `surface.tint.2`, `surface.overlay`, `accent`, `text.inverse` |
 | C-071 NavList | `--cdt-nav-list-background`, `--cdt-nav-list-border`, `--cdt-nav-item-text`, `--cdt-nav-item-text-active`, `--cdt-nav-item-background-hover`, `--cdt-nav-item-background-active`, `--cdt-nav-item-indicator`, `--cdt-nav-section-label-text`, `--cdt-font-weight-section-label` | `surface.raised`, `surface.canvas`, `border.subtle`, `text.muted`, `text.primary`, `state.hover`, `state.selected`, `accent`, `accent.soft`, `text.faint` |
 | C-072 TopBar | `--cdt-topbar-background`, `--cdt-topbar-border`, `--cdt-topbar-eyebrow-text`, `--cdt-topbar-title-text`, `--cdt-topbar-min-height` | `surface.glass`, `border.subtle`, `text.faint`, `text.secondary` |
 

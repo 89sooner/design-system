@@ -51,12 +51,13 @@ Conductor의 오버레이는 `Dialog`(C-040), `Drawer`(C-041), `Tooltip`(C-042),
 
 ## 5. 딥링크 규칙
 
-정적 빌드가 모든 화면 경로를 사전 생성한다. `/components/:componentId`의 라우트 인스턴스는 컴포넌트 메타데이터(`ENT-CMP-001`)에서 전수 생성되므로, 산출물에 존재하는 `componentId` 집합은 `@conductor-by-89soone/react` 공개 export 집합과 같다(FR-DOC-003 AC-5).
+문서 사이트의 정식 URL은 `/#/components/:componentId`처럼 hash 뒤에 화면 경로를 둔다(CR-031). GitHub Pages의 path rewrite 유무와 무관하게 정적 `index.html`이 먼저 로드되고, `/components/:componentId` 같은 과거 path URL은 `404.html`이 동등한 hash URL로 정규화한다.
 
 | 진입 대상 | 동작 |
 | --- | --- |
-| 산출물에 존재하는 경로 | 해당 화면이 셸 안에서 렌더된다. 중간 화면을 거치지 않는다 |
-| 산출물에 없는 경로 | 정적 호스팅이 `404.html`을 반환한다. `404.html`은 셸 안에서 W-020의 `not_found` 상태를 렌더하고, 요청된 경로 문자열과 카탈로그 복귀 경로를 표시한다 |
+| hash 경로가 존재 | 해당 화면이 셸 안에서 렌더된다. 중간 화면을 거치지 않는다 |
+| hash 경로가 없음 | 클라이언트 라우터가 셸 안에서 `not_found` 상태를 렌더한다 |
+| 과거 path 경로 | 정적 호스팅의 `404.html`이 동등한 hash URL로 바꾼 뒤 위 규칙을 적용한다 |
 
 **결정: 존재하지 않는 경로는 새 화면 ID를 갖지 않는다.** `404.html`에 별도 화면 ID를 부여하면 FR 근거 없는 화면이 생긴다. W-020의 `not_found` 상태로 표현하면, 사용자는 찾던 컴포넌트가 없다는 사실과 존재하는 컴포넌트 전수를 같은 화면에서 확인한다.
 

@@ -812,6 +812,8 @@
     padding: var(--cdt-space-4);
   }
 
+  .cdt-app-shell { background: var(--cdt-app-shell-background); }
+
   .cdt-app-shell__nav[data-mobile] {
     display: none;
   }
@@ -845,6 +847,7 @@
     border: 1px solid var(--cdt-nav-list-border); /* cdt-allow-literal: token set has no shell border width */
     border-radius: var(--cdt-radius-xl);
     background: var(--cdt-nav-list-background);
+    backdrop-filter: blur(var(--cdt-overlay-background-blur));
     box-shadow: var(--cdt-elevation-raised);
   }
 

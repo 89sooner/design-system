@@ -1,8 +1,26 @@
 #hidden
 # aci:v1 id=f7b39dc src=agent-context/risks.md
-@kv sha256=d7b41c2b2e12dadf88234713b53a6728713b1b28902f0b5edddf939705347297 bytes=16964 lines=195 title=리스크-/-불확실한-가정-/-검증에서-속을-뻔한-지점
-@sig agent-context/risks.md;cache/ms-playwright;A/B;changesets/cli;src/tokens.ts;server/browser;15/15;Dialog/Tooltip/Menu;position/z-index;packages/react;conductor/react;packages/css;conductor/css;DEV-005/CR-012;conductor/tokens/breakpoints;packages/css/test/helpers.ts;packages/tokens/bin/;dist/cli.js;packages/tokens/bin/conductor-build-tokens.mjs;conductor/tokens;/bin/;packages/tokens/dist;px/ms/z-index/font-size;CR-005/CR-006
+@kv sha256=81617c192abebb70238d78f29c34e0ec2b942b1bdd3daa2f9949f155573bc842 bytes=20484 lines=231 title=리스크-/-불확실한-가정-/-검증에서-속을-뻔한-지점
+@sig agent-context/risks.md;scripts/check-release-tags.mjs;local/remote;light/open;protocol/parser;author/path/delete/paired;close/reopen;checkout/setup-node/upload-artifact/pnpm;cache/ms-playwright;A/B;changesets/cli;src/tokens.ts;server/browser;15/15;Dialog/Tooltip/Menu;position/z-index;packages/react;conductor-by-89soone/react;packages/css;conductor-by-89soone/css;DEV-005/CR-012;conductor-by-89soone/tokens/breakpoints;packages/css/test/helpers.ts;packages/tokens/bin/
 @h1 리스크 / 불확실한 가정 / 검증에서 속을 뻔한 지점
+@h2 2026-07-18 공개 릴리스 세션에서 추가된 함정
+@h3 AA. npm publish 성공과 git release 완료는 같은 사건이 아니다
+@cmd 첫 release run에서 npm 0.1.0 세 package는 게시됐지만 runner git identity가 없어 Changesets의 annotated tag 생성이 실패했다. Changesets가 이 실패를 전체 job 실패로 전파하지 않아 registry만 보면 정상처럼 보였다.
+@path 완화: release job bot identity + scripts/check-release-tags.mjs. local ref 존재만 보지 않고 local/remote tag object가 annotated인지, 대상 commit이 맞는지 확인한다. publish log 한 줄로 릴리스를 닫지 않는다.
+@h3 AB. semver 0.x의 caret은 예상보다 좁다
+@cmd lucide-react: ^0.400.0은 <0.401.0이다. “0.400 이상”이 아니다. repo의 0.468도 거부하는 잘못된 peer였다. >=0.400.0 <2로 교정하고 실제 하한 0.400.0 registry 소비자를 검증했다. 0.x peer 범위를 쓸 때 npm semver 계산을 직관으로 판단하지 않는다.
+@h3 AC. 접근성 도구도 애니메이션 중간 프레임을 본다
+@path Node 22 light/open Dialog의 axe 대비 실패는 색 토큰 회귀가 아니라 cdt-dialog-enter 도중 약 4.6% opacity frame이었다. fixed sleep은 머신 속도에 따라 다시 흔들리고 motion disable은 실제 reduced-motion이 아닌 동작을 숨긴다. finite animation의 finished를 기다리되 infinite animation은 기다리지 않는 것이 현재 계약이다.
+@h3 AD. OS checkout 정책이 유효한 changeset을 깨뜨릴 수 있다
+@path 전역 core.autocrlf=true에서 working tree changeset은 CRLF다. LF 전용 정규식은 유효 frontmatter를 거부했다. text protocol/parser는 입력 경계에서 줄바꿈을 정규화하고, 양성 CRLF와 음성 규약 fixture를 같이 둔다.
+@h3 AE. version commit과 일반 source commit은 release 전제 상태가 다르다
+@path Changesets version PR은 changeset을 소비·삭제한다. version merge 뒤 status --since를 똑같이 강제하면 게시해야 할 커밋이 오히려 거짓 실패한다. 반대로 제목만 보고 gate를 생략하면 일반 커밋이 우회될 수 있다. 현재 classifier의 author/path/delete/paired file 조건을 느슨하게 만들지 않는다.
+@h3 AF. bot의 PR 업데이트는 최신 head CI를 자동으로 만들지 않을 수 있다
+@path Changesets action이 GITHUB_TOKEN으로 기존 version PR을 갱신하면 GitHub의 재귀 방지로 pull_request workflow가 시작되지 않을 수 있다. “체크 없음”을 green으로 읽지 않는다. 이번에는 PR close/reopen으로 최신 head CI를 생성했다. 자동화한다면 명시적 workflow dispatch 또는 별도 권한 모델을 설계한다.
+@h3 AG. action runtime 경고와 package runtime 지원은 별개다
+@path checkout/setup-node/upload-artifact/pnpm action이 deprecated Node 20 action runtime 경고를 낸다. 이는 action 구현의 런타임이며 소비 package의 Node >=20 계약이나 CI Node 20 matrix를 제거할 근거가 아니다. 공식 action major 호환성을 확인한 별도 maintenance로 처리한다.
+@h3 AH. sandbox 실패를 제품 실패로 일반화하지 않는다
+@p 제한 환경에서는 Corepack cache write가 EROFS, Node child git가 EPERM일 수 있다. 같은 source의 GitHub Actions와 권한 있는 로컬 결과를 대조한다. 다만 환경 탓으로 분류하기 전에 명령·입력·working tree가 동일한지 확인해야 한다.
 @h2 2026-07-13 (WP-024~028) 세션에서 추가된 함정
 @h3 Q. CI가 게이트를 돌릴 브라우저를 갖고 있지 않았다
 @cmd pnpm 10은 onlyBuiltDependencies(현재 esbuild만) 밖 패키지의 lifecycle script를 실행하지 않는다. 따라서 pnpm install --frozen-lockfile은 Playwright 브라우저를 내려받지 않는다. WP-024가 넣은 CI에는 playwright install 단계가 없었고, PLAYWRIGHT_BROWSERS_PATH를 빈 디렉터리로 두고 재현하니 pnpm test:a11y가 browserType.launch: Executable doesn't exist로 죽었다. 로컬은 ~/.cache/ms-playwright가 이미 차 있어 통과했을 뿐이다.
@@ -45,17 +63,17 @@
 @h3 D. jsdom 프로젝트에서 테스트 현재 경로를 가정하지 말 것
 @path React 단독 실행과 루트 pnpm test는 cwd가 다르다. 매니페스트/산출물을 읽는 테스트는 packages/react 존재 여부로 root를 계산해야 한다. readFileSync("package.json")는 루트 실행에서 잘못된 매니페스트를 읽는다.
 @h3 E. workspace alias가 .tsx를 따라가면 소비자 tsconfig도 JSX를 알아야 한다
-@path docs typecheck가 @conductor/react source alias를 해석한다. React package에만 JSX 설정을 두면 docs는 TS6142로 실패한다. tsconfig.base.json의 jsx: react-jsx가 필요하다.
+@path docs typecheck가 @conductor-by-89soone/react source alias를 해석한다. React package에만 JSX 설정을 두면 docs는 TS6142로 실패한다. tsconfig.base.json의 jsx: react-jsx가 필요하다.
 @h3 F. 컴포넌트 CSS의 수치 리터럴은 토큰 린트 허용 사유가 필요하다
 @p 1px border, 34px compact button, hover translate는 현재 token에 대응값이 없다. cdt-allow-literal의 이유를 코드 옆에 남기고, 색상·간격은 token으로만 쓴다.
 @h2 2026-07-11(WP-008) 세션에서 추가된 함정
 @h2 2026-07-11(WP-009) 세션에서 추가된 함정
 @h3 A. CSS 테스트는 stale dist를 읽을 수 있다
-@path packages/css 테스트는 빌드 산출물 CSS를 읽는다. pnpm --filter @conductor/css test만 실행하면 소스 변경이 dist에 반영되지 않아도 통과할 수 있다. WP-009에서 DEV-005/CR-012로 공식 검증 명령을 build && test로 정정했다.
+@path packages/css 테스트는 빌드 산출물 CSS를 읽는다. pnpm --filter @conductor-by-89soone/css test만 실행하면 소스 변경이 dist에 반영되지 않아도 통과할 수 있다. WP-009에서 DEV-005/CR-012로 공식 검증 명령을 build && test로 정정했다.
 @h3 B. lightningcss가 미디어쿼리 문법을 정규화한다
 @p (max-width: 800px)가 산출 또는 AST에서 (width <= 800px)처럼 표현될 수 있다. 테스트는 원문 문자열을 고정하지 말고 파싱 결과나 실제 breakpoint 값 존재 여부를 검사해야 한다.
 @h3 C. 미디어쿼리 안의 CSS 변수는 런타임에 평가되지 않는다
-@path @media (max-width: var(--cdt-breakpoint-md))는 유효한 responsive 계약이 아니다. 소스는 {breakpoint.md} 같은 별칭을 쓰고, 빌드가 공개 @conductor/tokens/breakpoints 값을 리터럴로 치환한다. 산출물에 var(--cdt-breakpoint-*)가 남으면 CSS-MEDIA-VAR로 실패해야 한다.
+@path @media (max-width: var(--cdt-breakpoint-md))는 유효한 responsive 계약이 아니다. 소스는 {breakpoint.md} 같은 별칭을 쓰고, 빌드가 공개 @conductor-by-89soone/tokens/breakpoints 값을 리터럴로 치환한다. 산출물에 var(--cdt-breakpoint-*)가 남으면 CSS-MEDIA-VAR로 실패해야 한다.
 @h3 리뷰 서브에이전트가 작업 트리를 오염시킨다
 @path 적대적 리뷰 워크플로(vacuous-check 발견을 서브에이전트가 파일을 변조해 실증하는 패턴)에서, 검증 서브에이전트가 packages/css/test/helpers.ts의 rulesInLayer에 if (found.length === 0) return found;를 주입하고 복원하지 않았다. css 스위트 전체가 red가 됐고 하마터면 내 회귀로 오해할 뻔했다. 리뷰 워크플로가 쓰기 권한을 가졌으면 끝난 뒤 반드시 git status --porcelain으로 트리를 확인하고, 초록이던 스위트가 리뷰 직후 빨개지면 내 코드보다 남은 변조를 먼저 의심하라. 리뷰 서브에이전트에 isolation: worktree 또는 읽기 전용 에이전트 타입을 주는 편이 안전하다.
 @h3 0b. pnpm install이 트리를 더럽힌다 (CR-011)
@@ -64,7 +82,7 @@
 @h3 bin/은 번들된 dist/cli.js를 실행한다
 @path packages/tokens/bin/conductor-build-tokens.mjs → dist/cli.js. 토큰 소스를 고치고 bin을 직접 실행하면 아무 변화가 없다.
 @p 음성 테스트를 두 번 실패했다. 순환 참조를 주입했는데 빌드가 exit 0으로 통과했고, 하마터면 "원자적 쓰기 확인됨"이라고 잘못 기록할 뻔했다. tokens.css가 바이트 단위로 동일했던 것이 단서였다.
-@path 올바른 방법: pnpm --filter @conductor/tokens run build (이 스크립트가 tsup --config tsup.cli.config.ts && node ./bin/... && tsup 순서로 CLI를 먼저 재번들한다).
+@path 올바른 방법: pnpm --filter @conductor-by-89soone/tokens run build (이 스크립트가 tsup --config tsup.cli.config.ts && node ./bin/... && tsup 순서로 CLI를 먼저 재번들한다).
 @h3 절대 실패할 수 없는 검사
 @path CR-009를 고치며 처음 넣은 CI 단계:
 @code lang=yaml sha=9d0a6c965893 lines=1 kept=1
@@ -94,7 +112,7 @@
 @h2 불확실한 가정
 @path 라이트 팔레트 값은 conductor_design_system_tokens.md §5·§6에 산출돼 있으나 아직 코드로 검증된 적이 없다. WP-010이 check:contrast를 두 테마로 돌리는 첫 순간이다. 라이트 쪽 미달이 나올 수 있다
 @path severity.* 4색은 두 테마가 값을 공유하는 유일한 토큰군이다(절대 등급이므로). themeSpecific 예외를 쓰지 않으며 FR-QA-001 키 대칭 검사를 통과한다는 것이 문서의 주장이다. WP-010에서 확인하라
-@path @conductor/css gzip ≤ 20KB, Button 단독 gzip ≤ 4KB는 아직 측정된 적 없다(WP-025). 컴포넌트가 다 들어간 뒤에야 알 수 있다
+@path @conductor-by-89soone/css gzip ≤ 20KB, Button 단독 gzip ≤ 4KB는 아직 측정된 적 없다(WP-025). 컴포넌트가 다 들어간 뒤에야 알 수 있다
 @path 문서 사이트 LCP p75 ≤ 2.5초도 미측정(WP-028)
 @h2 문서 환경의 함정
 @p validate_srs_prd_env.py는 백틱으로 감싼 .md로 끝나는 문자열을 문서 경로로 오인한다. 토큰 이름 radius.md, font.size.md, breakpoint.md, font.lineHeight.md를 백틱에 넣으면 경고가 뜬다. 볼드(radius.md)를 써라. 실제 문서 파일명(srs_final.md)은 백틱으로 감싸도 된다.
@@ -102,7 +120,7 @@
 @h3 Radix non-modal Dialog에는 Overlay가 없다
 @path Dialog.Root modal={false}에서 Dialog.Overlay는 렌더되지 않는다. class/CSS를 아무리 고쳐도 scrim이 생기지 않는다. AppShell의 scrim은 plain element이며, 닫기는 Content의 Radix DismissableLayer가 소유한다.
 @h3 docs-only E2E는 workspace의 stale dist를 볼 수 있다
-@path apps/docs가 빌드된 @conductor/react를 소비하는 경로에서는 docs build만 다시 해도 React source 변경이 반영되지 않을 수 있다. 새 public component나 동작을 검증하기 전 root build 또는 React build를 선행한다.
+@path apps/docs가 빌드된 @conductor-by-89soone/react를 소비하는 경로에서는 docs build만 다시 해도 React source 변경이 반영되지 않을 수 있다. 새 public component나 동작을 검증하기 전 root build 또는 React build를 선행한다.
 @h3 토큰 누출 검사는 부분 문자열로 쓰지 않는다
 @p primitive key ink 금지를 includes("ink:")로 검사하면 skipLink: 같은 정상 component key를 오탐한다. 계층/구조를 검사하려면 top-level serialization key나 parsed object를 본다.
 @h3 Vite chunk warning은 아직 열린 후속 게이트다

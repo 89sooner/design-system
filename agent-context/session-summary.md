@@ -1,74 +1,74 @@
-# Session Summary — 2026-07-10, Conductor Design System 부트스트랩
+# Session Summary — 2026-07-18, 공개 릴리스와 CI 안정화 완료
 
-## 목표 (사용자 표현 그대로)
+## 제품과 목표
 
-> "나만의 커스텀 디자인 시스템. `/home/roqkf/agent-ai-platform` 프로젝트의 디자인 스타일이 매우 마음에 듭니다. 이것을 나의 디자인 시스템으로 디벨롭 하고싶다. Opus 4.8 모델로 메인 오케스트레이션을 하면서 Opus, Sonnet을 서브 에이전트로 병렬 수행하며 설계 문서부터 구현 및 스캐폴딩해라. 여기서 codex는 호출하지 않을것이다."
+Conductor Design System은 `/home/roqkf/agent-ai-platform/packages/web`의 시각 언어를 재사용 가능한 패키지와 정적 문서 사이트로 추출한다. 서버 런타임·DB·큐·인증은 없다.
 
-`build-srs-prd-env` 스킬로 문서 우선(documentation-first) 계획 환경을 만든 뒤, 그 문서를 근거로 코드를 스캐폴딩했다.
-
-## 무엇을 만들었나
-
-**제품**: Conductor Design System. `agent-ai-platform/packages/web`의 시각 언어(조밀한 운영용 다크 UI)를 재사용 가능한 npm 패키지 3종 + 정적 문서 사이트로 추출한다.
-
-```
-packages/tokens/   @conductor-by-89soone/tokens   토큰 소스 + 빌드 + CLI 3종   [REL-001 완료]
-packages/css/      @conductor-by-89soone/css      프레임워크 비종속 스타일시트  [WP-008~009 미착수]
-packages/react/    @conductor-by-89soone/react    Radix 기반 컴포넌트 30개      [WP-011~017 미착수]
-apps/docs/         (private)           정적 문서 사이트              [WP-018~022 미착수]
-docs/              SRS/PRD 문서 세트 41개 — 코드가 아님
+```text
+packages/tokens/   @conductor-by-89soone/tokens   토큰 소스, 빌드, CLI
+packages/css/      @conductor-by-89soone/css      프레임워크 비종속 CSS
+packages/react/    @conductor-by-89soone/react    Radix 기반 공개 컴포넌트 30개
+apps/docs/         private                        정적 문서 사이트이자 첫 소비자
 ```
 
-의존 방향은 `tokens → css → react → docs` 단방향. 역방향은 `scripts/check-deps.mjs`가 빌드를 죽인다.
+의존 방향은 `tokens → css → react → docs` 단방향이다. 요구사항의 최종 진실은 `docs/10_requirements/srs_final.md`, 구현 상태의 최종 진실은 실제 repo source와 `docs/40_delivery/conductor_implementation_traceability.md`다.
 
-## 현재 상태
+## 현재 공개 상태
 
-### 문서 (완료)
-- `docs/` 41개 파일. `validate_srs_prd_env.py --strict` **exit 0**
-- FR 49개(전부 EARS + AC + 검증방법 + 관련 ID + 예외처리 전체 블록), 화면 12개(W-###), 컴포넌트 30개(C-001~C-072), 플로우 6개, ADR 10개, WP 28개, REL 4개
-- `docs/10_requirements/srs_final.md` = **baseline v1.2** (사용자 승인). 이후 변경은 CR 선등록 필수
-- CR 9건, DEV 2건 추적 중
+- GitHub: `https://github.com/89sooner/design-system`
+- Docs: `https://89sooner.github.io/design-system/` (실배포 HTTP 200 확인)
+- 라이선스: MIT. 루트와 패키지별 README가 배포 tarball에 포함된다.
+- npm Trusted Publishing(OIDC)과 provenance를 사용한다.
+- 공개 버전:
+  - `@conductor-by-89soone/tokens@0.1.0`
+  - `@conductor-by-89soone/css@0.1.0`
+  - `@conductor-by-89soone/react@0.1.1` (`latest`)
+- 현재 `main`: `32fd30e7790e9b9e8a5fabebeb30ae51fcec5f9d`
+- 열려 있는 PR 없음. WP-001~028, 실제 첫 배포, npm/Pages 롤백 리허설, 릴리스 게이트 안정화가 모두 완료됐다.
 
-### 코드 (REL-001 완료, WP-001~007)
-클린 체크아웃에서 게이트 7개 전부 exit 0:
+## 이번 릴리스 세션에서 닫은 핵심 문제
 
-| 게이트 | 결과 |
-| --- | --- |
-| `pnpm lint` / `lint:deps` / `build` / `typecheck` / `test` / `lint:tokens` / `check:contrast` | 전부 exit 0 |
-| 테스트 | 278 passed / 17 files |
-| 빌드 | 6.5초 (NFR-001 예산 180초) |
-| 토큰 | 276 정의(primitive 74 / semantic 87 / component 115) → CSS 202 선언 |
-| 대비 검사 | 다크 40/40 통과, 미달 0건, 제외 165 토큰 |
-| 산출 `.d.ts`의 `any` | 0건 |
+1. 첫 게시에서 Changesets가 git identity 부재로 태그 생성 실패를 삼켰다. release job에 bot identity를 설정하고 `scripts/check-release-tags.mjs`로 로컬·원격 annotated tag의 객체와 커밋을 검증한다(CR-025 / DEV-018).
+2. `lucide-react: ^0.400.0`은 semver 0.x 규칙상 0.400.x만 허용했다. `>=0.400.0 <2`로 고치고 React 0.1.1을 실제 OIDC 게시했다(CR-026 / DEV-019).
+3. Node 22 CI의 light/open Dialog axe flake는 진입 애니메이션 중간 프레임을 axe가 샘플링한 문제였다. 접근성 테스트가 finite Web Animations 완료를 기다리게 했다. Spinner의 infinite animation은 기다리지 않고 그대로 audit한다(CR-028 / DEV-021).
+4. `core.autocrlf=true` 체크아웃에서 유효 changeset이 CRLF가 되어 LF 전용 parser가 실패했다. parser 입력을 LF로 정규화하고 양·음성 fixture를 검증했다(CR-029 / DEV-022).
+5. version PR 병합 뒤 Changesets bot의 버전 커밋에는 미소비 changeset이 없어서, publish 전 status gate가 오히려 실패했다. 정확한 subject/author/변경 경로를 모두 만족하는 bot version commit만 별도 분류해 중복 status/action을 건너뛴다(CR-030 / DEV-023). 일반 source commit 경로가 no-op하는 것도 실제 Actions run으로 확인했다.
 
-`@conductor-by-89soone/tokens` 공개 표면:
-- exports: `.`, `./tokens.css`, `./tokens.json`, `./contrast-report.json`, `./breakpoints`, `./package.json`
-- bin: `conductor-build-tokens`, `conductor-check-contrast`, `conductor-lint-tokens`
-- `sideEffects: ["*.css"]`
+## 실배포와 검증 증거
 
-### 미착수
-WP-008 ~ WP-028 (REL-002/003/004). 다음 단계는 **WP-008**(`@conductor-by-89soone/css` 레이어 골격) 또는 **WP-010**(라이트 팔레트).
+- 첫 0.1.0 릴리스: Actions run `29569125471`.
+- React 0.1.1 OIDC 릴리스: run `29586062062`, 54초.
+- 실제 npm 롤백: 0.1.0 deprecate + `latest → 0.0.0`, 323.8초. 이후 latest/deprecation 복원.
+- Pages 롤백: run `29568304495`, 214초. 복원 run `29568605076`, 203초.
+- React 0.1.1 registry consumer smoke: workspace 밖 `/tmp/conductor-registry-smoke`에서 React 19 + lucide 0.400.0 조합으로 `tsc --noEmit`과 `renderToStaticMarkup` 통과.
+- npm registry metadata에서 React 0.1.1의 latest, peer range, SLSA provenance v1 attestation, npm signature를 확인했다.
+- 현재 package tag 3개가 모두 annotated tag이며 원격 객체까지 검증됐다.
+- 최종 PR #6 CI run `29595077148`, 최종 main CI run `29595356802` 전부 green.
+- 최종 main의 Release version job run `29595356804`가 일반 source commit을 version commit으로 오분류하지 않고 Changesets no-op으로 끝났다.
 
-## 이 세션의 핵심 성과 — 결함 5건을 코드 이전에 잡았다
+## 최신 품질 기준선
 
-| # | 결함 | 어디서 잡혔나 | 처리 |
-| --- | --- | --- | --- |
-| 1 | 소스의 포커스 링 `rgba(109,124,255,0.3)` = 대비 **1.50:1**. WCAG 2.4.11(3:1) 위반 | 소스 팔레트 실측 (오케스트레이터) | CR-005 → alpha 0.80 (3.93:1) |
-| 2 | 폼 컨트롤 경계 `border.default` = **1.30:1**. WCAG 1.4.11 위반 | 소스 팔레트 실측 | CR-005 → 신규 `border.control` (0.60 alpha, 3.23:1) |
-| 3 | SRS §12.1이 `status.neutralEnd`를 `nonText`(3:1)로 분류했으나 값이 최대 **2.60:1** — 자기모순 | 토큰 문서 작성 에이전트 | CR-006 → `decorative` 강등 |
-| 4 | FR-TOK-002 AC-2("semantic은 primitive만 참조") ↔ FR-THM-001 AC-2(별칭 요구) 충돌 | 계층 검사기 구현 착수 | CR-008 → AC 정정 |
-| 5 | CI가 `typecheck`를 `build`보다 먼저 실행하는데 타입 표면 일부가 생성물 | 클린 체크아웃 재현 | CR-009 → 순서 반전 + gitignore |
+- root unit: 490 tests
+- browser a11y: 164 passed + 1 skipped, 수정 후 로컬 4회 연속 통과
+- visual: 27/27
+- contrast: 80/80
+- size: React Button 554B gzip, CSS 8.15KiB gzip
+- docs/SRS validator strict: issue 0
+- 문서 대장: CR 30, DEV 23, implementation traceability v0.14
 
-**1·2번은 소스에서 계승될 뻔했다.** 3·4·5번은 **오케스트레이터가 직접 심은 결함**이며, 셋 다 오케스트레이터 자신이 아니라 다른 계층(문서 작성 에이전트 / 구현 착수 / 클린 빌드 재현)이 잡았다. 이것이 이 문서 환경의 존재 이유다.
+## 남은 범위
 
-## 오케스트레이션 방식
+릴리스 차단 작업은 없다. 다음은 승인된 기능 작업이 아니라 선택적 유지보수다.
 
-메인 = Opus 4.8. 서브에이전트 11개를 병렬/순차로 운용:
-- 소스 분석 3개(design-dna, component-inventory, layout-patterns)
-- 문서 작성 7개(tokens-doc, ui-screens, component-spec, state-qa, arch-core, arch-contracts, arch-ops, delivery-qa, briefs)
-- 구현 2개(wp001, wp002-005, wp006-007)
+- GitHub Actions가 deprecated actions runtime Node 20 경고를 내므로 공식 호환성을 검토한 뒤 action major version을 올릴 수 있다. 패키지 Node 20 지원과는 다른 문제다.
+- registry consumer smoke를 CI로 자동화할 수 있다.
+- OD-003 FilterBar/Chip은 여전히 open/비차단이고 FR/WP가 없다. 사용자 승인과 CR 없이 구현하지 않는다.
 
-Codex는 호출하지 않았다(사용자 지시).
+## 다음 에이전트가 지킬 것
 
-## 다음 에이전트가 알아야 할 것 (한 줄 요약)
-
-`docs/20_derived_ui_specs/conductor_ai_agent_execution_brief.md`를 읽고 WP-008부터 시작하라. `srs_final.md`가 baseline이므로 요구사항을 바꾸려면 `docs/00_governance/change_control.md`에 CR을 먼저 등록해야 한다.
+- handoff는 손실 압축 자료다. 최종 판단은 실제 source, workflow, registry/CI 상태를 기준으로 한다.
+- baseline 범위를 바꾸면 CR을 먼저 등록하고 `docs/README.md`의 cascade 순서를 따른다.
+- `packages/tokens/src/tokens.ts`, `packages/tokens/src/breakpoints.ts`, `apps/docs/src/generated/*`를 직접 편집하지 않는다.
+- 공개 API 변경은 API report와 changeset을 함께 다룬다.
+- version PR이 bot token으로 갱신됐는데 checks가 없으면 재귀 workflow 제한을 의심한다. 필요하면 PR close/reopen 또는 명시적 CI 실행으로 최신 head를 검증한다.
+- 로컬 전역 `core.autocrlf=true`를 고려하고 `git -c core.fileMode=false diff --check`를 사용한다.

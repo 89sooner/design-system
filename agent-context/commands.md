@@ -1,5 +1,74 @@
 # 명령어 / 테스트 결과 / 실패한 것과 원인
 
+## 2026-07-18 — 공개 릴리스와 최종 CI 검증
+
+### 현재 공개 버전과 태그
+
+```text
+@conductor-by-89soone/tokens  0.1.0
+@conductor-by-89soone/css     0.1.0
+@conductor-by-89soone/react   0.1.1 (latest)
+```
+
+```bash
+pnpm check:release-tags
+```
+
+결과: 세 package tag가 모두 annotated tag이고 local/remote object와 대상 commit이 일치했다. React 0.1.1 tag는 `15024d257b83b2fe60f0e5da1fcbc07a71d44d36`을 가리킨다.
+
+### 최종 게이트 기준선
+
+```bash
+pnpm build
+pnpm typecheck
+pnpm test
+pnpm lint
+pnpm lint:tokens
+pnpm check:contrast
+pnpm check:api
+pnpm check:secrets
+pnpm check:changesets
+pnpm test:a11y
+pnpm size
+pnpm lighthouse
+pnpm --filter docs test:e2e
+pnpm test:visual
+python3 ~/.claude/skills/build-srs-prd-env/scripts/validate_srs_prd_env.py --root . --strict
+```
+
+최신 수치: unit 490, a11y 164 passed + 1 skipped, visual 27/27, contrast 80/80, Button 554B gzip, CSS 8.15KiB gzip. 최종 main CI run `29595356802`와 Release version run `29595356804` green.
+
+### 실제 배포/복구 결과
+
+| 작업 | 증거 | 결과 |
+| --- | --- | --- |
+| 첫 0.1.0 OIDC publish | run `29569125471` | 세 package 공개. tag 누락 결함 발견 |
+| npm 실제 rollback | deprecate + latest 0.0.0 | 323.8초, 이후 복원 |
+| Pages rollback | run `29568304495` | 214초 |
+| Pages restore | run `29568605076` | 203초 |
+| React 0.1.1 publish | run `29586062062` | 54초, provenance/signature 확인 |
+| registry consumer smoke | `/tmp/conductor-registry-smoke` | `tsc --noEmit`, SSR 통과 |
+
+### release classifier 실증
+
+```bash
+node scripts/is-version-packages-commit.mjs
+```
+
+- positive: `1c6f628`, `15024d2`
+- negative: `a6f8502`
+- 일반 source commit `32fd30e`의 run `29595356804`: classifier false, Changesets no-op green
+
+### 환경별 실패 해석
+
+| 증상 | 분류/대응 |
+| --- | --- |
+| Corepack `lastKnownGood.json` EROFS | 제한 sandbox cache write 문제. 제품 결함과 분리 |
+| Node child `git` EPERM | sandbox process 권한 문제. 같은 tree의 Actions/허용 환경 결과 확인 |
+| valid changeset frontmatter failure | CRLF 여부 확인. parser는 현재 정규화함 |
+| bot가 version PR을 갱신했는데 checks 없음 | `GITHUB_TOKEN` 재귀 workflow 제한. close/reopen 또는 명시적 CI |
+| action Node 20 deprecated warning | action 내부 runtime 경고. Node 20 package matrix와 별개 |
+
 ## 2026-07-13 — WP-024~028 최종 검증
 
 전체 게이트 (CI와 같은 순서 + 신규 게이트):

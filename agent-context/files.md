@@ -1,5 +1,28 @@
 # 중요 파일과 역할
 
+## 2026-07-18 릴리스/CI 안정화에서 추가된 핵심 경로
+
+| 경로 | 역할 |
+| --- | --- |
+| `scripts/check-release-tags.mjs` | 현재 package version의 local/remote annotated tag object와 대상 commit 검증. publish 성공 후 tag 누락 재발 방지 |
+| `scripts/is-version-packages-commit.mjs` | exact subject/author/deleted changeset/manifest+CHANGELOG/path allowlist로 Changesets bot version commit 분류 |
+| `scripts/check-changesets.mjs` | changeset 규약 검사. checkout의 CRLF를 LF로 정규화한다 |
+| `.github/workflows/release.yml` | bot git identity, version/publish 권한 분리, version commit classifier, tag verification |
+| `.github/workflows/ci.yml` | Node 20/22 verify와 visual. 최신 main run green |
+| `packages/react/src/testing/a11y.browser.test.tsx` | axe 전에 finite Web Animations 완료 대기. infinite Spinner는 대기 제외·audit 포함 |
+| `packages/react/package.json` | `lucide-react` peer `>=0.400.0 <2`; 현재 공개 React 0.1.1 계약 |
+| `docs/00_governance/change_control.md` | CR-025~030 및 cascade/gate evidence |
+| `docs/40_delivery/conductor_implementation_traceability.md` | v0.14, DEV-018~023와 실제 릴리스/롤백 상태 |
+| `agent-context/sessions/2026-07-18-public-release-and-ci-hardening.md` | Actions run, registry, rollback, 결함과 다음 릴리스 체크리스트 |
+
+### 외부 현재 상태
+
+- repo: `https://github.com/89sooner/design-system`
+- docs: `https://89sooner.github.io/design-system/`
+- npm: `@conductor-by-89soone/tokens@0.1.0`, `css@0.1.0`, `react@0.1.1`
+- main: `32fd30e7790e9b9e8a5fabebeb30ae51fcec5f9d`
+- 로컬 npm은 logout 상태다. credential을 agent-context에 기록하지 않는다.
+
 ## 2026-07-13 릴리스 자동화 (WP-024~028)
 
 | 경로 | 역할 |

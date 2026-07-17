@@ -68,10 +68,9 @@ jobs:
           retention-days: 30
 
       # GitHub Pages 프로젝트 사이트는 /<repo>/ 하위 경로에서 서빙된다.
-      - run: DOCS_BASE=/design-system/ pnpm --filter docs run build
-
-      # SPA 딥링크는 Pages의 404 폴백이 index를 서빙해 클라이언트 라우터가 처리한다.
-      - run: cp apps/docs/dist/index.html apps/docs/dist/404.html
+      # 해시 라우터가 static hosting에서도 항상 경로를 소유한다. 이전 path 기반 링크는
+      # 생성된 404 fallback이 /design-system/#/…로 정규화한다.
+      - run: DOCS_BASE=/design-system/ pnpm --filter docs run build:pages
 
       - uses: actions/configure-pages@v5
 

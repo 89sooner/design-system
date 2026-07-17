@@ -136,6 +136,9 @@ describe("dark palette against the source tokens.css", () => {
         "border.control",
         // CR-013: source progress tracks live only in app.css, not tokens.css.
         "surface.track",
+        // CR-031: source application background glows are reusable decorative surfaces.
+        "surface.tint.1",
+        "surface.tint.2",
         // CR-018 / DEV-011: app.css shares a fully rounded geometry across components.
         "radius.pill",
         // FR-TOK-007, FR-TOK-008, FR-TOK-009: scales the source expressed as literals.

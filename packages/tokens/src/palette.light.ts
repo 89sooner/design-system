@@ -17,6 +17,8 @@ const values: Readonly<Record<string, string>> = {
   "surface.glass": "rgba(251, 252, 253, 0.86)",
   "surface.timeline": "#f1f4f8",
   "surface.track": "rgba(12, 18, 28, 0.08)",
+  "surface.tint.1": "rgba(79, 91, 213, 0.1)",
+  "surface.tint.2": "rgba(4, 120, 87, 0.05)",
   "text.primary": "#0c121c",
   "text.secondary": "#33415a",
   "text.muted": "#4d5a6e",

@@ -249,6 +249,8 @@ primitive 토큰은 CSS로 산출되지 않고 `@conductor-by-89soone/tokens` �
 | `surface.elevated` | decorative | `#192535` | `#ffffff` | FR-THM-001, FR-THM-002 |
 | `surface.overlay` | decorative | `rgba(4, 7, 12, 0.78)` | `rgba(12, 18, 28, 0.45)` | FR-CMP-006, FR-THM-002 |
 | `surface.glass` | decorative | `rgba(16, 23, 34, 0.82)` | `rgba(251, 252, 253, 0.86)` | FR-THM-002 예외 처리 |
+| `surface.tint.1` | decorative | `rgba(109, 124, 255, 0.11)` | `rgba(79, 91, 213, 0.10)` | CR-031 ambient indigo glow |
+| `surface.tint.2` | decorative | `rgba(20, 184, 166, 0.055)` | `rgba(4, 120, 87, 0.05)` | CR-031 ambient teal glow |
 | `surface.timeline` | decorative | `#0d141f` | `#f1f4f8` | FR-CMP-005 |
 
 표면 토큰이 `decorative`인 이유: 표면은 대비 검사의 **배경 인자**이지 전경이 아니다. 표면 자체의 대비는 그 위에 놓인 텍스트·경계 쌍으로 검사된다(8절).
