@@ -63,6 +63,10 @@ export const tokens: {
         readonly glass: "var(--cdt-surface-glass)";
         readonly timeline: "var(--cdt-surface-timeline)";
         readonly track: "var(--cdt-surface-track)";
+        readonly tint: {
+            readonly "1": "var(--cdt-surface-tint-1)";
+            readonly "2": "var(--cdt-surface-tint-2)";
+        };
     };
     readonly text: {
         readonly primary: "var(--cdt-text-primary)";
@@ -395,6 +399,7 @@ export const tokens: {
         readonly skipLinkZ: "var(--cdt-page-skip-link-z)";
     };
     readonly appShell: {
+        readonly background: "var(--cdt-app-shell-background)";
         readonly navWidth: "var(--cdt-app-shell-nav-width)";
         readonly mainMaxWidth: "var(--cdt-app-shell-main-max-width)";
         readonly overlayBackground: "var(--cdt-app-shell-overlay-background)";
