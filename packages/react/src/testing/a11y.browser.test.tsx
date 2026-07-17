@@ -33,6 +33,16 @@ function setTheme(theme: Theme): void {
   document.documentElement.dataset.cdtTheme = theme;
 }
 
+async function waitForFiniteAnimations(): Promise<void> {
+  await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+
+  const finiteAnimations = document.getAnimations().filter((animation) => {
+    const iterations = animation.effect?.getComputedTiming().iterations;
+    return typeof iterations === "number" && Number.isFinite(iterations);
+  });
+  await Promise.allSettled(finiteAnimations.map((animation) => animation.finished));
+}
+
 function seriousViolations(results: axe.AxeResults): Result[] {
   return results.violations.filter((violation) => violation.impact !== undefined && violation.impact !== null && seriousImpacts.has(violation.impact));
 }
@@ -91,6 +101,7 @@ for (const theme of themes) {
           ? document.querySelector("[data-a11y-root]")
           : document.querySelector(scenario.axeSelector);
         expect(axeRoot).not.toBeNull();
+        await waitForFiniteAnimations();
         const results = await axe.run(axeRoot as Element, { resultTypes: ["violations"] });
         const violations = seriousViolations(results);
         const unexpected = unexpectedViolations(violations);

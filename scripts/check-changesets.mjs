@@ -12,8 +12,9 @@ const MIGRATION_PATTERN = /^#{2,3} Migration\b|^Migration:|마이그레이션/m;
 const requireEmpty = process.argv.includes("--require-empty");
 
 function parseChangeset(name, text) {
-  const match = text.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
-  if (match === null) return { name, releases: null, body: text };
+  const normalizedText = text.replace(/\r\n?/g, "\n");
+  const match = normalizedText.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+  if (match === null) return { name, releases: null, body: normalizedText };
   const releases = [];
   for (const line of match[1].split("\n")) {
     const release = line.match(/^"?([^":]+)"?\s*:\s*(major|minor|patch)\s*$/);

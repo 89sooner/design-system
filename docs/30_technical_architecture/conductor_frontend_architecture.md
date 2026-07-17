@@ -1,6 +1,6 @@
 # Conductor Design System 프론트엔드 아키텍처
 
-> 상태: review | 버전: v0.3 | 갱신일: 2026-07-17
+> 상태: review | 버전: v0.4 | 갱신일: 2026-07-17
 
 ## 1. 목적과 두 개의 프론트엔드
 
@@ -175,6 +175,8 @@ Radix가 소유하는 DOM에는 구조 셀렉터를 쓰지 않고 `data-state`, 
 | 타입 | `tsc --noEmit` + api-extractor 7.x | `any` 0건, 내부 타입 누출 0건 | FR-DX-002 |
 
 접근성 검사를 jsdom이 아니라 실제 브라우저에서 실행하는 이유는 axe-core의 `color-contrast` 규칙이 레이아웃과 계산된 색을 요구하기 때문이다. jsdom에서 실행하면 이 규칙을 예외 처리해야 하고, 그 예외는 FR-QA-003 AC-4의 허용 목록에 남는다. 브라우저 모드는 Playwright를 이미 시각 회귀에 쓰므로 새 의존성을 추가하지 않는다.
+
+axe는 각 시나리오를 렌더한 뒤 브라우저가 CSS animation을 등록할 한 프레임을 보장하고, 종료 횟수가 유한한 animation이 `finished` 상태가 된 다음 실행한다. Dialog·Drawer 같은 진입 opacity의 중간 프레임을 정지 상태 대비 결함으로 오판하지 않기 위해서다(CR-028). Spinner처럼 상태 자체가 무한 animation인 컴포넌트는 대기에서 제외하지만 axe 검사에서는 제외하지 않는다. 규칙 비활성화, `prefers-reduced-motion` 강제, 고정 sleep은 사용하지 않는다.
 
 테스트 이름은 `FR-<AREA>-<번호> AC-<번호>: <설명>` 형식을 포함한다(FR-QA-002 AC-2). 공개 export에 대응 테스트 파일이 없으면 빌드 전 검사가 컴포넌트 이름을 출력하고 실패한다(AC-1).
 
