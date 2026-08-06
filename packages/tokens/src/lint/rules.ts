@@ -7,9 +7,9 @@
  *
  * Two rules are deliberately narrower than they look:
  *
- *  - `px-literal` skips a `@media` prelude. FR-TOK-001 AC-2 excludes the breakpoint substitution
- *    output by name, and a media query condition cannot read a custom property (FR-TOK-009 AC-2),
- *    so a literal is the only thing that can appear there.
+ *  - `px-literal` and `rem-literal` skip a `@media` prelude. FR-TOK-001 AC-2 excludes the
+ *    breakpoint substitution output by name, and a media query condition cannot read a custom
+ *    property (FR-TOK-009 AC-2), so a literal is the only thing that can appear there.
  *
  *  - `text-faint-on-elevated` sees one declaration block at a time. It catches the case
  *    FR-THM-005 AC-3 describes — `--cdt-text-faint` painted over `--cdt-surface-elevated` — when
@@ -26,6 +26,7 @@ import { maskComments } from "./source";
 export type RuleId =
   | "color-literal"
   | "px-literal"
+  | "rem-literal"
   | "ms-literal"
   | "z-index-literal"
   | "font-size-px"
@@ -55,6 +56,9 @@ const FUNCTIONAL_COLOR = /\b(?:rgba?|hsla?)\([^)]*\)/gi;
 // The lookbehind excludes an identifier or hex digit, but not `-`: `translateY(-2px)` must be
 // caught, and no `--cdt-` custom property name ends in a number followed by `px`.
 const PX_LITERAL = /(?<![\w#.])(\d+(?:\.\d+)?)px\b/g;
+// `rem` is the same escape hatch as `px` with a different unit — `2rem` and `32px` name the same
+// spacing step. Both are caught so a value cannot dodge the scale by changing units.
+const REM_LITERAL = /(?<![\w#.])(\d+(?:\.\d+)?)rem\b/g;
 const MS_LITERAL = /(?<![\w#.])(\d+(?:\.\d+)?)ms\b/g;
 const Z_INDEX = /\b(?:z-index|zIndex)\s*:\s*["'`]?\s*(-?\d+)/g;
 const FONT_SIZE_PX = /\b(?:font-size|fontSize)\s*:\s*["'`]?\s*(\d+(?:\.\d+)?px)/g;
@@ -118,15 +122,24 @@ function sizeMatches(masked: string): Match[] {
   );
   const covered = fontSizes.map((match): [number, number] => [match.index, match.index + match.length]);
   const media = mediaRanges(masked);
+  const outsideCoveredRanges = (match: Match): boolean =>
+    !within(covered, match.index) && !within(media, match.index);
 
   const pixels = matchesOf(
     masked,
     PX_LITERAL,
     "px-literal",
     (captured) => `px literal \`${captured}px\`; use a spacing, radius or size token`,
-  ).filter((match) => !within(covered, match.index) && !within(media, match.index));
+  ).filter(outsideCoveredRanges);
 
-  return [...fontSizes, ...pixels];
+  const rems = matchesOf(
+    masked,
+    REM_LITERAL,
+    "rem-literal",
+    (captured) => `rem literal \`${captured}rem\`; use a spacing, radius or size token`,
+  ).filter(outsideCoveredRanges);
+
+  return [...fontSizes, ...pixels, ...rems];
 }
 
 /** FR-THM-005 AC-3, within the reach of a static scan. See the module comment. */

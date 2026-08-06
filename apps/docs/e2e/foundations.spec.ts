@@ -58,7 +58,7 @@ test("FR-THM-002 AC-4: elevation previews expose different values per theme", as
   await page.goto(docsPath("/foundations/elevation"));
   const row = page.getByRole("row").filter({ hasText: "elevation.overlay" });
   const darkValue = await row.locator("code").last().textContent();
-  await page.getByRole("switch", { name: "Toggle color theme" }).click();
+  await page.getByRole("switch", { name: "Use light theme" }).click();
   const lightValue = await row.locator("code").last().textContent();
   expect(darkValue).not.toBe(lightValue);
 });

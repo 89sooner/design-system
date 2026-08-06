@@ -45,6 +45,7 @@ export function ComponentPreview({ compact = false, forceError = false, name }: 
     case "Meter": return <div className="docs-meter"><div className="docs-meter__label"><strong>Monthly usage</strong><span className="cdt-muted">60 of 100 GB</span></div><Components.Meter aria-label="Monthly usage" value={60} valueText="60%" /></div>;
     case "ProgressRing": return <Components.ProgressRing aria-label="Example progress" value={60} valueText="60%" />;
     case "Spinner": return <Components.Spinner label="Loading" />;
+    // cdt-allow-literal: 미리보기 상자의 최소 높이(192px). 제품 간격이 아니라 문서 예시의 크기다.
     case "AppShell": return <Components.AppShell nav={<span>Navigation</span>} skipLinkLabel="Skip to preview content" style={{ minHeight: "12rem" }}>Shell content</Components.AppShell>;
     case "NavList": return <Components.NavList aria-label="Example navigation" items={[{ id: "overview", label: "Overview", href: "#overview", active: true }]} renderLink={(item, props) => <a href={item.href} {...props} />} />;
     case "TopBar": return <Components.TopBar eyebrow="Design system" title="Components" actions={<Components.IconButton aria-label="Example action" icon="●" />} />;

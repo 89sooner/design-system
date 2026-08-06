@@ -95,6 +95,33 @@ describe("FR-TOK-001: hardcoded values outside the token source", () => {
     ]);
   });
 
+  test("FR-TOK-001 AC-2: a rem literal is a px literal in another unit and is detected too", () => {
+    const violations = lintSource(
+      "apps/docs/src/docs.css",
+      [
+        ".docs-token-swatch {",
+        "  width: 2rem;",
+        "  min-width: 0.25rem;",
+        "  grid-template-columns: minmax(10rem, 0.7fr);",
+        "}",
+      ].join("\n"),
+    );
+
+    expect(violations.map((violation) => [violation.rule, violation.line, violation.snippet])).toEqual([
+      ["rem-literal", 2, "2rem"],
+      ["rem-literal", 3, "0.25rem"],
+      ["rem-literal", 4, "10rem"],
+    ]);
+  });
+
+  test("FR-TOK-001 AC-2: a rem literal inside a @media condition is excluded like px", () => {
+    const violations = lintSource(
+      "apps/docs/src/docs.css",
+      ["@media (max-width: 35rem) {", "  .docs-motion-values { display: block; }", "}"].join("\n"),
+    );
+    expect(violations).toEqual([]);
+  });
+
   test("FR-TOK-008 AC-2: a numeric z-index is detected in CSS and in TS", () => {
     const css = lintSource("packages/css/src/overlay.css", ".cdt-dialog { z-index: 40; }");
     const ts = lintSource("packages/react/src/Dialog.ts", "export const style = { zIndex: 40 };");
@@ -258,10 +285,23 @@ describe("the lint CLI's file selection", () => {
     expect(error.exitCode).toBe(3);
   });
 
-  test("FR-TOK-001: the real packages/css and packages/react are clean", () => {
+  test("FR-TOK-001: the real lint targets are clean", () => {
+    // Keep this list identical to the root `lint:tokens` script. `apps/docs/src` is a target
+    // because the docs site is Conductor's first consumer: a literal there is a literal a real
+    // consumer would copy.
     const repositoryRoot = fileURLToPath(new URL("../../../../", import.meta.url));
-    const result = lintTokens(["packages/css", "packages/react"], repositoryRoot);
+    const result = lintTokens(["packages/css", "packages/react", "apps/docs/src"], repositoryRoot);
     expect(result.files.length).toBeGreaterThan(0);
     expect(result.violations.map(formatViolation)).toEqual([]);
+  });
+
+  test("FR-TOK-001 AC-1: generated build output is skipped, not reported as hardcoded", () => {
+    const root = fixtureRoot({
+      "apps/docs/src/page.css": ".docs-page { color: var(--cdt-text-primary); }",
+      "apps/docs/src/generated/contrast-report.ts": 'export const report = { foreground: "#f4f7fb" };',
+    });
+    const result = lintTokens(["apps/docs/src"], root);
+    expect(result.files).toEqual(["apps/docs/src/page.css"]);
+    expect(result.violations).toEqual([]);
   });
 });

@@ -1,8 +1,8 @@
 import { AppShell, Banner, CodeBlock, IconButton, NavList, Panel, Switch, Table, TopBar } from "@conductor-by-89soone/react";
 import { Menu, Moon, Sun } from "lucide-react";
-import { lazy, Suspense, useEffect, useState } from "react";
-import { Link, Route, Routes, useLocation, useParams } from "react-router-dom";
-import { applyTheme, persistTheme, readTheme, type Theme } from "./theme";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { Link, Navigate, Route, Routes, useLocation, useParams } from "react-router-dom";
+import { applyTheme, persistTheme, PRERENDER_THEME, readTheme, type Theme } from "./theme";
 
 // 무거운 화면(카탈로그 30개 live preview, 생성 토큰/대비 데이터, 가이드)은 라우트
 // 단위로 지연 로드한다. 첫 페인트 청크가 셸만 담아야 NFR-001 LCP p75 2.5초 예산이
@@ -72,15 +72,38 @@ function AccessibilityRoute() {
   return <Accessibility forceMissingReport={new URLSearchParams(location.search).has("metrics-unavailable")} />;
 }
 
-export function App() {
+export interface AppProps {
+  /** Theme the first render draws with. `main.tsx` decides it; SSR keeps the prerender default. */
+  readonly initialTheme?: Theme;
+}
+
+export function App({ initialTheme = PRERENDER_THEME }: AppProps = {}) {
   const location = useLocation();
-  const [theme, setTheme] = useState<Theme>("dark");
+  const [theme, setTheme] = useState<Theme>(initialTheme);
   const [navOpen, setNavOpen] = useState(false);
-  useEffect(() => setTheme(readTheme(window)), []);
-  useEffect(() => window.scrollTo({ top: 0, left: 0 }), [location.pathname]);
+  const mounted = useRef(false);
+
+  // Reconciles the hydrating render, which had to start from the prerender's theme, and re-applies
+  // the attribute so the app is still themed if the head snippet never ran.
+  useEffect(() => {
+    const next = readTheme(window);
+    setTheme(next);
+    applyTheme(next, document);
+  }, []);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0 });
+    // Focus moves on navigation only. On first load it belongs to the document, and stealing it
+    // would skip past the page title a screen reader is about to announce.
+    // `preventScroll` matters: `<main>` starts under the sticky top bar, so the default
+    // scroll-into-view would immediately undo the reset above.
+    if (mounted.current) document.getElementById("content")?.focus({ preventScroll: true });
+    mounted.current = true;
+  }, [location.pathname]);
+
   const toggleTheme = () => { const next = theme === "dark" ? "light" : "dark"; setTheme(next); applyTheme(next, document); persistTheme(next, window); };
 
-  const topBar = <TopBar menuButton={<IconButton aria-label="Open navigation" icon={<Menu />} variant="ghost" onClick={() => setNavOpen(true)} />} title={<Link className="docs-topbar__title" to="/">Conductor</Link>} actions={<div className="docs-theme-toggle">{theme === "dark" ? <Moon aria-hidden="true" size={16} /> : <Sun aria-hidden="true" size={16} />}<span className="cdt-sr-only">Use {theme === "dark" ? "light" : "dark"} theme</span><Switch checked={theme === "light"} onClick={toggleTheme} aria-label="Toggle color theme" /></div>} />;
+  const topBar = <TopBar menuButton={<IconButton aria-label="Open navigation" icon={<Menu />} variant="ghost" onClick={() => setNavOpen(true)} />} title={<Link className="docs-topbar__title" to="/">Conductor</Link>} actions={<div className="docs-theme-toggle">{theme === "dark" ? <Moon aria-hidden="true" size={16} /> : <Sun aria-hidden="true" size={16} />}<Switch checked={theme === "light"} onCheckedChange={toggleTheme} aria-label={`Use ${theme === "dark" ? "light" : "dark"} theme`} /></div>} />;
 
-  return <AppShell className="docs-shell" nav={<Navigation close={() => setNavOpen(false)} />} topBar={topBar} navOpen={navOpen} onNavOpenChange={setNavOpen} skipLinkLabel="Skip to content" mainId="content"><Suspense fallback={<section className="cdt-page" aria-busy="true"><p className="cdt-muted">Loading…</p></section>}><Routes><Route path="/" element={<Overview />} /><Route path="/getting-started" element={<GettingStarted />} /><Route path="/foundations/color" element={<FoundationPage group="color" theme={theme} title="Color" />} /><Route path="/foundations/typography" element={<FoundationPage group="typography" theme={theme} title="Typography" />} /><Route path="/foundations/spacing" element={<FoundationPage group="spacing" theme={theme} title="Spacing & Layout" />} /><Route path="/foundations/elevation" element={<FoundationPage group="elevation" theme={theme} title="Radius & Elevation" />} /><Route path="/foundations/motion" element={<FoundationPage group="motion" theme={theme} title="Motion" />} /><Route path="/components" element={<CatalogIndex />} /><Route path="/components/:componentId" element={<ComponentRoute />} /><Route path="/tokens" element={<TokenRoute />} /><Route path="/tokens/reference" element={<TokenRoute />} /><Route path="/patterns" element={<Patterns />} /><Route path="/guidelines" element={<Patterns />} /><Route path="/accessibility" element={<AccessibilityRoute />} /><Route path="*" element={<Placeholder title="Not found" />} /></Routes></Suspense></AppShell>;
+  return <AppShell className="docs-shell" nav={<Navigation close={() => setNavOpen(false)} />} topBar={topBar} navOpen={navOpen} onNavOpenChange={setNavOpen} skipLinkLabel="Skip to content" mainId="content"><Suspense fallback={<section className="cdt-page" aria-busy="true"><p className="cdt-muted">Loading…</p></section>}><Routes><Route path="/" element={<Overview />} /><Route path="/getting-started" element={<GettingStarted />} /><Route path="/foundations/color" element={<FoundationPage group="color" theme={theme} title="Color" />} /><Route path="/foundations/typography" element={<FoundationPage group="typography" theme={theme} title="Typography" />} /><Route path="/foundations/spacing" element={<FoundationPage group="spacing" theme={theme} title="Spacing & Layout" />} /><Route path="/foundations/elevation" element={<FoundationPage group="elevation" theme={theme} title="Radius & Elevation" />} /><Route path="/foundations/motion" element={<FoundationPage group="motion" theme={theme} title="Motion" />} /><Route path="/components" element={<CatalogIndex />} /><Route path="/components/:componentId" element={<ComponentRoute />} /><Route path="/tokens" element={<Navigate replace to={`/tokens/reference${location.search}`} />} /><Route path="/tokens/reference" element={<TokenRoute />} /><Route path="/patterns" element={<Navigate replace to={`/guidelines${location.search}`} />} /><Route path="/guidelines" element={<Patterns />} /><Route path="/accessibility" element={<AccessibilityRoute />} /><Route path="*" element={<Placeholder title="Not found" />} /></Routes></Suspense></AppShell>;
 }

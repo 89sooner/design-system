@@ -23,7 +23,9 @@ export type { RuleId, Violation } from "./rules";
 
 /** FR-TOK-001 AC-1 scopes the rules to "CSS and TS files". */
 const LINTED_EXTENSIONS = [".css", ".ts", ".tsx", ".mts", ".cts"];
-const SKIPPED_DIRECTORIES = new Set(["node_modules", "dist", "coverage", ".git"]);
+// `generated` holds build output (the docs app's contrast report is a copy of measured token
+// values). Linting it would report the token source back to itself as a hardcoded literal.
+const SKIPPED_DIRECTORIES = new Set(["node_modules", "dist", "dist-server", "coverage", "generated", ".git"]);
 
 export interface LintResult {
   readonly files: readonly string[];

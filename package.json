@@ -14,7 +14,7 @@
     "typecheck": "pnpm -r run typecheck",
     "lint": "eslint .",
     "lint:deps": "node scripts/check-deps.mjs",
-    "lint:tokens": "node packages/tokens/bin/conductor-lint-tokens.mjs packages/css packages/react",
+    "lint:tokens": "node packages/tokens/bin/conductor-lint-tokens.mjs packages/css packages/react apps/docs/src",
     "check:contrast": "pnpm --filter @conductor-by-89soone/tokens run check:contrast",
     "test:a11y": "vitest run --config vitest.a11y.config.ts",
     "test:visual": "node scripts/test-visual.mjs",

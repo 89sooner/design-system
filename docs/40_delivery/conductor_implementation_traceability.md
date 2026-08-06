@@ -1,6 +1,6 @@
 # Conductor Design System 구현 추적 원장
 
-> 상태: review | 버전: v0.14 | 갱신일: 2026-07-17
+> 상태: review | 버전: v0.15 | 갱신일: 2026-08-06
 
 ## 1. 목적과 갱신 규칙
 
@@ -197,6 +197,7 @@ GitHub 연결 계정 `89sooner`가 private 저장소 `89sooner/design-system`의
 
 | DEV ID | 발견일 | 유형 | 내용 | 관련 ID | 처리 CR | 상태 |
 | --- | --- | --- | --- | --- | --- | --- |
+| DEV-026 | 2026-08-06 | 문서/코드 불일치 | `conductor_product_ia.md`는 W-030을 `/tokens`, W-040을 `/patterns`로 선언하지만 구현은 두 경로를 모두 라우트로 두고 사이드 내비는 `/tokens/reference`·`/guidelines`를 가리켰다. 같은 화면이 두 URL에서 렌더되므로 북마크·검색 색인·`aria-current` 강조가 갈린다. 내비가 가리키는 쪽을 정규 URL로 채택하고 옛 경로는 쿼리스트링 보존 `replace` 리다이렉트로 남겼다. `shell.spec.ts`의 리다이렉트 e2e와 `/tokens?metrics-unavailable` → `/tokens/reference?metrics-unavailable` 보존을 실브라우저로 확인했다 | W-030, W-040, FR-DOC-001, FR-DOC-004, FR-DOC-007, WP-028 | CR-033 | closed |
 | DEV-023 | 2026-07-17 | 구현 편차 | version PR #4가 React package.json을 0.1.1로 올리고 CHANGELOG를 생성하며 Changeset을 소비·삭제한 정상 merge SHA `15024d2`에서 Release run 29585593807의 version 잡이 다시 `changeset status --since react@0.1.0`을 실행해 Changeset 누락으로 실패했다. publish job은 실행 전 skip돼 레지스트리 영향은 없었다. Changesets bot 작성자·고정 제목·Changeset 삭제·영향 manifest/CHANGELOG 쌍·그 외 파일 0건을 모두 만족하는 version commit에서는 이미 소비된 변경 이력 검사를 반복하지 않고 수동 publish를 기다린다. 일반 source commit의 누락 게이트는 유지한다 | FR-DX-005, WP-027, JOB-REL-001 | CR-030 | closed |
 | DEV-022 | 2026-07-17 | 구현 편차 | `core.autocrlf=true`인 로컬에서 유효한 **warm-icons-agree.md**가 `frontmatter에 영향받는 패키지와 bump 종류가 없다`며 실패했다. Git blob은 LF, 작업 트리는 CRLF였고 검사기의 frontmatter 정규식이 `\n`만 허용한 것이 원인이다. 파싱 전 CRLF와 단독 CR을 LF로 정규화해 같은 내용이 환경에 따라 다른 판정을 받지 않게 했다. 현재 CRLF patch Changeset은 통과하고 Refs 누락 음성 fixture는 기존대로 exit 1을 유지한다 | FR-DX-005, WP-027, JOB-REL-001 | CR-029 | closed |
 | DEV-021 | 2026-07-17 | 구현 편차 | main CI run 29582993773의 Node 22 접근성 잡만 라이트 Dialog open에서 `color-contrast` serious를 냈고, 동일 SHA의 PR·Node 20 잡은 통과했다. 아티팩트의 title foreground `#dadee4`는 light 정지 색 `#0c121c`가 배경 `#e4e8ed` 위에 약 4.6% opacity로 합성된 값이어서 `cdt-dialog-enter` 중간 프레임을 감사한 타이밍 경합으로 확정했다. 렌더 뒤 한 animation frame을 보장하고 유한 animation의 `finished`를 기다린 다음 axe를 실행한다. 무한 Spinner는 대기에서만 제외한다. 전체 Chromium 게이트 4회 연속 각 164 passed + 1 skipped로 종결했다 | FR-QA-003, FR-A11Y-005, WP-024, JOB-CI-002 | CR-028 | closed |

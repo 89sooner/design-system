@@ -2,6 +2,14 @@ export type Theme = "dark" | "light";
 
 export const THEME_STORAGE_KEY = "conductor-theme";
 
+/**
+ * The theme the prerendered landing markup is drawn with (`scripts/prerender.mjs` shims
+ * `matchMedia` to dark). A hydrating client must start from the same value or the first render
+ * disagrees with the served HTML and React throws the prerender away — which is the whole point of
+ * having one. Every other entry path reads the real preference up front instead (`main.tsx`).
+ */
+export const PRERENDER_THEME: Theme = "dark";
+
 export function preferredTheme(windowLike: Pick<Window, "matchMedia">): Theme {
   return windowLike.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }

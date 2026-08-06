@@ -49,7 +49,8 @@ test("FR-DOC-001 AC-1, AC-3, AC-4: static shell renders without external request
 
 test("FR-DOC-005 AC-1, AC-2, AC-5: theme switch updates and persists", async ({ page }) => {
   await page.goto(docsPath("/"));
-  const toggle = page.getByRole("switch", { name: "Toggle color theme" });
+  // The switch names the theme it moves to, so the accessible name changes with state.
+  const toggle = page.getByRole("switch");
   const root = page.locator("html");
   const initialTheme = await root.getAttribute("data-cdt-theme");
   const nextTheme = initialTheme === "dark" ? "light" : "dark";
@@ -78,7 +79,7 @@ test("FR-THM-003 AC-1, AC-4: an explicit theme wins without remounting component
   await page.evaluate(() => Object.defineProperty(window, "__conductorThemeNode", { configurable: true, value: document.querySelector("main") }));
   const before = await page.locator("html").evaluate((element) => getComputedStyle(element).getPropertyValue("--cdt-surface-base").trim());
 
-  await page.getByRole("switch", { name: "Toggle color theme" }).click();
+  await page.getByRole("switch", { name: "Use dark theme" }).click();
   const after = await page.locator("html").evaluate((element) => getComputedStyle(element).getPropertyValue("--cdt-surface-base").trim());
   const retained = await page.evaluate(() => (window as Window & { __conductorThemeNode?: Element }).__conductorThemeNode === document.querySelector("main"));
   expect(after).not.toBe(before);
@@ -103,6 +104,44 @@ test("QA-012: mobile navigation closes from the overlay and Escape", async ({ pa
   await page.getByRole("button", { name: "Open navigation" }).click();
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog")).toBeHidden();
+});
+
+// The first render has to match the served HTML or React discards the prerender and client-renders
+// the root, which is exactly the cost the prerender exists to avoid. `light` is the path at risk:
+// the prerender is always drawn dark.
+for (const theme of ["light", "dark"] as const) {
+  test(`NFR-001: the prerendered landing page hydrates cleanly in the ${theme} theme`, async ({ page }) => {
+    const problems: string[] = [];
+    page.on("console", (message) => {
+      if (message.type() === "error" && /hydrat/i.test(message.text())) problems.push(message.text());
+    });
+    page.on("pageerror", (error) => problems.push(error.message));
+
+    await page.addInitScript((selected) => window.localStorage.setItem("conductor-theme", selected), theme);
+    await page.goto(docsPath("/"));
+    await expect(page.locator("html")).toHaveAttribute("data-cdt-theme", theme);
+    // The toggle settles on the real theme, not the theme the prerender was drawn with.
+    await expect(page.getByRole("switch")).toHaveAttribute("aria-checked", theme === "light" ? "true" : "false");
+    expect(problems).toEqual([]);
+  });
+}
+
+test("DEV-026: each screen has one URL; the legacy paths redirect and keep their query", async ({ page }) => {
+  await page.goto(docsPath("/tokens"));
+  await expect(page).toHaveURL(/#\/tokens\/reference$/);
+  await page.goto(docsPath("/patterns"));
+  await expect(page).toHaveURL(/#\/guidelines$/);
+  await page.goto(docsPath("/tokens?metrics-unavailable"));
+  await expect(page).toHaveURL(/#\/tokens\/reference\?metrics-unavailable$/);
+  await expect(page.getByRole("table", { name: "Token reference" })).toContainText("측정되지 않음");
+});
+
+test("FR-DOC-001: navigating moves focus to the main region so the keyboard path restarts there", async ({ page }) => {
+  await page.goto(docsPath("/"));
+  await expect(page.getByRole("main")).not.toBeFocused();
+  await page.getByRole("link", { name: "Getting Started" }).first().click();
+  await expect(page.getByRole("heading", { name: "Getting Started" })).toBeVisible();
+  await expect(page.getByRole("main")).toBeFocused();
 });
 
 test("QA-013: skip link moves focus to the AppShell main region", async ({ page }) => {

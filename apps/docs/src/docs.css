@@ -1,18 +1,25 @@
+/*
+ * Documentation-site styles. `pnpm lint:tokens` scans this file, so every length here either
+ * reads a `--cdt-` token or carries a `cdt-allow-literal` comment naming why no token fits.
+ * Two exception families recur: reading measures (`max-width` in `rem`, sized by line length
+ * rather than by the spacing scale) and documentation-layout column widths, which are page
+ * furniture rather than product spacing.
+ */
 .docs-shell { background: transparent; }
 .docs-nav__brand, .docs-topbar__title { color: var(--cdt-text-primary); font-weight: 700; }
 .docs-nav__brand { display: block; padding: var(--cdt-space-3); }
 .docs-theme-toggle { display: inline-flex; align-items: center; gap: var(--cdt-space-2); }
 .docs-eyebrow { margin: 0 0 var(--cdt-space-2); color: var(--cdt-accent); font-size: var(--cdt-font-size-sm); font-weight: 700; text-transform: uppercase; }
-.docs-lead { max-width: 42rem; color: var(--cdt-text-muted); font-size: var(--cdt-font-size-lg); }
-.docs-token-swatch { display: block; width: 2rem; height: 2rem; border: 1px solid var(--cdt-border-default); }
-.docs-token-type { display: inline-grid; min-width: 2rem; min-height: 2rem; place-items: center; color: var(--cdt-text-primary); }
-.docs-token-space { display: block; min-width: 0.25rem; max-width: 4rem; height: 0.5rem; border-radius: var(--cdt-radius-pill); background: var(--cdt-accent); }
-.docs-token-shape { display: block; width: 2rem; height: 2rem; border: 1px solid var(--cdt-border-default); background: var(--cdt-surface-raised); }
-.docs-token-glyph { display: inline-grid; width: 2rem; height: 2rem; place-items: center; color: var(--cdt-accent); font-size: var(--cdt-font-size-xl); }
-.docs-preview { min-height: 3rem; margin-top: var(--cdt-space-3); }
+.docs-lead { max-width: 42rem; /* cdt-allow-literal: 읽기 폭은 간격 스케일이 아니라 줄 길이로 정한다 */ color: var(--cdt-text-muted); font-size: var(--cdt-font-size-lg); }
+.docs-token-swatch { display: block; width: var(--cdt-space-6); height: var(--cdt-space-6); border: 1px solid var(--cdt-border-default); /* cdt-allow-literal: 토큰에 선 두께가 없다 */ }
+.docs-token-type { display: inline-grid; min-width: var(--cdt-space-6); min-height: var(--cdt-space-6); place-items: center; color: var(--cdt-text-primary); }
+.docs-token-space { display: block; min-width: var(--cdt-space-1); max-width: 4rem; /* cdt-allow-literal: 간격 견본의 표시 상한(64px). 스케일에 해당 값이 없다 */ height: var(--cdt-space-2); border-radius: var(--cdt-radius-pill); background: var(--cdt-accent); }
+.docs-token-shape { display: block; width: var(--cdt-space-6); height: var(--cdt-space-6); border: 1px solid var(--cdt-border-default); /* cdt-allow-literal: 토큰에 선 두께가 없다 */ background: var(--cdt-surface-raised); }
+.docs-token-glyph { display: inline-grid; width: var(--cdt-space-6); height: var(--cdt-space-6); place-items: center; color: var(--cdt-accent); font-size: var(--cdt-font-size-xl); }
+.docs-preview { min-height: var(--cdt-space-8); margin-top: var(--cdt-space-3); }
 .docs-preview-row { display: flex; flex-wrap: wrap; gap: var(--cdt-space-2); align-items: center; }
 .docs-button-matrix { display: grid; gap: var(--cdt-space-4); }
-.docs-button-matrix__row { display: grid; grid-template-columns: minmax(4rem, 5rem) minmax(0, 1fr); gap: var(--cdt-space-4); align-items: center; }
+.docs-button-matrix__row { display: grid; grid-template-columns: minmax(4rem, 5rem) minmax(0, 1fr); /* cdt-allow-literal: 문서 표의 라벨 열 폭(64~80px)은 제품 간격이 아니다 */ gap: var(--cdt-space-4); align-items: center; }
 .docs-component-tile { min-width: 0; }
 .docs-component-tile__header { display: flex; align-items: center; justify-content: space-between; gap: var(--cdt-space-3); }
 .docs-component-tile__header h2 { margin: 0; }
@@ -23,23 +30,29 @@
 .docs-preview-meta { color: var(--cdt-text-muted); font-size: var(--cdt-font-size-xs); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
 .docs-preview-value { font-family: var(--cdt-font-mono); font-size: var(--cdt-font-size-xl); font-variant-numeric: tabular-nums; }
 .docs-dialog-actions { display: flex; justify-content: flex-end; gap: var(--cdt-space-2); margin-top: var(--cdt-space-6); }
-.docs-setting-row { display: flex; align-items: center; justify-content: space-between; gap: var(--cdt-space-5); max-width: 32rem; }
+.docs-setting-row { display: flex; align-items: center; justify-content: space-between; gap: var(--cdt-space-5); max-width: 32rem; /* cdt-allow-literal: 읽기 폭 */ }
 .docs-setting-row div { display: grid; gap: var(--cdt-space-1); }
-.docs-meter { display: grid; gap: var(--cdt-space-3); max-width: 32rem; }
+.docs-meter { display: grid; gap: var(--cdt-space-3); max-width: 32rem; /* cdt-allow-literal: 읽기 폭 */ }
 .docs-meter__label { display: flex; align-items: baseline; justify-content: space-between; gap: var(--cdt-space-4); }
 .docs-result { display: block; white-space: nowrap; }
 .docs-result--pass { color: var(--cdt-status-success); }
 .docs-result--fail { color: var(--cdt-status-danger); }
 .docs-code-example { display: grid; gap: var(--cdt-space-3); }
-.docs-color-dot, .docs-meter-only { display: block; width: 1rem; height: 1rem; border-radius: var(--cdt-radius-pill); background: var(--cdt-status-success); }
+.docs-color-dot, .docs-meter-only { display: block; width: var(--cdt-space-4); height: var(--cdt-space-4); border-radius: var(--cdt-radius-pill); background: var(--cdt-status-success); }
 .docs-meter-only { width: 100%; border-radius: var(--cdt-radius-sm); }
 .docs-type-example { max-width: 18ch; margin: var(--cdt-space-2) 0; font-size: var(--cdt-page-heading-size); line-height: var(--cdt-page-heading-line-height); letter-spacing: -0.035em; }
 .docs-layout-example { margin-block: var(--cdt-space-3) var(--cdt-space-6); }
 .docs-motion-values { display: grid; gap: var(--cdt-space-2); margin: var(--cdt-space-4) 0 var(--cdt-space-6); }
+/* cdt-allow-literal: 용어 열 폭(160px)은 문서 표의 furniture다 */
 .docs-motion-values div { display: grid; grid-template-columns: minmax(10rem, 0.7fr) minmax(0, 1fr); gap: var(--cdt-space-4); align-items: baseline; padding-block: var(--cdt-space-2); border-bottom: 1px solid var(--cdt-border-subtle); }
 .docs-motion-values dt, .docs-motion-values dd { margin: 0; }
 .docs-motion-values dd { color: var(--cdt-text-muted); text-align: end; }
 .docs-motion-preview { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--cdt-space-6); margin-bottom: var(--cdt-space-6); }
+/*
+ * 560px는 `breakpoint.sm`과 같은 값이다. 이 파일은 `packages/css`의 빌드를 거치지 않으므로
+ * `{breakpoint.sm}` 치환이 일어나지 않고, 미디어 조건은 커스텀 프로퍼티를 읽을 수 없다
+ * (FR-TOK-009 AC-2). 값이 바뀌면 `packages/tokens/src/scales.ts`의 BREAKPOINT_PX와 함께 고친다.
+ */
 @media (max-width: 560px) {
   .docs-motion-values div, .docs-motion-preview { grid-template-columns: minmax(0, 1fr); }
   .docs-motion-values dd { text-align: start; }
