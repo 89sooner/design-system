@@ -395,7 +395,6 @@ export const SeverityTag: react.ForwardRefExoticComponent<SeverityTagProps & rea
 
 // @public (undocumented)
 export interface SeverityTagProps extends Omit<HTMLAttributes<HTMLSpanElement>, "children"> {
-    // (undocumented)
     readonly icon: ReactNode;
     // (undocumented)
     readonly label: string;
@@ -425,7 +424,6 @@ export const StatusBadge: react.ForwardRefExoticComponent<StatusBadgeProps & rea
 
 // @public (undocumented)
 export interface StatusBadgeProps extends Omit<HTMLAttributes<HTMLSpanElement>, "children"> {
-    // (undocumented)
     readonly icon: ReactNode;
     // (undocumented)
     readonly label: string;

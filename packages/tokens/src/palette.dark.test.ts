@@ -239,6 +239,9 @@ describe("primitive tokens stay private", () => {
     expect(Object.keys(entry).sort()).toEqual([
       "CDT_PREFIX",
       "PACKAGE_NAME",
+      // The icon maps carry lucide names, not token values, so no primitive can leak through them.
+      "SEVERITY_ICONS",
+      "STATUS_ICONS",
       "breakpoints",
       "tokens",
     ]);

@@ -21,6 +21,31 @@ export const CDT_PREFIX: "cdt-";
 export const PACKAGE_NAME: "@conductor-by-89soone/tokens";
 
 // @public
+export const SEVERITY_ICONS: {
+    readonly read: "eye";
+    readonly write: "pencil";
+    readonly destructive: "trash-2";
+    readonly blocked: "shield-x";
+};
+
+// @public (undocumented)
+export type SeverityIconName = (typeof SEVERITY_ICONS)[keyof typeof SEVERITY_ICONS];
+
+// @public
+export const STATUS_ICONS: {
+    readonly queued: "circle-dashed";
+    readonly running: "loader";
+    readonly waiting: "pause-circle";
+    readonly success: "check-circle-2";
+    readonly partial: "alert-circle";
+    readonly danger: "x-circle";
+    readonly neutralEnd: "circle-slash";
+};
+
+// @public (undocumented)
+export type StatusIconName = (typeof STATUS_ICONS)[keyof typeof STATUS_ICONS];
+
+// @public
 export interface TokenDefinition {
     readonly alias?: string;
     // (undocumented)

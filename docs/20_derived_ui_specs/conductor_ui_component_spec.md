@@ -1,6 +1,6 @@
 # Conductor Design System UI 컴포넌트 명세서
 
-> 상태: review | 버전: v0.6 | 갱신일: 2026-08-06
+> 상태: review | 버전: v0.7 | 갱신일: 2026-08-06
 
 ## 0. 문서 위치와 범위
 
@@ -378,7 +378,7 @@ export type IconButtonProps = PolymorphicProps<"button", IconButtonOwnProps> & {
 | 이름 | 타입 | 기본값 | 필수 | 설명 |
 | --- | --- | --- | --- | --- |
 | `status` | `"queued" \| "running" \| "waiting" \| "success" \| "partial" \| "danger" \| "neutralEnd"` | — | 예 | FR-TOK-005의 7개 상태 키. 그 외 값은 TypeScript 컴파일 오류(FR-CMP-004 AC-3) |
-| `icon` | `ReactNode` | — | 예 | 상태 아이콘. 어떤 아이콘을 넘길지는 `tokens.json`의 상태 토큰 `icon` 메타데이터가 지시한다(FR-TOK-005 AC-5) |
+| `icon` | `ReactNode` | — | 예 | 상태 아이콘. 어떤 아이콘을 넘길지는 `@conductor-by-89soone/tokens`의 `STATUS_ICONS[status]`가 지시한다 — `tokens.json`의 `icon` 메타데이터와 같은 값을 타입이 붙은 맵으로 배포한 것이다(FR-TOK-005 AC-5). 렌더된 아이콘 슬롯은 그 이름을 `data-cdt-icon` 속성으로 되풀이하므로 어떤 아이콘이 요구되었는지 DOM에서 확인할 수 있다 |
 | `label` | `string` | — | 예 | 상태 텍스트. Conductor는 다국어 문자열을 갖지 않으므로 소비자가 제공한다 |
 
 - **variant**: 없음. — **tone**: 없음. `status`가 색을 결정한다. `tone`과 `status`를 동시에 노출하지 않는다. — **size**: 없음.
@@ -401,7 +401,7 @@ export type IconButtonProps = PolymorphicProps<"button", IconButtonOwnProps> & {
 | 이름 | 타입 | 기본값 | 필수 | 설명 |
 | --- | --- | --- | --- | --- |
 | `severity` | `"read" \| "write" \| "destructive" \| "blocked"` | — | 예 | FR-TOK-005의 4개 심각도 키 |
-| `icon` | `ReactNode` | — | 예 | 심각도 아이콘. 토큰 `icon` 메타데이터가 지시한다 |
+| `icon` | `ReactNode` | — | 예 | 심각도 아이콘. `SEVERITY_ICONS[severity]`가 이름을 지시하고, 렌더된 슬롯이 `data-cdt-icon`으로 되풀이한다(FR-TOK-005 AC-5) |
 | `label` | `string` | — | 예 | 심각도 텍스트. `severity="destructive"`이면 `destructive` 텍스트를 렌더한다(FR-CMP-004 AC-4) |
 
 - **variant / tone / size**: 없음. `severity`가 색을 결정한다.
