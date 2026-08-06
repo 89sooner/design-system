@@ -68,6 +68,34 @@ describe("shell components", () => {
     expect(queryByRole("dialog", { name: "Navigation" })).toBeNull();
   });
 
+  test("FR-CMP-009 AC-3: the mobile scrim is a button that closes the navigation", () => {
+    function Fixture({ label }: { readonly label?: string }) {
+      const [open, setOpen] = useState(false);
+      return (
+        <AppShell
+          nav={<NavList items={items} renderLink={renderAnchor} aria-label="Documentation" />}
+          navOpen={open}
+          onNavOpenChange={setOpen}
+          navCloseLabel={label}
+          skipLinkLabel="Skip"
+          topBar={<TopBar menuButton={<button type="button" onClick={() => setOpen(true)}>Open navigation</button>} />}
+        >
+          Content
+        </AppShell>
+      );
+    }
+
+    const { getByRole, queryByRole, unmount } = render(<Fixture />);
+    fireEvent.click(getByRole("button", { name: "Open navigation" }));
+    fireEvent.click(getByRole("button", { name: "Close navigation" }));
+    expect(queryByRole("dialog", { name: "Navigation" })).toBeNull();
+    unmount();
+
+    const custom = render(<Fixture label="내비게이션 닫기" />);
+    fireEvent.click(custom.getByRole("button", { name: "Open navigation" }));
+    expect(custom.getByRole("button", { name: "내비게이션 닫기" }).classList.contains("cdt-app-shell__overlay")).toBe(true);
+  });
+
   test("C-072: TopBar renders context, actions and the consumer-owned menu button", () => {
     const { getByRole, getByText } = render(
       <TopBar eyebrow="Design system" title="Components" actions={<button type="button">Theme</button>} menuButton={<button type="button">Menu</button>} />,

@@ -4,7 +4,6 @@ import * as RadixSelect from "@radix-ui/react-select";
 import * as RadixSwitch from "@radix-ui/react-switch";
 import {
   createContext,
-  cloneElement,
   forwardRef,
   useContext,
   useEffect,
@@ -64,7 +63,12 @@ export const Field = forwardRef<HTMLDivElement, FieldProps>(function Field({ chi
       <div {...props} ref={ref} className={cx("cdt-field", className)}>
         <label className="cdt-field__label" htmlFor={id}>{label}{required ? <span className="cdt-field__required" aria-hidden="true">*</span> : null}</label>
         {description === undefined ? null : <div id={descriptionId} className="cdt-field__description">{description}</div>}
-        {required ? cloneElement(children as ReactElement<{ required?: boolean }>, { required }) : children}
+        {/*
+          `required` is not injected into the child. Every Conductor control reads it from
+          `FieldContext`, and cloning forced the prop onto whatever element happened to be the
+          direct child — a wrapper, a Radix root, an element with no notion of `required` at all.
+        */}
+        {children}
         {error === undefined ? null : <div id={errorId} className="cdt-field__error">{error}</div>}
       </div>
     </FieldContext.Provider>
@@ -117,12 +121,16 @@ TextArea.displayName = "TextArea";
 
 export type SelectTriggerProps = ComponentPropsWithoutRef<typeof RadixSelect.Trigger> & { readonly size?: "sm" | "md"; readonly invalid?: boolean };
 const SelectTrigger = forwardRef<HTMLButtonElement, SelectTriggerProps>(function SelectTrigger(
-  { "aria-describedby": ariaDescribedBy, "aria-invalid": ariaInvalid, className, id: ownId, invalid, size = "md", ...props },
+  { "aria-describedby": ariaDescribedBy, "aria-invalid": ariaInvalid, "aria-required": ariaRequired, className, id: ownId, invalid, size = "md", ...props },
   ref,
 ) {
   const field = useContext(FieldContext);
   const control = useFieldControl(invalid, ariaDescribedBy);
-  return <RadixSelect.Trigger {...props} ref={ref} id={ownId ?? (field === null ? undefined : control.id)} aria-describedby={control.describedBy} aria-invalid={ariaInvalid ?? (control.invalid || undefined)} className={cx("cdt-select__trigger", size === "sm" && "cdt-select__trigger--sm", control.invalid && "cdt-select__trigger--invalid", className)} />;
+  // Unlike the other controls, `Select.Trigger` has no `required` prop of its own — Radix reads it
+  // from `Select.Root`. The attribute is therefore omitted rather than passed as `undefined`, so a
+  // consumer who sets `required` on the root keeps it when no Field is present.
+  const requiredAttribute = ariaRequired ?? (control.required ? true : undefined);
+  return <RadixSelect.Trigger {...props} ref={ref} id={ownId ?? (field === null ? undefined : control.id)} aria-describedby={control.describedBy} aria-invalid={ariaInvalid ?? (control.invalid || undefined)} {...(requiredAttribute === undefined ? {} : { "aria-required": requiredAttribute })} className={cx("cdt-select__trigger", size === "sm" && "cdt-select__trigger--sm", control.invalid && "cdt-select__trigger--invalid", className)} />;
 });
 SelectTrigger.displayName = "Select.Trigger";
 
@@ -131,8 +139,10 @@ const SelectContent = forwardRef<HTMLDivElement, ComponentPropsWithoutRef<typeof
 });
 SelectContent.displayName = "Select.Content";
 
-const SelectItem = forwardRef<HTMLDivElement, ComponentPropsWithoutRef<typeof RadixSelect.Item>>(function SelectItem({ children, className, ...props }, ref) {
-  return <RadixSelect.Item {...props} ref={ref} className={cx("cdt-select__item", className)}><RadixSelect.ItemText>{children}</RadixSelect.ItemText><RadixSelect.ItemIndicator className="cdt-select__indicator" aria-hidden="true">✓</RadixSelect.ItemIndicator></RadixSelect.Item>;
+/** `indicator` matches `Checkbox`: the check glyph is a text character unless a consumer swaps it. */
+export type SelectItemProps = ComponentPropsWithoutRef<typeof RadixSelect.Item> & { readonly indicator?: ReactNode };
+const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(function SelectItem({ children, className, indicator = "✓", ...props }, ref) {
+  return <RadixSelect.Item {...props} ref={ref} className={cx("cdt-select__item", className)}><RadixSelect.ItemText>{children}</RadixSelect.ItemText><RadixSelect.ItemIndicator className="cdt-select__indicator" aria-hidden="true">{indicator}</RadixSelect.ItemIndicator></RadixSelect.Item>;
 });
 SelectItem.displayName = "Select.Item";
 

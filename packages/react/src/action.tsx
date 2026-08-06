@@ -1,6 +1,7 @@
 // FR 범위: FR-CMP-002, FR-A11Y-001, FR-A11Y-005
 import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from "react";
 import { cx } from "./cx";
+import { Spinner } from "./feedback";
 import type { Size } from "./types";
 
 type ButtonVariant = "primary" | "secondary" | "ghost";
@@ -51,7 +52,16 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
         onClick?.(event);
       }}
     >
-      {iconStart === undefined ? null : <span aria-hidden="true">{iconStart}</span>}
+      {/*
+        `aria-busy` alone is a screen-reader-only signal; a sighted user saw nothing change.
+        The spinner replaces `iconStart` rather than joining it so the label does not shift,
+        and stays `aria-hidden` because `aria-busy` on the button already carries the state.
+      */}
+      {loading ? (
+        <Spinner size="sm" label="" aria-hidden="true" />
+      ) : iconStart === undefined ? null : (
+        <span aria-hidden="true">{iconStart}</span>
+      )}
       {children}
       {iconEnd === undefined ? null : <span aria-hidden="true">{iconEnd}</span>}
     </button>

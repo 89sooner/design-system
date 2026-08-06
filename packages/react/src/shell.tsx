@@ -15,6 +15,8 @@ export interface AppShellProps extends Omit<HTMLAttributes<HTMLDivElement>, "chi
   readonly navOpen?: boolean;
   readonly onNavOpenChange?: (open: boolean) => void;
   readonly skipLinkLabel: string;
+  /** Accessible name of the mobile navigation scrim, which closes the drawer. */
+  readonly navCloseLabel?: string;
   readonly mainId?: string;
   readonly children: ReactNode;
 }
@@ -25,6 +27,7 @@ export const AppShell = forwardRef<HTMLDivElement, AppShellProps>(function AppSh
     className,
     mainId = "cdt-main",
     nav,
+    navCloseLabel = "Close navigation",
     navOpen,
     onNavOpenChange,
     skipLinkLabel,
@@ -59,7 +62,15 @@ export const AppShell = forwardRef<HTMLDivElement, AppShellProps>(function AppSh
         </div>
       </div>
       <RadixDialog.Portal>
-        <div className="cdt-app-shell__overlay" aria-hidden="true" />
+        {/*
+          Tapping the scrim is the gesture users reach for first on a phone. As an
+          `aria-hidden` div it did nothing, so the drawer could only be dismissed from the
+          keyboard. A button restores the gesture and keeps the action reachable — the CSS
+          rule already zeroes its border on the assumption that it is one.
+        */}
+        <RadixDialog.Close asChild>
+          <button type="button" className="cdt-app-shell__overlay" aria-label={navCloseLabel} />
+        </RadixDialog.Close>
         <RadixDialog.Content className="cdt-app-shell__nav" data-mobile="">
           <RadixDialog.Title className="cdt-sr-only">Navigation</RadixDialog.Title>
           {nav}

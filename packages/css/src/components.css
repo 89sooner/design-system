@@ -76,6 +76,8 @@
     inline-size: 34px; /* cdt-allow-literal: C-002의 고정 compact 정사각 크기 */
   }
 
+  .cdt-btn[aria-busy="true"] { cursor: progress; }
+
   .cdt-btn--blocked,
   .cdt-btn:disabled {
     cursor: not-allowed;

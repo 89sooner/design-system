@@ -701,7 +701,7 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
 | `label` | `string` | — | 예 | 라벨 텍스트. `htmlFor`/`id`로 컨트롤에 연결된다(FR-CMP-007 AC-1) |
 | `description` | `ReactNode` | — | 아니오 | 보조 설명. `aria-describedby`로 연결된다 |
 | `error` | `ReactNode` | — | 아니오 | 오류 메시지. 값이 있으면 컨트롤에 `aria-invalid="true"`가 부여된다(FR-CMP-007 AC-2) |
-| `required` | `boolean` | `false` | 아니오 | 라벨에 필수 표식을 렌더하고 컨트롤에 `required`를 전달한다 |
+| `required` | `boolean` | `false` | 아니오 | 라벨에 필수 표식을 렌더하고 Context로 하위 컨트롤에 전달한다. 자식 엘리먼트를 복제해 prop을 주입하지 않는다 |
 | `id` | `string` | 자동 생성 | 아니오 | 명시하지 않으면 `useId()`로 생성한다 |
 | `children` | `ReactNode` | — | 예 | 단일 폼 컨트롤 |
 
@@ -801,6 +801,7 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
 | --- | --- | --- | --- | --- |
 | `value` | `string` | — | 예 | Radix props 통과 |
 | `disabled` | `boolean` | `false` | 아니오 | `[data-disabled]`가 부여된다 |
+| `indicator` | `ReactNode` | `"✓"` | 아니오 | 선택 표시 글리프. `Checkbox`(C-054)와 같은 규약 |
 
 - **variant**: 없음. — **tone**: 없음. — **size**: `sm`, `md`(`Select.Trigger`).
 - **이벤트**: `onValueChange`, `onOpenChange`.
@@ -995,7 +996,7 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
 - **이벤트**: 없음.
 - **상태**: `default`, `reduced-motion`.
 - **접근성 책임**: `role="status"`와 `aria-live="polite"` 부여는 **Conductor**가 수행한다. `label`은 모션 감소가 아닐 때 `cdt-sr-only`로 감춰지고 스크린리더에는 항상 노출된다. 문자열은 **소비자**가 제공한다.
-- **사용 규칙**: 버튼 내부 대기에는 `Spinner` 대신 `Button loading`(C-001)의 `aria-busy`를 쓴다.
+- **사용 규칙**: 버튼 내부 대기에는 `Spinner`를 직접 넣지 않고 `Button loading`(C-001)을 쓴다. `Button`이 `loading` 동안 `iconStart` 자리에 `size="sm"` `Spinner`를 `aria-hidden`으로 그리며, 안내는 버튼의 `aria-busy`가 담당한다.
 - **금지**: `Spinner`를 페이지 전체 차단 오버레이로 쓰지 않는다. 그 용도는 `Dialog`(C-040)다.
 - **관련**: FR-CMP-008, FR-CSS-005, FR-A11Y-005 / W-020, W-021.
 
@@ -1026,6 +1027,7 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
 | `navOpen` | `boolean` | — | 아니오 | 오프캔버스 열림 상태(controlled) |
 | `onNavOpenChange` | `(open: boolean) => void` | — | 아니오 | 열림 상태 변경 콜백 |
 | `skipLinkLabel` | `string` | — | 예 | 건너뛰기 링크 텍스트. 다국어 문자열은 소비자가 제공한다 |
+| `navCloseLabel` | `string` | `"Close navigation"` | 아니오 | 오프캔버스 스크림의 접근 가능한 이름. 스크림은 `<button>`이며 누르면 내비가 닫힌다 |
 | `mainId` | `string` | `"cdt-main"` | 아니오 | 건너뛰기 링크의 대상 `id`. 본문 `<main>`에 부여된다 |
 | `children` | `ReactNode` | — | 예 | 본문 내용 |
 

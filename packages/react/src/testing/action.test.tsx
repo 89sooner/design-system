@@ -26,6 +26,24 @@ describe("action components", () => {
     expect(onClick).not.toHaveBeenCalled();
   });
 
+  test("FR-CMP-002 AC-2: loading also draws a visual signal, not only aria-busy", () => {
+    const { getByRole, rerender } = render(<Button loading>Action</Button>);
+    const button = getByRole("button");
+    expect(button.querySelector(".cdt-spinner")).not.toBeNull();
+    // The spinner replaces iconStart rather than joining it, so the label never shifts.
+    rerender(<Button loading iconStart={<svg data-testid="start" />}>Action</Button>);
+    expect(button.querySelector("[data-testid=start]")).toBeNull();
+    rerender(<Button iconStart={<svg data-testid="start" />}>Action</Button>);
+    expect(button.querySelector(".cdt-spinner")).toBeNull();
+    expect(button.querySelector("[data-testid=start]")).not.toBeNull();
+  });
+
+  test("FR-A11Y-005: the loading spinner stays out of the accessibility tree", () => {
+    const { getByRole } = render(<Button loading>Action</Button>);
+    // `aria-busy` on the button is the announced state; a second live region would double it.
+    expect(getByRole("button").querySelector(".cdt-spinner")?.getAttribute("aria-hidden")).toBe("true");
+  });
+
   test("FR-CMP-002 AC-3: IconButton requires aria-label at the type level", () => {
     // @ts-expect-error IconButton has no accessible fallback name.
     <IconButton icon="●" />;
@@ -42,6 +60,14 @@ describe("action components", () => {
     const button = getByRole("button") as HTMLButtonElement;
     expect(button.disabled).toBe(true);
     expect(button.getAttribute("aria-busy")).toBe("true");
+  });
+
+  test("C-002: IconButton carries no size-specific class; the compound selector sizes it", () => {
+    const { getByRole } = render(<IconButton aria-label="Close" icon="●" size="sm" />);
+    const button = getByRole("button");
+    expect(button.classList.contains("cdt-btn--icon")).toBe(true);
+    expect(button.classList.contains("cdt-btn--sm")).toBe(true);
+    expect(button.classList.contains("cdt-btn--icon-sm")).toBe(false);
   });
 
   test("FR-A11Y-005 AC-3: IconButton hides its decorative icon", () => {
