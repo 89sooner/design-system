@@ -1,5 +1,48 @@
 # @conductor-by-89soone/css
 
+## 0.2.0
+
+### Minor Changes
+
+- e988003: `border.width` 3단(`hairline`/`emphasis`/`rail`)과 `h2`·`h3` 헤딩 토큰을 추가한다.
+  스타일시트의 경계 리터럴 22건이 토큰을 읽고, 짝지어 있던 `cdt-allow-literal` 주석은 사라진다.
+  `font.size` 7단 타입 스케일은 그대로다 — 헤딩 토큰은 컴포넌트 층에서 `font.size.xl`을 파생시킨다.
+
+  Refs: WP-002 WP-005 WP-008 FR-TOK-007 FR-CSS-002 CR-034
+
+### Patch Changes
+
+- fe5bdc4: Add AppShell ambient background and surface tint tokens, with matching glass navigation styling.
+
+  Refs: WP-008 WP-023 FR-THM-001 FR-CSS-003
+
+- e988003: cdt- 클래스 계약 테스트를 추가하고 CSS와 React 사이의 드리프트 5건을 해소한다.
+  `cdt-empty-state__action`과 `cdt-select__indicator`에 규칙을 부여하고, 아무것도 선택하지 않던
+  `cdt-panel__header`·`cdt-panel__body` 규칙과 규칙이 없던 `cdt-btn--icon-sm` 클래스를 제거한다.
+
+  Refs: WP-008 WP-011 FR-CSS-004 FR-CMP-001
+
+- e988003: Button loading 상태에 스피너를 그린다. AppShell 모바일 스크림을 닫기 버튼으로 되돌리고
+  `navCloseLabel`을 받는다. Field는 자식에게 `required`를 주입하지 않고, `Select.Trigger`가
+  Field 컨텍스트에서 직접 `aria-required`를 읽는다. `Select.Item`은 체크 글리프를
+  `indicator` prop으로 교체할 수 있다.
+
+  Refs: WP-011 FR-CMP-002 FR-CMP-007 FR-CMP-009 FR-A11Y-003
+
+- e988003: `status.neutralEnd`를 `slate.400` 링 마커로 바꿔 `badge.marker.background` 위 6.61:1을 확보하고
+  CR-006의 대비 검사 예외를 폐기한다(`usage`가 `decorative` → `nonText`, 새 쌍 CP-042).
+  금지 조합 FP-001·FP-002를 토큰 그래프 위에 선언해 별칭으로 도달하는 경로까지 `checkContrast`가
+  차단하고 매 실행마다 재측정한다. 라이트 팔레트 파생은 base에 없는 override 키를 빌드 오류로 만든다.
+
+  Refs: WP-007 WP-010 WP-013 FR-THM-004 FR-THM-005 FR-QA-001 CR-035
+
+- Updated dependencies [fe5bdc4]
+- Updated dependencies [e988003]
+- Updated dependencies [e988003]
+- Updated dependencies [e988003]
+- Updated dependencies [e988003]
+  - @conductor-by-89soone/tokens@0.2.0
+
 ## 0.1.0
 
 ### Patch Changes
