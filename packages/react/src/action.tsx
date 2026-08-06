@@ -66,7 +66,7 @@ export interface IconButtonProps extends Omit<ButtonProps, "children" | "aria-la
 
 export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(function IconButton({ icon, size, ...props }, ref) {
   return (
-    <Button {...props} ref={ref} size={size} className={cx("cdt-btn--icon", size === "sm" && "cdt-btn--icon-sm", props.className)}>
+    <Button {...props} ref={ref} size={size} className={cx("cdt-btn--icon", props.className)}>
       <span aria-hidden="true">{icon}</span>
     </Button>
   );

@@ -1,6 +1,6 @@
 # Conductor Design System UI 컴포넌트 명세서
 
-> 상태: review | 버전: v0.5 | 갱신일: 2026-07-17
+> 상태: review | 버전: v0.6 | 갱신일: 2026-08-06
 
 ## 0. 문서 위치와 범위
 
@@ -235,7 +235,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
 #### C-002 IconButton
 
 - **책임**: 텍스트 라벨 없이 아이콘만으로 단일 동작을 실행하는 정사각 대화형 요소를 렌더한다.
-- **CSS 클래스**: `cdt-btn`, `cdt-btn--icon`, `cdt-btn--icon-sm`. `Button`의 변종·톤 클래스를 그대로 재사용한다.
+- **CSS 클래스**: `cdt-btn`, `cdt-btn--icon`. `Button`의 변종·톤 클래스를 그대로 재사용한다.
+  - **구현 상태**: `cdt-btn--icon-sm`은 **폐기**. 34×34 compact 정사각은 복합 선택자 `.cdt-btn--icon.cdt-btn--sm`가 담당하므로 별도 변형 클래스가 필요 없다. `IconButton`은 이 클래스를 더 이상 부여하지 않는다(클래스 계약 테스트가 강제).
 - **근거 CSS**:
   - `app.css:485-488` — `.btn-icon` `width: 40px`, `padding: 0`. `.btn`(`app.css:443-457`)의 `min-height: 40px`와 합쳐 40×40 정사각이 된다.
   - `app.css:783-790` — `sm` 크기 34×34의 근거.
@@ -319,7 +320,8 @@ export type IconButtonProps = PolymorphicProps<"button", IconButtonOwnProps> & {
 #### C-012 Panel
 
 - **책임**: 화면의 한 구획을 경계로 구분하되, 카드처럼 떠 있지 않은 평평한 표면을 제공한다.
-- **CSS 클래스**: `cdt-panel`, `cdt-panel__header`, `cdt-panel__body`.
+- **CSS 클래스**: `cdt-panel` (구현됨). `cdt-panel__header`, `cdt-panel__body`는 **미구현**.
+  - **구현 상태**: `Panel`은 header/body 슬롯을 렌더하지 않는다. 아무 요소도 선택하지 않는 규칙은 스타일시트에서 제거했고, 슬롯 API가 생기는 시점에 컴포넌트와 함께 되살린다(클래스 계약 테스트가 강제).
 - **근거 CSS**: 소스에 `.panel` 클래스는 존재하지 않는다. 다음 두 규칙에서 파생한다.
   - `app.css:563-568` — `.timeline` 컨테이너: `background: var(--surface-timeline)`, `border: 1px solid var(--border-default)`, `border-radius: var(--radius-lg)`, `overflow: hidden`. 그림자와 `backdrop-filter`가 없다.
   - `app.css:149-161` — `.app-nav` 컨테이너: 경계 + 반경 + 내부 패딩을 갖는 비대화형 구획.
@@ -771,7 +773,8 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
 #### C-053 Select
 
 - **책임**: 미리 정의된 선택지 중 하나를 고르는 목록을 연다.
-- **CSS 클래스**: `cdt-select`, `cdt-select__trigger`, `cdt-select__content`, `cdt-select__item`, `cdt-select__indicator`.
+- **CSS 클래스**: `cdt-select__trigger`, `cdt-select__content`, `cdt-select__item`, `cdt-select__indicator` (모두 구현됨). `cdt-select`는 **미구현**.
+  - **구현 상태**: `cdt-select__indicator`는 규칙이 없어 체크 글리프가 무색으로 렌더되던 상태였다. 규칙을 추가했다. `Select.Root`는 DOM 요소를 렌더하지 않는 Radix 컨텍스트 프로바이더이므로 `cdt-select` 블록 클래스가 붙을 요소 자체가 없다.
 - **근거 CSS**:
   - `app.css:1216-1230` — `.SelectTrigger` `display: inline-flex`, `justify-content: space-between`, `height: 40px`, `border-radius: var(--radius-md)`, `padding: 0 14px`, `gap: 12px`.
   - `app.css:1231-1238` — hover 배경 상승, focus 경계 강조.
@@ -895,7 +898,8 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
 #### C-061 EmptyState
 
 - **책임**: 내용이 없는 이유와 다음 동작을 중앙 정렬로 제시한다.
-- **CSS 클래스**: `cdt-empty-state`, `cdt-empty-state__icon`, `cdt-empty-state__title`, `cdt-empty-state__description`, `cdt-empty-state__action`.
+- **CSS 클래스**: `cdt-empty-state`, `cdt-empty-state__icon`, `cdt-empty-state__title`, `cdt-empty-state__description`, `cdt-empty-state__action` (모두 구현됨).
+  - **구현 상태**: `cdt-empty-state__action`은 규칙이 없어 `action` 슬롯이 설명 바로 아래에 붙어 렌더되던 상태였다. 규칙을 추가했다.
 - **근거 CSS**:
   - `app.css:654-662` — `.empty-state` `text-align: center`, `color: var(--text-muted)`, `padding: var(--space-6)`, `display: flex; flex-direction: column; align-items: center`, `gap: var(--space-3)`.
   - **결정**: 소스는 제목과 설명의 타이포 구분을 정의하지 않는다. 제목은 `font.size.lg` + `text.primary`, 설명은 **font.size.md** + `text.muted`로 정의한다. `.page-heading p`(`app.css:366-371`)의 "본문은 `text.muted`" 처리를 근거로 삼는다.

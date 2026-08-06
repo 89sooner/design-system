@@ -190,11 +190,6 @@
     padding: var(--cdt-space-4);
   }
 
-  .cdt-panel__header,
-  .cdt-panel__body {
-    padding: var(--cdt-space-3) var(--cdt-space-5);
-  }
-
   .cdt-badge {
     display: inline-flex;
     align-items: center;
@@ -656,6 +651,7 @@
 
   .cdt-select__item[data-highlighted] { background: var(--cdt-accent-soft); color: var(--cdt-text-primary); }
   .cdt-select__item[data-disabled] { color: var(--cdt-text-muted); cursor: not-allowed; }
+  .cdt-select__indicator { display: inline-flex; color: var(--cdt-accent); }
 
   .cdt-switch,
   .cdt-checkbox {
@@ -754,6 +750,7 @@
   .cdt-empty-state__icon { display: inline-grid; place-items: center; inline-size: var(--cdt-space-8); block-size: var(--cdt-space-8); border-radius: var(--cdt-radius-pill); background: var(--cdt-accent-soft); color: var(--cdt-accent); }
   .cdt-empty-state__title { color: var(--cdt-empty-state-title-text); font-size: var(--cdt-font-size-lg); font-weight: 600; }
   .cdt-empty-state__description { color: var(--cdt-empty-state-description-text); }
+  .cdt-empty-state__action { margin-block-start: var(--cdt-space-3); }
   .cdt-meter { display: grid; gap: var(--cdt-space-2); }
   .cdt-meter__track { overflow: hidden; block-size: var(--cdt-feedback-meter-height); border: 1px solid var(--cdt-border-subtle); /* cdt-allow-literal: progress track edge */ border-radius: var(--cdt-radius-pill); background: var(--cdt-feedback-meter-track-background); box-shadow: inset 0 1px 2px var(--cdt-surface-overlay); /* cdt-allow-literal: recessed progress track */ }
   .cdt-meter__fill { block-size: 100%; inline-size: calc(var(--cdt-meter-ratio) * 100%); border-radius: inherit; background: var(--cdt-feedback-meter-fill-normal); box-shadow: 0 0 var(--cdt-space-2) var(--cdt-accent-glow); transition: inline-size var(--cdt-motion-standard), background var(--cdt-motion-standard); }
