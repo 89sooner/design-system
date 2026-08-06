@@ -82,6 +82,11 @@ export const tokens: {
         readonly strong: "var(--cdt-border-strong)";
         readonly control: "var(--cdt-border-control)";
         readonly DEFAULT: "var(--cdt-border)";
+        readonly width: {
+            readonly hairline: "var(--cdt-border-width-hairline)";
+            readonly emphasis: "var(--cdt-border-width-emphasis)";
+            readonly rail: "var(--cdt-border-width-rail)";
+        };
     };
     readonly accent: {
         readonly DEFAULT: "var(--cdt-accent)";
@@ -387,6 +392,10 @@ export const tokens: {
     readonly page: {
         readonly headingSize: "var(--cdt-page-heading-size)";
         readonly headingLineHeight: "var(--cdt-page-heading-line-height)";
+        readonly sectionHeadingSize: "var(--cdt-page-section-heading-size)";
+        readonly sectionHeadingLineHeight: "var(--cdt-page-section-heading-line-height)";
+        readonly subHeadingSize: "var(--cdt-page-sub-heading-size)";
+        readonly subHeadingLineHeight: "var(--cdt-page-sub-heading-line-height)";
         readonly stackGap: "var(--cdt-page-stack-gap)";
         readonly stackGapCompact: "var(--cdt-page-stack-gap-compact)";
         readonly contentStackGap: "var(--cdt-page-content-stack-gap)";

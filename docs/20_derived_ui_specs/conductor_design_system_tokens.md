@@ -1,6 +1,6 @@
 # Conductor Design System 토큰 명세
 
-> 상태: review | 버전: v0.7 | 갱신일: 2026-07-17
+> 상태: review | 버전: v0.8 | 갱신일: 2026-08-06
 
 ## 0. 문서 성격과 범위 경계
 
@@ -406,6 +406,18 @@ FR-TOK-007 AC-4는 제목이 `font.size.xl` 이상과 `clamp()` 기반 반응형
 | `radius.pill` | `9999px` | `app.css:500`, `app.css:1269` |
 
 `radius.pill`은 `tokens.css`의 다섯 단계 표면 반경을 확장해 근사한 값이 아니라, Badge와 Switch가 `app.css`에서 공유하는 완전 원형 기하를 그대로 승격한 semantic 토큰이다. 컴포넌트 명세가 처음부터 `--cdt-radius-pill`을 요구했으나 WP-005 구현에서 소스가 누락된 사실을 CR-018 시각 검수에서 발견해 복구했다(DEV-011).
+
+#### 5.9.5 선 두께 (`border.width.*`) — CR-034
+
+테마 무관. 소스에는 선 두께 스케일이 없고 모든 경계가 리터럴이었다. 그래서 스타일시트의 `1px solid`마다 "토큰에 선 두께가 없다"는 `cdt-allow-literal` 주석이 짝지어 붙어 있었다 — 결정으로 비운 자리가 아니라 빠뜨린 자리였다는 기록이다. 그리는 선은 세 종류뿐이므로 세 단계로 회수한다.
+
+| 토큰 키 | 별칭 | 값 | 용도 |
+| --- | --- | --- | --- |
+| `border.width.hairline` | `{stroke.1}` | `1px` | 표면·컨트롤·표 셀의 기본 엣지 |
+| `border.width.emphasis` | `{stroke.2}` | `2px` | 표 헤더 규칙, 마커 점의 링 |
+| `border.width.rail` | `{stroke.3}` | `3px` | Banner 상태 레일, 내비 활성 인디케이터 |
+
+`table.headerBorderWidth`와 `badge.marker.dotRingWidth`는 리터럴 `2px` 대신 `{border.width.emphasis}`를 참조한다.
 
 ### 5.10 고도 (`elevation.*`)
 
@@ -885,6 +897,8 @@ CR-018 이전 구현은 상태 semantic 색을 배경 전체에 적용하고 `te
 | `page.skipLinkZ` | `{z.popover}` | FR-CSS-002 AC-5 |
 
 `page.headingSize`의 `24px`와 `32px`는 리터럴이 아니라 5.9.2절의 파생 수식 결과다: `font.size.xl × 1.2 = 24px`, `font.size.xl × 1.6 = 32px`. 토큰 빌드가 수식을 평가해 리터럴로 산출한다. `clamp()` 인자는 CSS 커스텀 프로퍼티로 남길 수 없다 — 소비자가 `calc()` 없이 재정의하면 무효 값이 되기 때문이다.
+
+`page.sectionHeadingSize`(`h2`)와 `page.subHeadingSize`(`h3`)도 같은 방식으로 `font.size.xl`에서 파생한다(CR-034): `20 × 1.3 = 26px`, `20 × 1.1 = 22px`. 짝이 되는 줄 높이는 5.9.2절의 heading 비율 1.30과 같은 반올림 규칙을 적용해 `34px`, `29px`가 된다. 이 네 토큰은 컴포넌트 층에 있으므로 FR-TOK-007 AC-1이 고정한 `font.size` 7단은 그대로다. 이들이 없을 때 `h2`·`h3`는 사용자 에이전트 기본값으로 떨어져 본문과 크기가 거의 같았고, 문서에 `h1` 아래의 위계가 존재하지 않았다.
 
 `page.headingLineHeight`만 단위 없는 비율이다. `clamp()`로 크기가 변하는 유일한 토큰이므로 px 고정이 불가능하다.
 

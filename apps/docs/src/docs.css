@@ -11,10 +11,10 @@
 .docs-theme-toggle { display: inline-flex; align-items: center; gap: var(--cdt-space-2); }
 .docs-eyebrow { margin: 0 0 var(--cdt-space-2); color: var(--cdt-accent); font-size: var(--cdt-font-size-sm); font-weight: 700; text-transform: uppercase; }
 .docs-lead { max-width: 42rem; /* cdt-allow-literal: 읽기 폭은 간격 스케일이 아니라 줄 길이로 정한다 */ color: var(--cdt-text-muted); font-size: var(--cdt-font-size-lg); }
-.docs-token-swatch { display: block; width: var(--cdt-space-6); height: var(--cdt-space-6); border: 1px solid var(--cdt-border-default); /* cdt-allow-literal: 토큰에 선 두께가 없다 */ }
+.docs-token-swatch { display: block; width: var(--cdt-space-6); height: var(--cdt-space-6); border: var(--cdt-border-width-hairline) solid var(--cdt-border-default); }
 .docs-token-type { display: inline-grid; min-width: var(--cdt-space-6); min-height: var(--cdt-space-6); place-items: center; color: var(--cdt-text-primary); }
 .docs-token-space { display: block; min-width: var(--cdt-space-1); max-width: 4rem; /* cdt-allow-literal: 간격 견본의 표시 상한(64px). 스케일에 해당 값이 없다 */ height: var(--cdt-space-2); border-radius: var(--cdt-radius-pill); background: var(--cdt-accent); }
-.docs-token-shape { display: block; width: var(--cdt-space-6); height: var(--cdt-space-6); border: 1px solid var(--cdt-border-default); /* cdt-allow-literal: 토큰에 선 두께가 없다 */ background: var(--cdt-surface-raised); }
+.docs-token-shape { display: block; width: var(--cdt-space-6); height: var(--cdt-space-6); border: var(--cdt-border-width-hairline) solid var(--cdt-border-default); background: var(--cdt-surface-raised); }
 .docs-token-glyph { display: inline-grid; width: var(--cdt-space-6); height: var(--cdt-space-6); place-items: center; color: var(--cdt-accent); font-size: var(--cdt-font-size-xl); }
 .docs-preview { min-height: var(--cdt-space-8); margin-top: var(--cdt-space-3); }
 .docs-preview-row { display: flex; flex-wrap: wrap; gap: var(--cdt-space-2); align-items: center; }
@@ -44,7 +44,7 @@
 .docs-layout-example { margin-block: var(--cdt-space-3) var(--cdt-space-6); }
 .docs-motion-values { display: grid; gap: var(--cdt-space-2); margin: var(--cdt-space-4) 0 var(--cdt-space-6); }
 /* cdt-allow-literal: 용어 열 폭(160px)은 문서 표의 furniture다 */
-.docs-motion-values div { display: grid; grid-template-columns: minmax(10rem, 0.7fr) minmax(0, 1fr); gap: var(--cdt-space-4); align-items: baseline; padding-block: var(--cdt-space-2); border-bottom: 1px solid var(--cdt-border-subtle); }
+.docs-motion-values div { display: grid; grid-template-columns: minmax(10rem, 0.7fr) minmax(0, 1fr); gap: var(--cdt-space-4); align-items: baseline; padding-block: var(--cdt-space-2); border-bottom: var(--cdt-border-width-hairline) solid var(--cdt-border-subtle); }
 .docs-motion-values dt, .docs-motion-values dd { margin: 0; }
 .docs-motion-values dd { color: var(--cdt-text-muted); text-align: end; }
 .docs-motion-preview { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--cdt-space-6); margin-bottom: var(--cdt-space-6); }

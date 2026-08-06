@@ -47,7 +47,8 @@ type FontStep = keyof typeof FONT_SIZE_PX;
 
 const FONT_STEPS = Object.keys(FONT_SIZE_PX) as FontStep[];
 
-function roundHalfUp(value: number): number {
+/** The one rounding rule in the type system; `components.ts` derives its headings with it too. */
+export function roundHalfUp(value: number): number {
   return Math.floor(value + 0.5);
 }
 
@@ -87,6 +88,19 @@ const radius: TokenDefinition[] = [
   aliased("radius.lg", "curve.18", "Card and overlay radius."),
   aliased("radius.xl", "curve.24", "Largest radius."),
   semantic("radius.pill", "9999px", "Fully rounded badge, toggle, marker and progress geometry."),
+];
+
+/**
+ * Line weights. Every edge in the stylesheet used to write its own `1px`, each with a
+ * `cdt-allow-literal` comment saying the token set had none — a scale absent by omission rather
+ * than by decision. Three steps cover every rule the source draws: the hairline that bounds a
+ * surface, the heavier rule that separates a table header from its body, and the rail that carries
+ * a banner's status colour or marks the active navigation item.
+ */
+const borderWidth: TokenDefinition[] = [
+  aliased("border.width.hairline", "stroke.1", "기본 1px 엣지."),
+  aliased("border.width.emphasis", "stroke.2", "표 헤더 규칙, 마커 링."),
+  aliased("border.width.rail", "stroke.3", "배너 상태 레일, 내비 활성 인디케이터."),
 ];
 
 /** FR-TOK-008 AC-1. Six layers; AC-3 forbids two layers sharing a value. */
@@ -146,6 +160,7 @@ export const scaleTokens: readonly TokenDefinition[] = [
   ...fontLineHeight,
   ...space,
   ...radius,
+  ...borderWidth,
   ...z,
   ...breakpoint,
   ...motion,

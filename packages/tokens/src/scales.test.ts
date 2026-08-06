@@ -8,9 +8,11 @@ import {
   substituteBreakpoints,
 } from "./build/media";
 import { assertDistinctZLayers } from "./build/validate";
+import { componentTokens } from "./components";
 import { BREAKPOINT_PX, FONT_SIZE_PX, Z_LAYERS, scaleTokens } from "./scales";
 
 const byKey = new Map(scaleTokens.map((token) => [token.key, token]));
+const componentByKey = new Map(componentTokens.map((token) => [token.key, token]));
 const css = buildTokens({ outDir: "unused", report: true }).css;
 
 describe("typography scale", () => {
@@ -50,6 +52,38 @@ describe("radius scale", () => {
   test("FR-CSS-004: `radius.pill` resolves the shared fully-rounded component contract", () => {
     expect(byKey.get("radius.pill")?.value).toBe("9999px");
     expect(css).toContain("--cdt-radius-pill: 9999px;");
+  });
+});
+
+describe("border width scale", () => {
+  test("CR-034: three line weights exist and resolve to the stroke primitives", () => {
+    const weights = { hairline: "1px", emphasis: "2px", rail: "3px" } as const;
+    for (const [step, expected] of Object.entries(weights)) {
+      expect(byKey.get(`border.width.${step}`)?.alias).toBe(`stroke.${expected.replace("px", "")}`);
+      expect(css).toContain(`--cdt-border-width-${step}: ${expected};`);
+    }
+  });
+
+  test("CR-034: the component tokens that carried a 2px literal now reference the scale", () => {
+    for (const key of ["table.headerBorderWidth", "badge.marker.dotRingWidth"]) {
+      expect(componentByKey.get(key)?.alias).toBe("border.width.emphasis");
+      expect(componentByKey.get(key)?.value).toBeUndefined();
+    }
+  });
+});
+
+describe("heading scale", () => {
+  test("CR-034: `h2` and `h3` derive from `font.size.xl` without widening the seven-step scale", () => {
+    // 20 × 1.3 and 20 × 1.1, then the 1.30 heading ratio at the same half-up rounding.
+    expect(componentByKey.get("page.sectionHeadingSize")?.value).toBe("26px");
+    expect(componentByKey.get("page.sectionHeadingLineHeight")?.value).toBe("34px");
+    expect(componentByKey.get("page.subHeadingSize")?.value).toBe("22px");
+    expect(componentByKey.get("page.subHeadingLineHeight")?.value).toBe("29px");
+    expect(css).toContain("--cdt-page-section-heading-size: 26px;");
+    expect(css).toContain("--cdt-page-sub-heading-size: 22px;");
+
+    // The exposed type scale is unchanged: the headings live in the component tier.
+    expect([...byKey.keys()].filter((key) => key.startsWith("font.size."))).toHaveLength(7);
   });
 });
 

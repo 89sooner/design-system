@@ -14,7 +14,7 @@
  * Refs: WP-002 FR-TOK-002 FR-CMP-002 FR-CMP-003 FR-CMP-004 FR-CMP-005 FR-CMP-006 FR-CMP-007 FR-CMP-009
  */
 import type { TokenDefinition, TokenUsage } from "./schema";
-import { FONT_SIZE_PX } from "./scales";
+import { FONT_SIZE_PX, roundHalfUp } from "./scales";
 
 function component(
   key: string,
@@ -120,7 +120,7 @@ const badge: TokenDefinition[] = [
   component("badge.marker.border", ref("border.strong"), "Marker-shape edge."),
   component("badge.marker.dotSize", value("9px"), "Status dot diameter."),
   component("badge.marker.dotRing", ref("surface.raised"), "Marker dot ring."),
-  component("badge.marker.dotRingWidth", value("2px"), "Marker dot ring width."),
+  component("badge.marker.dotRingWidth", ref("border.width.emphasis"), "Marker dot ring width."),
   component("badge.severity.text", ref("text.primary"), "Label on a severity fill. 4.67:1 to 9.32:1.", "body"),
 ];
 
@@ -128,7 +128,7 @@ const table: TokenDefinition[] = [
   component("table.headerText", ref("text.muted"), "Column header text.", "body"),
   component("table.headerFontSize", ref("font.size.base"), "Column header size."),
   component("table.headerBorder", ref("border.default"), "Header rule."),
-  component("table.headerBorderWidth", value("2px"), "Header rule width."),
+  component("table.headerBorderWidth", ref("border.width.emphasis"), "Header rule width."),
   component(
     "table.cellBorder",
     ref("border.default"),
@@ -265,6 +265,20 @@ const overlay: TokenDefinition[] = [
 const HEADING_MIN_PX = FONT_SIZE_PX.xl * 1.2;
 const HEADING_MAX_PX = FONT_SIZE_PX.xl * 1.6;
 
+/**
+ * `h2` and `h3` had no size of their own: below `page.headingSize` the scale stopped at
+ * `font.size.xl` (20px), which is also `h1`'s floor, so a section heading and the body it
+ * introduces were nearly the same size and the document read as one flat block.
+ *
+ * These are derived the same way `page.headingSize` is — multipliers on `font.size.xl` — so the
+ * exposed type scale stays seven steps (FR-TOK-007 AC-1). Line heights use the 1.30 heading ratio
+ * and `scales.ts`'s half-up rounding, so a heading's leading is computed by the same rule as every
+ * other step rather than eyeballed.
+ */
+const H2_PX = Math.round(FONT_SIZE_PX.xl * 1.3);
+const H3_PX = Math.round(FONT_SIZE_PX.xl * 1.1);
+const HEADING_LINE_HEIGHT_RATIO = 1.3;
+
 const page: TokenDefinition[] = [
   component(
     "page.headingSize",
@@ -275,6 +289,26 @@ const page: TokenDefinition[] = [
     "page.headingLineHeight",
     value("1.16"),
     "The only unitless line height: `clamp()` makes a px value impossible here.",
+  ),
+  component(
+    "page.sectionHeadingSize",
+    value(`${H2_PX}px`),
+    "`h2`. `font.size.xl` × 1.3.",
+  ),
+  component(
+    "page.sectionHeadingLineHeight",
+    value(`${roundHalfUp(H2_PX * HEADING_LINE_HEIGHT_RATIO)}px`),
+    "Line height paired with `page.sectionHeadingSize`, at the 1.30 heading ratio.",
+  ),
+  component(
+    "page.subHeadingSize",
+    value(`${H3_PX}px`),
+    "`h3`. `font.size.xl` × 1.1.",
+  ),
+  component(
+    "page.subHeadingLineHeight",
+    value(`${roundHalfUp(H3_PX * HEADING_LINE_HEIGHT_RATIO)}px`),
+    "Line height paired with `page.subHeadingSize`, at the 1.30 heading ratio.",
   ),
   component("page.stackGap", ref("space.6"), "Gap between page sections."),
   component("page.stackGapCompact", ref("space.5"), "Section gap below `breakpoint.sm`."),

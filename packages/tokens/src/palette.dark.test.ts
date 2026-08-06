@@ -141,6 +141,8 @@ describe("dark palette against the source tokens.css", () => {
         "surface.tint.2",
         // CR-018 / DEV-011: app.css shares a fully rounded geometry across components.
         "radius.pill",
+        // CR-034: the source wrote every edge as a literal; three line weights replace them.
+        ...["hairline", "emphasis", "rail"].map((step) => `border.width.${step}`),
         // FR-TOK-007, FR-TOK-008, FR-TOK-009: scales the source expressed as literals.
         ...["2xs", "xs", "sm", "base", "md", "lg", "xl"].map((step) => `font.lineHeight.${step}`),
         ...["2xs", "xs", "sm", "base", "md", "lg", "xl"].map((step) => `font.size.${step}`),
