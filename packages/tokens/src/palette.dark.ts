@@ -279,15 +279,15 @@ const status: TokenDefinition[] = [
   }),
   darkToken({
     key: "status.neutralEnd",
-    usage: "decorative",
-    value: "#475569",
+    usage: "nonText",
+    value: "#94a3b8",
     icon: "circle-slash",
     description:
-      "Cancelled or superseded. Contrast-exempt per CR-006 (`srs_final.md` 12.1): 2.04:1 to " +
-      "2.60:1 reaches non-text 3:1 on no surface. WCAG 1.4.11 exception — FR-THM-005 AC-7 forces " +
-      "an icon and a label alongside the colour, and the source's surface-coloured ring supplies " +
-      "the marker's shape boundary, so the dot's fill carries no identification on its own. " +
-      "Known cost: the dot reads faintly against a dark background.",
+      "Cancelled or superseded. `slate.400` at 6.61:1 on `surface.raised` (CP-042). The marker is " +
+      "drawn as a ring rather than a fill, so it stays distinguishable from queued's filled dot by " +
+      "shape as well as colour. CR-035 retires the CR-006 contrast exemption at this value: the " +
+      "old `#475569` measured 2.04:1 to 2.60:1 and could only be classified `decorative`, which " +
+      "meant the end-state dot read faintly against every dark surface.",
   }),
 ];
 

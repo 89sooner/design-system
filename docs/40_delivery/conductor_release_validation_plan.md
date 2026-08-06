@@ -50,7 +50,7 @@ Conductor Design System은 `@conductor-by-89soone/tokens`, `@conductor-by-89soon
 - [x] FR-THM-005 교정 값 적용 확인: `focusRing`이 `surface.base` 위 3.93·`surface.raised` 위 3.56, 신규 `border.control`이 `surface.raised` 위 3.23(FR-THM-005 AC-1, AC-2)
 - [x] `text.faint`를 `surface.elevated` 위에 쓴 코드가 `pnpm lint:tokens`를 실패시킴(FR-THM-005 AC-3)
 - [x] `border.subtle`/`default`/`strong`이 `decorative`로 분류됨(FR-THM-005 AC-4)
-- [x] `status.queued`가 `nonText`로 분류되고 통과(FR-THM-005 AC-5), `status.neutralEnd`가 `decorative`로 분류되어 검사 대상에서 제외되고 사유가 `--report`에 출력됨(FR-THM-005 AC-6, CR-006)
+- [x] `status.queued`가 `nonText`로 분류되고 통과(FR-THM-005 AC-5), `status.neutralEnd`도 `nonText`로 CP-042에서 다크 6.61:1 · 라이트 8.58:1로 통과(FR-THM-005 AC-6, CR-035가 CR-006의 검사 제외를 폐기)
 - [x] 산출물의 모든 규칙이 `cdt.reset/base/layout/component/utility` 5개 레이어 중 하나에 속하고 `!important` 0건(FR-CSS-001)
 - [x] 리셋·포커스 표시·원격 폰트 참조 0건 확인(FR-CSS-002)
 - [x] 레이아웃 프리미티브 클래스(`cdt-app-shell` 등) 존재, 색상 속성 선언 0건(FR-CSS-003)

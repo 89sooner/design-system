@@ -1,6 +1,6 @@
 # Conductor Design System 최종 요구사항 정의서
 
-> 상태: baseline | 버전: v1.3 | 갱신일: 2026-07-17
+> 상태: baseline | 버전: v1.4 | 갱신일: 2026-08-06
 
 ## 1. 문서 개요
 
@@ -347,7 +347,7 @@ FR-QA-004(시각 회귀)와 FR-CMP-009(셸 컴포넌트군)는 2026-07-10에 OD-
 | 우선순위 | Must |
 | 출처 | OD-001 (2026-07-10 종결) / SRC-WCAG 1.4.11, 2.4.11 |
 | 요구사항 | 시스템은 항상 12.1절 표에 명시된 교정 값을 소스 계승 값 대신 사용하여야 한다. |
-| 수용 기준 | AC-1: `focusRing`이 accent 색을 alpha 0.80으로 합성한 값을 사용하며, `surface.base`와 `surface.raised` 위에서 각각 3:1 이상이다. AC-2: `border.control` 토큰이 존재하고 `surface.raised` 위에서 3:1 이상이며, `TextField`·`TextArea`·`Select`·`Switch`·`Checkbox`의 경계에 적용된다. AC-3: `text.faint`는 `usage: "decorative"`이며 `surface.elevated` 위에서 사용되면 `pnpm lint:tokens`가 실패한다. AC-4: `border.subtle`·`border.default`·`border.strong`은 `usage: "decorative"`이며 대비 검사 대상이 아니다. AC-5: `status.queued`는 `usage: "nonText"`다. AC-6: `status.neutralEnd`는 `usage: "decorative"`다(CR-006). AC-7: `status.queued`와 `status.neutralEnd`를 쓰는 컴포넌트는 색 외에 아이콘과 텍스트를 함께 렌더한다. |
+| 수용 기준 | AC-1: `focusRing`이 accent 색을 alpha 0.80으로 합성한 값을 사용하며, `surface.base`와 `surface.raised` 위에서 각각 3:1 이상이다. AC-2: `border.control` 토큰이 존재하고 `surface.raised` 위에서 3:1 이상이며, `TextField`·`TextArea`·`Select`·`Switch`·`Checkbox`의 경계에 적용된다. AC-3: `text.faint`는 `usage: "decorative"`이며 `surface.elevated` 위에서 사용되면 `pnpm lint:tokens`가 실패한다. AC-4: `border.subtle`·`border.default`·`border.strong`은 `usage: "decorative"`이며 대비 검사 대상이 아니다. AC-5: `status.queued`는 `usage: "nonText"`다. AC-6: `status.neutralEnd`는 `usage: "nonText"`이며 `badge.marker.background` 위에서 3:1 이상이다(CR-035가 CR-006의 예외를 폐기했다). AC-7: `status.queued`와 `status.neutralEnd`를 쓰는 컴포넌트는 색 외에 아이콘과 텍스트를 함께 렌더한다. |
 | 검증 방법 | test |
 | 관련 화면 | W-030, W-050 |
 | 관련 API/데이터 | API-TOK-003 / ENT-THM-001, ENT-TOK-001 |
@@ -942,7 +942,7 @@ OD-001(2026-07-10 종결)이 확정한 정책이다. 소스 팔레트를 실측�
 | `border.strong` | slate alpha 0.30 | `decorative` | 1.69 | 위와 같다 |
 | `accent` | `#6d7cff` | `body` | 4.40 ~ 5.60 | `surface.elevated` 위 본문 사용 금지(4.40). 대형 텍스트와 비텍스트는 허용 |
 | `status.queued` | `#64748b` | `nonText` | 3.25 ~ 3.56 | 아이콘과 텍스트 병기 필수(FR-A11Y-003). `surface.raised` 3.56, `surface.elevated` 3.25로 기준 충족 |
-| `status.neutralEnd` | `#475569` | `decorative` (CR-006) | 2.04 ~ 2.60 | 아이콘과 텍스트 병기 필수. 점/마커 전용, 텍스트 전경 금지. **대비 검사 대상이 아니다.** WCAG 1.4.11 예외 근거: FR-THM-005 AC-7이 아이콘·텍스트 병기를 강제하므로 색이 상태를 혼자 전달하지 않고, 소스의 `.timeline-marker`가 표면색 링(`app.css:585`)으로 도형 경계를 만들어 점의 식별이 채움 대비에 의존하지 않는다. `border.*`에 적용한 예외와 동일한 논리다. 대가: 다크 테마에서 종료 상태 점이 배경에서 흐리게 읽힌다 (알려진 제약) |
+| `status.neutralEnd` | `#94a3b8` | `nonText` (CR-035) | 6.61 (`badge.marker.background`) | 아이콘과 텍스트 병기 필수. 점/마커 전용, 텍스트 전경 금지. CP-042로 검사한다. CR-006은 소스 값 `#475569`(2.04 ~ 2.60)를 보존하는 대가로 `decorative` 분류와 WCAG 1.4.11 예외를 택했고, 그 대가는 "다크 테마에서 종료 상태 점이 흐리게 읽힌다"는 승인된 제약이었다. CR-035가 값을 `slate.400`으로 올려 그 예외를 폐기했다. 마커는 채움이 아니라 링으로 그려 queued의 채운 점과 형태로도 구분된다 |
 | `status.running` / `waiting` / `success` / `partial` / `danger` | — | `body` | 4.50 ~ 8.84 | 제약 없음 |
 | `meter.normal` / `warning` / `exceeded` | — | `body` | 6.13 ~ 10.15 | 제약 없음 |
 | `severity.read` / `write` / `destructive` / `blocked` | — | `body` (배경 용도) | 전경으로 쓴 흰 텍스트 기준 4.67 ~ 9.32 | 배경 전용. 전경색으로 쓰면 `surface.raised` 위에서 1.69 ~ 3.38으로 미달한다 |

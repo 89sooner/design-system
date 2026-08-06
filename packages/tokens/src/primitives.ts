@@ -58,9 +58,18 @@ const indigo: TokenDefinition[] = [
 
 /** Tailwind Slate. Borders and neutral run states (tokens spec 4.3). */
 const slate: TokenDefinition[] = [
-  primitive("slate.400", "#94a3b8", "Base colour of all four dark border tokens and the scrollbar."),
+  primitive(
+    "slate.400",
+    "#94a3b8",
+    "Base colour of all four dark border tokens and the scrollbar; dark `status.neutralEnd` (CR-035).",
+  ),
   primitive("slate.500", "#64748b", "Dark `status.queued`; light `border.control`."),
-  primitive("slate.600", "#475569", "Dark `status.neutralEnd`."),
+  primitive(
+    "slate.600",
+    "#475569",
+    "The source's `--status-neutral-end`. No consumer since CR-035 raised the dark end-state to " +
+      "`slate.400`; kept as the record of the source value that decision replaced.",
+  ),
   primitive("slate.700", "#3f4b5f", "Light `status.neutralEnd`."),
   primitive("slate.750", "#52607a", "Light `status.queued`."),
 ];

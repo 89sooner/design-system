@@ -250,8 +250,13 @@
     background: var(--cdt-status-queued);
   }
 
+  /*
+   * Drawn as a ring, not a fill. `queued` is the filled dot; making the end state hollow keeps
+   * the two distinguishable by shape, so the marker does not rely on two greys being told apart.
+   */
   .cdt-status-badge__marker--neutral-end {
-    background: var(--cdt-status-neutral-end);
+    background-color: transparent;
+    border-color: var(--cdt-status-neutral-end);
   }
 
   .cdt-severity-tag { color: var(--cdt-badge-severity-text); }

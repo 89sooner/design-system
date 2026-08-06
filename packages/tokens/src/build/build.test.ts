@@ -47,8 +47,9 @@ describe("buildTokens artifacts", () => {
 
     expect(keys).toContain("text.faint");
     expect(keys).toContain("border.subtle");
-    expect(keys).toContain("status.neutralEnd");
     expect(keys).not.toContain("border.control");
+    // CR-035 raised the dark end state to slate.400, so it is measured (CP-042), not excluded.
+    expect(keys).not.toContain("status.neutralEnd");
     for (const exclusion of exclusions) expect(exclusion.reason.length).toBeGreaterThan(0);
   });
 });

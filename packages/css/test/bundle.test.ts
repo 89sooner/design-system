@@ -365,6 +365,15 @@ describe("FR-CMP-004 status display styles", () => {
     expect(marker?.decls.background).toBe("var(--cdt-status-queued)");
     expect(marker?.decls.border).toBe("var(--cdt-badge-marker-dot-ring-width) solid var(--cdt-badge-marker-dot-ring)");
   });
+
+  test("CR-035: the two marker statuses differ by shape, not only by colour", () => {
+    // queued is a filled dot; the end state is a ring. Two greys told apart by fill alone would
+    // put the whole distinction on a contrast ratio.
+    const end = components.find((rule) => rule.selector === ".cdt-status-badge__marker--neutral-end");
+    // cdt-allow-literal: lightningcss가 transparent를 출력하는 형태에 대한 단언이다
+    expect(end?.decls["background-color"]).toBe("#0000");
+    expect(end?.decls["border-color"]).toBe("var(--cdt-status-neutral-end)");
+  });
 });
 
 describe("FR-CMP-005 data display styles", () => {

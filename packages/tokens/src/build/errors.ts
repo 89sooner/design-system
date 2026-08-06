@@ -39,6 +39,8 @@ export type BuildErrorCode =
   | "TOK-CP-USAGE"
   | "TOK-CP-COLOR"
   | "TOK-CP-ALPHA"
+  | "TOK-CP-FORBIDDEN"
+  | "TOK-THEME-KEY"
   | "TOK-LITERAL"
   | "TOK-ARG";
 
@@ -63,6 +65,8 @@ const EXIT_CODES: Readonly<Record<BuildErrorCode, number>> = {
   "TOK-CP-USAGE": 1,
   "TOK-CP-COLOR": 1,
   "TOK-CP-ALPHA": 1,
+  "TOK-CP-FORBIDDEN": 1,
+  "TOK-THEME-KEY": 1,
   "TOK-LITERAL": 1,
   "TOK-ARG": 3,
 };

@@ -1,6 +1,6 @@
 # Conductor Design System 토큰 명세
 
-> 상태: review | 버전: v0.8 | 갱신일: 2026-08-06
+> 상태: review | 버전: v0.9 | 갱신일: 2026-08-06
 
 ## 0. 문서 성격과 범위 경계
 
@@ -185,7 +185,7 @@ primitive 토큰은 CSS로 산출되지 않고 `@conductor-by-89soone/tokens` �
 | --- | --- | --- |
 | `slate.400` | `#94a3b8` | `tokens.css:22-24` 경계 3종의 기저색, `app.css:57` 스크롤바. `border.control`(alpha 0.60)의 기저색이기도 하다 |
 | `slate.500` | `#64748b` | `tokens.css:33` `--status-queued`. 라이트 `border.control`이 이 stop을 불투명하게 재사용한다 |
-| `slate.600` | `#475569` | `tokens.css:39` `--status-neutral-end` |
+| `slate.600` | `#475569` | `tokens.css:39` `--status-neutral-end`. CR-035 이후 소비처 없음 — 대체된 소스 값의 기록으로 남긴다 |
 | `slate.700` | `#3f4b5f` | 6절 파생 (라이트 `status.neutralEnd`) |
 | `slate.750` | `#52607a` | 6절 파생 (라이트 `status.queued`) |
 
@@ -313,7 +313,7 @@ FR-THM-002 AC-3은 세 경계 토큰이 라이트에서 비텍스트 3:1을 만�
 | `status.success` | body | `#10b981` | `#047857` | `check-circle-2` | FR-THM-005 |
 | `status.partial` | body | `#eab308` | `#a16207` | `alert-circle` | FR-THM-005 |
 | `status.danger` | body | `#ef4444` | `#c81e1e` | `x-circle` | FR-THM-005, FR-CMP-008 |
-| `status.neutralEnd` | decorative | `#475569` | `#3f4b5f` | `circle-slash` | FR-THM-005 AC-6 |
+| `status.neutralEnd` | nonText | `#94a3b8` | `#3f4b5f` | `circle-slash` | FR-THM-005 AC-6 (CR-035) |
 
 상태 7종은 세 무리로 갈린다. `running`·`waiting`·`success`·`partial`·`danger` 다섯은 채도가 높아 `surface.raised` 위에서 본문 4.5:1을 넘으므로 `body`다(다크 4.50 ~ 8.84). `queued`는 중립 회색이지만 비텍스트 3:1을 넘으므로 `nonText`다(다크 `surface.raised` 3.56:1, `surface.elevated` 3.25:1). `neutralEnd`는 표면 6종 어디에서도 3:1에 이르지 못하므로 `decorative`이며 대비 검사 대상이 아니다(다크 2.04:1 ~ 2.60:1). 세 분류는 SRS 12.1절이 확정했고 FR-THM-005 AC-5·AC-6이 강제한다.
 
@@ -617,7 +617,7 @@ Tailwind ramp를 쓰는 색은 같은 색상 계열에서 2~3단계 어두운 st
 | `status.success` | body | `#10b981` | `#047857` | `{emerald.700}` | 5.10:1 통과 | 5.34:1 통과 |
 | `status.partial` | body | `#eab308` | `#a16207` | `{yellow.700}` | 4.58:1 통과 | 4.79:1 통과 |
 | `status.danger` | body | `#ef4444` | `#c81e1e` | `{red.650}` | 5.34:1 통과 | 5.59:1 통과 |
-| `status.neutralEnd` | decorative | `#475569` | `#3f4b5f` | `{slate.700}` | 2.24:1 (검사 제외) | 8.58:1 (검사 제외) |
+| `status.neutralEnd` | nonText | `#94a3b8` | `#3f4b5f` | `{slate.400}` / `{slate.700}` | 6.61:1 통과 (CP-042) | 8.58:1 통과 (CP-042) |
 | `meter.normal` | body | `#34d399` | `#047857` | `{emerald.700}` | — | 5.34:1 통과 |
 | `meter.warning` | body | `#fbbf24` | `#b45309` | `{amber.700}` | — | 4.89:1 통과 |
 | `meter.exceeded` | body | `#f87171` | `#dc2626` | `{red.600}` | — | 4.70:1 통과 |
@@ -1045,7 +1045,9 @@ FR-THM-005가 강제한 두 교정이 9건의 미달을 제거했다. `focusRing
 
 ### 8.5 해소된 결함: CP-025 `status.neutralEnd` (CR-006)
 
-> **결론 먼저.** 2026-07-10 CR-006으로 **해소안 A**가 채택되었다(사용자 결정). `status.neutralEnd`의 값 `#475569`를 보존하고 `usage`를 `nonText` → `decorative`로 낮춘다. CP-025는 선언된 쌍에서 제거되었다. `pnpm check:contrast`는 두 테마에서 종료 코드 0을 반환한다. SRS 12.1절과 FR-THM-005 AC-6이 이 결정을 담고 있다. 아래는 그 결정의 근거로 보존한 측정 기록이다.
+> **결론 먼저 (2026-08-06 갱신).** CR-035가 CR-006의 해소안 A를 폐기했다. 다크 `status.neutralEnd`는 `slate.400`(`#94a3b8`)이고 `usage`는 `nonText`로 돌아왔으며, `badge.marker.background` 위 6.61:1을 **CP-042**로 검사한다. CP-025는 영구 결번이다 — 되살린 것은 의무이지 번호가 아니다. 마커는 채움이 아니라 링으로 그려 queued의 채운 점과 형태로도 구분된다.
+>
+> **폐기된 결정 (2026-07-10 ~ 2026-08-06).** CR-006은 소스 값 `#475569`를 보존하는 대가로 `usage`를 `decorative`로 낮추고 WCAG 1.4.11 예외를 적용했다. 그 대가는 "다크 테마에서 종료 상태 점이 배경에서 흐리게 읽힌다"는 승인된 제약으로 기록됐고, 원장은 시인성 불만이 제기되면 값 교정 CR을 열라고 남겨 두었다. CR-035가 그 CR이다. 아래는 두 결정 모두의 근거로 보존한 측정 기록이다.
 
 **측정 사실.** 다크 `status.neutralEnd`(`#475569`)는 `nonText` 기준 3:1을 표면 6종 어디에서도 만족하지 못한다.
 
@@ -1196,6 +1198,6 @@ FR-THM-005가 강제한 두 교정이 9건의 미달을 제거했다. `focusRing
 
 FR-THM-005는 OD-001(2026-07-10 종결, CR-005)이 낳은 요구사항이고, 그 AC-5·AC-6·AC-7은 CR-006(2026-07-10 종결)이 재구성한 것이다. 이 문서에서 그 요구사항이 실현되는 지점은 5.3절(`text.faint` 분류, AC-3), 5.4절(경계 분류와 `border.control` 신설, AC-2·AC-4), 5.5절(`accent` 분류), 5.6절(상태 분류, AC-5·AC-6), 5.7절(미터 분류), 5.8절(심각도 배경 전용), 5.11절(`focusRing` 교정, AC-1), 6.3절과 6.3.1절(라이트 대응 값), 7.3절(마커 형태 배지, AC-7), 7.5절(폼 컨트롤 경계, AC-2), 8절(검사 쌍) 열한 곳이다.
 
-CR-006은 `status.neutralEnd`의 `usage`를 `nonText`에서 `decorative`로 낮췄다(FR-THM-005 AC-6). 값 `#475569`는 보존된다. 이 문서에 남은 흔적은 5.6절의 분류 표, 7.3절의 마커 형태, 8.2절의 제거된 CP-025 행, 8.4절의 제외 사유, 8.5절의 결정 기록, 그리고 8.5절 말미의 알려진 제약이다.
+CR-006은 `status.neutralEnd`의 `usage`를 `nonText`에서 `decorative`로 낮췄고(FR-THM-005 AC-6) 값 `#475569`를 보존했다. CR-035가 값을 `slate.400`(`#94a3b8`)으로 올려 그 예외를 폐기하고 `usage`를 `nonText`로 되돌렸으며, 대비 쌍을 새 ID `CP-042`로 선언했다. 이 문서에 남은 흔적은 5.6절의 분류 표, 7.3절의 마커 형태(링), 8.2절의 CP-042 행과 영구 결번 CP-025, 8.5절의 두 결정 기록이다. 8.5절 말미의 "알려진 제약"은 CR-035로 해소되었다.
 
 이 문서는 `W-010`(색상), `W-011`(타이포그래피), `W-012`(간격/레이아웃), `W-013`(반경/고도), `W-014`(모션), `W-030`(토큰 참조 페이지)의 값 근거다. 문서 사이트는 이 문서가 아니라 `@conductor-by-89soone/tokens/tokens.json`을 읽어 렌더한다(FR-DOC-002 AC-1). 두 산출물이 어긋나면 토큰 소스가 옳고 이 문서를 고친다.

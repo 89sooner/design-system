@@ -88,8 +88,10 @@ const correctedTokens: ContrastPair[] = [
 ];
 
 /**
- * Six of the seven run states. `status.neutralEnd` is `decorative` (CR-006, FR-THM-005 AC-6):
- * its former pair was CP-025 and the number stays retired.
+ * Six of the seven run states measured on `surface.raised`. `status.neutralEnd` is measured too,
+ * but as CP-042 in `badgePairs`, against the marker background it actually renders on. Its former
+ * pair was CP-025; CR-035 restored the obligation, not the number, because CP ids are permanent
+ * and a report or commit that named CP-025 meant the retired 2.24:1 measurement.
  */
 const statusPairs: ContrastPair[] = [
   pair("CP-019", "status.running", "surface.raised", "body"),
@@ -140,6 +142,14 @@ const badgePairs: ContrastPair[] = [
     "tokens spec 8.2 names the foreground `badge.marker.dot`; that key is a variant slot rather " +
       "than a token, and it resolves to `status.queued` for the only declared variant.",
   ),
+  pair(
+    "CP-042",
+    "status.neutralEnd",
+    "badge.marker.background",
+    "nonText",
+    "CR-035. The second marker variant, measurable again now that the dark end state is " +
+      "`slate.400`. New id: CP-025 is permanently retired (tokens spec 8.2, 8.5).",
+  ),
 ];
 
 /** The two disabled fills, checked beneath the label each one carries. */
@@ -157,4 +167,44 @@ export const contrastPairs: readonly ContrastPair[] = [
   ...severityPairs,
   ...badgePairs,
   ...disabledPairs,
+];
+
+/** A combination that must never render. `FP-###`, permanent like a `CP-###`. */
+export interface ForbiddenPair {
+  readonly id: string;
+  readonly foreground: string;
+  readonly background: string;
+  readonly reason: string;
+}
+
+/**
+ * Two combinations the token documentation forbids in prose. Prose is not a check: a `lint:tokens`
+ * rule can only see two custom properties named in one declaration block, so the ban survived only
+ * as long as nobody reached the same colours through an alias — `input.placeholder` resolves to
+ * `text.faint` and any component token could resolve to `surface.elevated`.
+ *
+ * Declaring them here puts the ban on the token graph instead of on the text of a stylesheet.
+ * `check.ts` resolves both sides through their aliases and fails a declared contrast pair that
+ * lands on one, and re-measures each combination so a ban that stopped being true stops being
+ * silently carried forward.
+ *
+ * Refs: FR-THM-005 AC-3 · tokens spec 8.4
+ */
+export const forbiddenPairs: readonly ForbiddenPair[] = [
+  {
+    id: "FP-001",
+    foreground: "text.faint",
+    background: "surface.elevated",
+    reason:
+      "`text.faint` is `decorative` and may not be painted on this surface — 2.94:1 in dark, " +
+      "still short of body 4.5:1 in light (FR-THM-005 AC-3)",
+  },
+  {
+    id: "FP-002",
+    foreground: "accent",
+    background: "surface.elevated",
+    reason:
+      "the accent is a body foreground on `surface.base` and `surface.raised` only; on the " +
+      "elevated surface it measures 4.40:1 in dark, below body 4.5:1 (tokens spec 8.4)",
+  },
 ];
