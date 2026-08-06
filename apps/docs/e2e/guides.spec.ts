@@ -15,7 +15,7 @@ test("SCN-001 / QA-015 through QA-018: Getting Started documents the complete co
 });
 
 test("FR-DOC-007 and FR-A11Y-003: patterns show real recommended and prohibited examples", async ({ page }) => {
-  await page.goto(docsPath("/patterns"));
+  await page.goto(docsPath("/guidelines"));
   await expect(page.getByRole("heading", { name: "Patterns" })).toBeVisible();
   await expect(page.getByRole("table", { name: "Status usage" })).toContainText("neutralEnd");
   await expect(page.getByRole("table", { name: "Severity usage" })).toContainText("blocked");

@@ -118,12 +118,15 @@ describe("FR-A11Y-004 AC-3: the exclusion list", () => {
     expect(measured).not.toContain("border.strong");
   });
 
-  test("FR-THM-005 AC-6: status.neutralEnd is decorative, excluded, and prints its reason", () => {
-    const neutralEnd = report.exclusions.find((exclusion) => exclusion.key === "status.neutralEnd");
-    expect(neutralEnd?.usage).toBe("decorative");
-    expect(neutralEnd?.reason).toContain("CR-006");
-    expect(report.results.some((result) => result.foreground === "status.neutralEnd")).toBe(false);
-    expect(formatExclusions(report).join("\n")).toContain("reason: Cancelled or superseded.");
+  test("FR-THM-005 AC-6 (CR-035): status.neutralEnd is measured rather than excluded", () => {
+    expect(report.exclusions.some((exclusion) => exclusion.key === "status.neutralEnd")).toBe(false);
+    const measured = report.results.filter((result) => result.foreground === "status.neutralEnd");
+    expect(measured.map((result) => result.id)).toEqual(["CP-042", "CP-042"]);
+    for (const result of measured) {
+      expect(result.usage).toBe("nonText");
+      expect(result.pass).toBe(true);
+      expect(result.ratio).toBeGreaterThanOrEqual(3);
+    }
   });
 
   test("FR-A11Y-004 AC-3: --report prints every excluded token with the reason from its description", () => {
@@ -191,9 +194,55 @@ describe("FR-THM-004 AC-1: a malformed pair declaration is an error, never a sil
     expect(error.format()).toContain("reason it is excluded:");
   });
 
-  test("FR-THM-005 AC-6: status.neutralEnd cannot be reintroduced as a pair without a CR", () => {
+  test("FR-THM-005 AC-3: a pair that names a forbidden combination outright is rejected", () => {
     const error = thrownBy(() =>
-      checkContrast({ pairs: [pairOf("CP-025", "status.neutralEnd", "surface.raised", "nonText")] }),
+      checkContrast({ pairs: [pairOf("CP-903", "accent", "surface.elevated")], themes: [DARK] }),
+    );
+    expect(error.code).toBe("TOK-CP-FORBIDDEN");
+    expect(error.format()).toContain("forbidden: FP-002");
+    expect(error.format()).toContain("Lifting the ban needs a CR");
+  });
+
+  test("FR-THM-005 AC-3: the ban survives an alias — `input.placeholder` is `text.faint`", () => {
+    // This is the case prose and `lint:tokens` both miss: neither side is spelled `text.faint`
+    // or `surface.elevated` in the declaration, but the token graph resolves to both.
+    const error = thrownBy(() =>
+      checkContrast({
+        pairs: [pairOf("CP-904", "input.placeholder", "surface.elevated", "nonText")],
+        themes: [DARK],
+      }),
+    );
+    expect(error.code).toBe("TOK-CP-FORBIDDEN");
+    expect(error.format()).toContain("forbidden: FP-001");
+  });
+
+  test("FR-THM-005 AC-3: a combination that is not banned passes through untouched", () => {
+    const report = checkContrast({ pairs: [pairOf("CP-905", "accent", "surface.base")], themes: [DARK] });
+    expect(resultOf(report, "CP-905").pass).toBe(true);
+  });
+
+  test("FR-THM-005 AC-3: every forbidden combination is re-measured so the ban stays evidenced", () => {
+    const report = checkContrast();
+    expect(report.summary.forbiddenPairs).toBe(2);
+
+    for (const banned of report.forbidden) {
+      expect(banned.ratio).toBeGreaterThan(0);
+      expect(banned.reason.length).toBeGreaterThan(0);
+      // A ban whose ratio cleared body contrast in every theme would be stale rather than wrong,
+      // and the printed number is what makes that visible.
+      expect(banned.ratio).toBeLessThan(6);
+    }
+    expect(report.forbidden.map((banned) => `${banned.id}/${banned.theme}`)).toEqual([
+      "FP-001/dark",
+      "FP-002/dark",
+      "FP-001/light",
+      "FP-002/light",
+    ]);
+  });
+
+  test("FR-THM-004 exception: a decorative token cannot be reintroduced as a pair without a CR", () => {
+    const error = thrownBy(() =>
+      checkContrast({ pairs: [pairOf("CP-901", "text.faint", "surface.raised", "nonText")] }),
     );
     expect(error.code).toBe("TOK-CP-DECORATIVE");
     expect(error.format()).toContain("Reclassifying it needs a CR");

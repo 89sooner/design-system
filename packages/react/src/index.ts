@@ -13,7 +13,7 @@ export type { CodeBlockProps, KbdProps, TableCellProps, TableHeaderCellProps, Ta
 export { Dialog, Drawer, DropdownMenu, Tooltip } from "./overlay";
 export type { DialogContentProps, DrawerContentProps, DropdownMenuItemProps, TooltipContentProps } from "./overlay";
 export { Checkbox, Field, Select, Switch, TextArea, TextField } from "./form";
-export type { CheckboxProps, FieldProps, SelectTriggerProps, SwitchProps, TextAreaProps, TextFieldProps } from "./form";
+export type { CheckboxProps, FieldProps, SelectItemProps, SelectTriggerProps, SwitchProps, TextAreaProps, TextFieldProps } from "./form";
 export { Banner, EmptyState, Meter, ProgressRing, Spinner } from "./feedback";
 export type { BannerProps, EmptyStateProps, MeterProps, ProgressRingProps, SpinnerProps } from "./feedback";
 export { AppShell, NavList, TopBar } from "./shell";

@@ -1,6 +1,6 @@
 # Conductor Design System UI 컴포넌트 명세서
 
-> 상태: review | 버전: v0.5 | 갱신일: 2026-07-17
+> 상태: review | 버전: v0.7 | 갱신일: 2026-08-06
 
 ## 0. 문서 위치와 범위
 
@@ -235,7 +235,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
 #### C-002 IconButton
 
 - **책임**: 텍스트 라벨 없이 아이콘만으로 단일 동작을 실행하는 정사각 대화형 요소를 렌더한다.
-- **CSS 클래스**: `cdt-btn`, `cdt-btn--icon`, `cdt-btn--icon-sm`. `Button`의 변종·톤 클래스를 그대로 재사용한다.
+- **CSS 클래스**: `cdt-btn`, `cdt-btn--icon`. `Button`의 변종·톤 클래스를 그대로 재사용한다.
+  - **구현 상태**: `cdt-btn--icon-sm`은 **폐기**. 34×34 compact 정사각은 복합 선택자 `.cdt-btn--icon.cdt-btn--sm`가 담당하므로 별도 변형 클래스가 필요 없다. `IconButton`은 이 클래스를 더 이상 부여하지 않는다(클래스 계약 테스트가 강제).
 - **근거 CSS**:
   - `app.css:485-488` — `.btn-icon` `width: 40px`, `padding: 0`. `.btn`(`app.css:443-457`)의 `min-height: 40px`와 합쳐 40×40 정사각이 된다.
   - `app.css:783-790` — `sm` 크기 34×34의 근거.
@@ -319,7 +320,8 @@ export type IconButtonProps = PolymorphicProps<"button", IconButtonOwnProps> & {
 #### C-012 Panel
 
 - **책임**: 화면의 한 구획을 경계로 구분하되, 카드처럼 떠 있지 않은 평평한 표면을 제공한다.
-- **CSS 클래스**: `cdt-panel`, `cdt-panel__header`, `cdt-panel__body`.
+- **CSS 클래스**: `cdt-panel` (구현됨). `cdt-panel__header`, `cdt-panel__body`는 **미구현**.
+  - **구현 상태**: `Panel`은 header/body 슬롯을 렌더하지 않는다. 아무 요소도 선택하지 않는 규칙은 스타일시트에서 제거했고, 슬롯 API가 생기는 시점에 컴포넌트와 함께 되살린다(클래스 계약 테스트가 강제).
 - **근거 CSS**: 소스에 `.panel` 클래스는 존재하지 않는다. 다음 두 규칙에서 파생한다.
   - `app.css:563-568` — `.timeline` 컨테이너: `background: var(--surface-timeline)`, `border: 1px solid var(--border-default)`, `border-radius: var(--radius-lg)`, `overflow: hidden`. 그림자와 `backdrop-filter`가 없다.
   - `app.css:149-161` — `.app-nav` 컨테이너: 경계 + 반경 + 내부 패딩을 갖는 비대화형 구획.
@@ -376,7 +378,7 @@ export type IconButtonProps = PolymorphicProps<"button", IconButtonOwnProps> & {
 | 이름 | 타입 | 기본값 | 필수 | 설명 |
 | --- | --- | --- | --- | --- |
 | `status` | `"queued" \| "running" \| "waiting" \| "success" \| "partial" \| "danger" \| "neutralEnd"` | — | 예 | FR-TOK-005의 7개 상태 키. 그 외 값은 TypeScript 컴파일 오류(FR-CMP-004 AC-3) |
-| `icon` | `ReactNode` | — | 예 | 상태 아이콘. 어떤 아이콘을 넘길지는 `tokens.json`의 상태 토큰 `icon` 메타데이터가 지시한다(FR-TOK-005 AC-5) |
+| `icon` | `ReactNode` | — | 예 | 상태 아이콘. 어떤 아이콘을 넘길지는 `@conductor-by-89soone/tokens`의 `STATUS_ICONS[status]`가 지시한다 — `tokens.json`의 `icon` 메타데이터와 같은 값을 타입이 붙은 맵으로 배포한 것이다(FR-TOK-005 AC-5). 렌더된 아이콘 슬롯은 그 이름을 `data-cdt-icon` 속성으로 되풀이하므로 어떤 아이콘이 요구되었는지 DOM에서 확인할 수 있다 |
 | `label` | `string` | — | 예 | 상태 텍스트. Conductor는 다국어 문자열을 갖지 않으므로 소비자가 제공한다 |
 
 - **variant**: 없음. — **tone**: 없음. `status`가 색을 결정한다. `tone`과 `status`를 동시에 노출하지 않는다. — **size**: 없음.
@@ -399,7 +401,7 @@ export type IconButtonProps = PolymorphicProps<"button", IconButtonOwnProps> & {
 | 이름 | 타입 | 기본값 | 필수 | 설명 |
 | --- | --- | --- | --- | --- |
 | `severity` | `"read" \| "write" \| "destructive" \| "blocked"` | — | 예 | FR-TOK-005의 4개 심각도 키 |
-| `icon` | `ReactNode` | — | 예 | 심각도 아이콘. 토큰 `icon` 메타데이터가 지시한다 |
+| `icon` | `ReactNode` | — | 예 | 심각도 아이콘. `SEVERITY_ICONS[severity]`가 이름을 지시하고, 렌더된 슬롯이 `data-cdt-icon`으로 되풀이한다(FR-TOK-005 AC-5) |
 | `label` | `string` | — | 예 | 심각도 텍스트. `severity="destructive"`이면 `destructive` 텍스트를 렌더한다(FR-CMP-004 AC-4) |
 
 - **variant / tone / size**: 없음. `severity`가 색을 결정한다.
@@ -699,7 +701,7 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
 | `label` | `string` | — | 예 | 라벨 텍스트. `htmlFor`/`id`로 컨트롤에 연결된다(FR-CMP-007 AC-1) |
 | `description` | `ReactNode` | — | 아니오 | 보조 설명. `aria-describedby`로 연결된다 |
 | `error` | `ReactNode` | — | 아니오 | 오류 메시지. 값이 있으면 컨트롤에 `aria-invalid="true"`가 부여된다(FR-CMP-007 AC-2) |
-| `required` | `boolean` | `false` | 아니오 | 라벨에 필수 표식을 렌더하고 컨트롤에 `required`를 전달한다 |
+| `required` | `boolean` | `false` | 아니오 | 라벨에 필수 표식을 렌더하고 Context로 하위 컨트롤에 전달한다. 자식 엘리먼트를 복제해 prop을 주입하지 않는다 |
 | `id` | `string` | 자동 생성 | 아니오 | 명시하지 않으면 `useId()`로 생성한다 |
 | `children` | `ReactNode` | — | 예 | 단일 폼 컨트롤 |
 
@@ -771,7 +773,8 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
 #### C-053 Select
 
 - **책임**: 미리 정의된 선택지 중 하나를 고르는 목록을 연다.
-- **CSS 클래스**: `cdt-select`, `cdt-select__trigger`, `cdt-select__content`, `cdt-select__item`, `cdt-select__indicator`.
+- **CSS 클래스**: `cdt-select__trigger`, `cdt-select__content`, `cdt-select__item`, `cdt-select__indicator` (모두 구현됨). `cdt-select`는 **미구현**.
+  - **구현 상태**: `cdt-select__indicator`는 규칙이 없어 체크 글리프가 무색으로 렌더되던 상태였다. 규칙을 추가했다. `Select.Root`는 DOM 요소를 렌더하지 않는 Radix 컨텍스트 프로바이더이므로 `cdt-select` 블록 클래스가 붙을 요소 자체가 없다.
 - **근거 CSS**:
   - `app.css:1216-1230` — `.SelectTrigger` `display: inline-flex`, `justify-content: space-between`, `height: 40px`, `border-radius: var(--radius-md)`, `padding: 0 14px`, `gap: 12px`.
   - `app.css:1231-1238` — hover 배경 상승, focus 경계 강조.
@@ -798,6 +801,7 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
 | --- | --- | --- | --- | --- |
 | `value` | `string` | — | 예 | Radix props 통과 |
 | `disabled` | `boolean` | `false` | 아니오 | `[data-disabled]`가 부여된다 |
+| `indicator` | `ReactNode` | `"✓"` | 아니오 | 선택 표시 글리프. `Checkbox`(C-054)와 같은 규약 |
 
 - **variant**: 없음. — **tone**: 없음. — **size**: `sm`, `md`(`Select.Trigger`).
 - **이벤트**: `onValueChange`, `onOpenChange`.
@@ -895,7 +899,8 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
 #### C-061 EmptyState
 
 - **책임**: 내용이 없는 이유와 다음 동작을 중앙 정렬로 제시한다.
-- **CSS 클래스**: `cdt-empty-state`, `cdt-empty-state__icon`, `cdt-empty-state__title`, `cdt-empty-state__description`, `cdt-empty-state__action`.
+- **CSS 클래스**: `cdt-empty-state`, `cdt-empty-state__icon`, `cdt-empty-state__title`, `cdt-empty-state__description`, `cdt-empty-state__action` (모두 구현됨).
+  - **구현 상태**: `cdt-empty-state__action`은 규칙이 없어 `action` 슬롯이 설명 바로 아래에 붙어 렌더되던 상태였다. 규칙을 추가했다.
 - **근거 CSS**:
   - `app.css:654-662` — `.empty-state` `text-align: center`, `color: var(--text-muted)`, `padding: var(--space-6)`, `display: flex; flex-direction: column; align-items: center`, `gap: var(--space-3)`.
   - **결정**: 소스는 제목과 설명의 타이포 구분을 정의하지 않는다. 제목은 `font.size.lg` + `text.primary`, 설명은 **font.size.md** + `text.muted`로 정의한다. `.page-heading p`(`app.css:366-371`)의 "본문은 `text.muted`" 처리를 근거로 삼는다.
@@ -991,7 +996,7 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
 - **이벤트**: 없음.
 - **상태**: `default`, `reduced-motion`.
 - **접근성 책임**: `role="status"`와 `aria-live="polite"` 부여는 **Conductor**가 수행한다. `label`은 모션 감소가 아닐 때 `cdt-sr-only`로 감춰지고 스크린리더에는 항상 노출된다. 문자열은 **소비자**가 제공한다.
-- **사용 규칙**: 버튼 내부 대기에는 `Spinner` 대신 `Button loading`(C-001)의 `aria-busy`를 쓴다.
+- **사용 규칙**: 버튼 내부 대기에는 `Spinner`를 직접 넣지 않고 `Button loading`(C-001)을 쓴다. `Button`이 `loading` 동안 `iconStart` 자리에 `size="sm"` `Spinner`를 `aria-hidden`으로 그리며, 안내는 버튼의 `aria-busy`가 담당한다.
 - **금지**: `Spinner`를 페이지 전체 차단 오버레이로 쓰지 않는다. 그 용도는 `Dialog`(C-040)다.
 - **관련**: FR-CMP-008, FR-CSS-005, FR-A11Y-005 / W-020, W-021.
 
@@ -1022,6 +1027,7 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
 | `navOpen` | `boolean` | — | 아니오 | 오프캔버스 열림 상태(controlled) |
 | `onNavOpenChange` | `(open: boolean) => void` | — | 아니오 | 열림 상태 변경 콜백 |
 | `skipLinkLabel` | `string` | — | 예 | 건너뛰기 링크 텍스트. 다국어 문자열은 소비자가 제공한다 |
+| `navCloseLabel` | `string` | `"Close navigation"` | 아니오 | 오프캔버스 스크림의 접근 가능한 이름. 스크림은 `<button>`이며 누르면 내비가 닫힌다 |
 | `mainId` | `string` | `"cdt-main"` | 아니오 | 건너뛰기 링크의 대상 `id`. 본문 `<main>`에 부여된다 |
 | `children` | `ReactNode` | — | 예 | 본문 내용 |
 

@@ -1,3 +1,4 @@
+import { SEVERITY_ICONS, STATUS_ICONS } from "@conductor-by-89soone/tokens";
 import { cleanup, render } from "@testing-library/react";
 import { afterEach, describe, expect, test } from "vitest";
 import { Badge, SeverityTag, StatusBadge, type SeverityTagProps, type StatusBadgeProps } from "../status";
@@ -41,6 +42,23 @@ describe("status components", () => {
     const statuses = ["queued", "running", "waiting", "success", "partial", "danger", "neutralEnd"] as const;
     const { getByText } = render(<>{statuses.map((status) => <StatusBadge key={status} status={status} icon="●" label={`Status ${status}`} />)}</>);
     for (const status of statuses) expect(getByText(`Status ${status}`)).not.toBeNull();
+  });
+
+  test("FR-TOK-005 AC-5: the icon slot names the canonical icon so the choice is checkable", () => {
+    // Conductor renders whatever node the consumer passes; the attribute says which icon the
+    // token metadata asked for, so a mismatch is visible without reading tokens.json by hand.
+    const statuses = ["queued", "running", "waiting", "success", "partial", "danger", "neutralEnd"] as const;
+    const { getByText, unmount } = render(<>{statuses.map((status) => <StatusBadge key={status} status={status} icon="\u25cf" label={`Status ${status}`} />)}</>);
+    for (const status of statuses) {
+      expect(getByText(`Status ${status}`).querySelector(".cdt-badge__icon")?.getAttribute("data-cdt-icon")).toBe(STATUS_ICONS[status]);
+    }
+    unmount();
+
+    const severities = ["read", "write", "destructive", "blocked"] as const;
+    const tags = render(<>{severities.map((severity) => <SeverityTag key={severity} severity={severity} icon="\u25cf" label={`Severity ${severity}`} />)}</>);
+    for (const severity of severities) {
+      expect(tags.getByText(`Severity ${severity}`).querySelector(".cdt-badge__icon")?.getAttribute("data-cdt-icon")).toBe(SEVERITY_ICONS[severity]);
+    }
   });
 
   test("FR-A11Y-003: Badge hides an optional decorative icon", () => {

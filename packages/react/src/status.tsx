@@ -1,4 +1,5 @@
 // FR 범위: FR-CMP-004, FR-A11Y-003, FR-TOK-005
+import { SEVERITY_ICONS, STATUS_ICONS } from "@conductor-by-89soone/tokens";
 import { forwardRef, type HTMLAttributes, type ReactNode } from "react";
 import { cx } from "./cx";
 import type { Tone } from "./types";
@@ -26,6 +27,12 @@ export type Status = "queued" | "running" | "waiting" | "success" | "partial" | 
 
 export interface StatusBadgeProps extends Omit<HTMLAttributes<HTMLSpanElement>, "children"> {
   readonly status: Status;
+  /**
+   * The status icon. Required: FR-CMP-004 AC-1 renders colour, icon and text as three channels,
+   * and Conductor bundles no icon set. `STATUS_ICONS[status]` from
+   * `@conductor-by-89soone/tokens` names the icon to pass; the rendered element repeats that name
+   * as `data-cdt-icon` so the choice is checkable from the DOM.
+   */
   readonly icon: ReactNode;
   readonly label: string;
 }
@@ -41,7 +48,7 @@ export const StatusBadge = forwardRef<HTMLSpanElement, StatusBadgeProps>(functio
   return (
     <span {...props} ref={ref} className={cx("cdt-badge", "cdt-status-badge", `cdt-status-badge--${statusClass}`, className)}>
       {isMarker ? <span className={cx("cdt-status-badge__marker", status === "neutralEnd" && "cdt-status-badge__marker--neutral-end")} aria-hidden="true" /> : null}
-      <span className="cdt-badge__icon" aria-hidden="true">{icon}</span>
+      <span className="cdt-badge__icon" aria-hidden="true" data-cdt-icon={STATUS_ICONS[status]}>{icon}</span>
       {label}
     </span>
   );
@@ -52,6 +59,7 @@ export type Severity = "read" | "write" | "destructive" | "blocked";
 
 export interface SeverityTagProps extends Omit<HTMLAttributes<HTMLSpanElement>, "children"> {
   readonly severity: Severity;
+  /** The severity icon. `SEVERITY_ICONS[severity]` names it; see `StatusBadgeProps.icon`. */
   readonly icon: ReactNode;
   readonly label: string;
 }
@@ -62,7 +70,7 @@ export const SeverityTag = forwardRef<HTMLSpanElement, SeverityTagProps>(functio
 ) {
   return (
     <span {...props} ref={ref} className={cx("cdt-badge", "cdt-severity-tag", `cdt-severity-tag--${severity}`, className)}>
-      <span className="cdt-badge__icon" aria-hidden="true">{icon}</span>
+      <span className="cdt-badge__icon" aria-hidden="true" data-cdt-icon={SEVERITY_ICONS[severity]}>{icon}</span>
       {label}
     </span>
   );

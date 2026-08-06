@@ -33,6 +33,7 @@ export interface AppShellProps extends Omit<HTMLAttributes<HTMLDivElement>, "chi
     readonly mainId?: string;
     // (undocumented)
     readonly nav: ReactNode;
+    readonly navCloseLabel?: string;
     // (undocumented)
     readonly navOpen?: boolean;
     // (undocumented)
@@ -368,9 +369,16 @@ export const Select: {
     } & react.RefAttributes<HTMLButtonElement>>;
     readonly Value: react.ForwardRefExoticComponent<RadixSelect.SelectValueProps & react.RefAttributes<HTMLSpanElement>>;
     readonly Content: react.ForwardRefExoticComponent<Omit<RadixSelect.SelectContentProps & react.RefAttributes<HTMLDivElement>, "ref"> & react.RefAttributes<HTMLDivElement>>;
-    readonly Item: react.ForwardRefExoticComponent<Omit<RadixSelect.SelectItemProps & react.RefAttributes<HTMLDivElement>, "ref"> & react.RefAttributes<HTMLDivElement>>;
+    readonly Item: react.ForwardRefExoticComponent<Omit<RadixSelect.SelectItemProps & react.RefAttributes<HTMLDivElement>, "ref"> & {
+        readonly indicator?: ReactNode;
+    } & react.RefAttributes<HTMLDivElement>>;
     readonly Group: react.ForwardRefExoticComponent<RadixSelect.SelectGroupProps & react.RefAttributes<HTMLDivElement>>;
     readonly Label: react.ForwardRefExoticComponent<RadixSelect.SelectLabelProps & react.RefAttributes<HTMLDivElement>>;
+};
+
+// @public
+export type SelectItemProps = ComponentPropsWithoutRef<typeof RadixSelect.Item> & {
+    readonly indicator?: ReactNode;
 };
 
 // @public (undocumented)
@@ -387,7 +395,6 @@ export const SeverityTag: react.ForwardRefExoticComponent<SeverityTagProps & rea
 
 // @public (undocumented)
 export interface SeverityTagProps extends Omit<HTMLAttributes<HTMLSpanElement>, "children"> {
-    // (undocumented)
     readonly icon: ReactNode;
     // (undocumented)
     readonly label: string;
@@ -417,7 +424,6 @@ export const StatusBadge: react.ForwardRefExoticComponent<StatusBadgeProps & rea
 
 // @public (undocumented)
 export interface StatusBadgeProps extends Omit<HTMLAttributes<HTMLSpanElement>, "children"> {
-    // (undocumented)
     readonly icon: ReactNode;
     // (undocumented)
     readonly label: string;

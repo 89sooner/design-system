@@ -18,6 +18,15 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      // 프리렌더 마크업은 "/" 전용이다. 다른 해시로 들어오면 그 마크업이 잠깐 랜딩
+      // 페이지로 보였다가 모듈 청크가 도착하는 순간 목적지로 바뀐다. 여기서 미리 비우면
+      // 그 잘못된 화면이 한 프레임도 그려지지 않는다. main.tsx의 replaceChildren는
+      // 하이드레이션 분기를 위해 그대로 남는다(중복 호출은 무해하다).
+      if ((location.hash.replace(/^#/, "") || "/") !== "/") {
+        document.getElementById("root").replaceChildren();
+      }
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

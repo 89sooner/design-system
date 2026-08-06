@@ -90,9 +90,11 @@ const SOURCE_ROOT: readonly (readonly [property: string, value: string, key: str
 /** FR-THM-001 AC-1 exempts these two: FR-THM-001 AC-2 requires them to stay references. */
 const SOURCE_ALIASES = ["--surface-2", "--border"];
 
-/** FR-THM-005 / `srs_final.md` 12.1. The only two dark values that are not inherited verbatim. */
+/** FR-THM-005 / `srs_final.md` 12.1. The dark values that are not inherited verbatim. */
 const CORRECTED: Readonly<Record<string, string>> = {
   "--focus-ring": "0 0 0 3px rgba(109, 124, 255, 0.8)",
+  // CR-035: the source grey measured 2.04:1 to 2.60:1 and could only be classified `decorative`.
+  "--status-neutral-end": "#94a3b8",
 };
 
 /** The source wrote a `var()`; the token build resolves it to a literal (FR-TOK-003 AC-1). */
@@ -141,6 +143,8 @@ describe("dark palette against the source tokens.css", () => {
         "surface.tint.2",
         // CR-018 / DEV-011: app.css shares a fully rounded geometry across components.
         "radius.pill",
+        // CR-034: the source wrote every edge as a literal; three line weights replace them.
+        ...["hairline", "emphasis", "rail"].map((step) => `border.width.${step}`),
         // FR-TOK-007, FR-TOK-008, FR-TOK-009: scales the source expressed as literals.
         ...["2xs", "xs", "sm", "base", "md", "lg", "xl"].map((step) => `font.lineHeight.${step}`),
         ...["2xs", "xs", "sm", "base", "md", "lg", "xl"].map((step) => `font.size.${step}`),
@@ -174,8 +178,9 @@ describe("dark palette against the source tokens.css", () => {
     expect(byKey.get("status.queued")?.usage).toBe("nonText");
   });
 
-  test("FR-THM-005 AC-6: `status.neutralEnd` is decorative (CR-006)", () => {
-    expect(byKey.get("status.neutralEnd")?.usage).toBe("decorative");
+  test("FR-THM-005 AC-6 (CR-035): `status.neutralEnd` is nonText and no longer contrast-exempt", () => {
+    expect(byKey.get("status.neutralEnd")?.usage).toBe("nonText");
+    expect(resolved.get("status.neutralEnd")).toBe("#94a3b8");
   });
 
   test("FR-THM-004 exception handling: every decorative token records why it is excluded", () => {
@@ -234,6 +239,9 @@ describe("primitive tokens stay private", () => {
     expect(Object.keys(entry).sort()).toEqual([
       "CDT_PREFIX",
       "PACKAGE_NAME",
+      // The icon maps carry lucide names, not token values, so no primitive can leak through them.
+      "SEVERITY_ICONS",
+      "STATUS_ICONS",
       "breakpoints",
       "tokens",
     ]);

@@ -246,7 +246,7 @@ design-system/
   - [x] `text.faint`를 `surface.elevated` 위에 쓴 픽스처가 `pnpm lint:tokens`를 실패시킨다 (FR-THM-005 AC-3)
   - [x] `border.subtle`/`default`/`strong`이 `decorative`로 분류되어 검사 대상에서 빠진다 (FR-THM-005 AC-4)
   - [x] `status.queued`가 `nonText`로 분류되고 `surface.raised` 위 3.56, `surface.elevated` 위 3.25로 통과한다 (FR-THM-005 AC-5)
-  - [x] `status.neutralEnd`가 `decorative`로 분류되어 검사 대상에서 빠지고, 제외 사유가 `--report`에 출력된다 (FR-THM-005 AC-6, CR-006)
+  - [x] `status.neutralEnd`가 `nonText`로 분류되어 CP-042로 검사되고 두 테마에서 3:1을 넘는다 (FR-THM-005 AC-6, CR-035). 금지 조합 FP-001·FP-002는 별칭 경로까지 차단되고 매 실행에 재측정된다
   - [x] 다크 테마 전체에 대해 미달 0건을 보고한다 (FR-A11Y-004 AC-1)
 - 검증 방법: `pnpm check:contrast` + 미달 픽스처로 실패 확인
 - 기록: WP-007 행, FR-THM-004·FR-THM-005·FR-A11Y-004 매핑 갱신

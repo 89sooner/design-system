@@ -6,7 +6,7 @@
  *
  * Refs: WP-007 FR-THM-004 FR-A11Y-004 · W-030 consumes the JSON (FR-DOC-004)
  */
-import type { ContrastReport, PairResult } from "./check";
+import type { ContrastReport, ForbiddenResult, PairResult } from "./check";
 
 /** `18.32`. Two places, as `conductor_api_contracts.md` API-TOK-003 prints them. */
 export function formatRatio(ratio: number): string {
@@ -44,6 +44,23 @@ export function exitCodeFor(report: ContrastReport): number {
   return report.summary.failed > 0 ? 1 : 0;
 }
 
+/**
+ * `theme=dark  id=FP-001  pair=text.faint/surface.elevated  ratio=2.94  FORBIDDEN`
+ *
+ * The measurement is printed rather than the ban alone, so a combination whose ratio has drifted
+ * above its threshold is visible instead of quietly staying banned on stale evidence.
+ */
+export function formatForbidden(result: ForbiddenResult): string {
+  const columns = [
+    `theme=${result.theme}`.padEnd(12),
+    `id=${result.id}`.padEnd(11),
+    `pair=${result.foreground}/${result.background}`.padEnd(52),
+    `ratio=${formatRatio(result.ratio)}`.padEnd(12),
+    "FORBIDDEN",
+  ];
+  return columns.join(" ").trimEnd();
+}
+
 /** The `--report` view: what `checkContrast` does not measure, and why (FR-A11Y-004 AC-3). */
 export function formatExclusions(report: ContrastReport): string[] {
   const lines = [
@@ -52,6 +69,11 @@ export function formatExclusions(report: ContrastReport): string[] {
   for (const exclusion of report.exclusions) {
     lines.push(`  ${exclusion.key}`);
     lines.push(`    reason: ${exclusion.reason}`);
+  }
+  lines.push(`[contrast] ${report.summary.forbiddenPairs} combination(s) declared forbidden`);
+  for (const banned of report.forbidden) {
+    lines.push(`  ${banned.id} ${banned.foreground} on ${banned.background} (theme=${banned.theme}, ${formatRatio(banned.ratio)}:1)`);
+    lines.push(`    reason: ${banned.reason}`);
   }
   lines.push("[contrast] --report: no files written");
   return lines;
@@ -70,6 +92,7 @@ export function renderReportJson(report: ContrastReport): string {
       summary: report.summary,
       results: report.results,
       exclusions: report.exclusions,
+      forbidden: report.forbidden,
     },
     null,
     2,

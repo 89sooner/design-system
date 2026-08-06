@@ -46,6 +46,24 @@
   }
 
   /*
+   * Without these, `h2` and `h3` fell back to the user-agent sizes and the document had no
+   * ranking below `h1`: a section heading and its body text were nearly the same size. Both
+   * derive from `font.size.xl` in the component layer, so the exposed type scale stays at seven
+   * steps (FR-TOK-007 AC-1).
+   */
+  h2 {
+    margin: 0;
+    font-size: var(--cdt-page-section-heading-size);
+    line-height: var(--cdt-page-section-heading-line-height);
+  }
+
+  h3 {
+    margin: 0;
+    font-size: var(--cdt-page-sub-heading-size);
+    line-height: var(--cdt-page-sub-heading-line-height);
+  }
+
+  /*
    * Reduced motion, without `!important` (ADR-005 bans it) and without the
    * global `*` the source used (FR-CSS-005 AC-4).
    *

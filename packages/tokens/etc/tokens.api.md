@@ -21,6 +21,31 @@ export const CDT_PREFIX: "cdt-";
 export const PACKAGE_NAME: "@conductor-by-89soone/tokens";
 
 // @public
+export const SEVERITY_ICONS: {
+    readonly read: "eye";
+    readonly write: "pencil";
+    readonly destructive: "trash-2";
+    readonly blocked: "shield-x";
+};
+
+// @public (undocumented)
+export type SeverityIconName = (typeof SEVERITY_ICONS)[keyof typeof SEVERITY_ICONS];
+
+// @public
+export const STATUS_ICONS: {
+    readonly queued: "circle-dashed";
+    readonly running: "loader";
+    readonly waiting: "pause-circle";
+    readonly success: "check-circle-2";
+    readonly partial: "alert-circle";
+    readonly danger: "x-circle";
+    readonly neutralEnd: "circle-slash";
+};
+
+// @public (undocumented)
+export type StatusIconName = (typeof STATUS_ICONS)[keyof typeof STATUS_ICONS];
+
+// @public
 export interface TokenDefinition {
     readonly alias?: string;
     // (undocumented)
@@ -82,6 +107,11 @@ export const tokens: {
         readonly strong: "var(--cdt-border-strong)";
         readonly control: "var(--cdt-border-control)";
         readonly DEFAULT: "var(--cdt-border)";
+        readonly width: {
+            readonly hairline: "var(--cdt-border-width-hairline)";
+            readonly emphasis: "var(--cdt-border-width-emphasis)";
+            readonly rail: "var(--cdt-border-width-rail)";
+        };
     };
     readonly accent: {
         readonly DEFAULT: "var(--cdt-accent)";
@@ -387,6 +417,10 @@ export const tokens: {
     readonly page: {
         readonly headingSize: "var(--cdt-page-heading-size)";
         readonly headingLineHeight: "var(--cdt-page-heading-line-height)";
+        readonly sectionHeadingSize: "var(--cdt-page-section-heading-size)";
+        readonly sectionHeadingLineHeight: "var(--cdt-page-section-heading-line-height)";
+        readonly subHeadingSize: "var(--cdt-page-sub-heading-size)";
+        readonly subHeadingLineHeight: "var(--cdt-page-sub-heading-line-height)";
         readonly stackGap: "var(--cdt-page-stack-gap)";
         readonly stackGapCompact: "var(--cdt-page-stack-gap-compact)";
         readonly contentStackGap: "var(--cdt-page-content-stack-gap)";

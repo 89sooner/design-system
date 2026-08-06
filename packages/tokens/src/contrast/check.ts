@@ -21,8 +21,8 @@
 import { TokenBuildError } from "../build/errors";
 import { buildTokenIndex, resolveReferenceTarget, resolveTokens } from "../build/reference";
 import type { TokenIndex } from "../build/reference";
-import { CONTRAST_THRESHOLDS, contrastPairs } from "../contrast-pairs";
-import type { ContrastPair, ContrastUsage } from "../contrast-pairs";
+import { CONTRAST_THRESHOLDS, contrastPairs, forbiddenPairs } from "../contrast-pairs";
+import type { ContrastPair, ContrastUsage, ForbiddenPair } from "../contrast-pairs";
 import type { TokenDefinition, TokenUsage } from "../schema";
 import { THEME_SOURCES, tokensForTheme } from "../token-source";
 import type { ThemeSource } from "../token-source";
@@ -53,17 +53,29 @@ export interface Exclusion {
   readonly reason: string;
 }
 
+/** One forbidden combination, re-measured so the ban stays evidenced rather than inherited. */
+export interface ForbiddenResult {
+  readonly id: string;
+  readonly theme: string;
+  readonly foreground: string;
+  readonly background: string;
+  readonly ratio: number;
+  readonly reason: string;
+}
+
 export interface ContrastReport {
   readonly themes: readonly string[];
   readonly thresholds: Readonly<Record<ContrastUsage, number>>;
   readonly results: readonly PairResult[];
   readonly exclusions: readonly Exclusion[];
+  readonly forbidden: readonly ForbiddenResult[];
   readonly summary: {
     readonly declaredPairs: number;
     readonly checks: number;
     readonly passed: number;
     readonly failed: number;
     readonly excludedTokens: number;
+    readonly forbiddenPairs: number;
   };
 }
 
@@ -72,6 +84,8 @@ export interface CheckOptions {
   readonly themes?: readonly ThemeSource[];
   /** Pairs to measure. Defaults to the declared list. Tests substitute fixtures. */
   readonly pairs?: readonly ContrastPair[];
+  /** Combinations that must not render. Defaults to the declared list. */
+  readonly forbidden?: readonly ForbiddenPair[];
 }
 
 function assertUniqueIds(pairs: readonly ContrastPair[]): void {
@@ -188,6 +202,81 @@ function measure(pair: ContrastPair, theme: string, index: TokenIndex, values: R
   };
 }
 
+/**
+ * Fails a declared pair that reaches a forbidden combination through its aliases.
+ *
+ * The comparison is on resolved keys, not on the names written in the pair, because that is the
+ * only way the ban survives indirection: `input.placeholder` and `text.faint` are one key once
+ * resolved, and a pair naming the former would otherwise be measured — and pass or fail on its
+ * ratio — as though the ban did not exist.
+ */
+function aliasTerminus(index: TokenIndex, reference: string): string | undefined {
+  // `resolveReferenceTarget` only resolves addressing (`accent` → `accent.DEFAULT`). Following the
+  // alias links as well is what makes `input.placeholder` and `text.faint` the same token here.
+  let key = resolveReferenceTarget(index, reference);
+  const seen = new Set<string>();
+  while (key !== undefined && !seen.has(key)) {
+    seen.add(key);
+    const alias = index.get(key)?.alias;
+    if (alias === undefined) return key;
+    key = resolveReferenceTarget(index, alias);
+  }
+  return key;
+}
+
+function assertNotForbidden(
+  pair: ContrastPair,
+  index: TokenIndex,
+  forbidden: readonly ForbiddenPair[],
+): void {
+  const resolvedForeground = aliasTerminus(index, pair.foreground);
+  const resolvedBackground = aliasTerminus(index, pair.background);
+
+  for (const banned of forbidden) {
+    const bannedForeground = aliasTerminus(index, banned.foreground);
+    const bannedBackground = aliasTerminus(index, banned.background);
+    if (resolvedForeground !== bannedForeground || resolvedBackground !== bannedBackground) continue;
+
+    throw new TokenBuildError("TOK-CP-FORBIDDEN", "contrast pair declares a forbidden combination", [
+      `pair: ${pair.id} (${pair.foreground} on ${pair.background})`,
+      `forbidden: ${banned.id} (${banned.foreground} on ${banned.background})`,
+      `reason: ${banned.reason}`,
+      "hint: the pair resolves to a combination that must not render. Lifting the ban needs a CR.",
+    ]);
+  }
+}
+
+/**
+ * Re-measures each forbidden combination. A ban carried forward without evidence is indistinguishable
+ * from a ban that stopped being true, so the number that justified it is printed on every run.
+ */
+function measureForbidden(
+  forbidden: readonly ForbiddenPair[],
+  theme: string,
+  index: TokenIndex,
+  values: ReadonlyMap<string, string>,
+): ForbiddenResult[] {
+  return forbidden.map((banned) => {
+    // A forbidden combination reuses the pair plumbing for lookup and error reporting, so it is
+    // measured with the same resolution rules the declared pairs get.
+    const asPair: ContrastPair = { ...banned, usage: "nonText", themes: [theme] };
+    const foreground = lookup(index, asPair, "foreground");
+    const background = lookup(index, asPair, "background");
+    const backgroundColor = colorOf(asPair, background, values.get(background.key) as string, "background");
+    const foregroundColor = colorOf(asPair, foreground, values.get(foreground.key) as string, "foreground");
+    const ratio = contrastRatio(compositeOver(foregroundColor, backgroundColor), backgroundColor);
+
+    return {
+      id: banned.id,
+      theme,
+      foreground: banned.foreground,
+      background: banned.background,
+      ratio: Number(ratio.toFixed(4)),
+      reason: banned.reason,
+    };
+  });
+}
+
 /** `usage: "decorative"` tokens of a theme, with the exclusion reason from `description`. */
 export function exclusionsFor(tokens: readonly TokenDefinition[]): Exclusion[] {
   return tokens
@@ -198,10 +287,12 @@ export function exclusionsFor(tokens: readonly TokenDefinition[]): Exclusion[] {
 export function checkContrast(options: CheckOptions = {}): ContrastReport {
   const themes = options.themes ?? THEME_SOURCES;
   const pairs = options.pairs ?? contrastPairs;
+  const forbidden = options.forbidden ?? forbiddenPairs;
   assertUniqueIds(pairs);
 
   const results: PairResult[] = [];
   const exclusions = new Map<string, Exclusion>();
+  const forbiddenResults: ForbiddenResult[] = [];
 
   for (const theme of themes) {
     const tokens = tokensForTheme(theme);
@@ -209,8 +300,10 @@ export function checkContrast(options: CheckOptions = {}): ContrastReport {
     const { values } = resolveTokens(index);
 
     for (const exclusion of exclusionsFor(tokens)) exclusions.set(exclusion.key, exclusion);
+    forbiddenResults.push(...measureForbidden(forbidden, theme.theme, index, values));
     for (const pair of pairs) {
       if (!pair.themes.includes(theme.theme)) continue;
+      assertNotForbidden(pair, index, forbidden);
       results.push(measure(pair, theme.theme, index, values));
     }
   }
@@ -221,12 +314,14 @@ export function checkContrast(options: CheckOptions = {}): ContrastReport {
     thresholds: CONTRAST_THRESHOLDS,
     results,
     exclusions: [...exclusions.values()],
+    forbidden: forbiddenResults,
     summary: {
       declaredPairs: pairs.length,
       checks: results.length,
       passed: results.length - failed,
       failed,
       excludedTokens: exclusions.size,
+      forbiddenPairs: forbidden.length,
     },
   };
 }

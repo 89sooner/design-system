@@ -3,7 +3,15 @@
  *
  * Metadata, keys and aliases come from the canonical dark palette. This map changes only values
  * that the derivation specifies differently, keeping the two semantic key sets inseparable.
+ *
+ * The derivation used to be a bare `map`, which meant a key in `values` that matched nothing in the
+ * dark palette was silently ignored and the token kept its dark value. That is the one real bug the
+ * cross-theme contract check cannot see: it compares key *sets*, and a typo leaves both sets
+ * identical while one theme renders the wrong colour. `derivePalette` makes it a build error.
+ *
+ * Refs: WP-010 FR-THM-002 FR-QA-001
  */
+import { TokenBuildError } from "./build/errors";
 import { darkPalette } from "./palette.dark";
 import type { TokenDefinition } from "./schema";
 
@@ -52,7 +60,52 @@ const values: Readonly<Record<string, string>> = {
   "state.disabledPolicy": "#fef3c7",
 };
 
-export const lightPalette: readonly TokenDefinition[] = darkPalette.map((token) => {
-  const value = values[token.key];
-  return value === undefined ? token : { ...token, value, alias: undefined };
-});
+/**
+ * Keys that exist only in the light theme. Empty today. Each entry must carry
+ * `themeSpecific: true`, or the FR-QA-001 contract check would report it as missing from dark
+ * instead of exempting it — the exemption has to be declared on the token, not inferred from
+ * which list it appears in.
+ */
+export const lightAdditions: readonly TokenDefinition[] = [];
+
+/**
+ * @param base the canonical palette every other theme takes its keys and metadata from.
+ * @param overrides value-only overrides, keyed by token key.
+ * @param additions tokens that exist only in the derived theme.
+ * @throws TokenBuildError `TOK-THEME-KEY` when an override names no key in `base`, or an addition
+ *   is not marked `themeSpecific`.
+ */
+export function derivePalette(
+  base: readonly TokenDefinition[],
+  overrides: Readonly<Record<string, string>>,
+  additions: readonly TokenDefinition[] = [],
+): readonly TokenDefinition[] {
+  const baseKeys = new Set(base.map((token) => token.key));
+  const unmatched = Object.keys(overrides).filter((key) => !baseKeys.has(key));
+
+  if (unmatched.length > 0) {
+    throw new TokenBuildError("TOK-THEME-KEY", "theme override names a key the base palette does not declare", [
+      ...unmatched.map((key) => `override: ${key}`),
+      "hint: the override would be dropped and the token would keep its dark value, which the " +
+        "key-set contract check cannot see. Fix the spelling, or declare the key in the base palette.",
+    ]);
+  }
+
+  const notExempt = additions.filter((token) => token.themeSpecific !== true);
+  if (notExempt.length > 0) {
+    throw new TokenBuildError("TOK-THEME-KEY", "theme-only token is not marked `themeSpecific`", [
+      ...notExempt.map((token) => `addition: ${token.key}`),
+      "hint: FR-QA-001 exempts a key from the cross-theme contract only when the token declares " +
+        "`themeSpecific: true`, so the exemption stays visible in the report.",
+    ]);
+  }
+
+  const derived = base.map((token) => {
+    const value = overrides[token.key];
+    return value === undefined ? token : { ...token, value, alias: undefined };
+  });
+
+  return [...derived, ...additions];
+}
+
+export const lightPalette: readonly TokenDefinition[] = derivePalette(darkPalette, values, lightAdditions);

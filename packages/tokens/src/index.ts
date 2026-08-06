@@ -10,4 +10,6 @@ export { tokens } from "./tokens";
 export type { Tokens } from "./tokens";
 export { breakpoints } from "./breakpoints";
 export type { Breakpoints } from "./breakpoints";
+export { SEVERITY_ICONS, STATUS_ICONS } from "./icons";
+export type { SeverityIconName, StatusIconName } from "./icons";
 export type { TokenDefinition, TokenGroup, TokenTier, TokenUsage } from "./schema";

@@ -102,7 +102,7 @@ test("FR-CMP-004 AC-5 / FR-A11Y-003 AC-4: status and severity labels remain dist
     window.localStorage.setItem("conductor-theme", "dark");
     document.documentElement.dataset.cdtTheme = "dark";
   });
-  await page.goto(docsPath("/patterns"));
+  await page.goto(docsPath("/guidelines"));
   for (const label of ["queued", "running", "waiting", "success", "partial", "danger", "neutralEnd", "read", "write", "destructive", "blocked"]) {
     await expect(page.getByRole("cell", { name: label, exact: true }).first()).toBeVisible();
   }

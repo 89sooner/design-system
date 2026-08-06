@@ -51,6 +51,49 @@ describe("form components", () => {
     expect(getByRole("checkbox").querySelector(".cdt-checkbox__indicator")?.getAttribute("aria-hidden")).toBe("true");
   });
 
+  test("FR-A11Y-003: a required Field announces every control through aria-required, never a DOM `required` on a button", () => {
+    const { getByRole } = render(
+      <>
+        <Field label="Notify" required><Switch aria-label="Notify" /></Field>
+        <Field label="Terms" required><Checkbox aria-label="Terms" /></Field>
+        <Field label="Region" required><Select.Root><Select.Trigger aria-label="Region"><Select.Value /></Select.Trigger></Select.Root></Field>
+        <Field label="Name" required><TextField aria-label="Name" /></Field>
+      </>,
+    );
+    for (const role of ["switch", "checkbox", "combobox"] as const) {
+      const control = getByRole(role);
+      expect(control.tagName).toBe("BUTTON");
+      expect(control.getAttribute("aria-required")).toBe("true");
+      // `required` is not a valid attribute on <button>; Radix maps the prop to ARIA for us.
+      expect(control.hasAttribute("required")).toBe(false);
+    }
+    // The native control keeps the native attribute, which is what constraint validation reads.
+    expect((getByRole("textbox") as HTMLInputElement).required).toBe(true);
+  });
+
+  test("FR-CMP-007: Field does not force `required` onto whatever element it wraps", () => {
+    // Cloning the child injected the prop into arbitrary elements. Controls read the context.
+    const { getByTestId, getByRole } = render(
+      <Field label="Name" required><div data-testid="wrapper"><TextField aria-label="Name" /></div></Field>,
+    );
+    expect(getByTestId("wrapper").hasAttribute("required")).toBe(false);
+    expect((getByRole("textbox") as HTMLInputElement).required).toBe(true);
+  });
+
+  test("C-053: Select.Item renders a check glyph a consumer can replace", () => {
+    // Radix scrolls the selected item into view when the list opens; jsdom implements no layout.
+    Object.defineProperty(Element.prototype, "scrollIntoView", { configurable: true, value: () => undefined });
+    const { getByRole, rerender } = render(
+      <Select.Root defaultValue="kr" open><Select.Trigger aria-label="Region"><Select.Value /></Select.Trigger><Select.Content><Select.Item value="kr">Korea</Select.Item></Select.Content></Select.Root>,
+    );
+    expect(getByRole("option", { name: "Korea" }).querySelector(".cdt-select__indicator")?.textContent).toBe("✓");
+    rerender(
+      <Select.Root defaultValue="kr" open><Select.Trigger aria-label="Region"><Select.Value /></Select.Trigger><Select.Content><Select.Item value="kr" indicator="●">Korea</Select.Item></Select.Content></Select.Root>,
+    );
+    expect(getByRole("option", { name: "Korea" }).querySelector(".cdt-select__indicator")?.textContent).toBe("●");
+    Reflect.deleteProperty(Element.prototype, "scrollIntoView");
+  });
+
   test("FR-CMP-007: Select keeps the Radix combobox role and accepts Field context", () => {
     const { getByLabelText } = render(
       <Field label="Region"><Select.Root defaultValue="kr"><Select.Trigger><Select.Value placeholder="Choose a region" /></Select.Trigger><Select.Content><Select.Item value="kr">Korea</Select.Item></Select.Content></Select.Root></Field>,

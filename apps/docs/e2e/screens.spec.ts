@@ -12,8 +12,8 @@ const screens = [
   ["W-014", "/foundations/motion", "Motion"],
   ["W-020", "/components", "Components"],
   ["W-021", "/components/Button", "Button"],
-  ["W-030", "/tokens", "Tokens"],
-  ["W-040", "/patterns", "Patterns"],
+  ["W-030", "/tokens/reference", "Tokens"],
+  ["W-040", "/guidelines", "Patterns"],
   ["W-050", "/accessibility", "Accessibility"],
 ] as const;
 
