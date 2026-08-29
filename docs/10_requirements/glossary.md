@@ -16,6 +16,7 @@
 | 토큰 소스 | `token source` | 사람이 편집하는 토큰 원본 파일. 빌드 산출물이 아니라 입력물 | 원본 CSS, 소스 스타일 | FR-TOK-001, ENT-TOK-001 |
 | 프리미티브 토큰 | `primitive token` | 의미를 갖지 않는 원시 값. 예: `blue-500`, `space-4`. 소비자가 직접 참조하지 않는다 | raw token, base token, core token | FR-TOK-002 |
 | 시맨틱 토큰 | `semantic token` | 제품 의미를 갖는 토큰. 프리미티브 토큰을 참조한다. 예: `surface.base`, `status.danger` | alias token, 의미 토큰 | FR-TOK-002 |
+| dataviz 토큰 | `dataviz token` | 차트 계열 구분에 쓰는 시맨틱 색 토큰. 범주형(`dataviz.series.*`)은 계열 정체성만 나타내고 순서형(`dataviz.sequential.*`)은 단일 색조 명도 램프다. 모두 `nonText`이며 색 단독으로 정보를 전달하지 않는다 | 차트색, 시리즈 컬러, 팔레트 | FR-TOK-005 |
 | 컴포넌트 토큰 | `component token` | 특정 컴포넌트에만 적용되는 토큰. 시맨틱 토큰을 참조한다. 예: `button.primary.background` | 로컬 토큰, private token | FR-TOK-002 |
 | 토큰 참조 | `token alias` | 한 토큰이 다른 토큰의 값을 가리키는 관계. 순환 참조는 빌드 오류다 | 별칭, 링크, 포인터 | FR-TOK-003 |
 | 토큰 계층 | `token tier` | 프리미티브 → 시맨틱 → 컴포넌트로 이어지는 3단계 참조 방향 | 레벨, 티어 | FR-TOK-002 |

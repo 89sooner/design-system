@@ -63,7 +63,7 @@ UI가 없는 요구사항은 아래 표면 중 하나에 간접 노출된다.
 | FR-TOK-002 | Must | W-010 | SFC-CLI | FLOW-003 | 계층 표시 |
 | FR-TOK-003 | Must | — | SFC-CLI, W-030 | FLOW-003 | 순환 참조 오류 메시지 |
 | FR-TOK-004 | Must | — | SFC-PKG, W-030 | FLOW-003 | 산출 CSS 파일 |
-| FR-TOK-005 | Must | W-010, W-040 | SFC-PKG | — | 상태·심각도·미터 색 |
+| FR-TOK-005 | Must | W-010, W-040 | SFC-PKG | — | 상태·심각도·미터 색과 dataviz 차트 계열 색 (CR-036) |
 | FR-TOK-006 | Must | — | SFC-PKG | FLOW-003 | W-030이 이 JSON을 읽는다 |
 | FR-TOK-007 | Must | W-011 | SFC-PKG | — | 타입 스케일 |
 | FR-TOK-008 | Should | — | SFC-PKG, W-030 | — | z-index 스케일 |
