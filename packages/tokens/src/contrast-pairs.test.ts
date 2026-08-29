@@ -5,8 +5,8 @@ import { canonicalTokens } from "./token-source";
 
 const index = buildTokenIndex(canonicalTokens());
 
-/** tokens spec 8.2: 41 declared pairs, CP-001 through CP-042 with CP-025 permanently retired. */
-const DECLARED_PAIRS = 41;
+/** tokens spec 8.2: 116 declared pairs, CP-001 through CP-117 with CP-025 permanently retired (CR-036 added CP-043~CP-117). */
+const DECLARED_PAIRS = 116;
 
 describe("FR-THM-004 AC-1: the declared contrast pairs", () => {
   test("FR-THM-004 AC-1: contrast-pairs.ts declares the 41 pairs of tokens spec 8.2", () => {
@@ -19,11 +19,11 @@ describe("FR-THM-004 AC-1: the declared contrast pairs", () => {
     for (const id of ids) expect(id).toMatch(/^CP-\d{3}$/);
   });
 
-  test("CR-035: the ids run CP-001..CP-042 with only CP-025 missing, and it stays missing", () => {
+  test("CR-035: the ids run CP-001..CP-117 with only CP-025 missing, and it stays missing", () => {
     // CR-006 removed CP-025; CR-035 restored the obligation as CP-042 rather than reusing the
     // number, so an old report naming CP-025 still means the retired 2.24:1 measurement.
     const numbers = contrastPairs.map((pair) => Number(pair.id.slice(3)));
-    const expected = Array.from({ length: 42 }, (_, offset) => offset + 1).filter((number) => number !== 25);
+    const expected = Array.from({ length: 117 }, (_, offset) => offset + 1).filter((number) => number !== 25);
     expect([...numbers].sort((one, other) => one - other)).toEqual(expected);
   });
 

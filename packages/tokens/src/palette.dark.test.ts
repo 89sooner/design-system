@@ -150,6 +150,9 @@ describe("dark palette against the source tokens.css", () => {
         ...["2xs", "xs", "sm", "base", "md", "lg", "xl"].map((step) => `font.size.${step}`),
         ...["sm", "md", "lg"].map((name) => `breakpoint.${name}`),
         ...["base", "raised", "sticky", "drawer", "overlay", "popover"].map((layer) => `z.${layer}`),
+        // CR-036: categorical + sequential chart series colours (dataviz has no source equivalent).
+        ...Array.from({ length: 20 }, (_, index) => `dataviz.series.${index + 1}`),
+        ...Array.from({ length: 5 }, (_, index) => `dataviz.sequential.${index + 1}`),
       ].sort(),
     );
   });
