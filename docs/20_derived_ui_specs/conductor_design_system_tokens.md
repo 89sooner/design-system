@@ -482,6 +482,49 @@ FR-TOK-007 AC-4는 제목이 `font.size.xl` 이상과 `clamp()` 기반 반응형
 
 ---
 
+### 5.14 dataviz — 차트 계열 색 (FR-TOK-005 AC-6, CR-036)
+
+Conductor에는 차트 프리미티브가 없다(ADR-006). 차트는 semantic 토큰으로 구현되며, 이 계열이 계열 구분에 쓰는 색을 제공한다. PR Search의 `DEV-380`이 트리거다: 화면 계약이 최대 20계열을 색으로 구분하라고 요구하는데 기존 토큰에 계열용 색이 없었다.
+
+규칙:
+
+- 25키 모두 `usage`가 `nonText`다. 차트 채움은 그래픽 객체이므로(WCAG 1.4.11) 세 표면(`surface.base`·`surface.canvas`·`surface.raised`)에 대해 두 테마 모두 3:1 이상을 만족하고 8.2절 CP-043~CP-117로 검사한다.
+- 범주형(`series`)은 계열 정체성만 나타낸다. 크기를 색으로 표현하지 않고 색끼리의 대비는 요구하지 않는다. 인접 인덱스는 색상환에서 최소 162° 떨어뜨려 함께 그려도 구분된다.
+- 순서형(`sequential`)은 단일 색조(indigo)의 명도 램프 5단이다. 인덱스가 오를수록 두 테마 모두 더 뚜렷해진다(다크는 밝아지고 라이트는 어두워진다).
+- 다크가 정본이고 라이트는 6절 파생이다. 같은 계열은 두 테마에서 같은 색상을 유지하되 다크는 밝게, 라이트는 진하게 조정한다.
+- 색 단독으로 정보를 전달하지 않는다. 소비 제품은 범례·직접 라벨·표 대체를 병기한다(WCAG 1.4.1; 표 대체는 소비 제품 몫).
+
+| 토큰 키 | 용도 | 다크 값 | 라이트 값 |
+| --- | --- | --- | --- |
+| `dataviz.series.1` | nonText | `#e88171` | `#d45946` |
+| `dataviz.series.2` | nonText | `#1db198` | `#228f7d` |
+| `dataviz.series.3` | nonText | `#e979ad` | `#d54e8d` |
+| `dataviz.series.4` | nonText | `#1eb641` | `#22933d` |
+| `dataviz.series.5` | nonText | `#e073e8` | `#ca45d3` |
+| `dataviz.series.6` | nonText | `#54b21d` | `#4a9022` |
+| `dataviz.series.7` | nonText | `#ad8dec` | `#906adc` |
+| `dataviz.series.8` | nonText | `#9fa41b` | `#81851f` |
+| `dataviz.series.9` | nonText | `#7f9bea` | `#5a7cd8` |
+| `dataviz.series.10` | nonText | `#e18844` | `#bd6b2c` |
+| `dataviz.series.11` | nonText | `#20adc2` | `#258c9c` |
+| `dataviz.series.12` | nonText | `#ea7d8f` | `#d75369` |
+| `dataviz.series.13` | nonText | `#1db46e` | `#22915d` |
+| `dataviz.series.14` | nonText | `#e874cd` | `#d446b2` |
+| `dataviz.series.15` | nonText | `#28b61e` | `#2a9322` |
+| `dataviz.series.16` | nonText | `#c583eb` | `#ab5dd9` |
+| `dataviz.series.17` | nonText | `#7cac1c` | `#688b21` |
+| `dataviz.series.18` | nonText | `#9794ee` | `#7773de` |
+| `dataviz.series.19` | nonText | `#c39720` | `#9b7c24` |
+| `dataviz.series.20` | nonText | `#52a4e3` | `#2f85c7` |
+| `dataviz.sequential.1` | nonText | `#6960d1` | `#7d74dc` |
+| `dataviz.sequential.2` | nonText | `#847dd9` | `#6e65d8` |
+| `dataviz.sequential.3` | nonText | `#9e98e1` | `#5c52d4` |
+| `dataviz.sequential.4` | nonText | `#b7b3e9` | `#4539cd` |
+| `dataviz.sequential.5` | nonText | `#cecbf0` | `#3329a4` |
+
+실측 대비 범위(세 표면, 두 테마): 범주형 다크 6.27 ~ 7.34 / 라이트 3.32 ~ 3.87, 순서형 다크 3.39 ~ 12.58 / 라이트 3.28 ~ 10.25. 전 쌍이 3:1 이상이다(8.2절). CSS 변수는 `--cdt-dataviz-series-1`~`20`, `--cdt-dataviz-sequential-1`~`5`로 방출된다.
+
+---
 ## 6. 라이트 팔레트 파생 규칙
 
 FR-THM-002는 라이트 테마가 다크 테마와 **동일한 semantic 키 집합**을 가질 것을 요구한다(AC-1). 값 파생은 아래 규칙을 따른다. 규칙은 기계적으로 재현 가능해야 하며, "보기 좋게 조정했다"는 서술은 근거로 인정하지 않는다.
@@ -952,7 +995,7 @@ FR-THM-004 AC-1은 검사 대상 쌍이 `packages/tokens/src/contrast-pairs.ts`�
 
 ### 8.2 선언된 쌍과 측정 결과
 
-선언된 쌍 40개 × 2개 테마 = 80건. 모든 수치는 계산된 값이다.
+선언된 쌍 116개 × 2개 테마 = 232건. 모든 수치는 계산된 값이다. CP-042는 CR-035가 `status.neutralEnd`를 `nonText`로 되돌리며 되살린 의무이고, CP-043~CP-117은 CR-036이 더한 dataviz 쌍이다.
 
 CP-025는 CR-006으로 선언 목록에서 제거되었다. **ID는 재사용하지 않는다** — 번호를 당기면 이전 리포트·테스트 이름·커밋 메시지의 CP 참조가 다른 쌍을 가리키게 된다. 제거된 자리는 표에 흔적으로 남긴다.
 
@@ -999,6 +1042,14 @@ CP-025는 CR-006으로 선언 목록에서 제거되었다. **ID는 재사용하
 | CP-039 | `badge.marker.dot` (`status.queued`) | `badge.marker.background` | nonText | 3.0 | 3.56 pass | 6.17 pass |
 | CP-040 | `text.muted` | `state.disabled` | body | 4.5 | 5.05 pass | 5.67 pass |
 | CP-041 | `button.policyDisabled.text` | `state.disabledPolicy` | body | 4.5 | 5.27 pass | 5.81 pass |
+| CP-042 | `status.neutralEnd` | `badge.marker.background` | nonText | 3.0 | 6.61 pass | 8.58 pass |
+
+CP-043 ~ CP-117: dataviz 25키 × 3표면(`surface.base`·`surface.canvas`·`surface.raised`) = 75쌍, 두 테마. 개별 수치는 `dist/contrast-report.json`이며 그룹별 실측 범위는 아래와 같다(전 쌍 3:1 이상, 5.14절).
+
+| 그룹 | 쌍 | 다크 | 라이트 |
+| --- | --- | --- | --- |
+| `dataviz.series.1`~`20` | CP-043 ~ CP-102 | 6.27 ~ 7.34 | 3.32 ~ 3.87 |
+| `dataviz.sequential.1`~`5` | CP-103 ~ CP-117 | 3.39 ~ 12.58 | 3.28 ~ 10.25 |
 
 라이트 `severity.*` 4쌍(CP-029 ~ CP-032)의 측정값이 다크와 동일하다. 라이트 `badge.severity.text`가 `{text.inverse}`(`#f4f7fb`)이고 다크 `badge.severity.text`가 `{text.primary}`(`#f4f7fb`)로 값이 같으며, 심각도 채움 4색이 두 테마에서 같은 값이기 때문이다. 우연이 아니라 5.8절과 6.2절의 정의가 만나는 지점이다.
 
@@ -1082,11 +1133,12 @@ FR-THM-005가 강제한 두 교정이 9건의 미달을 제거했다. `focusRing
 | `border.subtle` / `default` / `strong` | — | — | `decorative` 분류, WCAG 1.4.11 예외 (FR-THM-005 AC-4) |
 | `accent` | 0건 | 0건 | `body` 분류 + `surface.elevated` 본문 금지 |
 | `status.queued` (CP-024, CP-039) | 0건 | 0건 | `nonText` 분류 유지 + 아이콘·텍스트 병기 (FR-THM-005 AC-5) |
-| `status.neutralEnd` (구 CP-025) | 0건 | 0건 | `decorative` 분류 (FR-THM-005 AC-6, CR-006). 선언된 쌍에서 제거. 8.5절 |
+| `status.neutralEnd` (구 CP-025 → CP-042) | 0건 | 0건 | `nonText` 재교정 (FR-THM-005 AC-6, CR-035). CP-042로 검사. 8.5절 |
+| dataviz `series`·`sequential` (CP-043 ~ CP-117) | 0건 | 0건 | `nonText` 분류, 세 표면 3:1 (CR-036). 5.14절, 8.2절 |
 | 상태·미터·심각도 나머지 | 0건 | 0건 | `body` 분류로 전부 통과 |
 | **합계** | **0건** | **0건** | |
 
-선언된 40개 쌍 × 2개 테마 = 80건이 전부 통과한다. `pnpm check:contrast`는 다크와 라이트 모두에서 종료 코드 0을 반환하며, M-3(미달 0건)과 FR-A11Y-004 AC-1이 충족된다.
+선언된 116개 쌍 × 2개 테마 = 232건이 전부 통과한다. `pnpm check:contrast`는 다크와 라이트 모두에서 종료 코드 0을 반환하며, M-3(미달 0건)과 FR-A11Y-004 AC-1이 충족된다.
 
 대가는 사라지지 않고 위치를 옮겼다. `status.neutralEnd`의 다크 시인성 저하(최대 2.60:1)는 대비 검사가 아니라 **알려진 제약**으로 관리된다(`conductor_implementation_traceability.md` §5). 검사를 통과했다는 사실이 그 점이 잘 보인다는 뜻은 아니다.
 ---

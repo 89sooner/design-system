@@ -142,7 +142,7 @@ Conductor Design System(이하 Conductor)은 `agent-ai-platform`의 `packages/we
 | FR-TOK-002 | 토큰을 3계층으로 나누고 참조 방향을 강제한다 | Must | F-TOK-002 |
 | FR-TOK-003 | 토큰 참조를 해석하고 순환 참조를 차단한다 | Must | F-TOK-003 |
 | FR-TOK-004 | `--cdt-` 접두사 CSS 커스텀 프로퍼티를 산출한다 | Must | F-TOK-004 |
-| FR-TOK-005 | 상태 7종·심각도 4종·미터 3종 토큰을 제공한다 | Must | F-TOK-005 |
+| FR-TOK-005 | 상태 7종·심각도 4종·미터 3종과 차트 계열 색(dataviz 범주형 20종·순서형 5종) 토큰을 제공한다 (dataviz는 CR-036) | Must | F-TOK-005 |
 | FR-TOK-006 | 타입이 붙은 TypeScript 객체와 JSON을 산출한다 | Must | F-TOK-006 |
 | FR-TOK-007 | 7단계 타이포 스케일을 토큰화한다 | Must | F-TOK-007 |
 | FR-TOK-008 | 6단계 z-index 스케일을 토큰화한다 | Should | F-TOK-008 |

@@ -1,6 +1,6 @@
 # Conductor Design System 최종 요구사항 정의서
 
-> 상태: baseline | 버전: v1.4 | 갱신일: 2026-08-06
+> 상태: baseline | 버전: v1.5 | 갱신일: 2026-08-29
 
 ## 1. 문서 개요
 
@@ -211,15 +211,15 @@ FR-QA-004(시각 회귀)와 FR-CMP-009(셸 컴포넌트군)는 2026-07-10에 OD-
 | 관련 API/데이터 | API-PKG-001, API-TOK-001 / ENT-TOK-001 |
 | 예외/실패 처리 | 이름 충돌(두 키가 같은 CSS 이름으로 변환)이 발생하면 빌드가 실패하고 충돌한 두 키를 출력한다. |
 
-#### FR-TOK-005 상태·심각도·미터 토큰군
+#### FR-TOK-005 상태·심각도·미터·dataviz 토큰군
 
 | 항목 | 내용 |
 | --- | --- |
 | 상태 | approved |
 | 우선순위 | Must |
 | 출처 | F-TOK-005 |
-| 요구사항 | 시스템은 항상 실행 상태 7종, 심각도 4종, 미터 3종에 대응하는 semantic 색상 토큰을 제공하여야 한다. |
-| 수용 기준 | AC-1: 상태 토큰 키가 `status.queued`, `status.running`, `status.waiting`, `status.success`, `status.partial`, `status.danger`, `status.neutralEnd` 7개로 존재한다. AC-2: 심각도 토큰 키가 `severity.read`, `severity.write`, `severity.destructive`, `severity.blocked` 4개로 존재한다. AC-3: 미터 토큰 키가 `meter.normal`, `meter.warning`, `meter.exceeded` 3개로 존재한다. AC-4: 14개 키 모두가 다크·라이트 두 테마에 정의된다. AC-5: 각 상태·심각도 토큰은 `icon` 메타데이터 필드를 가지며 값이 빈 문자열이 아니다. |
+| 요구사항 | 시스템은 항상 실행 상태 7종, 심각도 4종, 미터 3종에 대응하는 semantic 색상 토큰을 제공하여야 한다. 또한 차트 계열 구분을 위한 dataviz 색 계열로 범주형 `dataviz.series` 20종과 순서형 `dataviz.sequential` 5종을 제공하여야 한다. |
+| 수용 기준 | AC-1: 상태 토큰 키가 `status.queued`, `status.running`, `status.waiting`, `status.success`, `status.partial`, `status.danger`, `status.neutralEnd` 7개로 존재한다. AC-2: 심각도 토큰 키가 `severity.read`, `severity.write`, `severity.destructive`, `severity.blocked` 4개로 존재한다. AC-3: 미터 토큰 키가 `meter.normal`, `meter.warning`, `meter.exceeded` 3개로 존재한다. AC-4: 14개 키 모두가 다크·라이트 두 테마에 정의된다. AC-5: 각 상태·심각도 토큰은 `icon` 메타데이터 필드를 가지며 값이 빈 문자열이 아니다. AC-6: dataviz 토큰 키가 `dataviz.series.1`~`dataviz.series.20`(범주형 20개)과 `dataviz.sequential.1`~`dataviz.sequential.5`(순서형 5개)로 존재하고, 25개 키 모두 다크·라이트 두 테마에 정의되며 `usage`가 `nonText`다. 각 키는 차트가 놓이는 세 표면(`surface.base`·`surface.canvas`·`surface.raised`)에 대해 두 테마 모두 3:1 이상이며 CP-043~CP-117로 검사한다(CR-036, PR Search DEV-380). 범주형 색은 계열 정체성만 나타내고 크기를 색으로 표현하지 않으며, 색 상호 간 대비는 요구하지 않는다. |
 | 검증 방법 | test |
 | 관련 화면 | W-010, W-040 |
 | 관련 API/데이터 | API-TOK-002 / ENT-TOK-001, ENT-THM-001 |
@@ -947,6 +947,7 @@ OD-001(2026-07-10 종결)이 확정한 정책이다. 소스 팔레트를 실측�
 | `meter.normal` / `warning` / `exceeded` | — | `body` | 6.13 ~ 10.15 | 제약 없음 |
 | `severity.read` / `write` / `destructive` / `blocked` | — | `body` (배경 용도) | 전경으로 쓴 흰 텍스트 기준 4.67 ~ 9.32 | 배경 전용. 전경색으로 쓰면 `surface.raised` 위에서 1.69 ~ 3.38으로 미달한다 |
 
+| `dataviz.series.*` / `dataviz.sequential.*` (5.14절) | 25키 | `nonText` | 다크 6.27 ~ 12.58 / 라이트 3.28 ~ 10.25 | 차트 채움 전용(그래픽 객체). 색 단독으로 정보를 전달하지 않는다 — 범례·직접 라벨·표 대체를 병기한다(WCAG 1.4.1; 표 대체는 소비 제품 몫). 범주형 색끼리의 대비는 요구하지 않는다. 세 표면(`base`·`canvas`·`raised`)에 대해 CP-043~CP-117로 검사한다(CR-036) |
 라이트 테마의 동일 토큰도 같은 `usage` 분류를 상속하며, 각 기준을 독립적으로 만족해야 한다(FR-THM-002 AC-3, FR-A11Y-004 AC-1).
 
 ### NFR-005 호환성

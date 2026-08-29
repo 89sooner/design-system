@@ -426,6 +426,168 @@ const interaction: TokenDefinition[] = [
   }),
 ];
 
+/**
+ * Categorical + sequential chart series colours (CR-036, DEV-380 from PR Search).
+ * Conductor has no chart primitive (ADR-006), so charts are built from semantic tokens;
+ * these are the missing colour half. 20 categorical identities (no magnitude) and a
+ * 5-step single-hue sequential ramp. All `nonText`: chart fills are graphical objects
+ * (WCAG 1.4.11), each measured 3:1 on `surface.base`/`canvas`/`raised` in both themes
+ * (CP-043~CP-117). Colour never carries information alone — legend, direct labels and a
+ * table alternative repeat every series (NFR-007 in the consuming product).
+ */
+const dataviz: TokenDefinition[] = [
+  darkToken({
+    key: "dataviz.series.1",
+    usage: "nonText",
+    value: "#e88171",
+    description: "Categorical chart series 1 of 20. Fill only; non-text 3:1 on chart surfaces (CP-043~CP-045). Series identity only; carries no magnitude.",
+  }),
+  darkToken({
+    key: "dataviz.series.2",
+    usage: "nonText",
+    value: "#1db198",
+    description: "Categorical chart series 2 of 20. Fill only; non-text 3:1 on chart surfaces (CP-046~CP-048). Series identity only; carries no magnitude.",
+  }),
+  darkToken({
+    key: "dataviz.series.3",
+    usage: "nonText",
+    value: "#e979ad",
+    description: "Categorical chart series 3 of 20. Fill only; non-text 3:1 on chart surfaces (CP-049~CP-051). Series identity only; carries no magnitude.",
+  }),
+  darkToken({
+    key: "dataviz.series.4",
+    usage: "nonText",
+    value: "#1eb641",
+    description: "Categorical chart series 4 of 20. Fill only; non-text 3:1 on chart surfaces (CP-052~CP-054). Series identity only; carries no magnitude.",
+  }),
+  darkToken({
+    key: "dataviz.series.5",
+    usage: "nonText",
+    value: "#e073e8",
+    description: "Categorical chart series 5 of 20. Fill only; non-text 3:1 on chart surfaces (CP-055~CP-057). Series identity only; carries no magnitude.",
+  }),
+  darkToken({
+    key: "dataviz.series.6",
+    usage: "nonText",
+    value: "#54b21d",
+    description: "Categorical chart series 6 of 20. Fill only; non-text 3:1 on chart surfaces (CP-058~CP-060). Series identity only; carries no magnitude.",
+  }),
+  darkToken({
+    key: "dataviz.series.7",
+    usage: "nonText",
+    value: "#ad8dec",
+    description: "Categorical chart series 7 of 20. Fill only; non-text 3:1 on chart surfaces (CP-061~CP-063). Series identity only; carries no magnitude.",
+  }),
+  darkToken({
+    key: "dataviz.series.8",
+    usage: "nonText",
+    value: "#9fa41b",
+    description: "Categorical chart series 8 of 20. Fill only; non-text 3:1 on chart surfaces (CP-064~CP-066). Series identity only; carries no magnitude.",
+  }),
+  darkToken({
+    key: "dataviz.series.9",
+    usage: "nonText",
+    value: "#7f9bea",
+    description: "Categorical chart series 9 of 20. Fill only; non-text 3:1 on chart surfaces (CP-067~CP-069). Series identity only; carries no magnitude.",
+  }),
+  darkToken({
+    key: "dataviz.series.10",
+    usage: "nonText",
+    value: "#e18844",
+    description: "Categorical chart series 10 of 20. Fill only; non-text 3:1 on chart surfaces (CP-070~CP-072). Series identity only; carries no magnitude.",
+  }),
+  darkToken({
+    key: "dataviz.series.11",
+    usage: "nonText",
+    value: "#20adc2",
+    description: "Categorical chart series 11 of 20. Fill only; non-text 3:1 on chart surfaces (CP-073~CP-075). Series identity only; carries no magnitude.",
+  }),
+  darkToken({
+    key: "dataviz.series.12",
+    usage: "nonText",
+    value: "#ea7d8f",
+    description: "Categorical chart series 12 of 20. Fill only; non-text 3:1 on chart surfaces (CP-076~CP-078). Series identity only; carries no magnitude.",
+  }),
+  darkToken({
+    key: "dataviz.series.13",
+    usage: "nonText",
+    value: "#1db46e",
+    description: "Categorical chart series 13 of 20. Fill only; non-text 3:1 on chart surfaces (CP-079~CP-081). Series identity only; carries no magnitude.",
+  }),
+  darkToken({
+    key: "dataviz.series.14",
+    usage: "nonText",
+    value: "#e874cd",
+    description: "Categorical chart series 14 of 20. Fill only; non-text 3:1 on chart surfaces (CP-082~CP-084). Series identity only; carries no magnitude.",
+  }),
+  darkToken({
+    key: "dataviz.series.15",
+    usage: "nonText",
+    value: "#28b61e",
+    description: "Categorical chart series 15 of 20. Fill only; non-text 3:1 on chart surfaces (CP-085~CP-087). Series identity only; carries no magnitude.",
+  }),
+  darkToken({
+    key: "dataviz.series.16",
+    usage: "nonText",
+    value: "#c583eb",
+    description: "Categorical chart series 16 of 20. Fill only; non-text 3:1 on chart surfaces (CP-088~CP-090). Series identity only; carries no magnitude.",
+  }),
+  darkToken({
+    key: "dataviz.series.17",
+    usage: "nonText",
+    value: "#7cac1c",
+    description: "Categorical chart series 17 of 20. Fill only; non-text 3:1 on chart surfaces (CP-091~CP-093). Series identity only; carries no magnitude.",
+  }),
+  darkToken({
+    key: "dataviz.series.18",
+    usage: "nonText",
+    value: "#9794ee",
+    description: "Categorical chart series 18 of 20. Fill only; non-text 3:1 on chart surfaces (CP-094~CP-096). Series identity only; carries no magnitude.",
+  }),
+  darkToken({
+    key: "dataviz.series.19",
+    usage: "nonText",
+    value: "#c39720",
+    description: "Categorical chart series 19 of 20. Fill only; non-text 3:1 on chart surfaces (CP-097~CP-099). Series identity only; carries no magnitude.",
+  }),
+  darkToken({
+    key: "dataviz.series.20",
+    usage: "nonText",
+    value: "#52a4e3",
+    description: "Categorical chart series 20 of 20. Fill only; non-text 3:1 on chart surfaces (CP-100~CP-102). Series identity only; carries no magnitude.",
+  }),
+  darkToken({
+    key: "dataviz.sequential.1",
+    usage: "nonText",
+    value: "#6960d1",
+    description: "Sequential distribution step 1 of 5 (least prominent), single-hue luminance ramp. Fill only; non-text 3:1 on chart surfaces (CP-103~CP-105).",
+  }),
+  darkToken({
+    key: "dataviz.sequential.2",
+    usage: "nonText",
+    value: "#847dd9",
+    description: "Sequential distribution step 2 of 5 (step), single-hue luminance ramp. Fill only; non-text 3:1 on chart surfaces (CP-106~CP-108).",
+  }),
+  darkToken({
+    key: "dataviz.sequential.3",
+    usage: "nonText",
+    value: "#9e98e1",
+    description: "Sequential distribution step 3 of 5 (step), single-hue luminance ramp. Fill only; non-text 3:1 on chart surfaces (CP-109~CP-111).",
+  }),
+  darkToken({
+    key: "dataviz.sequential.4",
+    usage: "nonText",
+    value: "#b7b3e9",
+    description: "Sequential distribution step 4 of 5 (step), single-hue luminance ramp. Fill only; non-text 3:1 on chart surfaces (CP-112~CP-114).",
+  }),
+  darkToken({
+    key: "dataviz.sequential.5",
+    usage: "nonText",
+    value: "#cecbf0",
+    description: "Sequential distribution step 5 of 5 (most prominent), single-hue luminance ramp. Fill only; non-text 3:1 on chart surfaces (CP-115~CP-117).",
+  }),
+];
+
 export const darkPalette: readonly TokenDefinition[] = [
   ...surface,
   ...text,
@@ -437,4 +599,5 @@ export const darkPalette: readonly TokenDefinition[] = [
   ...fontFamily,
   ...elevation,
   ...interaction,
+  ...dataviz,
 ];

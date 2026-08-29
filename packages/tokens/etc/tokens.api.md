@@ -176,6 +176,37 @@ export const tokens: {
         readonly disabled: "var(--cdt-state-disabled)";
         readonly disabledPolicy: "var(--cdt-state-disabled-policy)";
     };
+    readonly dataviz: {
+        readonly series: {
+            readonly "1": "var(--cdt-dataviz-series-1)";
+            readonly "2": "var(--cdt-dataviz-series-2)";
+            readonly "3": "var(--cdt-dataviz-series-3)";
+            readonly "4": "var(--cdt-dataviz-series-4)";
+            readonly "5": "var(--cdt-dataviz-series-5)";
+            readonly "6": "var(--cdt-dataviz-series-6)";
+            readonly "7": "var(--cdt-dataviz-series-7)";
+            readonly "8": "var(--cdt-dataviz-series-8)";
+            readonly "9": "var(--cdt-dataviz-series-9)";
+            readonly "10": "var(--cdt-dataviz-series-10)";
+            readonly "11": "var(--cdt-dataviz-series-11)";
+            readonly "12": "var(--cdt-dataviz-series-12)";
+            readonly "13": "var(--cdt-dataviz-series-13)";
+            readonly "14": "var(--cdt-dataviz-series-14)";
+            readonly "15": "var(--cdt-dataviz-series-15)";
+            readonly "16": "var(--cdt-dataviz-series-16)";
+            readonly "17": "var(--cdt-dataviz-series-17)";
+            readonly "18": "var(--cdt-dataviz-series-18)";
+            readonly "19": "var(--cdt-dataviz-series-19)";
+            readonly "20": "var(--cdt-dataviz-series-20)";
+        };
+        readonly sequential: {
+            readonly "1": "var(--cdt-dataviz-sequential-1)";
+            readonly "2": "var(--cdt-dataviz-sequential-2)";
+            readonly "3": "var(--cdt-dataviz-sequential-3)";
+            readonly "4": "var(--cdt-dataviz-sequential-4)";
+            readonly "5": "var(--cdt-dataviz-sequential-5)";
+        };
+    };
     readonly space: {
         readonly "1": "var(--cdt-space-1)";
         readonly "2": "var(--cdt-space-2)";

@@ -87,11 +87,12 @@ export function tierRank(tier: TokenTier): number {
   return TIER_RANK[tier];
 }
 
-/** Groups the status/severity/meter families whose member counts FR-TOK-005 fixes. */
+/** Groups whose member counts FR-TOK-005 fixes: status/severity/meter, and dataviz (CR-036). */
 export const FIXED_GROUP_SIZES: Readonly<Record<string, number>> = {
   status: 7,
   severity: 4,
   meter: 3,
+  dataviz: 25,
 };
 
 /** ENT-TOK-001 invariant 6: these families must carry a non-empty `icon`. */

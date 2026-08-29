@@ -1,6 +1,6 @@
 # Conductor Design System 구현 추적 원장
 
-> 상태: review | 버전: v0.15 | 갱신일: 2026-08-06
+> 상태: review | 버전: v0.16 | 갱신일: 2026-08-29
 
 ## 1. 목적과 갱신 규칙
 
@@ -135,6 +135,18 @@ GitHub 연결 계정 `89sooner`가 private 저장소 `89sooner/design-system`의
 | React 0.1.1 | version PR #4 merge SHA `15024d2`, main CI run 29585593781 성공. 수동 Release run 29586062062가 OIDC로 게시했고 `latest=0.1.1`, deprecated 없음, SLSA provenance v1, npm signature, annotated remote tag가 merge SHA와 일치 |
 | 0.1.1 소비자 스모크 | 격리 앱에서 npm 레지스트리 React 0.1.1·CSS/tokens 0.1.0·lucide-react 0.400.0을 설치해 `tsc --noEmit` 및 React 19 `renderToStaticMarkup` 통과 |
 
+### CR-036 dataviz 차트 계열 색 (2026-08-29)
+
+PR Search 소비처의 `DEV-380`이 트리거다: 화면 계약이 최대 20계열을 색으로 구분하라고 요구하는데 Conductor에 계열용 색 토큰이 없었다. semantic 색 계열 `dataviz`를 추가했다.
+
+| 범위 | 실제 결과 |
+| --- | --- |
+| 토큰 | `dataviz.series.1`~`20`(범주형)과 `dataviz.sequential.1`~`5`(순서형), 두 테마 각각 정의. `palette.dark.ts`(정본)·`palette.light.ts`(6절 파생), `usage`는 25키 모두 `nonText`. `schema.ts` `FIXED_GROUP_SIZES`에 `dataviz: 25`로 개수를 빌드에서 강제 |
+| 대비 | 새 쌍 CP-043~CP-117(25키 × 3표면 `base`·`canvas`·`raised`). `pnpm check:contrast` 232/232 통과, 미달 0. 실측 최악 3.28(라이트 `sequential.1`), 범주형 다크 6.27~7.34·라이트 3.32~3.87, 순서형 다크 3.39~12.58·라이트 3.28~10.25 |
+| 시험 | `palette.dark.test.ts` 화이트리스트에 25키 추가, `contrast-pairs.test.ts` 개수 41→116·연속성 42→117. `pnpm test` 522/522 통과, `pnpm typecheck` 통과 |
+| 산출물 | `pnpm lint:tokens` 위반 0, `pnpm size` PASS(css 8.84 KiB/20 KiB), CSS 변수 `--cdt-dataviz-series-1`~`20`·`--cdt-dataviz-sequential-1`~`5` 방출 확인. 다크·라이트 두 값 존재 |
+| 문서 | SRS v1.5(FR-TOK-005 AC-6, §12.1), 토큰 명세(§5.14, §8.2, §8.6), CR-036. 함께 CR-035가 남긴 §8.2 CP-042 행 누락·개수·§8.6 표기를 정정 |
+| 릴리스 | `.changeset/dataviz-series-tokens.md`(tokens minor + css minor). `pnpm check:changesets` 통과. 실제 publish는 version PR 병합 후 수동 승인 게이트를 따른다 |
 ## 3. 요구사항 → 코드/테스트 매핑 표
 
 `srs_final.md` §9에 승인된 FR 49개 전부를 나열한다. 구현 모듈·테스트 파일·WP 열은 코드가 작성될 때 채운다.
@@ -145,7 +157,7 @@ GitHub 연결 계정 `89sooner`가 private 저장소 `89sooner/design-system`의
 | FR-TOK-002 | `src/schema.ts`, `src/build/tiers.ts` | `src/build/tiers.test.ts` | WP-002 | 검증됨 (AC-1~AC-6. CR-008 반영. 역방향 주입 시 exit 1 + 위반 키 쌍 실증) |
 | FR-TOK-003 | `src/build/reference.ts`, `src/build/write.ts` | `src/build/reference.test.ts`, `src/build/build.test.ts` | WP-003 | 검증됨 (AC-1~AC-4 + 예외. 순환·미존재 키 주입 시 exit 1, 이전 산출물 보존 실증) |
 | FR-TOK-004 | `src/build/names.ts`, `src/build/emit-css.ts` | `src/build/names.test.ts`, `src/build/emit-css.test.ts` | WP-003 | 검증됨 (AC-1~AC-4 + 이름 충돌 예외. 202 선언 전부 `--cdt-`, primitive 유출 0) |
-| FR-TOK-005 | `src/palette.dark.ts`, `src/palette.light.ts` | `src/palette.dark.test.ts` | WP-002, WP-010 | 검증됨 (AC-1~AC-5. 두 테마가 동일 상태·심각도·미터 키와 icon 메타데이터를 유지) |
+| FR-TOK-005 | `src/palette.dark.ts`, `src/palette.light.ts`, `src/schema.ts` | `src/palette.dark.test.ts` | WP-002, WP-010 | 검증됨 (AC-1~AC-5. 두 테마가 동일 상태·심각도·미터 키와 icon 메타데이터를 유지. AC-6: dataviz `series` 20 + `sequential` 5 = 25키가 두 테마에 `nonText`로 존재하고 `FIXED_GROUP_SIZES.dataviz`로 개수를 강제, CP-043~CP-117로 3:1 검사 — CR-036) |
 | FR-TOK-006 | `src/build/emit-ts.ts`, `src/build/emit-json.ts` | `src/build/emit-artifacts.test.ts` | WP-004 | 검증됨 (AC-1~AC-4. 산출 `.d.ts`의 `any` 0건) |
 | FR-TOK-007 | `src/scales.ts` | `src/scales.test.ts` | WP-005 | 검증됨 (AC-1~AC-4) |
 | FR-TOK-008 | `src/scales.ts` | `src/scales.test.ts` | WP-005 | 검증됨 (AC-1~AC-3) |
@@ -153,7 +165,7 @@ GitHub 연결 계정 `89sooner`가 private 저장소 `89sooner/design-system`의
 | FR-THM-001 | `src/palette.dark.ts`, `src/token-source.ts`, `src/build/emit-css.ts` | `src/palette.dark.test.ts`, `src/build/emit-css.test.ts` | WP-002, WP-010 | 검증됨 (AC-1~AC-4. 다크 소스 1:1·별칭·키 대칭 및 `color-scheme: dark`) |
 | FR-THM-002 | `src/palette.light.ts`, `src/token-source.ts`, `src/build/emit-css.ts` | `src/theme-contract.test.ts`, `src/contrast/check.test.ts`, `src/build/emit-css.test.ts` | WP-010 | 검증됨 (AC-1~AC-4. 키 대칭, light color-scheme, 불투명 라이트 경계 3:1 이상, elevation alpha 차이) |
 | FR-THM-003 | `src/token-source.ts`, `src/build/emit-css.ts`, `apps/docs/src/theme.ts` | `src/build/emit-css.test.ts`, `apps/docs/e2e/shell.spec.ts` | WP-010, WP-018 | 검증됨 (CSS 명시 속성 우선·OS 폴백·무효값 다크, 문서 사이트 토글이 속성만 변경하고 컴포넌트를 재마운트하지 않음) |
-| FR-THM-004 | `src/contrast-pairs.ts`, `src/contrast-cli.ts` | `src/contrast-pairs.test.ts`, `src/contrast/check.test.ts` | WP-007, WP-010 | 검증됨 (AC-1~AC-4. 두 테마 82/82 통과, alpha 합성 포함. 금지 조합 FP-001·FP-002는 별칭 종점까지 해석해 `TOK-CP-FORBIDDEN`으로 차단하고 매 실행에 재측정한다 — CR-035) |
+| FR-THM-004 | `src/contrast-pairs.ts`, `src/contrast-cli.ts` | `src/contrast-pairs.test.ts`, `src/contrast/check.test.ts` | WP-007, WP-010 | 검증됨 (AC-1~AC-4. 두 테마 232/232 통과(dataviz CP-043~CP-117 포함, CR-036), alpha 합성 포함. 금지 조합 FP-001·FP-002는 별칭 종점까지 해석해 `TOK-CP-FORBIDDEN`으로 차단하고 매 실행에 재측정한다 — CR-035) |
 | FR-THM-005 | `src/palette.dark.ts`, `src/contrast-pairs.ts`, `src/lint-cli.ts` | `src/palette.dark.test.ts`, `src/contrast-pairs.test.ts` | WP-002, WP-006, WP-007 | 검증됨 (AC-1 focusRing 3.93/3.56, AC-2 border.control 3.23, AC-3 lint 차단 + 금지쌍 FP-001 실증, AC-4~AC-7 usage 분류. CR-035 반영: `status.neutralEnd`=nonText `#94a3b8`, CP-042로 다크 6.61 · 라이트 8.58, CP-025는 영구 결번) |
 | FR-CSS-001 | `packages/css/src/layers.css`, `src/reset.css`, `src/base.css`, `src/utility.css`, `packages/css/checks.mjs`, `build.mjs` | `packages/css/test/bundle.test.ts`, `test/checks.test.ts`, `packages/react/src/testing/a11y.browser.test.tsx` | WP-008, WP-024 | 검증됨 (AC-1~AC-4 + Radix 예외. 산출물 첫 줄이 5레이어 선언, `!important` 0건, 레이어 밖 규칙 0건. 음성 테스트로 `CSS-IMPORTANT`·`CSS-UNLAYERED`·`CSS-UNKNOWN-LAYER` 각각 exit 1 실증. AC-3은 Chromium에서 unlayered 소비자 규칙이 `cdt.component` Button 규칙을 덮는 계산값으로 확인) |
 | FR-CSS-002 | `packages/css/src/reset.css`, `src/utility.css` | `packages/css/test/bundle.test.ts` | WP-008 | 검증됨 (AC-1~AC-5 + 예외 처리. `box-sizing: border-box`가 `*`·`::before`·`::after`에, `font: inherit`가 `button`·`input`·`textarea`·`select`에, `:focus-visible`이 `var(--cdt-focus-ring)` 그림자와 `outline: none`에 적용. 원격 폰트 참조 0건을 두 단계(리졸버·AST)에서 차단. `cdt-sr-only`·`cdt-skip-link`가 `cdt.utility`에 존재. 예외 처리인 `./component.css`(리셋 제외 산출물)를 실제로 산출) |
@@ -179,7 +191,7 @@ GitHub 연결 계정 `89sooner`가 private 저장소 `89sooner/design-system`의
 | FR-A11Y-001 | `packages/css/src/reset.css`, `src/components.css` | `packages/css/test/bundle.test.ts`, `packages/react/src/testing/action.test.tsx`, `a11y.browser.test.tsx` | WP-008, WP-012, WP-024 | 검증됨 (공유 `:focus-visible` 토큰 규칙과 대체 표시 없는 `outline: none` 0건을 구조 검사하고, 다크·라이트 Chromium 키보드 포커스에서 실제 box-shadow 표시를 확인. focusRing 토큰 대비는 80/80 contrast gate에 포함) |
 | FR-A11Y-002 | `packages/react/src/data.tsx`, `src/overlay.tsx`, `src/shell.tsx`, `src/testing/a11y-scenarios.tsx` | `packages/react/src/testing/a11y.browser.test.tsx`, `data.test.tsx`, `overlay.test.tsx`, `shell.test.tsx`, `apps/docs/e2e/shell.spec.ts` | WP-014, WP-015, WP-023, WP-024 | 검증됨 (공개 30개 전수 keyboard scenario가 static/focus/toggle/overlay/skip-link 경로를 실행. Dialog·Drawer·DropdownMenu·Select는 Escape 후 trigger 복귀와 외부 Tab 이탈, AppShell은 non-modal Escape 후 외부 이탈, Table/Timeline 도달을 Chromium에서 검증) |
 | FR-A11Y-003 | `packages/react/src/status.tsx`, `src/form.tsx`, `src/feedback.tsx`, `packages/css/src/components.css` | React/CSS 단위 테스트, `apps/docs/visual/visual.spec.ts`, 그레이스케일 기준 이미지 3장 | WP-013, WP-016, WP-017, WP-026 | 검증됨 (AC-1~AC-3 상태·심각도 세 채널, 폼 오류, Meter 수치 텍스트와 AC-4 공개 30개 전수·상태 7종·심각도 4종 그레이스케일 구분을 고정 Chromium 스냅샷으로 검증) |
-| FR-A11Y-004 | `src/contrast-cli.ts`, `.github/workflows/ci.yml` | `src/contrast-pairs.test.ts`, `src/contrast/check.test.ts` | WP-007, WP-010 | 검증됨 (AC-1~AC-4. 두 테마 82/82 미달 0건, decorative 제외·focusRing/border.control/status.neutralEnd 3:1 검사) |
+| FR-A11Y-004 | `src/contrast-cli.ts`, `.github/workflows/ci.yml` | `src/contrast-pairs.test.ts`, `src/contrast/check.test.ts` | WP-007, WP-010 | 검증됨 (AC-1~AC-4. 두 테마 232/232 미달 0건 — dataviz 비텍스트 150건(CP-043~CP-117) 포함, CR-036. decorative 제외·focusRing/border.control/status.neutralEnd 3:1 검사. §2·§8 등 날짜가 박힌 과거 기록의 80/80·82/82는 그 시점 값이라 보존한다) |
 | FR-A11Y-005 | `packages/react/src/overlay.tsx`, `src/form.tsx`, `src/feedback.tsx`, `axe-allowlist.json` | `packages/react/src/testing/a11y.browser.test.tsx`, `overlay.test.tsx`, `form.test.tsx`, `feedback.test.tsx` | WP-015, WP-016, WP-017, WP-024 | 검증됨 (Banner alert/status, 장식 아이콘 숨김, Meter/Progress/Spinner 역할·live 상태와 공개 30개×주요 상태×두 테마의 axe serious/critical 0건을 검증. 허용 예외 0건이며 W-050이 실제 allowlist 파일을 표시) |
 | FR-DX-001 | `scripts/check-deps.mjs`, 루트 `package.json` `build` 스크립트, `.github/workflows/ci.yml` | 의존 방향 음성 테스트, 각 패키지 스모크 테스트 | WP-001, WP-008 | 검증됨 (AC-1~AC-4. 클린 체크아웃 빌드 순서와 3분 예산, 역방향 의존 실패, 공개 진입점만을 통한 패키지 간 참조, 소스 상대경로 0건을 검증. 생성 타입 때문에 build 후 typecheck 순서를 CR-009로 고정) |
 | FR-DX-002 | 각 패키지 `package.json`의 `exports`·`types`, `tsup` DTS 산출, `packages/react/src/types.ts`, `scripts/check-api.mjs` | `packages/*/src/index.test.ts`, `packages/react/src/index.test.ts`, `packages/tokens/src/build/emit-artifacts.test.ts`, `packages/*/etc/*.api.md`, 소비자 스모크(첫 공개 릴리스 표) | WP-001, WP-004, WP-011, WP-018, WP-027, WP-028 | 검증됨 (AC-1 `types`/`exports.types` 선언, AC-2 `any` 0건을 `check:api`가 상시 강제, AC-3은 workspace 밖 신규 앱이 tarball과 npm 레지스트리 0.1.0을 각각 설치해 `tsc --noEmit` 0 오류로 통과, AC-4 내부 타입 누출을 SRS가 지정한 공개 API 추출 리포트로 확인) |
