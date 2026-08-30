@@ -236,6 +236,15 @@ function assertNotForbidden(
     const bannedForeground = aliasTerminus(index, banned.foreground);
     const bannedBackground = aliasTerminus(index, banned.background);
     if (resolvedForeground !== bannedForeground || resolvedBackground !== bannedBackground) continue;
+    /*
+     * A ban scoped to some usages leaves the others alone (PR #8 review P2).
+     *
+     * `FP-002` forbids the accent as *body* text on the elevated surface; the same colours
+     * clear the `large` and `nonText` thresholds there and the SRS permits them. Rejecting
+     * every pair that names those two tokens bans a combination the specification allows,
+     * and then this check contradicts the document it exists to enforce.
+     */
+    if (banned.usages !== undefined && !banned.usages.includes(pair.usage)) continue;
 
     throw new TokenBuildError("TOK-CP-FORBIDDEN", "contrast pair declares a forbidden combination", [
       `pair: ${pair.id} (${pair.foreground} on ${pair.background})`,

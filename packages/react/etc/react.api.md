@@ -362,7 +362,7 @@ export interface ProgressRingProps extends Omit<HTMLAttributes<HTMLDivElement>, 
 
 // @public (undocumented)
 export const Select: {
-    readonly Root: react.FC<RadixSelect.SelectProps>;
+    readonly Root: typeof SelectRoot;
     readonly Trigger: react.ForwardRefExoticComponent<Omit<RadixSelect.SelectTriggerProps & react.RefAttributes<HTMLButtonElement>, "ref"> & {
         readonly size?: "sm" | "md";
         readonly invalid?: boolean;
@@ -545,6 +545,10 @@ export interface TopBarProps extends Omit<HTMLAttributes<HTMLElement>, "children
     // (undocumented)
     readonly title?: ReactNode;
 }
+
+// Warnings were encountered during analysis:
+//
+// dist/form.d.ts:54:5 - (ae-forgotten-export) The symbol "SelectRoot" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

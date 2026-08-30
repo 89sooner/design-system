@@ -69,11 +69,28 @@ jobs:
         if: steps.version_commit.outputs.matched != 'true'
         run: |
           last_tag="$(git tag --list '@conductor-by-89soone/*@*' --sort=-creatordate | head -n 1)"
-          if [ -n "$last_tag" ]; then
-            pnpm changeset status --since "$last_tag"
-          else
+          if [ -z "$last_tag" ]; then
             echo "no release tag yet; skipping missing-changeset check (first release)"
+            exit 0
           fi
+          # 버전 커밋이 HEAD가 아니어도 그 범위는 이미 소비됐다 (PR #6 리뷰 P2).
+          #
+          # 위 분류는 HEAD 하나만 본다. 버전 PR이 병합된 뒤 수동 게시가 태그를
+          # 만들기 전에 문서나 자동화 커밋이 하나라도 `main`에 닿으면 `matched`가
+          # 다시 false가 되고, 마지막 태그부터 훑는 `status`는 **그 버전 커밋이
+          # 이미 CHANGELOG로 옮긴 범프**를 다시 본다 — changeset 파일은 그때
+          # 지워졌으므로 없는 누락을 신고한다.
+          #
+          # 마지막 태그 이후의 가장 최근 버전 커밋을 찾아 거기서부터 센다.
+          since="$last_tag"
+          for sha in $(git rev-list "$last_tag"..HEAD); do
+            if node scripts/is-version-packages-commit.mjs --quiet --ref "$sha"; then
+              since="$sha"
+              echo "excluding the range consumed by version commit $sha"
+              break
+            fi
+          done
+          pnpm changeset status --since "$since"
 
       - name: create or update the version PR
         if: steps.version_commit.outputs.matched != 'true'

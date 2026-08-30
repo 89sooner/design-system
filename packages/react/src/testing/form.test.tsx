@@ -115,4 +115,37 @@ describe("form components", () => {
     expect(trigger.getAttribute("data-testid")).toBe("contract-root");
     expect(trigger.getAttribute("title")).toBe("Native title");
   });
+
+  test("FR-CMP-004: Field's required reaches Select.Root, not only the trigger (PR #8 review P1)", () => {
+    // Radix configures the hidden form control from the **root**. `aria-required` on the trigger
+    // announces the state but leaves the owning form free to submit with no selection — the
+    // documented composition looked like it set a constraint it did not set.
+    const { container } = render(
+      <form>
+        <Field label="Region" required>
+          <Select.Root name="region">
+            <Select.Trigger aria-label="Region"><Select.Value /></Select.Trigger>
+          </Select.Root>
+        </Field>
+      </form>,
+    );
+
+    const hidden = container.querySelector("select[name='region']");
+    expect(hidden, "Radix renders no hidden control").not.toBeNull();
+    expect(hidden?.hasAttribute("required")).toBe(true);
+  });
+
+  test("FR-CMP-004: an explicit required on Select.Root wins over the field default", () => {
+    // The context is a default, not an override — the shape every other control already uses.
+    const { container } = render(
+      <form>
+        <Field label="Region" required>
+          <Select.Root name="region" required={false}>
+            <Select.Trigger aria-label="Region"><Select.Value /></Select.Trigger>
+          </Select.Root>
+        </Field>
+      </form>,
+    );
+    expect(container.querySelector("select[name='region']")?.hasAttribute("required")).toBe(false);
+  });
 });

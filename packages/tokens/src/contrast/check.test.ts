@@ -203,6 +203,39 @@ describe("FR-THM-004 AC-1: a malformed pair declaration is an error, never a sil
     expect(error.format()).toContain("Lifting the ban needs a CR");
   });
 
+  test("FR-THM-005 AC-3: a usage-scoped ban leaves the other usages alone (PR #8 review P2)", () => {
+    // `FP-002` forbids the accent as *body* text on the elevated surface. The same colours clear
+    // the `large` 3:1 threshold there and the SRS permits that use — banning the pair outright
+    // makes this check contradict the document it exists to enforce.
+    const report = checkContrast({
+      pairs: [pairOf("CP-906", "accent", "surface.elevated", "large")],
+      themes: [DARK],
+    });
+    // 4.40:1 clears the `large` 3:1 threshold, so the pair both survives the ban and passes.
+    expect(resultOf(report, "CP-906").pass).toBe(true);
+  });
+
+  test("FR-THM-005 AC-3: the scoped usage itself is still banned", () => {
+    // The narrowing must not turn the ban off. `body` is the usage FP-002 names.
+    const error = thrownBy(() =>
+      checkContrast({ pairs: [pairOf("CP-907", "accent", "surface.elevated", "body")], themes: [DARK] }),
+    );
+    expect(error.code).toBe("TOK-CP-FORBIDDEN");
+    expect(error.format()).toContain("forbidden: FP-002");
+  });
+
+  test("FR-THM-005 AC-3: a ban with no usage qualifier still covers every usage", () => {
+    // `FP-001` has no qualifier — `text.faint` may not be painted on that surface at all.
+    const error = thrownBy(() =>
+      checkContrast({
+        pairs: [pairOf("CP-908", "text.faint", "surface.elevated", "nonText")],
+        themes: [DARK],
+      }),
+    );
+    expect(error.code).toBe("TOK-CP-FORBIDDEN");
+    expect(error.format()).toContain("forbidden: FP-001");
+  });
+
   test("FR-THM-005 AC-3: the ban survives an alias — `input.placeholder` is `text.faint`", () => {
     // This is the case prose and `lint:tokens` both miss: neither side is spelled `text.faint`
     // or `surface.elevated` in the declaration, but the token graph resolves to both.

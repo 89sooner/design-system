@@ -76,4 +76,21 @@ describe("action components", () => {
     expect(getByRole("button").querySelector("span")?.getAttribute("aria-hidden")).toBe("true");
     expect(ref.current).toBeInstanceOf(HTMLButtonElement);
   });
+
+  test("FR-CMP-002 AC-2: loading replaces IconButton's glyph rather than joining it", () => {
+    // A fixed-width icon button has no room for two glyphs. Passing the icon as children left the
+    // original in place beside the spinner, so the loading state widened the control instead of
+    // changing what it shows (PR #8 review P2).
+    const { getByRole, rerender } = render(
+      <IconButton aria-label="Close" icon={<svg data-testid="glyph" />} />,
+    );
+    expect(getByRole("button").querySelectorAll("svg")).toHaveLength(1);
+
+    rerender(<IconButton loading aria-label="Close" icon={<svg data-testid="glyph" />} />);
+    const button = getByRole("button");
+    expect(button.querySelector("[data-testid='glyph']")).toBeNull();
+    // The spinner is the only glyph now — one in, one out.
+    expect(button.querySelectorAll("svg")).toHaveLength(1);
+    expect(button.getAttribute("aria-busy")).toBe("true");
+  });
 });

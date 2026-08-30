@@ -113,6 +113,33 @@ describe("FR-TOK-001: hardcoded values outside the token source", () => {
       ["rem-literal", 4, "10rem"],
     ]);
   });
+  test("FR-TOK-001 AC-2: leading-dot decimals are caught too", () => {
+    // `.5rem` is valid CSS and used to slip past every unit rule: the match started at `5`,
+    // whose preceding `.` the lookbehind rejects. A rule one character wide is not a rule.
+    const violations = lintSource(
+      "apps/docs/src/docs.css",
+      [
+        ".docs-token-swatch {",
+        "  width: .5rem;",
+        "  margin: .25px;",
+        "  transition-duration: .75ms;",
+        "}",
+      ].join("\n"),
+    );
+
+    expect(violations.map((violation) => [violation.rule, violation.snippet])).toEqual([
+      ["rem-literal", ".5rem"],
+      ["px-literal", ".25px"],
+      ["ms-literal", ".75ms"],
+    ]);
+  });
+
+  test("FR-TOK-001 AC-2: a decimal inside a longer number is still matched once", () => {
+    // The leading-dot alternative must not make `0.5rem` match twice.
+    const violations = lintSource("apps/docs/src/docs.css", ".a { width: 0.5rem; }");
+    expect(violations.map((violation) => violation.snippet)).toEqual(["0.5rem"]);
+  });
+
 
   test("FR-TOK-001 AC-2: a rem literal inside a @media condition is excluded like px", () => {
     const violations = lintSource(
