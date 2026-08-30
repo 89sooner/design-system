@@ -1,6 +1,6 @@
 {
   "name": "@conductor-by-89soone/tokens",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Theme-aware design tokens and validation CLIs for Conductor.",
   "license": "MIT",
   "homepage": "https://89sooner.github.io/design-system/",
