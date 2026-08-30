@@ -3,6 +3,11 @@
 // Changesets can report a successful publish even when annotated tag creation
 // fails. Treat each package manifest's current release tag as a required
 // artifact, and optionally prove that the same tag object reached the remote.
+//
+// This runs in the release job only, right after `changeset publish`, where HEAD is the commit
+// that was published and the tags were just created on it. Running it anywhere else reports the
+// distance between the last release and the working branch — that is the question it asks, and
+// outside a release the answer is expected to be non-zero.
 import { execFileSync } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
@@ -62,25 +67,30 @@ for (const packageDir of PACKAGE_DIRS) {
     problems.push(`${tag}: target ${target} is not an ancestor of release HEAD ${head}`);
   } else if (target !== head) {
     /*
-     * An ancestor tag is only honest while the package it names has not moved (PR #3 review P1).
+     * The tag must name the commit that was published (PR #3 review P1, PR #12 review P1).
      *
-     * `--is-ancestor` asks whether one commit precedes another and nothing more. When a tag-push
-     * run supplies an annotated tag for the current version on an older commit and `main` has since
+     * `--is-ancestor` asks whether one commit precedes another and nothing more. When a tag-push run
+     * supplies an annotated tag for the current version on an older commit and `main` has since
      * advanced without another version bump, Changesets publishes the newer contents while its
      * attempt to recreate the existing tag fails silently — and both checks here pass, because the
      * stale object is an ancestor and the same object already reached the remote. The published
      * artifact then carries a release tag that identifies different source.
      *
-     * Comparing the package's own tree closes that gap: an unchanged package may keep its earlier
-     * tag, a changed one must be tagged at the commit that was published.
+     * Comparing only the package's own directory does not close that gap: the CSS build embeds the
+     * tokens output, and every build reads root inputs such as `pnpm-lock.yaml`, so a tarball can
+     * change without a single file under `packages/<name>/` moving. Enumerating "all inputs capable
+     * of affecting the artifact" is a list that goes stale the first time the build graph changes,
+     * and a list that must stay complete to stay correct is the wrong shape for this check.
+     *
+     * `changeset publish` publishes the working tree at release HEAD, so requiring the tag to point
+     * there needs no such list. The three packages are `linked` in the Changesets config and take a
+     * version together, so this rejects no legitimate release — a package that did not change gets
+     * a tag at the same commit as the others.
      */
-    const moved = git(["diff", "--quiet", `${target}..${head}`, "--", packageDir], { allowFailure: true }) === null;
-    if (moved) {
-      problems.push(
-        `${tag}: ${packageDir} changed between tag target ${target} and release HEAD ${head} — ` +
-          "the published artifact and the tag identify different source",
-      );
-    }
+    problems.push(
+      `${tag}: target ${target} is not release HEAD ${head} — ` +
+        "the published artifact and the tag would identify different source",
+    );
   }
 
   if (remote !== null) {

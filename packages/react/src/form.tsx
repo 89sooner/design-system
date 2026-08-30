@@ -159,7 +159,15 @@ SelectItem.displayName = "Select.Item";
  * the same shape `Switch` and the other controls already use.
  */
 export type SelectRootProps = ComponentPropsWithoutRef<typeof RadixSelect.Root>;
-function SelectRoot({ required, ...props }: SelectRootProps): ReactNode {
+/*
+  `ReactElement`, not `ReactNode` (PR #12 review P1).
+
+  React 18-era type definitions require a component function to return `ReactElement | null`, so a
+  `ReactNode` return makes this ineligible as a JSX component for consumers on that range — and
+  React 18 is in the supported peer range. The repository develops against React 19 types, which
+  accept `ReactNode` and hide the regression entirely.
+*/
+function SelectRoot({ required, ...props }: SelectRootProps): ReactElement {
   const field = useContext(FieldContext);
   return <RadixSelect.Root {...props} required={required ?? field?.required} />;
 }
