@@ -55,11 +55,15 @@ const HEX_COLOR = /#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{4}|[0-9a-f]{3})\b/gi;
 const FUNCTIONAL_COLOR = /\b(?:rgba?|hsla?)\([^)]*\)/gi;
 // The lookbehind excludes an identifier or hex digit, but not `-`: `translateY(-2px)` must be
 // caught, and no `--cdt-` custom property name ends in a number followed by `px`.
-const PX_LITERAL = /(?<![\w#.])(\d+(?:\.\d+)?)px\b/g;
+const PX_LITERAL = /(?<![\w#.])(\d+(?:\.\d+)?|\.\d+)px\b/g;
 // `rem` is the same escape hatch as `px` with a different unit — `2rem` and `32px` name the same
 // spacing step. Both are caught so a value cannot dodge the scale by changing units.
-const REM_LITERAL = /(?<![\w#.])(\d+(?:\.\d+)?)rem\b/g;
-const MS_LITERAL = /(?<![\w#.])(\d+(?:\.\d+)?)ms\b/g;
+//
+// The leading-dot form is valid CSS and was slipping through: matching `.5rem` used to start at
+// `5`, whose preceding `.` the lookbehind rejects, and the numeric capture demanded a digit before
+// the decimal point. An escape hatch that only needs one character removed is not a rule.
+const REM_LITERAL = /(?<![\w#.])(\d+(?:\.\d+)?|\.\d+)rem\b/g;
+const MS_LITERAL = /(?<![\w#.])(\d+(?:\.\d+)?|\.\d+)ms\b/g;
 const Z_INDEX = /\b(?:z-index|zIndex)\s*:\s*["'`]?\s*(-?\d+)/g;
 const FONT_SIZE_PX = /\b(?:font-size|fontSize)\s*:\s*["'`]?\s*(\d+(?:\.\d+)?px)/g;
 const MEDIA_PRELUDE = /@media[^{;]*/g;

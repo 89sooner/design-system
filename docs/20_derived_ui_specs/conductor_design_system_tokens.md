@@ -1,6 +1,6 @@
 # Conductor Design System 토큰 명세
 
-> 상태: review | 버전: v0.9 | 갱신일: 2026-08-06
+> 상태: review | 버전: v0.10 | 갱신일: 2026-08-31
 
 ## 0. 문서 성격과 범위 경계
 
@@ -315,11 +315,11 @@ FR-THM-002 AC-3은 세 경계 토큰이 라이트에서 비텍스트 3:1을 만�
 | `status.danger` | body | `#ef4444` | `#c81e1e` | `x-circle` | FR-THM-005, FR-CMP-008 |
 | `status.neutralEnd` | nonText | `#94a3b8` | `#3f4b5f` | `circle-slash` | FR-THM-005 AC-6 (CR-035) |
 
-상태 7종은 세 무리로 갈린다. `running`·`waiting`·`success`·`partial`·`danger` 다섯은 채도가 높아 `surface.raised` 위에서 본문 4.5:1을 넘으므로 `body`다(다크 4.50 ~ 8.84). `queued`는 중립 회색이지만 비텍스트 3:1을 넘으므로 `nonText`다(다크 `surface.raised` 3.56:1, `surface.elevated` 3.25:1). `neutralEnd`는 표면 6종 어디에서도 3:1에 이르지 못하므로 `decorative`이며 대비 검사 대상이 아니다(다크 2.04:1 ~ 2.60:1). 세 분류는 SRS 12.1절이 확정했고 FR-THM-005 AC-5·AC-6이 강제한다.
+상태 7종은 세 무리로 갈린다. `running`·`waiting`·`success`·`partial`·`danger` 다섯은 채도가 높아 `surface.raised` 위에서 본문 4.5:1을 넘으므로 `body`다(다크 4.50 ~ 8.84). `queued`는 중립 회색이지만 비텍스트 3:1을 넘으므로 `nonText`다(다크 `surface.raised` 3.56:1, `surface.elevated` 3.25:1). `neutralEnd`도 `nonText`다 — `slate.400`으로 옮긴 뒤 다크 `surface.raised` 6.61:1, 라이트 8.58:1로 두 테마 모두 비텍스트 3:1을 넘는다(CR-035, CP-042). **`decorative` 분류와 그 대비 검사 면제는 CR-035가 폐기했다** — 옛 `#475569`가 2.04:1 ~ 2.60:1이라 종료 상태 점이 어느 다크 표면에서도 흐리게 읽혔다. 세 분류는 SRS 12.1절이 확정했고 FR-THM-005 AC-5·AC-6이 강제한다.
 
 **`status.queued`와 `status.neutralEnd`를 쓰는 컴포넌트는 색 외에 아이콘과 텍스트를 함께 렌더해야 한다**(FR-THM-005 AC-7, FR-A11Y-003). 두 상태는 점·마커로만 색을 드러내고 텍스트 전경색으로 쓰지 않는다. `StatusBadge`가 이 규칙을 어떻게 구현하는지는 7.3절에 있다.
 
-`status.neutralEnd`의 `decorative` 분류는 값 보존의 대가다. 근거와 대가는 8.5절에 측정값과 함께 기록했다.
+`status.neutralEnd`가 한때 `decorative`였던 것은 값 보존의 대가였다. **CR-035가 그 교환을 되돌렸다** — 값을 바꾸고 분류를 `nonText`로 올렸다. 옛 측정값과 그때의 판단은 8.5절에 남겨 둔다.
 
 ### 5.7 미터 (FR-TOK-005 AC-3)
 
@@ -665,7 +665,7 @@ Tailwind ramp를 쓰는 색은 같은 색상 계열에서 2~3단계 어두운 st
 | `meter.warning` | body | `#fbbf24` | `#b45309` | `{amber.700}` | — | 4.89:1 통과 |
 | `meter.exceeded` | body | `#f87171` | `#dc2626` | `{red.600}` | — | 4.70:1 통과 |
 
-라이트 상태색 7종과 미터 3종이 각자의 `usage` 기준을 통과한다. `status.neutralEnd`는 `decorative`라 두 테마 모두 검사 대상이 아니지만(CR-006), 측정값을 남겨 둔다. 다크에서 2.24:1인 값이 라이트에서 8.58:1이 되는 이유는 어두운 표면 위의 어두운 회색이라는 근본 문제가 라이트에서 사라지기 때문이다. 이 비대칭이 8.5절이 다룬 모순의 원인이었다.
+라이트 상태색 7종과 미터 3종이 각자의 `usage` 기준을 통과한다. `status.neutralEnd`도 이제 검사 대상이며 두 테마 모두 통과한다(다크 6.61:1, 라이트 8.58:1). **옛 값에서는 다크 2.24:1과 라이트 8.58:1이 갈렸고**, 어두운 표면 위의 어두운 회색이라는 근본 문제가 라이트에서만 사라지기 때문이었다. 그 비대칭이 8.5절이 다룬 모순의 원인이었고 CR-035가 다크 값을 옮겨 해소했다.
 
 **`status.danger`가 `{red.600}`이 아닌 이유.** 위 규칙 1을 처음 적용했을 때 `status.danger`의 라이트 값으로 Tailwind Red 600(`#dc2626`)을 골랐다. 측정하면 `text.inverse`(`#f4f7fb`)를 얹었을 때 4.49:1로, 기준 4.5:1에 0.01 모자란다. 규칙 1이 스스로 그 값을 기각한다. 같은 색상각에서 한 단계 더 어두운 `#c81e1e`를 `{red.650}`으로 정의해 5.34:1을 확보했다.
 
@@ -788,11 +788,11 @@ component 토큰은 semantic 토큰만 참조한다(FR-TOK-002 AC-3). 아래 표
 
 **채움 형태** (`running`, `waiting`, `success`, `partial`, `danger` — `usage: body`): 상태색을 배경으로 깔고 `{text.inverse}`를 얹는다. 다섯 조합 모두 본문 4.5:1을 넘는다(다크 5.03 ~ 9.87, 라이트 4.58 ~ 5.34).
 
-**마커 형태** (`queued` — `usage: nonText`, `neutralEnd` — `usage: decorative`): 배경은 `{surface.raised}`, 라벨은 `{text.primary}`(다크 15.77:1)이고, 상태색은 지름 9px의 점으로만 나타난다. 두 중립 회색을 배경 채움으로 쓰면 다크에서 `text.inverse`가 3.98:1·2.50:1, `text.primary`가 4.43:1·7.05:1이 되어 `status.queued`가 어느 글자색으로도 본문 기준을 넘지 못한다. 마커 형태는 그 문제를 없앤다. FR-THM-005 AC-7이 요구하는 "점·마커 전용, 텍스트 전경 금지"와 "아이콘·텍스트 병기"를 동시에 만족한다.
+**마커 형태** (`queued`·`neutralEnd` 모두 `usage: nonText`): 배경은 `{surface.raised}`, 라벨은 `{text.primary}`(다크 15.77:1)이고, 상태색은 지름 9px의 점으로만 나타난다. 두 중립 회색을 배경 채움으로 쓰면 다크에서 `text.inverse`가 3.98:1·2.50:1, `text.primary`가 4.43:1·7.05:1이 되어 `status.queued`가 어느 글자색으로도 본문 기준을 넘지 못한다. 마커 형태는 그 문제를 없앤다. FR-THM-005 AC-7이 요구하는 "점·마커 전용, 텍스트 전경 금지"와 "아이콘·텍스트 병기"를 동시에 만족한다.
 
-점은 `{badge.marker.dotRing}`(표면색, 2px)으로 둘러싸인다. 소스 `.timeline-marker`가 `border: 2px solid var(--surface-timeline)`으로 같은 구조를 쓴다(`app.css:585`). 이 링이 점의 기하 경계를 만들기 때문에 점의 식별이 채움 대비에 의존하지 않는다 — `status.neutralEnd`를 `decorative`로 분류할 수 있는 근거다(8.4절, 8.5절).
+점은 `{badge.marker.dotRing}`(표면색, 2px)으로 둘러싸인다. 소스 `.timeline-marker`가 `border: 2px solid var(--surface-timeline)`으로 같은 구조를 쓴다(`app.css:585`). 이 링이 점의 기하 경계를 만들기 때문에 점의 식별이 채움 대비에만 의존하지 않는다 — 옛 `neutralEnd`를 `decorative`로 분류할 수 있던 근거이며, CR-035가 값을 올린 뒤에도 형태 구분은 그대로 남는다(8.4절, 8.5절).
 
-두 형태 모두 아이콘과 텍스트를 함께 렌더한다(FR-CMP-004 AC-1, FR-A11Y-003 AC-1, FR-THM-005 AC-7). 마커 형태의 점은 색을 되풀이할 뿐 정보를 혼자 지지하지 않는다. `status.queued`의 점은 `nonText`이므로 `surface.raised` 대비 3:1을 지고 3.56:1로 통과한다(8절 CP-039). `status.neutralEnd`의 점은 `decorative`이므로 검사 대상이 아니다.
+두 형태 모두 아이콘과 텍스트를 함께 렌더한다(FR-CMP-004 AC-1, FR-A11Y-003 AC-1, FR-THM-005 AC-7). 마커 형태의 점은 색을 되풀이할 뿐 정보를 혼자 지지하지 않는다. `status.queued`의 점은 `nonText`이므로 `surface.raised` 대비 3:1을 지고 3.56:1로 통과한다(8절 CP-039). `status.neutralEnd`의 점도 `nonText`가 되어 같은 3:1을 지며 6.61:1로 통과한다(CP-042).
 
 ### 7.4 `table.*`
 
@@ -1053,7 +1053,7 @@ CP-043 ~ CP-117: dataviz 25키 × 3표면(`surface.base`·`surface.canvas`·`sur
 
 라이트 `severity.*` 4쌍(CP-029 ~ CP-032)의 측정값이 다크와 동일하다. 라이트 `badge.severity.text`가 `{text.inverse}`(`#f4f7fb`)이고 다크 `badge.severity.text`가 `{text.primary}`(`#f4f7fb`)로 값이 같으며, 심각도 채움 4색이 두 테마에서 같은 값이기 때문이다. 우연이 아니라 5.8절과 6.2절의 정의가 만나는 지점이다.
 
-`badge.marker.dot`의 `status.neutralEnd` 변형은 그 토큰이 `decorative`이므로 선언하지 않는다(8.4절). `status.queued` 변형만 CP-039로 선언한다.
+`badge.marker.dot`의 두 변형을 모두 선언한다 — `status.queued`가 CP-039, `status.neutralEnd`가 CP-042다(8.4절). 후자는 `decorative`이던 동안 선언 대상이 아니었고, CR-035가 `nonText`로 올리면서 검사에 들어왔다.
 
 ### 8.3 두 교정 값의 효과
 

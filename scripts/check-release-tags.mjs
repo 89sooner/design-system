@@ -60,6 +60,27 @@ for (const packageDir of PACKAGE_DIRS) {
   const isReachable = git(["merge-base", "--is-ancestor", target, head], { allowFailure: true }) !== null;
   if (!isReachable) {
     problems.push(`${tag}: target ${target} is not an ancestor of release HEAD ${head}`);
+  } else if (target !== head) {
+    /*
+     * An ancestor tag is only honest while the package it names has not moved (PR #3 review P1).
+     *
+     * `--is-ancestor` asks whether one commit precedes another and nothing more. When a tag-push
+     * run supplies an annotated tag for the current version on an older commit and `main` has since
+     * advanced without another version bump, Changesets publishes the newer contents while its
+     * attempt to recreate the existing tag fails silently — and both checks here pass, because the
+     * stale object is an ancestor and the same object already reached the remote. The published
+     * artifact then carries a release tag that identifies different source.
+     *
+     * Comparing the package's own tree closes that gap: an unchanged package may keep its earlier
+     * tag, a changed one must be tagged at the commit that was published.
+     */
+    const moved = git(["diff", "--quiet", `${target}..${head}`, "--", packageDir], { allowFailure: true }) === null;
+    if (moved) {
+      problems.push(
+        `${tag}: ${packageDir} changed between tag target ${target} and release HEAD ${head} — ` +
+          "the published artifact and the tag identify different source",
+      );
+    }
   }
 
   if (remote !== null) {

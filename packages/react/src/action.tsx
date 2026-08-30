@@ -75,9 +75,23 @@ export interface IconButtonProps extends Omit<ButtonProps, "children" | "aria-la
 }
 
 export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(function IconButton({ icon, size, ...props }, ref) {
+  /*
+    The icon goes in as `iconStart`, not as children (PR #8 review P2).
+
+    `Button` replaces `iconStart` with the spinner while loading and leaves children alone. Passing
+    the icon as children therefore rendered **both** glyphs side by side with the normal flex gap,
+    and a fixed-width icon button has no room for two — the loading state made the control wider
+    instead of changing what it shows. Here the icon *is* the replaceable slot.
+  */
   return (
-    <Button {...props} ref={ref} size={size} className={cx("cdt-btn--icon", props.className)}>
-      <span aria-hidden="true">{icon}</span>
+    <Button
+      {...props}
+      ref={ref}
+      size={size}
+      iconStart={icon}
+      className={cx("cdt-btn--icon", props.className)}
+    >
+      {null}
     </Button>
   );
 });

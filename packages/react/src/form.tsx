@@ -146,7 +146,26 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(function SelectIt
 });
 SelectItem.displayName = "Select.Item";
 
-export const Select = { Root: RadixSelect.Root, Trigger: SelectTrigger, Value: RadixSelect.Value, Content: SelectContent, Item: SelectItem, Group: RadixSelect.Group, Label: RadixSelect.Label } as const;
+/**
+ * `Select.Root` that carries Field's `required` into Radix (PR #8 review P1).
+ *
+ * Radix configures the hidden form control from the **root**, not the trigger. Exporting
+ * `RadixSelect.Root` unchanged left `aria-required` on the trigger as the only signal: screen
+ * readers announced the state while the owning form still submitted with no selection. The
+ * documented `<Field required><Select.Root>…` composition therefore lost the constraint it
+ * looked like it was setting.
+ *
+ * An explicit `required` on the element still wins — the context is a default, not an override,
+ * the same shape `Switch` and the other controls already use.
+ */
+export type SelectRootProps = ComponentPropsWithoutRef<typeof RadixSelect.Root>;
+function SelectRoot({ required, ...props }: SelectRootProps): ReactNode {
+  const field = useContext(FieldContext);
+  return <RadixSelect.Root {...props} required={required ?? field?.required} />;
+}
+SelectRoot.displayName = "Select.Root";
+
+export const Select = { Root: SelectRoot, Trigger: SelectTrigger, Value: RadixSelect.Value, Content: SelectContent, Item: SelectItem, Group: RadixSelect.Group, Label: RadixSelect.Label } as const;
 
 export type SwitchProps = ComponentPropsWithoutRef<typeof RadixSwitch.Root>;
 export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(function Switch({ className, ...props }, ref) {

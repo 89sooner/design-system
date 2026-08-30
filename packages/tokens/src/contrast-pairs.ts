@@ -261,6 +261,16 @@ export interface ForbiddenPair {
   readonly foreground: string;
   readonly background: string;
   readonly reason: string;
+  /**
+   * The usages the ban covers. Omitted means every usage (PR #8 review P2).
+   *
+   * A ban with no qualifier rejects the colours themselves, and that is wider than the SRS
+   * says for FP-002: the accent is forbidden as *body* text on the elevated surface, while
+   * large-text and non-text use clear their own thresholds there. Banning the pair outright
+   * removes a combination the specification permits, and the check then contradicts the
+   * document it exists to enforce.
+   */
+  readonly usages?: readonly ContrastUsage[];
 }
 
 /**
@@ -292,5 +302,8 @@ export const forbiddenPairs: readonly ForbiddenPair[] = [
     reason:
       "the accent is a body foreground on `surface.base` and `surface.raised` only; on the " +
       "elevated surface it measures 4.40:1 in dark, below body 4.5:1 (tokens spec 8.4)",
+    // Body only. 4.40:1 clears both the `large` 3:1 and the `nonText` 3:1 thresholds, and the
+    // SRS forbids only body use on this surface.
+    usages: ["body"],
   },
 ];
