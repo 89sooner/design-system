@@ -242,6 +242,7 @@ export const tokens: {
         readonly fast: "var(--cdt-motion-fast)";
         readonly standard: "var(--cdt-motion-standard)";
         readonly bounce: "var(--cdt-motion-bounce)";
+        readonly spin: "var(--cdt-motion-spin)";
     };
     readonly button: {
         readonly minHeight: "var(--cdt-button-min-height)";

@@ -1,6 +1,6 @@
 # Conductor Design System 구현 추적 원장
 
-> 상태: review | 버전: v0.16 | 갱신일: 2026-08-29
+> 상태: review | 버전: v0.17 | 갱신일: 2026-09-03
 
 ## 1. 목적과 갱신 규칙
 
@@ -209,6 +209,7 @@ PR Search 소비처의 `DEV-380`이 트리거다: 화면 계약이 최대 20계�
 
 | DEV ID | 발견일 | 유형 | 내용 | 관련 ID | 처리 CR | 상태 |
 | --- | --- | --- | --- | --- | --- | --- |
+| DEV-028 | 2026-09-03 | 구현 편차 | `Spinner`가 회전하지 않았다. `components.css`의 `animation: cdt-spin var(--cdt-motion-standard) linear infinite`는 토큰이 `240ms cubic-bezier(…)`로 치환된 뒤 이징이 둘이 되어 선언 전체가 무효였다(Chromium 계산값 `animation-name: none`, 실측 2026-09-02). 회전을 거는 시험이 없어 v0.2.0까지 발견되지 않았고, 소비처 PR Search의 로딩 표시 전부가 정지된 호로 보였다. 고쳐도 `240ms`는 초당 4회전이라 상수 운동용 토큰 `motion.spin`(1000ms linear)과 프리미티브 `ease.linear`를 더해 스피너가 그것만 읽게 했다. 감소 모드 재정의와 번들 시험의 토큰 목록에 함께 넣었고, 단축 선언에 이징이 둘 들어가는 것을 막는 시험을 더했다 | FR-CMP-008, FR-CSS-005, C-064 Spinner |  | closed |
 | DEV-027 | 2026-08-06 | 문서/코드 불일치 | 세 건을 함께 등록한다. (1) `status.neutralEnd`의 CR-006 예외가 원장의 "승인된 제약"으로 남아 있었고, 그 항목 자체가 시인성 불만 시 값 교정 CR을 열라고 지시했다. (2) 토큰 명세 8.4절이 금지하는 조합(`text.faint`/`accent` on `surface.elevated`)이 산문으로만 존재했다. `lint:tokens`의 `text-faint-on-elevated` 규칙은 한 선언 블록에 두 커스텀 프로퍼티가 함께 적힌 경우만 보므로 `input.placeholder`처럼 별칭으로 같은 색에 도달하는 경로를 볼 수 없다. (3) `palette.light.ts`가 `darkPalette.map`으로 파생돼, base에 없는 키로 오타가 나면 override가 조용히 버려지고 토큰이 다크 값을 유지했다. FR-QA-001 테마 계약 검사는 키 집합만 비교하므로 두 테마 모두 통과한다 — 이 패키지의 다른 어떤 검사도 볼 수 없는 유일한 실버그다 | FR-THM-005 AC-6, FR-THM-004, FR-QA-001, CP-042, FP-001, FP-002, WP-007, WP-010, WP-013 | CR-035 | closed |
 | DEV-026 | 2026-08-06 | 문서/코드 불일치 | `conductor_product_ia.md`는 W-030을 `/tokens`, W-040을 `/patterns`로 선언하지만 구현은 두 경로를 모두 라우트로 두고 사이드 내비는 `/tokens/reference`·`/guidelines`를 가리켰다. 같은 화면이 두 URL에서 렌더되므로 북마크·검색 색인·`aria-current` 강조가 갈린다. 내비가 가리키는 쪽을 정규 URL로 채택하고 옛 경로는 쿼리스트링 보존 `replace` 리다이렉트로 남겼다. `shell.spec.ts`의 리다이렉트 e2e와 `/tokens?metrics-unavailable` → `/tokens/reference?metrics-unavailable` 보존을 실브라우저로 확인했다 | W-030, W-040, FR-DOC-001, FR-DOC-004, FR-DOC-007, WP-028 | CR-033 | closed |
 | DEV-023 | 2026-07-17 | 구현 편차 | version PR #4가 React package.json을 0.1.1로 올리고 CHANGELOG를 생성하며 Changeset을 소비·삭제한 정상 merge SHA `15024d2`에서 Release run 29585593807의 version 잡이 다시 `changeset status --since react@0.1.0`을 실행해 Changeset 누락으로 실패했다. publish job은 실행 전 skip돼 레지스트리 영향은 없었다. Changesets bot 작성자·고정 제목·Changeset 삭제·영향 manifest/CHANGELOG 쌍·그 외 파일 0건을 모두 만족하는 version commit에서는 이미 소비된 변경 이력 검사를 반복하지 않고 수동 publish를 기다린다. 일반 source commit의 누락 게이트는 유지한다 | FR-DX-005, WP-027, JOB-REL-001 | CR-030 | closed |

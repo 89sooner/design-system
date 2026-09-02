@@ -127,6 +127,7 @@ const nonColour: TokenDefinition[] = [
   primitive("curve.24", "24px", "Corner radius step."),
   primitive("ease.entrance", "cubic-bezier(0.2, 0, 0, 1)", "Entrance and state-change easing."),
   primitive("ease.overshoot", "cubic-bezier(0.34, 1.56, 0.64, 1)", "Toggle settle easing."),
+  primitive("ease.linear", "linear", "Constant-rate motion: spinners and marquees."),
 ];
 
 export const primitiveTokens: readonly TokenDefinition[] = [

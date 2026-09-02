@@ -776,7 +776,7 @@
   .cdt-progress-ring__label { color: var(--cdt-progress-ring-label-text); font-size: var(--cdt-font-size-sm); }
   .cdt-spinner__track { stroke: var(--cdt-spinner-track-stroke); }
   .cdt-spinner__indicator { stroke: var(--cdt-spinner-indicator-stroke); stroke-dasharray: 66; /* cdt-allow-literal: spinner visible arc */ stroke-linecap: round; }
-  .cdt-spinner svg { animation: cdt-spin var(--cdt-motion-standard) linear infinite; }
+  .cdt-spinner svg { animation: cdt-spin var(--cdt-motion-spin) infinite; }
   .cdt-spinner__label { position: absolute; inline-size: 1px; /* cdt-allow-literal: screen-reader-only clipping geometry */ block-size: 1px; /* cdt-allow-literal: screen-reader-only clipping geometry */ overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
 
   /* cdt.component outranks cdt.reset, so shadow-bearing controls must restate the complete ring. */

@@ -223,6 +223,7 @@ primitive 토큰은 CSS로 산출되지 않고 `@conductor-by-89soone/tokens` �
 | 반경 | `curve.6` … `curve.24` | `6px`, `9px`, `12px`, `18px`, `24px` |
 | 이징 | `ease.entrance` | `cubic-bezier(0.2, 0, 0, 1)` |
 | 이징 | `ease.overshoot` | `cubic-bezier(0.34, 1.56, 0.64, 1)` |
+| 이징 | `ease.linear` | `linear` |
 
 두 폰트 스택 모두 원격 폰트를 로드하지 않는다. `Inter`와 `JetBrains Mono`는 소비자가 제공하거나 스택의 후속 항목으로 대체된다(SRS 5.2 기술 제약 4, FR-CSS-002 AC-4).
 
@@ -1152,8 +1153,9 @@ FR-THM-005가 강제한 두 교정이 9건의 미달을 제거했다. `focusRing
 | `motion.fast` | `140ms {ease.entrance}` | 색·배경·경계 전환, hover 반응 |
 | `motion.standard` | `240ms {ease.entrance}` | 오버레이 진입, 페이지 진입, 오프캔버스 내비 |
 | `motion.bounce` | `300ms {ease.overshoot}` | 토글·스위치의 상태 확정 |
+| `motion.spin` | `1000ms {ease.linear}` | 무한 회전 스피너의 1회전 주기. 상수 운동이라 linear다 |
 
-`{ease.entrance}` = `cubic-bezier(0.2, 0, 0, 1)`, `{ease.overshoot}` = `cubic-bezier(0.34, 1.56, 0.64, 1)`. 세 토큰은 지속 시간과 이징을 한 문자열로 묶는다 — 소스가 `transition: all var(--motion-fast)` 형태로 소비하기 때문이다. 테마 무관이다.
+`{ease.entrance}` = `cubic-bezier(0.2, 0, 0, 1)`, `{ease.overshoot}` = `cubic-bezier(0.34, 1.56, 0.64, 1)`, `{ease.linear}` = `linear`. 네 토큰은 지속 시간과 이징을 한 문자열로 묶는다 — 소스가 `transition: all var(--motion-fast)` 형태로 소비하기 때문이다. 테마 무관이다.
 
 ### 9.2 감소 모드 (FR-CSS-005)
 
@@ -1171,6 +1173,7 @@ FR-THM-005가 강제한 두 교정이 9건의 미달을 제거했다. `focusRing
       --cdt-motion-fast: 0ms linear;
       --cdt-motion-standard: 0ms linear;
       --cdt-motion-bounce: 0ms linear;
+      --cdt-motion-spin: 0ms linear;
       scroll-behavior: auto;
     }
   }

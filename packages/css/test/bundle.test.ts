@@ -153,7 +153,7 @@ describe("FR-CSS-005 reduced motion", () => {
     // The load-bearing half: components read durations from these tokens, and a
     // later layer can never out-rank cdt.base, so the value is what must change.
     const tokens = rules.find((rule) => rule.decls["--cdt-motion-fast"] !== undefined);
-    for (const token of ["--cdt-motion-fast", "--cdt-motion-standard", "--cdt-motion-bounce"]) {
+    for (const token of ["--cdt-motion-fast", "--cdt-motion-standard", "--cdt-motion-bounce", "--cdt-motion-spin"]) {
       expect(tokens?.decls[token]).toMatch(/^0s\b/);
     }
 
@@ -449,5 +449,27 @@ describe("FR-CMP-007 form styles", () => {
     const highlighted = components.find((rule) => rule.selector === ".cdt-select__item[data-highlighted]");
     expect(checked?.decls.background).toBe("var(--cdt-accent)");
     expect(highlighted?.decls.background).toBe("var(--cdt-accent-soft)");
+  });
+});
+
+describe("FR-CMP-008 spinner animation", () => {
+  // 토큰이 `<duration> <easing>`을 함께 치환하므로, 단축 선언에 이징 키워드를
+  // 덧붙이면 이징이 둘이 되어 선언 전체가 무효가 된다 (DEV-028).
+  const EASING_KEYWORD = /\b(?:linear|ease(?:-in-out|-in|-out)?|cubic-bezier\(|steps\()/;
+
+  test.each(bundles)("%s: the spinner reads the linear spin token and nothing else", (_name, css) => {
+    const spinner = ruleFor(css, "cdt.component", /^\.cdt-spinner svg$/);
+    expect(spinner?.decls["animation"]).toMatch(/^cdt-spin var\(--cdt-motion-spin\) infinite$/);
+  });
+
+  test.each(bundles)("%s: no animation shorthand pairs a motion token with a second easing", (_name, css) => {
+    // rulesInLayer는 @media 안의 규칙까지 본다 — 좁은 화면 전용 드로어 진입(cdt-shell-enter)도 범위에 든다.
+    const offenders = rulesInLayer(css, "cdt.component")
+      .filter((rule) => {
+        const animation = rule.decls["animation"];
+        return animation !== undefined && animation.includes("var(--cdt-motion-") && EASING_KEYWORD.test(animation);
+      })
+      .map((rule) => rule.selector);
+    expect(offenders).toEqual([]);
   });
 });

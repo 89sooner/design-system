@@ -153,8 +153,16 @@ describe("dark palette against the source tokens.css", () => {
         // CR-036: categorical + sequential chart series colours (dataviz has no source equivalent).
         ...Array.from({ length: 20 }, (_, index) => `dataviz.series.${index + 1}`),
         ...Array.from({ length: 5 }, (_, index) => `dataviz.sequential.${index + 1}`),
+        // DEV-028: constant-rate spinner rotation has no source equivalent (app.css bound it to the entrance token).
+        "motion.spin",
       ].sort(),
     );
+  });
+
+  test("DEV-028: `motion.spin` resolves to one linear revolution per second", () => {
+    // 곡선으로 바뀌면 스피너가 매 회전마다 감속한다 — 값과 이징을 함께 고정한다.
+    expect(resolved.get("motion.spin")).toBe("1000ms linear");
+    expect(byKey.get("motion.spin")?.usage).toBe("decorative");
   });
 
   test("FR-THM-005 AC-1: `focusRing` uses the accent at alpha 0.80, not the source's 0.30", () => {
