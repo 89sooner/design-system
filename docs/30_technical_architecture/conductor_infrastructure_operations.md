@@ -1,6 +1,6 @@
 # Conductor Design System 인프라 및 운영 아키텍처
 
-> 상태: review | 버전: v0.8 | 갱신일: 2026-09-03
+> 상태: review | 버전: v0.9 | 갱신일: 2026-09-03
 
 ## 1. 범위 재정의: 서버가 없는 인프라
 
@@ -56,7 +56,7 @@ Conductor Design System은 서버 런타임, 컴퓨팅 인스턴스, 오토스�
 2. PR이 `main`에 병합되면, 릴리스 자동화가 열려 있는 changeset들을 모아 버전 상승 PR을 별도로 생성한다: `pnpm changeset version`(각 패키지의 `package.json` 버전을 올리고 저장소의 CHANGELOG 파일을 갱신한다).
 3. 버전 상승 PR의 병합이 릴리스의 수동 승인이다. 병합 뒤 maintainer가 릴리스 워크플로를 수동 실행(workflow_dispatch)하거나 릴리스 태그를 push하면 배포 잡(JOB-REL-001)이 트리거된다. `GITHUB_TOKEN`이 push한 태그는 재귀 방지 정책으로 워크플로를 트리거하지 않으므로, 릴리스 태그의 생성과 push는 배포 잡이 게시 후 수행한다(CR-015).
 4. 배포 잡은 annotated tag 생성 전에 `github-actions[bot]`의 Git 작성자 이름과 이메일을 설정하고, `pnpm build`로 전체 빌드를 재실행한다(로컬/PR 빌드 산출물을 신뢰하지 않는다). **게시 직전에 `pnpm check:release-tags -- --snapshot <file>`이 두 가지를 한다** (CR-039·CR-040): 레지스트리가 이미 가진 버전을 기록하고, **이번 실행이 게시할 패키지에 이미 태그가 있으면 그 자리에서 실패시킨다** — 가벼운 태그이거나 릴리스 HEAD가 아닌 커밋을 가리키면 게시하지 않는다. `npm view`가 404가 아닌 이유로 실패하면(권한·프록시·일시 오류) 미게시로 세지 않고 스냅숏을 중단한다. 그다음 `NPM_CONFIG_PROVENANCE=true`로 `pnpm changeset publish`를 실행한다. 이 명령은 레지스트리에 없는 버전만 게시해 재실행에 안전하다(CR-015, CR-025).
-5. 게시 뒤 `pnpm check:release-tags -- --published-before <file>`이 **이번 실행이 게시한 패키지**의 annotated tag가 릴리스 HEAD에 있는지 확인한다. 게시하지 않은 패키지(스냅숏에 이미 있던 버전)의 태그는 이전 릴리스의 것이므로 그대로 둔다 — 세 패키지가 `linked`라도 **함께 오를 때** 같은 번호를 쓸 뿐 항상 함께 오르지는 않는다(CR-038, DEV-040). 로컬 검증 뒤 태그를 push하고 `--remote origin --published-before <file>`으로 원격 tag object가 로컬과 바이트 단위로 같은지 재검증한다. 하나라도 없거나 lightweight tag이면 배포 잡을 실패시킨다(CR-025). **검사의 위치가 실패의 대가를 정한다** — 게시 앞의 검사가 막는 것과 게시 뒤의 검사가 잡는 것은 다르다(DEV-042).
+5. 게시 뒤 `pnpm check:release-tags -- --published-before <file>`이 **세 패키지 전부**의 태그가 존재하고 annotated이며 릴리스 HEAD의 조상인지 확인한다. 스냅숏이 면제하는 것은 **"태그 대상이 릴리스 HEAD와 같아야 한다"는 요구 하나뿐이다** — 이번 실행이 게시하지 않은 패키지(스냅숏에 이미 있던 버전)의 태그는 이전 릴리스 커밋을 가리키는 것이 옳다. 세 패키지가 `linked`라도 **함께 오를 때** 같은 번호를 쓸 뿐 항상 함께 오르지는 않는다(CR-038, DEV-040). 로컬 검증 뒤 태그를 push하고 `--remote origin --published-before <file>`으로 원격 tag object가 로컬과 바이트 단위로 같은지 재검증한다. 하나라도 없거나 lightweight tag이면 배포 잡을 실패시킨다(CR-025). **검사의 위치가 실패의 대가를 정한다** — 게시 앞의 검사가 막는 것과 게시 뒤의 검사가 잡는 것은 다르다(DEV-042).
 6. npm 레지스트리는 OIDC 클레임을 검증해 배포를 승인한다(`conductor_security_privacy_architecture.md` 4절, ADR-010). provenance는 public source repository에서만 생성되므로 release job은 저장소가 private이면 게시 전에 실패한다(CR-022).
 7. 파괴 변경(breaking change)이 포함된 changeset은 major 버전을 올리고 CHANGELOG 파일에 마이그레이션 노트 항목을 강제로 요구한다(FR-DX-005 AC-4). 마이그레이션 노트 없이는 changeset이 `major` 유형으로 등록되지 않는다.
 
