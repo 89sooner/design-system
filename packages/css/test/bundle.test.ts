@@ -654,14 +654,20 @@ describe("FR-CMP-005 sort direction is visible, not only announced", () => {
     // `/ ""`는 대체 텍스트다. 없으면 글리프가 접근성 이름에 들어가 `aria-sort`와
     // 중복으로 읽힌다 (Chromium AX 트리로 실측). 그것까지 함께 건다.
     const glyphs: Record<string, string> = {
-      // dist는 `::after`를 `:after`로 줄이고 속성 선택자의 따옴표를 지운다.
-      '.cdt-table__header-cell[aria-sort]:after': '"↕" / ""',
-      '.cdt-table__header-cell[aria-sort=ascending]:after': '"↑" / ""',
-      '.cdt-table__header-cell[aria-sort=descending]:after': '"↓" / ""',
+      none: '"↕" / ""',
+      ascending: '"↑" / ""',
+      descending: '"↓" / ""',
     };
-    for (const [selector, content] of Object.entries(glyphs)) {
-      const rule = component.find((entry) => entry.selector === selector);
-      expect(rule?.decls["content"]).toBe(content);
+    for (const [value, content] of Object.entries(glyphs)) {
+      // dist는 `::after`를 `:after`로 줄이고 속성 선택자의 따옴표를 지우며,
+      // 같은 선언을 가진 셀렉터들을 한 규칙으로 합친다. 값마다 마지막으로
+      // 이기는 규칙을 본다.
+      const target = `.cdt-table__header-cell[aria-sort=${value}]:after`;
+      const matching = component.filter((entry) =>
+        entry.selector.split(",").some((part) => part.trim() === target),
+      );
+      expect(matching.length).toBeGreaterThan(0);
+      expect(matching.at(-1)?.decls["content"]).toBe(content);
     }
   });
 });
@@ -738,5 +744,93 @@ describe("FR-A11Y-001 the focus ring survives a hovering pointer", () => {
       .map((hover) => hover.selector);
 
     expect(offenders).toEqual([]);
+  });
+});
+
+describe("DEV-035 · DEV-037 방향을 아는 모션", () => {
+  /*
+   * 이 저장소는 배치를 논리 속성(`inset-inline-*`, `margin-inline-*`)으로 적는데
+   * 변형은 물리 축(`translateX`, `transform-origin`)이라 둘이 어긋날 수 있다.
+   * `transform`에는 논리 키워드가 없으므로 방향은 셀렉터나 변수가 나른다.
+   * RTL에서 미터가 반대 끝에서 채워지고 서랍이 화면을 가로질렀다(실측).
+   */
+  test.each(bundles)("%s: the meter fill anchors to the logical start edge in both directions", (_name, css) => {
+    const rules = rulesInLayer(css, "cdt.component");
+    const base = rules.findIndex(
+      (rule) => rule.selector === ".cdt-meter__fill" && rule.decls["transform-origin"] !== undefined,
+    );
+    const rtl = rules.findIndex((rule) => rule.selector === ".cdt-meter__fill:dir(rtl)");
+    expect(base).toBeGreaterThan(-1);
+    expect(rtl).toBeGreaterThan(-1);
+    // 두 방향이 같은 원점을 쓰면 한쪽은 반드시 틀린다.
+    expect(rules[rtl]?.decls["transform-origin"]).not.toBe(rules[base]?.decls["transform-origin"]);
+    // 명시성이 더 높으므로 순서와 무관하게 이기지만, 소스 순서도 함께 지킨다.
+    expect(rtl).toBeGreaterThan(base);
+  });
+
+  test.each(bundles)("%s: drawer keyframes take their direction from a variable, never a literal", (_name, css) => {
+    const frames = css.match(/@keyframes cdt-drawer-[a-z-]+\{[^@]*?\}\}/g) ?? [];
+    expect(frames).toHaveLength(4);
+    for (const frame of frames) {
+      expect(frame).toContain("--cdt-drawer-shift");
+      // 물리 리터럴로 되돌리는 변이를 잡는다.
+      expect(frame).not.toMatch(/translateX\(\s*-?100%\s*\)/);
+    }
+    const rules = rulesInLayer(css, "cdt.component");
+    const shiftOf = (selector: string) =>
+      rules.find((rule) => rule.selector === selector && rule.decls["--cdt-drawer-shift"] !== undefined)
+        ?.decls["--cdt-drawer-shift"];
+    const ltr = shiftOf(".cdt-drawer");
+    const rtl = shiftOf(".cdt-drawer:dir(rtl)");
+    expect(ltr).toBeDefined();
+    expect(rtl).toBeDefined();
+    // 부호가 반대여야 서랍이 자기 안착 가장자리 바깥에서 출발한다.
+    expect(rtl).toBe(`-${ltr}`);
+  });
+});
+
+describe("DEV-036 배지 제거 버튼의 조작 대상", () => {
+  /*
+   * 보이는 크기를 배지 글자 높이로 줄이는 것은 알약 형태를 지키려는 것이고,
+   * 조작 영역까지 그 크기가 되면 `IconButton`의 compact 계약이 배지 안에서만
+   * 조용히 줄어든다 (FR-CMP-004 AC-6).
+   */
+  test.each(bundles)("%s: the dismiss hit area matches the compact icon button contract", (_name, css) => {
+    const rules = rulesInLayer(css, "cdt.component");
+    const hit = rules.find((rule) => /^\.cdt-badge__dismiss\.cdt-btn::?after$/.test(rule.selector));
+    expect(hit).toBeDefined();
+    expect(hit?.decls.position).toBe("absolute");
+
+    const compact = rules.find((rule) => rule.selector === ".cdt-btn--icon.cdt-btn--sm")?.decls["inline-size"];
+    expect(compact).toBeDefined();
+    // 두 값이 갈라지면 배지 안의 조작 대상만 조용히 작아진다.
+    expect(hit?.decls["inline-size"]).toBe(compact);
+    expect(hit?.decls["block-size"]).toBe(compact);
+
+    // 보이는 크기는 그대로 배지 글자 높이다 — 이 시험이 버튼을 키우는 쪽으로 읽히면 안 된다.
+    const button = rules.find((rule) => rule.selector === ".cdt-badge__dismiss.cdt-btn");
+    expect(button?.decls["inline-size"]).toBe("var(--cdt-badge-line-height)");
+    expect(button?.decls.position).toBe("relative");
+  });
+});
+
+describe("DEV-038 표현하지 않는 aria-sort 값", () => {
+  /*
+   * `aria-sort`는 `other`도 허용한다. 값을 가리지 않고 받으면 보조 기술은
+   * "다른 기준으로 정렬됨"을 읽는데 눈에는 미정렬 글리프가 보여, 같은 열에
+   * 대해 둘이 다른 사실을 말한다 (FR-CMP-005 AC-6).
+   */
+  test.each(bundles)("%s: the sort indicator is emitted per value, never by a catch-all", (_name, css) => {
+    const rules = rulesInLayer(css, "cdt.component");
+    const emitting = rules.filter((rule) => rule.selector.includes("[aria-sort") && rule.decls.content !== undefined);
+    expect(emitting.length).toBeGreaterThan(0);
+
+    for (const rule of emitting) {
+      for (const part of rule.selector.split(",").map((s) => s.trim())) {
+        if (!part.includes("[aria-sort")) continue;
+        // 값을 명시하지 않은 `[aria-sort]`는 `other`까지 받는다.
+        expect(part).toMatch(/\[aria-sort=["']?(none|ascending|descending)["']?\]/);
+      }
+    }
   });
 });
