@@ -30,6 +30,32 @@
   }
 
   /*
+   * `fieldset`의 UA 기본은 `2px groove`에 좌우 여백이라, 필터 그룹을 시맨틱하게
+   * 묶는 것만으로 3D 조각 상자가 그려진다. 시맨틱은 남기고 시각만 벗긴다.
+   */
+  fieldset {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-inline-size: 0;
+  }
+
+  legend {
+    padding: 0;
+  }
+
+  /*
+   * `mark`의 UA 기본은 형광 노랑에 검은 글자다. 팔레트 어디에도 없는 색이라
+   * 다크 테마에서 특히 튄다. 강조는 accent 계열 표면으로 그린다.
+   */
+  mark {
+    border-radius: var(--cdt-radius-xs);
+    padding-inline: var(--cdt-space-1);
+    background-color: var(--cdt-accent-soft);
+    color: var(--cdt-text-primary);
+  }
+
+  /*
    * The ring is a box-shadow, not an outline: --cdt-focus-ring carries the
    * whole `0 0 0 3px <colour>` triple. Its alpha is 0.80, not the source's
    * 0.30 — CR-005 raised it to clear WCAG 2.4.11 (3.93:1). Never restore the
