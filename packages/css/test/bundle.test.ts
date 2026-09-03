@@ -153,7 +153,7 @@ describe("FR-CSS-005 reduced motion", () => {
     // The load-bearing half: components read durations from these tokens, and a
     // later layer can never out-rank cdt.base, so the value is what must change.
     const tokens = rules.find((rule) => rule.decls["--cdt-motion-fast"] !== undefined);
-    for (const token of ["--cdt-motion-fast", "--cdt-motion-standard", "--cdt-motion-bounce"]) {
+    for (const token of ["--cdt-motion-fast", "--cdt-motion-standard", "--cdt-motion-bounce", "--cdt-motion-spin"]) {
       expect(tokens?.decls[token]).toMatch(/^0s\b/);
     }
 
@@ -449,5 +449,108 @@ describe("FR-CMP-007 form styles", () => {
     const highlighted = components.find((rule) => rule.selector === ".cdt-select__item[data-highlighted]");
     expect(checked?.decls.background).toBe("var(--cdt-accent)");
     expect(highlighted?.decls.background).toBe("var(--cdt-accent-soft)");
+  });
+});
+
+describe("FR-CMP-008 spinner animation", () => {
+  // 토큰이 `<duration> <easing>`을 함께 치환하므로, 단축 선언에 이징 키워드를
+  // 덧붙이면 이징이 둘이 되어 선언 전체가 무효가 된다 (DEV-028).
+  const EASING_KEYWORD = /\b(?:linear|ease(?:-in-out|-in|-out)?|cubic-bezier\(|steps\()/;
+
+  test.each(bundles)("%s: the spinner reads the linear spin token and nothing else", (_name, css) => {
+    const spinner = ruleFor(css, "cdt.component", /^\.cdt-spinner svg$/);
+    expect(spinner?.decls["animation"]).toMatch(/^cdt-spin var\(--cdt-motion-spin\) infinite$/);
+  });
+
+  test.each(bundles)("%s: no animation shorthand pairs a motion token with a second easing", (_name, css) => {
+    // rulesInLayer는 @media 안의 규칙까지 본다 — 좁은 화면 전용 드로어 진입(cdt-shell-enter)도 범위에 든다.
+    const offenders = rulesInLayer(css, "cdt.component")
+      .filter((rule) => {
+        const animation = rule.decls["animation"];
+        return animation !== undefined && animation.includes("var(--cdt-motion-") && EASING_KEYWORD.test(animation);
+      })
+      .map((rule) => rule.selector);
+    expect(offenders).toEqual([]);
+  });
+});
+
+describe("FR-CMP-008 AC-5 reduced-motion spinner label", () => {
+  // 레이어 순서가 명시도를 이긴다. 숨김과 노출이 같은 레이어(cdt.base)에 있어야
+  // 축소 모드의 노출 규칙이 적용된다 (DEV-029).
+  test.each(bundles)("%s: the clipping rule lives in cdt.base, not cdt.component", (_name, css) => {
+    const clipped = topLevelRules(css, "cdt.base").find((rule) => rule.selector === ".cdt-spinner__label");
+    expect(clipped?.decls["position"]).toBe("absolute");
+    expect(clipped?.decls["clip"]).toBe("rect(0, 0, 0, 0)");
+
+    const inComponent = rulesInLayer(css, "cdt.component").filter(
+      (rule) => rule.selector.split(",").some((part) => part.trim() === ".cdt-spinner__label"),
+    );
+    expect(inComponent).toEqual([]);
+  });
+
+  test.each(bundles)("%s: the spinner sizes its svg, not its box, so the revealed label can grow", (_name, css) => {
+    const svg = ruleFor(css, "cdt.component", /^\.cdt-spinner svg$/);
+    expect(svg?.decls["inline-size"]).toBe("var(--cdt-spinner-size)");
+    expect(svg?.decls["block-size"]).toBe("var(--cdt-spinner-size)");
+    // 계획 001의 시험과 같은 규칙을 본다 — 기하만 담은 동명 규칙을 앞에 두지 않는다.
+    expect(svg?.decls["animation"]).toBe("cdt-spin var(--cdt-motion-spin) infinite");
+
+    const box = topLevelRules(css, "cdt.component").find((rule) => rule.selector === ".cdt-spinner");
+    expect(box).toBeUndefined();
+  });
+
+  test.each(bundles)("%s: reduced motion reveals the label from the same layer with higher specificity", (_name, css) => {
+    const reveal = mediaRules(css, "cdt.base", /prefers-reduced-motion/).find(
+      (rule) => /reduce/.test(rule.media.join(" ")) && rule.selector.includes(".cdt-spinner__label"),
+    );
+    expect(reveal?.decls["position"]).toBe("static");
+    expect(reveal?.decls["clip"]).toBe("auto");
+    for (const part of reveal?.selector.split(",") ?? []) {
+      expect(part.trim()).toMatch(/^(?::root|\[data-cdt-theme\]) \.cdt-spinner__label$/);
+    }
+  });
+});
+
+describe("FR-CMP-006 overlay exit", () => {
+  const reducedRules = (css: string) =>
+    mediaRules(css, "cdt.base", /prefers-reduced-motion/).filter((rule) =>
+      /reduce/.test(rule.media.join(" ")),
+    );
+
+  test.each(bundles)("%s: overlay and dialog animate out through the fast token with fill-mode forwards", (_name, css) => {
+    // dist는 속성 선택자의 따옴표를 지운다 — 저장소의 기존 시험과 같은 표기를 쓴다.
+    for (const selector of [/^\.cdt-overlay\[data-state=closed\]$/, /^\.cdt-dialog\[data-state=closed\]$/]) {
+      const rule = ruleFor(css, "cdt.component", selector);
+      expect(rule?.decls["animation"]).toMatch(/^cdt-(?:overlay|dialog)-exit var\(--cdt-motion-fast\) forwards$/);
+    }
+  });
+
+  test.each(bundles)("%s: reduced motion hides the closed state so Presence unmounts without waiting", (_name, css) => {
+    // 0s 애니메이션의 animationend에 기대지 않는다 — display: none이면 Presence가 즉시 언마운트한다.
+    const hidden = reducedRules(css).filter((rule) => rule.decls["display"] === "none");
+    const selectors = hidden.flatMap((rule) => rule.selector.split(",").map((part) => part.trim()));
+    expect(selectors.some((part) => part.endsWith(".cdt-dialog[data-state=closed]"))).toBe(true);
+    expect(selectors.some((part) => part.endsWith(".cdt-overlay[data-state=closed]"))).toBe(true);
+  });
+
+  test.each(bundles)("%s: the mobile drawer never gets a closed-state animation (display: flex beats the reduced-motion escape)", (_name, css) => {
+    expect(css).not.toMatch(/\.cdt-app-shell__(?:overlay|nav)[^{]*\[data-state=closed\]/);
+  });
+});
+
+describe("FR-CMP-008 meter fill animates on the compositor", () => {
+  const LAYOUT_PROPERTY = /\b(?:inline-size|block-size|width|height|margin|padding|top|right|bottom|left|inset)\b/;
+
+  test.each(bundles)("%s: the meter fill transitions transform and background only", (_name, css) => {
+    const fill = ruleFor(css, "cdt.component", /^\.cdt-meter__fill$/);
+    expect(fill?.decls["transform"]).toBe("scaleX(var(--cdt-meter-ratio))");
+    expect(fill?.decls["transition"]).toMatch(/^transform var\(--cdt-motion-standard\), ?background var\(--cdt-motion-standard\)$/);
+  });
+
+  test.each(bundles)("%s: no component transition targets a layout property", (_name, css) => {
+    const offenders = rulesInLayer(css, "cdt.component")
+      .filter((rule) => rule.decls["transition"] !== undefined && LAYOUT_PROPERTY.test(rule.decls["transition"]))
+      .map((rule) => rule.selector);
+    expect(offenders).toEqual([]);
   });
 });

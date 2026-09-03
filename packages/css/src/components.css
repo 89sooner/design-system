@@ -416,6 +416,10 @@
     animation: cdt-overlay-enter var(--cdt-motion-standard);
   }
 
+  .cdt-overlay[data-state="closed"] {
+    animation: cdt-overlay-exit var(--cdt-motion-fast) forwards;
+  }
+
   .cdt-dialog,
   .cdt-drawer,
   .cdt-tooltip,
@@ -441,6 +445,10 @@
 
   .cdt-dialog[data-state="open"] {
     animation: cdt-dialog-enter var(--cdt-motion-standard);
+  }
+
+  .cdt-dialog[data-state="closed"] {
+    animation: cdt-dialog-exit var(--cdt-motion-fast) forwards;
   }
 
   .cdt-dialog--sm {
@@ -760,24 +768,22 @@
   .cdt-empty-state__action { margin-block-start: var(--cdt-space-3); }
   .cdt-meter { display: grid; gap: var(--cdt-space-2); }
   .cdt-meter__track { overflow: hidden; block-size: var(--cdt-feedback-meter-height); border: var(--cdt-border-width-hairline) solid var(--cdt-border-subtle); border-radius: var(--cdt-radius-pill); background: var(--cdt-feedback-meter-track-background); box-shadow: inset 0 1px 2px var(--cdt-surface-overlay); /* cdt-allow-literal: recessed progress track */ }
-  .cdt-meter__fill { block-size: 100%; inline-size: calc(var(--cdt-meter-ratio) * 100%); border-radius: inherit; background: var(--cdt-feedback-meter-fill-normal); box-shadow: 0 0 var(--cdt-space-2) var(--cdt-accent-glow); transition: inline-size var(--cdt-motion-standard), background var(--cdt-motion-standard); }
+  .cdt-meter__fill { block-size: 100%; inline-size: 100%; border-radius: inherit; background: var(--cdt-feedback-meter-fill-normal); box-shadow: 0 0 var(--cdt-space-2) var(--cdt-accent-glow); transform: scaleX(var(--cdt-meter-ratio)); transform-origin: left center; transition: transform var(--cdt-motion-standard), background var(--cdt-motion-standard); }
   .cdt-meter__value { color: var(--cdt-text-muted); font-size: var(--cdt-font-size-sm); font-variant-numeric: tabular-nums; font-weight: 600; text-align: end; }
   .cdt-meter--warning .cdt-meter__fill { background: var(--cdt-feedback-meter-fill-warning); }
   .cdt-meter--exceeded .cdt-meter__fill { background: var(--cdt-feedback-meter-fill-exceeded); }
   .cdt-progress-ring, .cdt-spinner { position: relative; display: inline-grid; place-items: center; }
   .cdt-progress-ring { inline-size: var(--cdt-progress-ring-size); block-size: var(--cdt-progress-ring-size); }
   .cdt-progress-ring--sm { inline-size: var(--cdt-progress-ring-size-compact); block-size: var(--cdt-progress-ring-size-compact); }
-  .cdt-spinner { inline-size: var(--cdt-spinner-size); block-size: var(--cdt-spinner-size); }
-  .cdt-spinner--sm { inline-size: var(--cdt-spinner-size-compact); block-size: var(--cdt-spinner-size-compact); }
-  .cdt-progress-ring svg, .cdt-spinner svg { inline-size: 100%; block-size: 100%; transform: rotate(-90deg); }
+  .cdt-progress-ring svg { inline-size: 100%; block-size: 100%; transform: rotate(-90deg); }
   .cdt-progress-ring__track, .cdt-spinner__track { fill: none; stroke: var(--cdt-progress-ring-track-stroke); stroke-width: 4; /* cdt-allow-literal: SVG stroke geometry */ }
   .cdt-progress-ring__indicator, .cdt-spinner__indicator { fill: none; stroke: var(--cdt-progress-ring-indicator-stroke); stroke-width: 4; /* cdt-allow-literal: SVG stroke geometry */ stroke-linecap: round; }
   .cdt-progress-ring__indicator { stroke-dasharray: 88; /* cdt-allow-literal: circle circumference approximation */ stroke-dashoffset: calc(88 * (1 - var(--cdt-progress-ring-ratio))); transition: stroke-dashoffset var(--cdt-motion-standard); }
   .cdt-progress-ring__label { color: var(--cdt-progress-ring-label-text); font-size: var(--cdt-font-size-sm); }
   .cdt-spinner__track { stroke: var(--cdt-spinner-track-stroke); }
   .cdt-spinner__indicator { stroke: var(--cdt-spinner-indicator-stroke); stroke-dasharray: 66; /* cdt-allow-literal: spinner visible arc */ stroke-linecap: round; }
-  .cdt-spinner svg { animation: cdt-spin var(--cdt-motion-standard) linear infinite; }
-  .cdt-spinner__label { position: absolute; inline-size: 1px; /* cdt-allow-literal: screen-reader-only clipping geometry */ block-size: 1px; /* cdt-allow-literal: screen-reader-only clipping geometry */ overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+  .cdt-spinner svg { inline-size: var(--cdt-spinner-size); block-size: var(--cdt-spinner-size); transform: rotate(-90deg); animation: cdt-spin var(--cdt-motion-spin) infinite; }
+  .cdt-spinner--sm svg { inline-size: var(--cdt-spinner-size-compact); block-size: var(--cdt-spinner-size-compact); }
 
   /* cdt.component outranks cdt.reset, so shadow-bearing controls must restate the complete ring. */
   .cdt-btn:focus-visible,
@@ -801,6 +807,16 @@
   @keyframes cdt-dialog-enter {
     from { opacity: 0; transform: translate(-50%, -48%) scale(0.98); /* cdt-allow-literal: overlay entrance geometry */ }
     to { opacity: 1; transform: translate(-50%, -50%) scale(1); /* cdt-allow-literal: overlay resting geometry */ }
+  }
+
+  @keyframes cdt-overlay-exit {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  @keyframes cdt-dialog-exit {
+    from { opacity: 1; transform: translate(-50%, -50%) scale(1); /* cdt-allow-literal: overlay resting geometry */ }
+    to { opacity: 0; transform: translate(-50%, -48%) scale(0.98); /* cdt-allow-literal: overlay exit geometry */ }
   }
 
   .cdt-app-shell__nav {
@@ -1006,6 +1022,7 @@
       border: 0;
       background: var(--cdt-app-shell-overlay-background);
       backdrop-filter: blur(4px); /* cdt-allow-literal: source mobile navigation scrim blur */
+      animation: cdt-overlay-enter var(--cdt-motion-standard);
     }
 
     .cdt-app-shell__main {

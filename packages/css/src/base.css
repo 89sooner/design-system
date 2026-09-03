@@ -64,6 +64,22 @@
   }
 
   /*
+   * The spinner label is screen-reader-only by default and becomes visible
+   * under reduced motion (FR-CMP-008 AC-5). Both halves live in cdt.base on
+   * purpose: FR-CSS-005 AC-4 pins the reduced-motion rule to this layer, and a
+   * later layer would out-rank it regardless of specificity — the clipping
+   * rule used to sit in cdt.component and the reveal never applied (DEV-029).
+   */
+  .cdt-spinner__label {
+    position: absolute;
+    inline-size: 1px; /* cdt-allow-literal: screen-reader-only clipping geometry */
+    block-size: 1px; /* cdt-allow-literal: screen-reader-only clipping geometry */
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  /*
    * Reduced motion, without `!important` (ADR-005 bans it) and without the
    * global `*` the source used (FR-CSS-005 AC-4).
    *
@@ -89,6 +105,7 @@
       --cdt-motion-fast: 0s cubic-bezier(0.2, 0, 0, 1);
       --cdt-motion-standard: 0s cubic-bezier(0.2, 0, 0, 1);
       --cdt-motion-bounce: 0s cubic-bezier(0.34, 1.56, 0.64, 1);
+      --cdt-motion-spin: 0s linear;
 
       scroll-behavior: auto;
     }
@@ -97,6 +114,20 @@
     [data-cdt-theme] * {
       transition-duration: 0s;
       animation-duration: 0s;
+    }
+
+    /*
+     * Radix Presence는 닫힘 상태에 새 animation-name이 있으면 animationend를
+     * 기다린다. 감소 모드에서는 지속시간이 0s라 그 이벤트에 기대지 않고,
+     * display: none으로 두어 Presence가 즉시 언마운트하게 한다
+     * (Presence는 display가 none이면 애니메이션을 기다리지 않는다).
+     * cdt.component에 display 선언이 없는 요소에만 통한다.
+     */
+    :root:not([data-cdt-theme]) .cdt-overlay[data-state="closed"],
+    :root:not([data-cdt-theme]) .cdt-dialog[data-state="closed"],
+    [data-cdt-theme] .cdt-overlay[data-state="closed"],
+    [data-cdt-theme] .cdt-dialog[data-state="closed"] {
+      display: none;
     }
 
     :root .cdt-spinner__label,

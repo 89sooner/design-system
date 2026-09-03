@@ -556,6 +556,7 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
   - `app.css:683-686` — `@keyframes contentShow` 중앙 정렬 진입 애니메이션(`translate(-50%, -48%) scale(0.96)` → `translate(-50%, -50%) scale(1)`).
   - `app.css:673-681` — `@keyframes fadeIn`, `fadeOut`.
   - **결정**: 소스의 `z-index: 40`(오버레이)과 `50`(콘텐츠)은 리터럴이다. `--cdt-z-overlay`(40)와 `--cdt-z-popover`(50)로 치환한다(FR-TOK-008 AC-1, FR-CMP-006 AC-4).
+  - **결정**: 퇴장은 진입의 역방향을 `motion.fast`(140ms)로 실행한다. `[data-state="closed"]`에 걸며 Radix Presence가 `animationend`까지 언마운트를 미룬다. 감소 모드의 처리는 토큰 명세 9.2절(DEV-030).
 
 **합성 API**: `Dialog.Root`, `Dialog.Trigger`, `Dialog.Content`, `Dialog.Title`, `Dialog.Description`, `Dialog.Close`. 각 이름은 동명의 Radix `Dialog` 파트를 감싼다. `Dialog.Content`는 Radix `Portal` + `Overlay` + `Content`를 함께 렌더한다.
 
@@ -928,7 +929,7 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
   - `app.css:1308-1314` — `.linear-progress-bg` 반투명 흰색 트랙, `border-radius: 9999px`, `height: 8px`, `overflow: hidden`.
   - `app.css:1316-1320` — `.linear-progress-fill` `height: 100%`, 동일 반경, `transition: width 1s ..., background-color 0.5s ease`.
   - `tokens.css:41-43` — `--meter-normal`, `--meter-warning`, `--meter-exceeded`.
-  - **결정**: 채움 폭은 `--cdt-meter-ratio` 커스텀 프로퍼티로 전달하고 CSS가 `width: calc(var(--cdt-meter-ratio) * 100%)`로 계산한다(공통 계약 2.3-2항). 인라인 `style`로 색상을 주입하지 않는다.
+  - **결정**: 채움 폭은 `--cdt-meter-ratio` 커스텀 프로퍼티로 전달하고 CSS가 `transform: scaleX(var(--cdt-meter-ratio))`로 그린다(공통 계약 2.3-2항). 레이아웃 속성을 전환하지 않기 위해서다(DEV-031). 인라인 `style`로 색상을 주입하지 않는다.
   - **결정**: 소스 `transition` 시간 1s / 0.5s는 리터럴이다. `--cdt-motion-standard`로 통일한다. 모션 감소 설정에서는 0ms가 된다(FR-CSS-005 AC-1).
   - **결정**: 트랙 배경은 리터럴 반투명 흰색이다. `--cdt-surface-track` semantic 토큰을 요구한다. `state.hover`(`tokens.css:78`)와 값이 근접하지만 의미가 다르므로 별도 키로 둔다.
 
@@ -986,6 +987,8 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
   - `app.css:1150-1153` — 모션 감소 설정 처리.
   - **결정**: 원형 궤도의 시각은 `ProgressRing`(C-063)의 트랙·인디케이터 구조를 재사용하되 `stroke-dasharray`를 고정하고 `spin` 키프레임을 적용한다. 두 컴포넌트는 동일한 `--cdt-surface-track`과 `--cdt-accent`를 소비한다.
   - **결정**: 모션 감소 설정에서 회전을 멈추고 `label` 텍스트를 노출한다(FR-CSS-005 예외/실패 처리). 정지한 원형 궤도만 남기면 대기 상태가 전달되지 않기 때문이다.
+  - **결정**: 라벨의 화면 밖 숨김 규칙은 노출 규칙과 같은 `cdt.base` 레이어에 둔다. `cdt.component`에 두면 레이어 순서가 명시도를 이겨 노출이 한 번도 적용되지 않는다(DEV-029).
+  - **결정**: 회전 주기는 전용 토큰 `motion.spin`(1000ms linear)이 정한다. UI 전환 토큰에 `linear`를 덧붙이면 단축 선언의 이징이 둘이 되어 선언 전체가 무효가 된다(DEV-028).
 
 | 이름 | 타입 | 기본값 | 필수 | 설명 |
 | --- | --- | --- | --- | --- |

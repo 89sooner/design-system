@@ -153,6 +153,7 @@ const motion: TokenDefinition[] = [
   semantic("motion.fast", "140ms {ease.entrance}", "Colour, background and border transitions."),
   semantic("motion.standard", "240ms {ease.entrance}", "Overlay and page entrance."),
   semantic("motion.bounce", "300ms {ease.overshoot}", "Toggle and switch settle."),
+  semantic("motion.spin", "1000ms {ease.linear}", "One revolution of the indeterminate spinner."),
 ];
 
 export const scaleTokens: readonly TokenDefinition[] = [
