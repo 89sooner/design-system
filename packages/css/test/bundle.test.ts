@@ -650,4 +650,14 @@ describe("FR-CMP-004 removable badge stays badge-sized", () => {
     expect(rule?.decls["inline-size"]).toBe("var(--cdt-badge-line-height)");
     expect(rule?.decls["block-size"]).toBe("var(--cdt-badge-line-height)");
   });
+
+  test.each(bundles)("%s: the dismiss keeps its flat surface through hover and press", (_name, css) => {
+    // 같은 레이어에서는 명시성이 이긴다 — 클래스 둘짜리 기본 규칙만으로는
+    // `.cdt-btn:not(:disabled):hover`(클래스 셋)가 box-shadow를 되살린다.
+    const rule = rulesInLayer(css, "cdt.component").find((entry) =>
+      entry.selector.includes(".cdt-badge__dismiss.cdt-btn:not(:disabled):hover"),
+    );
+    expect(rule?.decls["box-shadow"]).toBe("none");
+    expect(rule?.selector).toMatch(/:active/);
+  });
 });

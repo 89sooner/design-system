@@ -231,6 +231,18 @@
     color: inherit;
   }
 
+  /*
+   * 같은 레이어 안에서는 명시성이 이긴다. `.cdt-btn:not(:disabled):hover`는
+   * 클래스 둘짜리 위 규칙보다 명시성이 높아, 벗겨 둔 `box-shadow`가 hover·press
+   * 순간 되살아나 18px 원 안에 1px 밝은 선이 생긴다(실측). 배경 변화는 어포던스라
+   * 남기고 그림자만 다시 지운다 (DEV-033).
+   */
+  .cdt-badge__dismiss.cdt-btn:not(:disabled):hover,
+  .cdt-badge__dismiss.cdt-btn:not(:disabled):active {
+    border-color: transparent;
+    box-shadow: none;
+  }
+
   .cdt-badge--neutral {
     border-color: var(--cdt-border-default);
     background: var(--cdt-surface-raised);
