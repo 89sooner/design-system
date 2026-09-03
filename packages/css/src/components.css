@@ -213,6 +213,24 @@
     block-size: var(--cdt-badge-icon-size);
   }
 
+  /*
+   * 칩의 제거 버튼. 배지 안에 놓여 하나의 조작 단위로 읽히도록 배지의 글자
+   * 높이에 맞춘다 — 기본 `IconButton`(34px)을 그대로 넣으면 배지가 28px에서
+   * 44px로 커져 필터 칩이 아니게 된다 (DEV-033).
+   */
+  .cdt-badge__dismiss.cdt-btn {
+    inline-size: var(--cdt-badge-line-height);
+    min-block-size: var(--cdt-badge-line-height);
+    block-size: var(--cdt-badge-line-height);
+    padding: 0;
+    border: 0;
+    border-radius: var(--cdt-radius-pill);
+    background: transparent;
+    box-shadow: none;
+    margin-inline-end: calc(var(--cdt-space-1) * -1);
+    color: inherit;
+  }
+
   .cdt-badge--neutral {
     border-color: var(--cdt-border-default);
     background: var(--cdt-surface-raised);
@@ -300,6 +318,27 @@
     text-align: start;
     text-transform: uppercase;
     white-space: nowrap;
+  }
+
+  /*
+   * 정렬 방향을 눈으로도 알린다. `aria-sort`는 스크린 리더에만 읽히므로,
+   * 같은 사실을 글리프로 그려 두 사용자가 같은 것을 안다 (DEV-033).
+   */
+  .cdt-table__header-cell[aria-sort]::after {
+    display: inline-block;
+    margin-inline-start: var(--cdt-space-1);
+    content: "↕";
+    opacity: 0.4; /* cdt-allow-literal: 정렬되지 않은 열의 표시기 감쇠 */
+  }
+
+  .cdt-table__header-cell[aria-sort="ascending"]::after {
+    content: "↑";
+    opacity: 1;
+  }
+
+  .cdt-table__header-cell[aria-sort="descending"]::after {
+    content: "↓";
+    opacity: 1;
   }
 
   .cdt-table__cell {

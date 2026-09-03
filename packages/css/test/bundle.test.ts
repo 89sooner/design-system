@@ -607,3 +607,45 @@ describe("FR-CMP-006 surface entrance motion", () => {
     }
   });
 });
+
+describe("FR-CSS-002 browser defaults never leak", () => {
+  // cdt.reset은 index.css에만 있다 — component.css는 설계상 그것을 담지 않는다.
+  test("fieldset, legend and mark are reset to the token palette", () => {
+    const reset = topLevelRules(index, "cdt.reset");
+    const fieldset = reset.find((rule) => rule.selector === "fieldset");
+    expect(fieldset?.decls["border"]).toBe("0");
+    expect(fieldset?.decls["padding"]).toBe("0");
+
+    // UA 기본은 형광 노랑에 검은 글자다 — 팔레트 어디에도 없는 색이다.
+    const mark = reset.find((rule) => rule.selector === "mark");
+    expect(mark?.decls["background-color"]).toBe("var(--cdt-accent-soft)");
+    expect(mark?.decls["color"]).toBe("var(--cdt-text-primary)");
+  });
+});
+
+describe("FR-CMP-005 sort direction is visible, not only announced", () => {
+  test.each(bundles)("%s: the header cell draws a glyph per aria-sort value", (_name, css) => {
+    const component = rulesInLayer(css, "cdt.component");
+    const glyphs: Record<string, string> = {
+      // dist는 `::after`를 `:after`로 줄이고 속성 선택자의 따옴표를 지운다.
+      '.cdt-table__header-cell[aria-sort]:after': '"↕"',
+      '.cdt-table__header-cell[aria-sort=ascending]:after': '"↑"',
+      '.cdt-table__header-cell[aria-sort=descending]:after': '"↓"',
+    };
+    for (const [selector, content] of Object.entries(glyphs)) {
+      const rule = component.find((entry) => entry.selector === selector);
+      expect(rule?.decls["content"]).toBe(content);
+    }
+  });
+});
+
+describe("FR-CMP-004 removable badge stays badge-sized", () => {
+  test.each(bundles)("%s: the dismiss control matches the badge line height", (_name, css) => {
+    const rule = rulesInLayer(css, "cdt.component").find(
+      (entry) => entry.selector === ".cdt-badge__dismiss.cdt-btn",
+    );
+    // 기본 IconButton을 그대로 넣으면 배지가 제 높이보다 훨씬 커져 칩이 아니게 된다.
+    expect(rule?.decls["inline-size"]).toBe("var(--cdt-badge-line-height)");
+    expect(rule?.decls["block-size"]).toBe("var(--cdt-badge-line-height)");
+  });
+});

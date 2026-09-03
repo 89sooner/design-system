@@ -351,6 +351,7 @@ export type IconButtonProps = PolymorphicProps<"button", IconButtonOwnProps> & {
   - `app.css:497-507` — `.badge` `display: inline-flex`, `gap: 6px`, `border-radius: 9999px`, `padding: 4px 10px`, `font-size: 12px`, `font-weight: 600`, `letter-spacing: 0.5px`, `text-transform: uppercase`.
   - **결정**: 소스 `.badge`는 형태만 선언하고 색상을 선언하지 않는다(호출부가 인라인으로 지정했다). 따라서 `tone`별 색은 component 토큰으로 새로 정의하고, semantic 상태 토큰을 참조한다. `info`는 `status.running`, `success`는 `status.success`, `warning`은 `status.waiting`, `danger`는 `status.danger`, `accent`는 `accent`, `neutral`은 `text.muted` + `border.default`를 참조한다(`tokens.css:33-39`, `tokens.css:27-30`, `tokens.css:17`).
   - **결정**: `border-radius: 9999px`는 리터럴이므로 `--cdt-radius-pill` 토큰을 요구한다. 이 토큰은 `tokens.css`의 반경 스케일(`tokens.css:65-69`)에 없으므로 `@conductor-by-89soone/tokens`가 새로 정의해야 한다.
+  - **결정**: 제거 가능한 칩은 배지 **안에** 제거 버튼을 두고 `.cdt-badge__dismiss`를 함께 붙인다. 그 클래스가 버튼을 배지의 글자 높이(`--cdt-badge-line-height`)에 맞춘다 — 기본 `IconButton`(34px)을 그대로 넣으면 배지가 28px에서 44px로 커져 칩이 아니게 된다(DEV-033).
 
 | 이름 | 타입 | 기본값 | 필수 | 설명 |
 | --- | --- | --- | --- | --- |
@@ -426,6 +427,7 @@ export type IconButtonProps = PolymorphicProps<"button", IconButtonOwnProps> & {
   - `app.css:551-555` — `.table-scroll` `overflow-x: auto`, `border-radius: inherit`.
   - `app.css:557-560` — `.num` `font-variant-numeric: tabular-nums`, 모노스페이스. FR-CMP-005 AC-2의 근거.
   - `app.css:1052-1056` — 뷰포트 800px 미만에서 `.table`이 `display: block; overflow-x: auto`로 전환된다. FR-CMP-005 AC-1의 근거.
+  - **결정**: `aria-sort`를 스크린 리더에만 알리지 않는다. 헤더 셀이 값에 따라 `::after` 글리프(`↕` 감쇠 · `↑` · `↓`)를 그려 정렬 열과 방향이 눈으로도 읽힌다. `aria-sort`가 없는 열에는 아무것도 그리지 않는다(DEV-033).
 
 **합성 API**
 
