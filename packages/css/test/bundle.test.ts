@@ -510,3 +510,30 @@ describe("FR-CMP-008 AC-5 reduced-motion spinner label", () => {
     }
   });
 });
+
+describe("FR-CMP-006 overlay exit", () => {
+  const reducedRules = (css: string) =>
+    mediaRules(css, "cdt.base", /prefers-reduced-motion/).filter((rule) =>
+      /reduce/.test(rule.media.join(" ")),
+    );
+
+  test.each(bundles)("%s: overlay and dialog animate out through the fast token with fill-mode forwards", (_name, css) => {
+    // dist는 속성 선택자의 따옴표를 지운다 — 저장소의 기존 시험과 같은 표기를 쓴다.
+    for (const selector of [/^\.cdt-overlay\[data-state=closed\]$/, /^\.cdt-dialog\[data-state=closed\]$/]) {
+      const rule = ruleFor(css, "cdt.component", selector);
+      expect(rule?.decls["animation"]).toMatch(/^cdt-(?:overlay|dialog)-exit var\(--cdt-motion-fast\) forwards$/);
+    }
+  });
+
+  test.each(bundles)("%s: reduced motion hides the closed state so Presence unmounts without waiting", (_name, css) => {
+    // 0s 애니메이션의 animationend에 기대지 않는다 — display: none이면 Presence가 즉시 언마운트한다.
+    const hidden = reducedRules(css).filter((rule) => rule.decls["display"] === "none");
+    const selectors = hidden.flatMap((rule) => rule.selector.split(",").map((part) => part.trim()));
+    expect(selectors.some((part) => part.endsWith(".cdt-dialog[data-state=closed]"))).toBe(true);
+    expect(selectors.some((part) => part.endsWith(".cdt-overlay[data-state=closed]"))).toBe(true);
+  });
+
+  test.each(bundles)("%s: the mobile drawer never gets a closed-state animation (display: flex beats the reduced-motion escape)", (_name, css) => {
+    expect(css).not.toMatch(/\.cdt-app-shell__(?:overlay|nav)[^{]*\[data-state=closed\]/);
+  });
+});

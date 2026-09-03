@@ -416,6 +416,10 @@
     animation: cdt-overlay-enter var(--cdt-motion-standard);
   }
 
+  .cdt-overlay[data-state="closed"] {
+    animation: cdt-overlay-exit var(--cdt-motion-fast) forwards;
+  }
+
   .cdt-dialog,
   .cdt-drawer,
   .cdt-tooltip,
@@ -441,6 +445,10 @@
 
   .cdt-dialog[data-state="open"] {
     animation: cdt-dialog-enter var(--cdt-motion-standard);
+  }
+
+  .cdt-dialog[data-state="closed"] {
+    animation: cdt-dialog-exit var(--cdt-motion-fast) forwards;
   }
 
   .cdt-dialog--sm {
@@ -801,6 +809,16 @@
     to { opacity: 1; transform: translate(-50%, -50%) scale(1); /* cdt-allow-literal: overlay resting geometry */ }
   }
 
+  @keyframes cdt-overlay-exit {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  @keyframes cdt-dialog-exit {
+    from { opacity: 1; transform: translate(-50%, -50%) scale(1); /* cdt-allow-literal: overlay resting geometry */ }
+    to { opacity: 0; transform: translate(-50%, -48%) scale(0.98); /* cdt-allow-literal: overlay exit geometry */ }
+  }
+
   .cdt-app-shell__nav {
     box-sizing: border-box;
     position: sticky;
@@ -1004,6 +1022,7 @@
       border: 0;
       background: var(--cdt-app-shell-overlay-background);
       backdrop-filter: blur(4px); /* cdt-allow-literal: source mobile navigation scrim blur */
+      animation: cdt-overlay-enter var(--cdt-motion-standard);
     }
 
     .cdt-app-shell__main {

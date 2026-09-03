@@ -1190,6 +1190,8 @@ FR-THM-005가 강제한 두 교정이 9건의 미달을 제거했다. `focusRing
 
 `data-cdt-theme` 속성이 없는 요소(소비자 자신의 DOM)에는 이 규칙이 적용되지 않는다. 소비자의 모션은 소비자가 소유한다.
 
+Radix Presence는 닫힘 상태(`[data-state="closed"]`)에 진입과 다른 애니메이션 이름이 있으면 `animationend`를 기다렸다가 언마운트한다. 감소 모드에서는 그 애니메이션이 0s이므로 이벤트에 기대지 않고, 같은 `cdt.base` 블록이 `.cdt-overlay[data-state="closed"]`·`.cdt-dialog[data-state="closed"]`를 `display: none`으로 두어 Presence가 즉시 언마운트하게 한다(DEV-030). `cdt.component`가 `display`를 선언한 요소(모바일 서랍)에는 이 방식이 닿지 않으므로 그 요소에는 퇴장 애니메이션을 두지 않는다.
+
 ### 9.3 감소 모드의 진행 표시
 
 `Spinner`와 `ProgressRing`은 감소 모드에서 애니메이션 대신 정적 진행률 텍스트를 노출한다(FR-CSS-005 예외 처리, FR-CMP-008 AC-5). 이는 토큰이 아니라 컴포넌트 동작이며, `cdt.base` 레이어 안에서 `.cdt-spinner__label`의 화면 밖 숨김(`position`·`clip`)과 `@media (prefers-reduced-motion: reduce)` 아래의 노출을 같은 레이어에 두어 구현한다 — 숨김이 더 뒤 레이어에 있으면 명시도와 무관하게 노출이 적용되지 않는다(DEV-029). 지속 시간을 0으로 만드는 것만으로는 무한 회전이 정지 상태로 남아 진행 여부를 전달하지 못하기 때문이다.

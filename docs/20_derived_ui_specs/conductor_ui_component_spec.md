@@ -556,6 +556,7 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
   - `app.css:683-686` — `@keyframes contentShow` 중앙 정렬 진입 애니메이션(`translate(-50%, -48%) scale(0.96)` → `translate(-50%, -50%) scale(1)`).
   - `app.css:673-681` — `@keyframes fadeIn`, `fadeOut`.
   - **결정**: 소스의 `z-index: 40`(오버레이)과 `50`(콘텐츠)은 리터럴이다. `--cdt-z-overlay`(40)와 `--cdt-z-popover`(50)로 치환한다(FR-TOK-008 AC-1, FR-CMP-006 AC-4).
+  - **결정**: 퇴장은 진입의 역방향을 `motion.fast`(140ms)로 실행한다. `[data-state="closed"]`에 걸며 Radix Presence가 `animationend`까지 언마운트를 미룬다. 감소 모드의 처리는 토큰 명세 9.2절(DEV-030).
 
 **합성 API**: `Dialog.Root`, `Dialog.Trigger`, `Dialog.Content`, `Dialog.Title`, `Dialog.Description`, `Dialog.Close`. 각 이름은 동명의 Radix `Dialog` 파트를 감싼다. `Dialog.Content`는 Radix `Portal` + `Overlay` + `Content`를 함께 렌더한다.
 

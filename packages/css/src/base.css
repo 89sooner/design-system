@@ -116,6 +116,20 @@
       animation-duration: 0s;
     }
 
+    /*
+     * Radix Presence는 닫힘 상태에 새 animation-name이 있으면 animationend를
+     * 기다린다. 감소 모드에서는 지속시간이 0s라 그 이벤트에 기대지 않고,
+     * display: none으로 두어 Presence가 즉시 언마운트하게 한다
+     * (Presence는 display가 none이면 애니메이션을 기다리지 않는다).
+     * cdt.component에 display 선언이 없는 요소에만 통한다.
+     */
+    :root:not([data-cdt-theme]) .cdt-overlay[data-state="closed"],
+    :root:not([data-cdt-theme]) .cdt-dialog[data-state="closed"],
+    [data-cdt-theme] .cdt-overlay[data-state="closed"],
+    [data-cdt-theme] .cdt-dialog[data-state="closed"] {
+      display: none;
+    }
+
     :root .cdt-spinner__label,
     [data-cdt-theme] .cdt-spinner__label {
       position: static;
