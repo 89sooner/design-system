@@ -57,6 +57,7 @@ const CONSUMER_CLASSES: Readonly<Record<string, string>> = {
   "cdt-content-stack": "FR-CSS-003 AC-1 layout primitive.",
   "cdt-muted": "WP-008 text utility.",
   "cdt-mono": "WP-008 text utility.",
+  "cdt-badge__dismiss": "DEV-033: 소비자가 Badge 안의 제거 버튼에 붙인다. 컴포넌트가 자동으로 붙이면 제거 불가능한 배지에도 실린다.",
 };
 
 const CLASS_SELECTOR = /\.(cdt-[A-Za-z0-9_-]+)/g;

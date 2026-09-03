@@ -213,6 +213,36 @@
     block-size: var(--cdt-badge-icon-size);
   }
 
+  /*
+   * 칩의 제거 버튼. 배지 안에 놓여 하나의 조작 단위로 읽히도록 배지의 글자
+   * 높이에 맞춘다 — 기본 `IconButton`(34px)을 그대로 넣으면 배지가 28px에서
+   * 44px로 커져 필터 칩이 아니게 된다 (DEV-033).
+   */
+  .cdt-badge__dismiss.cdt-btn {
+    inline-size: var(--cdt-badge-line-height);
+    min-block-size: var(--cdt-badge-line-height);
+    block-size: var(--cdt-badge-line-height);
+    padding: 0;
+    border: 0;
+    border-radius: var(--cdt-radius-pill);
+    background: transparent;
+    box-shadow: none;
+    margin-inline-end: calc(var(--cdt-space-1) * -1);
+    color: inherit;
+  }
+
+  /*
+   * 같은 레이어 안에서는 명시성이 이긴다. `.cdt-btn:not(:disabled):hover`는
+   * 클래스 둘짜리 위 규칙보다 명시성이 높아, 벗겨 둔 `box-shadow`가 hover·press
+   * 순간 되살아나 18px 원 안에 1px 밝은 선이 생긴다(실측). 배경 변화는 어포던스라
+   * 남기고 그림자만 다시 지운다 (DEV-033).
+   */
+  .cdt-badge__dismiss.cdt-btn:not(:disabled):hover,
+  .cdt-badge__dismiss.cdt-btn:not(:disabled):active {
+    border-color: transparent;
+    box-shadow: none;
+  }
+
   .cdt-badge--neutral {
     border-color: var(--cdt-border-default);
     background: var(--cdt-surface-raised);
@@ -300,6 +330,32 @@
     text-align: start;
     text-transform: uppercase;
     white-space: nowrap;
+  }
+
+  /*
+   * 정렬 방향을 눈으로도 알린다. `aria-sort`는 스크린 리더에만 읽히므로,
+   * 같은 사실을 글리프로 그려 두 사용자가 같은 것을 안다 (DEV-033).
+   */
+  .cdt-table__header-cell[aria-sort]::after {
+    display: inline-block;
+    margin-inline-start: var(--cdt-space-1);
+    /*
+     * `/ ""`는 `content`의 대체 텍스트다. 이것이 없으면 글리프가 접근성 이름에
+     * 들어가 `시퀀스 ↑`로 읽히는데, `aria-sort`가 이미 오름차순을 알리므로
+     * 중복이 된다(Chromium AX 트리로 실측). 글리프는 눈으로 보는 쪽에만 준다.
+     */
+    content: "↕" / "";
+    opacity: 0.4; /* cdt-allow-literal: 정렬되지 않은 열의 표시기 감쇠 */
+  }
+
+  .cdt-table__header-cell[aria-sort="ascending"]::after {
+    content: "↑" / "";
+    opacity: 1;
+  }
+
+  .cdt-table__header-cell[aria-sort="descending"]::after {
+    content: "↓" / "";
+    opacity: 1;
   }
 
   .cdt-table__cell {
@@ -484,6 +540,11 @@
   .cdt-drawer--right { inset-inline-end: 0; }
   .cdt-drawer--left { inset-inline-start: 0; }
 
+  .cdt-drawer--right[data-state="open"] { animation: cdt-drawer-enter-right var(--cdt-motion-standard); }
+  .cdt-drawer--left[data-state="open"] { animation: cdt-drawer-enter-left var(--cdt-motion-standard); }
+  .cdt-drawer--right[data-state="closed"] { animation: cdt-drawer-exit-right var(--cdt-motion-fast) forwards; }
+  .cdt-drawer--left[data-state="closed"] { animation: cdt-drawer-exit-left var(--cdt-motion-fast) forwards; }
+
   .cdt-tooltip,
   .cdt-menu {
     z-index: var(--cdt-overlay-content-z);
@@ -498,6 +559,16 @@
     padding: var(--cdt-space-2) var(--cdt-space-3);
     color: var(--cdt-text-primary);
     font-size: var(--cdt-font-size-sm);
+    transform-origin: var(--radix-popper-transform-origin);
+  }
+
+  .cdt-tooltip[data-state="delayed-open"],
+  .cdt-tooltip[data-state="instant-open"] {
+    animation: cdt-popover-enter var(--cdt-motion-fast);
+  }
+
+  .cdt-tooltip[data-state="closed"] {
+    animation: cdt-popover-exit var(--cdt-motion-fast) forwards;
   }
 
   .cdt-tooltip__arrow {
@@ -507,6 +578,20 @@
   .cdt-menu {
     min-inline-size: 180px; /* cdt-allow-literal: menu command label width */
     padding: var(--cdt-space-1);
+    transform-origin: var(--radix-popper-transform-origin);
+  }
+
+  /*
+   * Menu는 트리거에서 떨어지는 목록이라 `Select`와 같은 부류다 —
+   * 지속시간 예산도 같은 것을 쓴다. `Tooltip`만 작은 팝오버 예산(더 짧은
+   * 토큰)을 쓴다 (DEV-032).
+   */
+  .cdt-menu[data-state="open"] {
+    animation: cdt-popover-enter var(--cdt-motion-standard);
+  }
+
+  .cdt-menu[data-state="closed"] {
+    animation: cdt-popover-exit var(--cdt-motion-fast) forwards;
   }
 
   .cdt-menu__item {
@@ -651,6 +736,15 @@
     background: var(--cdt-overlay-background);
     box-shadow: var(--cdt-overlay-shadow);
     backdrop-filter: blur(var(--cdt-overlay-background-blur));
+    transform-origin: var(--radix-select-content-transform-origin);
+  }
+
+  .cdt-select__content[data-state="open"] {
+    animation: cdt-popover-enter var(--cdt-motion-standard);
+  }
+
+  .cdt-select__content[data-state="closed"] {
+    animation: cdt-popover-exit var(--cdt-motion-fast) forwards;
   }
 
   .cdt-select__item {
@@ -750,7 +844,7 @@
     .cdt-checkbox { min-block-size: var(--cdt-input-min-height-compact); }
   }
 
-  .cdt-banner { display: flex; align-items: flex-start; gap: var(--cdt-space-3); padding: var(--cdt-space-4); border: var(--cdt-border-width-hairline) solid var(--cdt-border-default); border-inline-start-width: var(--cdt-border-width-rail); border-radius: var(--cdt-radius-md); box-shadow: var(--cdt-elevation-raised); }
+  .cdt-banner { display: flex; align-items: flex-start; gap: var(--cdt-space-3); padding: var(--cdt-space-4); border: var(--cdt-border-width-hairline) solid var(--cdt-border-default); border-inline-start-width: var(--cdt-border-width-rail); border-radius: var(--cdt-radius-md); box-shadow: var(--cdt-elevation-raised); animation: cdt-banner-enter var(--cdt-motion-fast); }
   .cdt-banner__icon { display: inline-grid; flex: 0 0 auto; place-items: center; inline-size: var(--cdt-space-6); block-size: var(--cdt-space-6); border-radius: var(--cdt-radius-pill); background: var(--cdt-surface-tint-1); }
   .cdt-banner__body { display: grid; min-inline-size: 0; flex: 1 1 auto; gap: var(--cdt-space-1); line-height: var(--cdt-font-line-height-md); }
   .cdt-banner__title { color: var(--cdt-text-primary); font-weight: 650; line-height: var(--cdt-font-line-height-base); }
@@ -785,8 +879,17 @@
   .cdt-spinner svg { inline-size: var(--cdt-spinner-size); block-size: var(--cdt-spinner-size); transform: rotate(-90deg); animation: cdt-spin var(--cdt-motion-spin) infinite; }
   .cdt-spinner--sm svg { inline-size: var(--cdt-spinner-size-compact); block-size: var(--cdt-spinner-size-compact); }
 
-  /* cdt.component outranks cdt.reset, so shadow-bearing controls must restate the complete ring. */
-  .cdt-btn:focus-visible,
+  /*
+   * cdt.component outranks cdt.reset, so shadow-bearing controls must restate the complete ring.
+   *
+   * 버튼만 `:not(:disabled)`을 함께 쓴다. 버튼의 hover 규칙은
+   * `.cdt-btn:not(:disabled):hover`(명시성 0,3,0)라 클래스 하나짜리
+   * `focus-visible`(0,2,0)을 이겨, 키보드로 포커스한 버튼에 마우스가 겹치면
+   * 링이 사라졌다(실측). 같은 형태로 명시성을 맞추면 소스 순서가 정하고,
+   * 이 규칙이 모든 hover 규칙보다 뒤에 있어 링이 살아남는다. 비활성 버튼은
+   * 포커스를 받지 않으므로 동작이 줄지 않는다 (DEV-034).
+   */
+  .cdt-btn:not(:disabled):focus-visible,
   .cdt-card--interactive:focus-visible,
   .cdt-input:focus-visible,
   .cdt-textarea:focus-visible,
@@ -817,6 +920,26 @@
   @keyframes cdt-dialog-exit {
     from { opacity: 1; transform: translate(-50%, -50%) scale(1); /* cdt-allow-literal: overlay resting geometry */ }
     to { opacity: 0; transform: translate(-50%, -48%) scale(0.98); /* cdt-allow-literal: overlay exit geometry */ }
+  }
+
+  @keyframes cdt-popover-enter {
+    from { opacity: 0; transform: scale(0.97); /* cdt-allow-literal: popover entrance scale */ }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  @keyframes cdt-popover-exit {
+    from { opacity: 1; transform: scale(1); }
+    to { opacity: 0; transform: scale(0.97); /* cdt-allow-literal: popover exit scale */ }
+  }
+
+  @keyframes cdt-drawer-enter-right { from { transform: translateX(100%); } to { transform: translateX(0); } }
+  @keyframes cdt-drawer-exit-right { from { transform: translateX(0); } to { transform: translateX(100%); } }
+  @keyframes cdt-drawer-enter-left { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+  @keyframes cdt-drawer-exit-left { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+
+  @keyframes cdt-banner-enter {
+    from { opacity: 0; transform: translateY(-4px); /* cdt-allow-literal: banner settle distance */ }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   .cdt-app-shell__nav {

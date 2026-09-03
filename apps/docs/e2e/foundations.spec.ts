@@ -79,6 +79,13 @@ async function captureMotionStates(page: Page, reducedMotion: "reduce" | "no-pre
     return { backgroundColor: style.backgroundColor, borderColor: style.borderColor, boxShadow: style.boxShadow, color: style.color, transform: style.transform };
   });
   await button.hover();
+  /*
+   * hover만의 상태를 잰다. 이 함수는 마지막에 버튼을 포커스하는데, 두 번째
+   * 호출에서 그 포커스가 남아 있으면 hover 읽기가 hover+focus가 된다. 예전에는
+   * hover 규칙이 포커스 링을 덮어 그 차이가 가려졌으나, 이제 링이 명시성으로
+   * 이기므로 두 실행의 결과가 갈린다 (DEV-034).
+   */
+  await page.evaluate(() => { (document.activeElement as HTMLElement | null)?.blur(); });
   await page.waitForTimeout(reducedMotion === "reduce" ? 50 : 400);
   const buttonHover = await read(button);
   await button.focus();

@@ -327,13 +327,14 @@ describe("FR-CSS-004 action and surface primitives", () => {
     expect(focus?.decls["box-shadow"]).toBe("var(--cdt-focus-ring)");
 
     const composedFocus = components.find((entry) =>
-      entry.selector.includes(".cdt-btn:focus-visible") &&
+      // 버튼만 `:not(:disabled)`을 함께 쓴다 — hover와 명시성을 맞추기 위해서다 (DEV-034).
+      entry.selector.includes(".cdt-btn:not(:disabled):focus-visible") &&
       entry.selector.includes(".cdt-input:focus-visible"),
     );
     expect(composedFocus?.decls["box-shadow"]).toBe("var(--cdt-focus-ring)");
     expect(composedFocus?.decls.transition).toBe("none");
     for (const selector of [
-      ".cdt-btn:focus-visible",
+      ".cdt-btn:not(:disabled):focus-visible",
       ".cdt-card--interactive:focus-visible",
       ".cdt-input:focus-visible",
       ".cdt-textarea:focus-visible",
@@ -552,5 +553,153 @@ describe("FR-CMP-008 meter fill animates on the compositor", () => {
       .filter((rule) => rule.decls["transition"] !== undefined && LAYOUT_PROPERTY.test(rule.decls["transition"]))
       .map((rule) => rule.selector);
     expect(offenders).toEqual([]);
+  });
+});
+
+describe("FR-CMP-006 surface entrance motion", () => {
+  const reducedRules = (css: string) =>
+    mediaRules(css, "cdt.base", /prefers-reduced-motion/).filter((rule) =>
+      /reduce/.test(rule.media.join(" ")),
+    );
+
+  // dist는 속성 선택자의 따옴표를 지운다.
+  const ENTER = [
+    [".cdt-select__content[data-state=open]", "cdt-popover-enter var(--cdt-motion-standard)"],
+    // Menu는 드롭다운이라 Select와 같은 예산을 쓴다. Tooltip만 작은 팝오버 예산이다.
+    [".cdt-menu[data-state=open]", "cdt-popover-enter var(--cdt-motion-standard)"],
+    [".cdt-drawer--right[data-state=open]", "cdt-drawer-enter-right var(--cdt-motion-standard)"],
+    [".cdt-drawer--left[data-state=open]", "cdt-drawer-enter-left var(--cdt-motion-standard)"],
+  ] as const;
+
+  test.each(bundles)("%s: every surface that appears has an entrance", (_name, css) => {
+    for (const [selector, animation] of ENTER) {
+      const rule = rulesInLayer(css, "cdt.component").find((entry) => entry.selector === selector);
+      expect(rule?.decls["animation"]).toBe(animation);
+    }
+    // Tooltip은 Radix가 delayed-open·instant-open 둘을 쓴다.
+    const tooltip = rulesInLayer(css, "cdt.component").find((entry) =>
+      entry.selector.includes(".cdt-tooltip[data-state=delayed-open]"),
+    );
+    expect(tooltip?.decls["animation"]).toBe("cdt-popover-enter var(--cdt-motion-fast)");
+    // Banner는 data-state가 없다 — 마운트 애니메이션 하나뿐이다.
+    const banner = rulesInLayer(css, "cdt.component").find((entry) => entry.selector === ".cdt-banner");
+    expect(banner?.decls["animation"]).toBe("cdt-banner-enter var(--cdt-motion-fast)");
+  });
+
+  test.each(bundles)("%s: Tooltip covers both of Radix's open states", (_name, css) => {
+    // Radix는 지연 열림과 즉시 열림을 다른 값으로 준다. 하나만 걸면 그 경로에서 모션이 사라진다.
+    const tooltip = rulesInLayer(css, "cdt.component").find((entry) =>
+      entry.selector.includes(".cdt-tooltip[data-state=delayed-open]"),
+    );
+    expect(tooltip?.selector).toContain(".cdt-tooltip[data-state=instant-open]");
+  });
+
+  test.each(bundles)("%s: every closed state animates out with fill-mode forwards", (_name, css) => {
+    // `forwards`가 빠지면 Presence가 언마운트하기 직전 한 프레임 원래 모습으로 튄다.
+    const EXIT = [
+      [".cdt-select__content[data-state=closed]", "cdt-popover-exit var(--cdt-motion-fast) forwards"],
+      [".cdt-tooltip[data-state=closed]", "cdt-popover-exit var(--cdt-motion-fast) forwards"],
+      [".cdt-menu[data-state=closed]", "cdt-popover-exit var(--cdt-motion-fast) forwards"],
+      [".cdt-drawer--right[data-state=closed]", "cdt-drawer-exit-right var(--cdt-motion-fast) forwards"],
+      [".cdt-drawer--left[data-state=closed]", "cdt-drawer-exit-left var(--cdt-motion-fast) forwards"],
+    ] as const;
+    for (const [selector, animation] of EXIT) {
+      const rule = rulesInLayer(css, "cdt.component").find((entry) => entry.selector === selector);
+      expect(rule?.decls["animation"]).toBe(animation);
+    }
+  });
+
+  test.each(bundles)("%s: trigger-anchored surfaces read Radix's transform origin", (_name, css) => {
+    const origins: Record<string, string> = {
+      ".cdt-select__content": "var(--radix-select-content-transform-origin)",
+      ".cdt-tooltip": "var(--radix-popper-transform-origin)",
+      ".cdt-menu": "var(--radix-popper-transform-origin)",
+    };
+    for (const [selector, expected] of Object.entries(origins)) {
+      const rule = rulesInLayer(css, "cdt.component").find((entry) => entry.selector === selector);
+      expect(rule?.decls["transform-origin"]).toBe(expected);
+    }
+    // 모달은 면제다 — 중앙에서 등장한다.
+    const dialog = rulesInLayer(css, "cdt.component").find((entry) => entry.selector === ".cdt-dialog");
+    expect(dialog?.decls["transform-origin"]).toBeUndefined();
+  });
+
+  test.each(bundles)("%s: reduced motion hides every closed popover so Presence unmounts at once", (_name, css) => {
+    const hidden = reducedRules(css).filter((rule) => rule.decls["display"] === "none");
+    const selectors = hidden.flatMap((rule) => rule.selector.split(",").map((part) => part.trim()));
+    for (const surface of [".cdt-select__content", ".cdt-tooltip", ".cdt-menu", ".cdt-drawer"]) {
+      expect(selectors.some((part) => part.endsWith(`${surface}[data-state=closed]`))).toBe(true);
+    }
+  });
+});
+
+describe("FR-CSS-002 browser defaults never leak", () => {
+  // cdt.reset은 index.css에만 있다 — component.css는 설계상 그것을 담지 않는다.
+  test("fieldset, legend and mark are reset to the token palette", () => {
+    const reset = topLevelRules(index, "cdt.reset");
+    const fieldset = reset.find((rule) => rule.selector === "fieldset");
+    expect(fieldset?.decls["border"]).toBe("0");
+    expect(fieldset?.decls["padding"]).toBe("0");
+
+    // UA 기본은 형광 노랑에 검은 글자다 — 팔레트 어디에도 없는 색이다.
+    const mark = reset.find((rule) => rule.selector === "mark");
+    expect(mark?.decls["background-color"]).toBe("var(--cdt-accent-soft)");
+    expect(mark?.decls["color"]).toBe("var(--cdt-text-primary)");
+  });
+});
+
+describe("FR-CMP-005 sort direction is visible, not only announced", () => {
+  test.each(bundles)("%s: the header cell draws a glyph per aria-sort value", (_name, css) => {
+    const component = rulesInLayer(css, "cdt.component");
+    // `/ ""`는 대체 텍스트다. 없으면 글리프가 접근성 이름에 들어가 `aria-sort`와
+    // 중복으로 읽힌다 (Chromium AX 트리로 실측). 그것까지 함께 건다.
+    const glyphs: Record<string, string> = {
+      // dist는 `::after`를 `:after`로 줄이고 속성 선택자의 따옴표를 지운다.
+      '.cdt-table__header-cell[aria-sort]:after': '"↕" / ""',
+      '.cdt-table__header-cell[aria-sort=ascending]:after': '"↑" / ""',
+      '.cdt-table__header-cell[aria-sort=descending]:after': '"↓" / ""',
+    };
+    for (const [selector, content] of Object.entries(glyphs)) {
+      const rule = component.find((entry) => entry.selector === selector);
+      expect(rule?.decls["content"]).toBe(content);
+    }
+  });
+});
+
+describe("FR-CMP-004 removable badge stays badge-sized", () => {
+  test.each(bundles)("%s: the dismiss control matches the badge line height", (_name, css) => {
+    const rule = rulesInLayer(css, "cdt.component").find(
+      (entry) => entry.selector === ".cdt-badge__dismiss.cdt-btn",
+    );
+    // 기본 IconButton을 그대로 넣으면 배지가 제 높이보다 훨씬 커져 칩이 아니게 된다.
+    expect(rule?.decls["inline-size"]).toBe("var(--cdt-badge-line-height)");
+    expect(rule?.decls["block-size"]).toBe("var(--cdt-badge-line-height)");
+  });
+
+  test.each(bundles)("%s: the dismiss keeps its flat surface through hover and press", (_name, css) => {
+    // 같은 레이어에서는 명시성이 이긴다 — 클래스 둘짜리 기본 규칙만으로는
+    // `.cdt-btn:not(:disabled):hover`(클래스 셋)가 box-shadow를 되살린다.
+    const rule = rulesInLayer(css, "cdt.component").find((entry) =>
+      entry.selector.includes(".cdt-badge__dismiss.cdt-btn:not(:disabled):hover"),
+    );
+    expect(rule?.decls["box-shadow"]).toBe("none");
+    expect(rule?.selector).toMatch(/:active/);
+  });
+});
+
+describe("FR-A11Y-001 the focus ring survives a hovering pointer", () => {
+  test.each(bundles)("%s: the button focus ring matches hover specificity and comes later", (_name, css) => {
+    const focus = rulesInLayer(css, "cdt.component").find((rule) =>
+      rule.selector.includes(".cdt-btn:not(:disabled):focus-visible"),
+    );
+    expect(focus?.decls["box-shadow"]).toBe("var(--cdt-focus-ring)");
+
+    // 순서 단언은 존재 확인을 먼저 한다 — indexOf는 없는 문자열에 -1을 준다.
+    const hoverAt = css.indexOf(".cdt-btn:not(:disabled):hover");
+    const focusAt = css.indexOf(".cdt-btn:not(:disabled):focus-visible");
+    expect(hoverAt).toBeGreaterThan(-1);
+    expect(focusAt).toBeGreaterThan(-1);
+    // 명시성이 같으므로 뒤에 오는 쪽이 이긴다.
+    expect(focusAt).toBeGreaterThan(hoverAt);
   });
 });
