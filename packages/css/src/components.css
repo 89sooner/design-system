@@ -219,6 +219,7 @@
    * 44px로 커져 필터 칩이 아니게 된다 (DEV-033).
    */
   .cdt-badge__dismiss.cdt-btn {
+    position: relative;
     inline-size: var(--cdt-badge-line-height);
     min-block-size: var(--cdt-badge-line-height);
     block-size: var(--cdt-badge-line-height);
@@ -229,6 +230,24 @@
     box-shadow: none;
     margin-inline-end: calc(var(--cdt-space-1) * -1);
     color: inherit;
+  }
+
+  /*
+   * 보이는 크기와 조작 영역은 다른 문제다. 위 규칙이 버튼을 배지의 글자 높이로
+   * 줄이는 것은 알약 형태를 지키려는 것인데, 그 크기로 조작까지 하게 두면
+   * `IconButton`의 compact 조작 대상(34px)이 배지 안에서만 18px로 조용히
+   * 줄어든다 — 문서화된 계약을 소리 없이 어기는 자리다 (FR-CMP-004 AC-6,
+   * DEV-036). 투명한 의사 요소가 레이아웃을 바꾸지 않고 영역만 넓힌다.
+   * 중앙 정렬이므로 물리 좌표를 쓴다 — 방향에 따라 달라질 것이 없다.
+   */
+  .cdt-badge__dismiss.cdt-btn::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    inline-size: 34px; /* cdt-allow-literal: C-002 compact 조작 대상과 같은 값 */
+    block-size: 34px; /* cdt-allow-literal: C-002 compact 조작 대상과 같은 값 */
+    transform: translate(-50%, -50%);
   }
 
   /*
@@ -345,7 +364,16 @@
    * 정렬 방향을 눈으로도 알린다. `aria-sort`는 스크린 리더에만 읽히므로,
    * 같은 사실을 글리프로 그려 두 사용자가 같은 것을 안다 (DEV-033).
    */
-  .cdt-table__header-cell[aria-sort]::after {
+  /*
+   * 값마다 셀렉터를 적는다. `[aria-sort]` 하나로 받으면 이 시스템이 그리지 않는
+   * 값(`other`는 네이티브가 허용한다)까지 미정렬 글리프를 받아, 보조 기술은
+   * "다른 기준으로 정렬됨"을 읽는데 눈에는 "정렬 안 됨"이 보인다 — 둘이 서로
+   * 다른 사실을 말한다 (FR-CMP-005 AC-6, DEV-038). 표현하지 않는 값에는
+   * 아무것도 그리지 않는 편이 틀린 것을 그리는 것보다 낫다.
+   */
+  .cdt-table__header-cell[aria-sort="none"]::after,
+  .cdt-table__header-cell[aria-sort="ascending"]::after,
+  .cdt-table__header-cell[aria-sort="descending"]::after {
     display: inline-block;
     margin-inline-start: var(--cdt-space-1);
     /*
@@ -548,6 +576,17 @@
 
   .cdt-drawer--right { inset-inline-end: 0; }
   .cdt-drawer--left { inset-inline-start: 0; }
+
+  /*
+   * 배치는 논리 속성(`inset-inline-*`)이 정하는데 이동은 물리 축(`translateX`)이라
+   * RTL에서 둘이 어긋났다. `--right` 서랍은 RTL에서 화면 왼쪽에 안착하는데
+   * `translateX(100%)`가 오른쪽 밖에서 출발시켜, 서랍이 보이는 내용을 통째로
+   * 가로질러 들어왔다(실측: 컨테이너 300~900에서 801~1301부터 시작) (DEV-037).
+   * keyframe은 방향을 모르므로 부호를 변수로 넘긴다 — 규칙 넷을 여덟으로 불리지
+   * 않으면서 두 방향이 같은 곡선을 쓴다.
+   */
+  .cdt-drawer { --cdt-drawer-shift: 100%; }
+  .cdt-drawer:dir(rtl) { --cdt-drawer-shift: -100%; }
 
   .cdt-drawer--right[data-state="open"] { animation: cdt-drawer-enter-right var(--cdt-motion-standard); }
   .cdt-drawer--left[data-state="open"] { animation: cdt-drawer-enter-left var(--cdt-motion-standard); }
@@ -872,6 +911,14 @@
   .cdt-meter { display: grid; gap: var(--cdt-space-2); }
   .cdt-meter__track { overflow: hidden; block-size: var(--cdt-feedback-meter-height); border: var(--cdt-border-width-hairline) solid var(--cdt-border-subtle); border-radius: var(--cdt-radius-pill); background: var(--cdt-feedback-meter-track-background); box-shadow: inset 0 1px 2px var(--cdt-surface-overlay); /* cdt-allow-literal: recessed progress track */ }
   .cdt-meter__fill { block-size: 100%; inline-size: 100%; border-radius: inherit; background: var(--cdt-feedback-meter-fill-normal); box-shadow: 0 0 var(--cdt-space-2) var(--cdt-accent-glow); transform: scaleX(var(--cdt-meter-ratio)); transform-origin: left center; transition: transform var(--cdt-motion-standard), background var(--cdt-motion-standard); }
+  /*
+   * 채움은 트랙의 논리 시작 가장자리에서 자란다. 백분율 `inline-size`이던 시절에는
+   * 논리 속성이 그것을 저절로 해 줬는데, 레이아웃 전환을 피하려고 `scaleX`로 바꾸면서
+   * 그 성질이 빠졌다 — `transform-origin`에는 논리 키워드가 없다. RTL 문서에서
+   * 미터가 반대 끝에서 채워지던 자리다(실측) (DEV-035).
+   */
+  .cdt-meter__fill:dir(rtl) { transform-origin: right center; }
+
   .cdt-meter__value { color: var(--cdt-text-muted); font-size: var(--cdt-font-size-sm); font-variant-numeric: tabular-nums; font-weight: 600; text-align: end; }
   .cdt-meter--warning .cdt-meter__fill { background: var(--cdt-feedback-meter-fill-warning); }
   .cdt-meter--exceeded .cdt-meter__fill { background: var(--cdt-feedback-meter-fill-exceeded); }
@@ -941,10 +988,10 @@
     to { opacity: 0; transform: scale(0.97); /* cdt-allow-literal: popover exit scale */ }
   }
 
-  @keyframes cdt-drawer-enter-right { from { transform: translateX(100%); } to { transform: translateX(0); } }
-  @keyframes cdt-drawer-exit-right { from { transform: translateX(0); } to { transform: translateX(100%); } }
-  @keyframes cdt-drawer-enter-left { from { transform: translateX(-100%); } to { transform: translateX(0); } }
-  @keyframes cdt-drawer-exit-left { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+  @keyframes cdt-drawer-enter-right { from { transform: translateX(var(--cdt-drawer-shift)); } to { transform: translateX(0); } }
+  @keyframes cdt-drawer-exit-right { from { transform: translateX(0); } to { transform: translateX(var(--cdt-drawer-shift)); } }
+  @keyframes cdt-drawer-enter-left { from { transform: translateX(calc(var(--cdt-drawer-shift) * -1)); } to { transform: translateX(0); } }
+  @keyframes cdt-drawer-exit-left { from { transform: translateX(0); } to { transform: translateX(calc(var(--cdt-drawer-shift) * -1)); } }
 
   @keyframes cdt-banner-enter {
     from { opacity: 0; transform: translateY(-4px); /* cdt-allow-literal: banner settle distance */ }
