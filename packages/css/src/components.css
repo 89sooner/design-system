@@ -243,6 +243,15 @@
     box-shadow: none;
   }
 
+  /*
+   * 위 규칙은 명시성이 (0,4,0)이라 공용 포커스 링 규칙(0,3,0)을 이긴다. 그대로
+   * 두면 포커스한 제거 버튼에 마우스가 겹칠 때 링이 사라진다(실측). 같은
+   * 명시성으로 링을 다시 세우고 소스에서 뒤에 두어 이기게 한다 (DEV-034).
+   */
+  .cdt-badge__dismiss.cdt-btn:not(:disabled):focus-visible {
+    box-shadow: var(--cdt-focus-ring);
+  }
+
   .cdt-badge--neutral {
     border-color: var(--cdt-border-default);
     background: var(--cdt-surface-raised);

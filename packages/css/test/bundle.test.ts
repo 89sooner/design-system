@@ -687,6 +687,16 @@ describe("FR-CMP-004 removable badge stays badge-sized", () => {
   });
 });
 
+/**
+ * 셀렉터의 명시성 b값(클래스·속성·의사클래스 수). `:not(...)`은 인자의
+ * 명시성을 그대로 물려주므로 괄호만 벗겨 세면 된다.
+ */
+const specificityB = (selector: string): number => {
+  const flat = selector.replace(/::[\w-]+/g, "").replace(/:not\(|:is\(|:where\(|\)/g, (m) => (m === ":where(" ? "\u0000" : ""));
+  if (flat.includes("\u0000")) return 0; // :where()는 0을 기여한다 — 이 저장소에는 없지만 안전하게 둔다
+  return (flat.match(/\.[\w-]+/g) ?? []).length + (flat.match(/\[[^\]]+\]/g) ?? []).length + (flat.match(/:[\w-]+/g) ?? []).length;
+};
+
 describe("FR-A11Y-001 the focus ring survives a hovering pointer", () => {
   test.each(bundles)("%s: the button focus ring matches hover specificity and comes later", (_name, css) => {
     const focus = rulesInLayer(css, "cdt.component").find((rule) =>
@@ -701,5 +711,31 @@ describe("FR-A11Y-001 the focus ring survives a hovering pointer", () => {
     expect(focusAt).toBeGreaterThan(-1);
     // 명시성이 같으므로 뒤에 오는 쪽이 이긴다.
     expect(focusAt).toBeGreaterThan(hoverAt);
+  });
+
+  test.each(bundles)("%s: no hover rule that paints a shadow can out-rank the focus ring", (_name, css) => {
+    /*
+     * 개별 사례가 아니라 부류를 막는다. 그림자를 칠하는 hover 규칙이 링 규칙보다
+     * 명시성이 높으면(또는 같으면서 뒤에 오면) 포커스 표시가 사라진다. 실제로
+     * `.cdt-badge__dismiss.cdt-btn:not(:disabled):hover`(0,4,0)가 공용 링
+     * 규칙(0,3,0)을 이겨 그렇게 됐다 (DEV-034).
+     */
+    const rules = rulesInLayer(css, "cdt.component");
+    const parts = (rule: { selector: string }) => rule.selector.split(",").map((s) => s.trim());
+
+    const focus = rules
+      .map((rule, index) => ({ index, rule }))
+      .filter(({ rule }) => rule.decls["box-shadow"] === "var(--cdt-focus-ring)")
+      .flatMap(({ index, rule }) => parts(rule).filter((s) => s.includes(":focus-visible")).map((s) => ({ index, spec: specificityB(s) })));
+    expect(focus.length).toBeGreaterThan(0);
+
+    const offenders = rules
+      .map((rule, index) => ({ index, rule }))
+      .filter(({ rule }) => rule.decls["box-shadow"] !== undefined && rule.selector.includes(":hover"))
+      .flatMap(({ index, rule }) => parts(rule).filter((s) => s.includes(":hover")).map((s) => ({ selector: s, index, spec: specificityB(s) })))
+      .filter((hover) => !focus.some((f) => f.spec > hover.spec || (f.spec === hover.spec && f.index > hover.index)))
+      .map((hover) => hover.selector);
+
+    expect(offenders).toEqual([]);
   });
 });
