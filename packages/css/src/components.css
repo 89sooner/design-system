@@ -879,8 +879,17 @@
   .cdt-spinner svg { inline-size: var(--cdt-spinner-size); block-size: var(--cdt-spinner-size); transform: rotate(-90deg); animation: cdt-spin var(--cdt-motion-spin) infinite; }
   .cdt-spinner--sm svg { inline-size: var(--cdt-spinner-size-compact); block-size: var(--cdt-spinner-size-compact); }
 
-  /* cdt.component outranks cdt.reset, so shadow-bearing controls must restate the complete ring. */
-  .cdt-btn:focus-visible,
+  /*
+   * cdt.component outranks cdt.reset, so shadow-bearing controls must restate the complete ring.
+   *
+   * 버튼만 `:not(:disabled)`을 함께 쓴다. 버튼의 hover 규칙은
+   * `.cdt-btn:not(:disabled):hover`(명시성 0,3,0)라 클래스 하나짜리
+   * `focus-visible`(0,2,0)을 이겨, 키보드로 포커스한 버튼에 마우스가 겹치면
+   * 링이 사라졌다(실측). 같은 형태로 명시성을 맞추면 소스 순서가 정하고,
+   * 이 규칙이 모든 hover 규칙보다 뒤에 있어 링이 살아남는다. 비활성 버튼은
+   * 포커스를 받지 않으므로 동작이 줄지 않는다 (DEV-034).
+   */
+  .cdt-btn:not(:disabled):focus-visible,
   .cdt-card--interactive:focus-visible,
   .cdt-input:focus-visible,
   .cdt-textarea:focus-visible,

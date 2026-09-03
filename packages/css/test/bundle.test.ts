@@ -327,13 +327,14 @@ describe("FR-CSS-004 action and surface primitives", () => {
     expect(focus?.decls["box-shadow"]).toBe("var(--cdt-focus-ring)");
 
     const composedFocus = components.find((entry) =>
-      entry.selector.includes(".cdt-btn:focus-visible") &&
+      // 버튼만 `:not(:disabled)`을 함께 쓴다 — hover와 명시성을 맞추기 위해서다 (DEV-034).
+      entry.selector.includes(".cdt-btn:not(:disabled):focus-visible") &&
       entry.selector.includes(".cdt-input:focus-visible"),
     );
     expect(composedFocus?.decls["box-shadow"]).toBe("var(--cdt-focus-ring)");
     expect(composedFocus?.decls.transition).toBe("none");
     for (const selector of [
-      ".cdt-btn:focus-visible",
+      ".cdt-btn:not(:disabled):focus-visible",
       ".cdt-card--interactive:focus-visible",
       ".cdt-input:focus-visible",
       ".cdt-textarea:focus-visible",
@@ -683,5 +684,22 @@ describe("FR-CMP-004 removable badge stays badge-sized", () => {
     );
     expect(rule?.decls["box-shadow"]).toBe("none");
     expect(rule?.selector).toMatch(/:active/);
+  });
+});
+
+describe("FR-A11Y-001 the focus ring survives a hovering pointer", () => {
+  test.each(bundles)("%s: the button focus ring matches hover specificity and comes later", (_name, css) => {
+    const focus = rulesInLayer(css, "cdt.component").find((rule) =>
+      rule.selector.includes(".cdt-btn:not(:disabled):focus-visible"),
+    );
+    expect(focus?.decls["box-shadow"]).toBe("var(--cdt-focus-ring)");
+
+    // 순서 단언은 존재 확인을 먼저 한다 — indexOf는 없는 문자열에 -1을 준다.
+    const hoverAt = css.indexOf(".cdt-btn:not(:disabled):hover");
+    const focusAt = css.indexOf(".cdt-btn:not(:disabled):focus-visible");
+    expect(hoverAt).toBeGreaterThan(-1);
+    expect(focusAt).toBeGreaterThan(-1);
+    // 명시성이 같으므로 뒤에 오는 쪽이 이긴다.
+    expect(focusAt).toBeGreaterThan(hoverAt);
   });
 });
