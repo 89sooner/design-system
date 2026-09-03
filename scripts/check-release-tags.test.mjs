@@ -13,7 +13,7 @@
  * Refs: DEV-040 FR-DX-005 JOB-REL-001
  */
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, copyFileSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, copyFileSync, chmodSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -65,11 +65,43 @@ const snapshot = (repo, entries) => {
   return file;
 };
 
-const run = (repo, snapshotFile = null) => {
+const run = (repo, snapshotFile = null, extra = {}) => {
   const args = ["scripts/check-release-tags.mjs"];
   if (snapshotFile !== null) args.push("--published-before", snapshotFile);
   try {
-    return { ok: true, output: execFileSync("node", args, { cwd: repo, encoding: "utf8" }) };
+    return { ok: true, output: execFileSync("node", args, { cwd: repo, encoding: "utf8", ...extra }) };
+  } catch (error) {
+    return { ok: false, output: `${error.stdout ?? ""}\n${error.stderr ?? ""}` };
+  }
+};
+
+/**
+ * `npm` 대역. `published`에 있는 이름만 버전을 답하고, 나머지는 npm이 실제로 내는 404 형태로
+ * 실패한다. `failWith`를 주면 404가 아닌 실패를 흉내낸다.
+ */
+const fakeNpm = (repo, { published = [], failWith = null } = {}) => {
+  const dir = mkdtempSync(join(root, "npmbin-"));
+  const list = published.join(" ");
+  const body =
+    failWith === null
+      ? `#!/usr/bin/env bash\nspec="$2"\nfor p in ${list}; do [ "$spec" = "$p" ] && { echo "\${spec##*@}"; exit 0; }; done\n` +
+        `echo "npm error code E404" >&2\necho "npm error 404 Not Found" >&2\nexit 1\n`
+      : `#!/usr/bin/env bash\necho "npm error code ${failWith}" >&2\necho "npm error ${failWith} Forbidden" >&2\nexit 1\n`;
+  writeFileSync(join(dir, "npm"), body);
+  chmodSync(join(dir, "npm"), 0o755);
+  return dir;
+};
+
+const snapshotRun = (repo, npmBin, outFile) => {
+  try {
+    return {
+      ok: true,
+      output: execFileSync("node", ["scripts/check-release-tags.mjs", "--snapshot", outFile], {
+        cwd: repo,
+        encoding: "utf8",
+        env: { ...process.env, PATH: `${npmBin}:${process.env.PATH ?? ""}` },
+      }),
+    };
   } catch (error) {
     return { ok: false, output: `${error.stdout ?? ""}\n${error.stderr ?? ""}` };
   }
@@ -184,5 +216,54 @@ describe("발행 스냅숏이 있으면 소유를 실측으로 가른다 (DEV-04
     const result = run(repo);
     expect(result.ok).toBe(true);
     expect(result.output).toContain("manifest-equality fallback");
+  });
+});
+
+describe("발행 전 게이트 (DEV-042)", () => {
+  /*
+   * 발행 뒤의 검사는 이 경우를 잡아도 늦다 (PR #25 리뷰 P1): tarball이 이미 레지스트리에
+   * 올라갔고 npm은 같은 버전을 다시 받지 않으므로 고친 소스로 재발행할 수도 없다.
+   */
+  it("이번 실행이 발행할 패키지에 낡은 태그가 있으면 발행 전에 막는다", () => {
+    const repo = makeRepo();
+    const bump = commitVersions(repo, { tokens: "0.3.0", css: "0.3.1", react: "0.3.1" }, "bump");
+    tag(repo, "tokens", "0.3.0", bump);
+    tag(repo, "css", "0.3.1", bump);
+    tag(repo, "react", "0.3.1", bump);
+    writeFileSync(join(repo, "packages/css/src.txt"), "moved after the bump\n");
+    git(repo, "add", "-A");
+    git(repo, "commit", "-qm", "source moves");
+
+    // tokens@0.3.0만 레지스트리에 있다 — css·react는 이번 실행이 발행한다.
+    const npmBin = fakeNpm(repo, { published: ["@conductor-by-89soone/tokens@0.3.0"] });
+    const result = snapshotRun(repo, npmBin, join(repo, "snap.json"));
+    expect(result.ok).toBe(false);
+    expect(result.output).toContain("stale tag(s) before publishing");
+    expect(result.output).toContain("css@0.3.1");
+    expect(result.output).not.toContain("tokens@0.3.0"); // 건너뛸 패키지는 대상이 아니다
+  });
+
+  it("정상이면 스냅숏을 쓰고 무엇을 건너뛰는지 말한다", () => {
+    const repo = makeRepo();
+    const head = commitVersions(repo, { tokens: "0.3.0", css: "0.3.1", react: "0.3.1" }, "bump");
+    tag(repo, "tokens", "0.3.0", head);
+    const npmBin = fakeNpm(repo, { published: ["@conductor-by-89soone/tokens@0.3.0"] });
+    const out = join(repo, "snap.json");
+    const result = snapshotRun(repo, npmBin, out);
+    expect(result.ok).toBe(true);
+    expect(result.output).toContain("already on the registry");
+    const snap = JSON.parse(readFileSync(out, "utf8"));
+    expect(snap["@conductor-by-89soone/tokens"].published).toBe(true);
+    expect(snap["@conductor-by-89soone/css"].published).toBe(false);
+  });
+
+  it("404가 아닌 레지스트리 오류에는 스냅숏을 중단한다", () => {
+    const repo = makeRepo();
+    commitVersions(repo, { tokens: "0.3.0", css: "0.3.1", react: "0.3.1" }, "bump");
+    const npmBin = fakeNpm(repo, { failWith: "E403" });
+    const result = snapshotRun(repo, npmBin, join(repo, "snap.json"));
+    expect(result.ok).toBe(false);
+    expect(result.output).toContain("registry lookup failed");
+    expect(result.output).toContain("E403");
   });
 });

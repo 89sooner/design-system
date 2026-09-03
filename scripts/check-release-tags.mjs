@@ -55,15 +55,26 @@ async function readSnapshot(file) {
   return JSON.parse(await readFile(file, "utf8"));
 }
 
+/**
+ * `npm view` exits non-zero for a missing version **and** for transient, authorization, proxy and
+ * registry failures alike (PR #25 review P2). Treating every failure as "not published" would let a
+ * lookup error reclassify an already-released package as one this run publishes, and the mistake
+ * would only surface after other packages had been published. Only a confirmed 404 answers the
+ * question; anything else aborts the snapshot.
+ */
 function registryHasVersion(name, version) {
   try {
     const out = execFileSync("npm", ["view", `${name}@${version}`, "version"], {
       encoding: "utf8",
-      stdio: ["ignore", "pipe", "ignore"],
+      stdio: ["ignore", "pipe", "pipe"],
     }).trim();
     return out !== "";
-  } catch {
-    return false; // `npm view` exits non-zero when the version does not exist
+  } catch (error) {
+    const detail = `${error.stderr ?? ""}${error.stdout ?? ""}`;
+    if (/\bE?404\b/.test(detail)) return false;
+    console.error(`error[RELEASE-TAG]: registry lookup failed for ${name}@${version}`);
+    console.error(detail.trim().split("\n").slice(-5).join("\n"));
+    process.exit(1);
   }
 }
 
@@ -74,12 +85,41 @@ const publishedBeforeFile = parseValue(argv, "--published-before");
 const head = git(["rev-parse", "HEAD"]);
 
 if (snapshotOut !== null) {
-  // 발행 **전에** 부른다. 이 시점에 레지스트리가 이미 가진 버전은 이 실행이 발행하지 않는다.
+  /*
+   * 발행 **전에** 부른다. 두 가지를 한다.
+   *
+   * 1. 레지스트리가 이미 가진 버전을 기록한다 — 그 패키지는 `changeset publish`가 건너뛴다.
+   * 2. **이번 실행이 발행할 패키지에 이미 낡은 태그가 있으면 여기서 막는다** (PR #25 리뷰 P1).
+   *    발행 뒤의 검사는 이 경우를 잡아도 늦다: tarball이 이미 레지스트리에 올라갔고, npm은 같은
+   *    버전을 다시 받지 않으므로 고친 소스로 재발행할 수도 없다. 되돌릴 수 없는 부작용 앞에
+   *    있어야 할 검사가 뒤에 있으면 옳게 잡아도 대가를 치른다 (DEV-524가 가르친 것과 같은 자리).
+   */
   const snapshot = {};
+  const stale = [];
   for (const packageDir of PACKAGE_DIRS) {
     const manifest = JSON.parse(await readFile(resolve(ROOT, packageDir, "package.json"), "utf8"));
-    snapshot[manifest.name] = { version: manifest.version, published: registryHasVersion(manifest.name, manifest.version) };
+    const published = registryHasVersion(manifest.name, manifest.version);
+    snapshot[manifest.name] = { version: manifest.version, published };
+    if (published) continue; // 이번 실행이 발행하지 않는다 — 그 태그는 이전 릴리스의 것이다
+
+    const ref = `refs/tags/${manifest.name}@${manifest.version}`;
+    const localObject = git(["rev-parse", "--verify", ref], { allowFailure: true });
+    if (localObject === null) continue; // 아직 없다 — `changeset publish`가 발행하며 만든다
+    const target = git(["rev-list", "-n", "1", ref]);
+    if (target !== head) {
+      stale.push(
+        `${manifest.name}@${manifest.version}: tag already exists on ${target}, not release HEAD ${head} — ` +
+          "this run would publish HEAD's contents under a tag naming different source",
+      );
+    }
   }
+
+  if (stale.length > 0) {
+    console.error(`error[RELEASE-TAG]: ${stale.length} stale tag(s) before publishing`);
+    for (const problem of stale) console.error(`  ${problem}`);
+    process.exit(1);
+  }
+
   await writeFile(snapshotOut, `${JSON.stringify(snapshot, null, 2)}\n`);
   const skipped = Object.entries(snapshot).filter(([, entry]) => entry.published).map(([name]) => name);
   console.log(
