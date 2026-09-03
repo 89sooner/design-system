@@ -426,6 +426,7 @@ WP-009 완료 검증에서 발견한 작업 패키지 검증 명령의 문서 �
 - [x] `conductor_implementation_traceability.md` — `DEV-043` 등록
 - [x] `scripts/check-release-tags.test.mjs` — 시험 열하나. 가벼운 태그가 HEAD에 있어도 게시 전에 막히는 것을 건다
 - [x] `pnpm test` 591/591 · `lint` 0 · `typecheck` 통과 · validator `--root .`·`--report`·`--strict` 종료 0
+- [x] **정정 (DEV-044)**: 위 두 문서가 처음에는 "게시하지 않은 패키지의 태그는 판정 대상이 아니다"라고 적었는데 코드보다 넓은 말이었다. 건너뛴 패키지에도 존재·annotated 여부·HEAD 도달성·원격 일치가 적용되며, 스냅숏이 면제하는 것은 **"태그 대상 == 릴리스 HEAD"** 하나뿐이다. 두 문장을 그 범위로 좁혔다
 
 ## 6. 미해소 오픈 결정
 

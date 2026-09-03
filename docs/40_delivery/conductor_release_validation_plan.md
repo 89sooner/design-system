@@ -1,6 +1,6 @@
 # Conductor Design System 릴리스 검증 계획
 
-> 상태: review | 버전: v0.7 | 갱신일: 2026-09-03
+> 상태: review | 버전: v0.8 | 갱신일: 2026-09-03
 
 ## 1. 목적과 범위
 
@@ -89,7 +89,7 @@ Conductor Design System은 `@conductor-by-89soone/tokens`, `@conductor-by-89soon
 0. 최초 게시 전에 저장소를 public으로 전환하고, npm org `conductor-by-89soone`의 namespace bootstrap과 패키지별 Trusted Publisher 등록을 완료한다. 이미 세 패키지가 존재하면 이 단계는 반복하지 않는다.
 1. changeset이 포함된 변경 PR을 병합하고 version PR이 semver와 **CHANGELOG.md**를 갱신하게 한다. version PR 병합을 정식 릴리스의 수동 승인으로 취급한다.
 2. Release 워크플로를 `workflow_dispatch`로 실행한다. 잡은 `pnpm build`로 `tokens → css → react → docs` 순서의 산출물을 새로 만들고, audit·secret·API 게이트를 지난 뒤 **게시 전 태그 게이트**(`check:release-tags -- --snapshot <file>`)를 통과해야 `pnpm changeset publish`를 OIDC/provenance와 함께 실행한다. 그 게이트는 레지스트리 상태를 기록하면서, 이번 실행이 게시할 패키지에 이미 있는 태그가 **가벼운 태그이거나 릴리스 HEAD가 아니면** 게시 전에 실패시킨다(CR-039, CR-040).
-3. 게시한 패키지의 annotated git tag가 릴리스 HEAD에 있고 로컬과 원격이 같은지 `--published-before <file>`로 확인하며, npm 버전에 SLSA provenance v1 attestation이 연결됐는지 확인한다(CR-025, CR-038). 이번 실행이 게시하지 않은 패키지의 태그는 이전 릴리스의 것이므로 판정 대상이 아니다.
+3. **세 패키지 전부**에 대해 annotated git tag가 존재하고 릴리스 HEAD의 조상이며 로컬과 원격의 tag object가 같은지 확인하고, npm 버전에 SLSA provenance v1 attestation이 연결됐는지 확인한다(CR-025, CR-038). `--published-before` 스냅숏이 면제하는 것은 **"태그 대상이 릴리스 HEAD와 같아야 한다"는 요구 하나뿐이다** — 이번 실행이 게시하지 않은 패키지의 태그는 이전 릴리스 커밋을 가리키는 것이 옳기 때문이다. 존재·종류·도달성·원격 일치는 그 패키지에도 그대로 적용된다.
 4. 별도 소비자 프로젝트가 npm 레지스트리 버전을 설치해 SCN-001 기본 흐름을 스모크한다: 설치 → `@conductor-by-89soone/css` import → `data-cdt-theme` 지정 → `Button` 렌더 → `tsc --noEmit`.
 5. 문서 사이트 정적 빌드 산출물을 GitHub Pages에 배포하고 HTTP 200, 현재 패키지 scope, 외부 요청 0건을 확인한다.
 6. `FR-DX-005`에 따라 생성된 변경 이력에 릴리스 버전과 관련 FR/WP ID가 기재되어 있는지 확인한다.
