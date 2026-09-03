@@ -167,11 +167,14 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      # **발행 전에** 레지스트리 상태를 찍는다 (DEV-041). 이 시점에 이미 있는 버전은
-      # `changeset publish`가 건너뛰므로 그 패키지의 태그는 이전 릴리스의 것이 옳고,
-      # 없는 버전은 이 실행이 발행하므로 태그가 release HEAD를 가리켜야 한다. 발행
-      # 뒤에는 둘을 구분할 수 없다 — 그때는 양쪽 다 레지스트리에 있다.
-      - name: snapshot registry state before publishing
+      # **발행 전에** 레지스트리 상태를 찍고, 그 자리에서 낡은 태그를 막는다 (DEV-041·DEV-042).
+      # 이미 있는 버전은 `changeset publish`가 건너뛰므로 그 패키지의 태그는 이전 릴리스의
+      # 것이 옳고, 없는 버전은 이 실행이 발행하므로 태그가 release HEAD를 가리켜야 한다.
+      # 발행 뒤에는 둘을 구분할 수 없다 — 그때는 양쪽 다 레지스트리에 있다.
+      #
+      # **이 단계가 발행 앞에 있는 것이 핵심이다.** 뒤의 검사가 같은 어긋남을 잡아도 늦다:
+      # tarball이 이미 올라갔고 npm은 같은 버전을 다시 받지 않아 고친 소스로 재발행할 수 없다.
+      - name: reject stale release tags and snapshot the registry
         run: pnpm check:release-tags -- --snapshot "$RUNNER_TEMP/published-before.json"
 
       - name: publish with provenance
