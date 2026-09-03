@@ -473,3 +473,40 @@ describe("FR-CMP-008 spinner animation", () => {
     expect(offenders).toEqual([]);
   });
 });
+
+describe("FR-CMP-008 AC-5 reduced-motion spinner label", () => {
+  // 레이어 순서가 명시도를 이긴다. 숨김과 노출이 같은 레이어(cdt.base)에 있어야
+  // 축소 모드의 노출 규칙이 적용된다 (DEV-029).
+  test.each(bundles)("%s: the clipping rule lives in cdt.base, not cdt.component", (_name, css) => {
+    const clipped = topLevelRules(css, "cdt.base").find((rule) => rule.selector === ".cdt-spinner__label");
+    expect(clipped?.decls["position"]).toBe("absolute");
+    expect(clipped?.decls["clip"]).toBe("rect(0, 0, 0, 0)");
+
+    const inComponent = rulesInLayer(css, "cdt.component").filter(
+      (rule) => rule.selector.split(",").some((part) => part.trim() === ".cdt-spinner__label"),
+    );
+    expect(inComponent).toEqual([]);
+  });
+
+  test.each(bundles)("%s: the spinner sizes its svg, not its box, so the revealed label can grow", (_name, css) => {
+    const svg = ruleFor(css, "cdt.component", /^\.cdt-spinner svg$/);
+    expect(svg?.decls["inline-size"]).toBe("var(--cdt-spinner-size)");
+    expect(svg?.decls["block-size"]).toBe("var(--cdt-spinner-size)");
+    // 계획 001의 시험과 같은 규칙을 본다 — 기하만 담은 동명 규칙을 앞에 두지 않는다.
+    expect(svg?.decls["animation"]).toBe("cdt-spin var(--cdt-motion-spin) infinite");
+
+    const box = topLevelRules(css, "cdt.component").find((rule) => rule.selector === ".cdt-spinner");
+    expect(box).toBeUndefined();
+  });
+
+  test.each(bundles)("%s: reduced motion reveals the label from the same layer with higher specificity", (_name, css) => {
+    const reveal = mediaRules(css, "cdt.base", /prefers-reduced-motion/).find(
+      (rule) => /reduce/.test(rule.media.join(" ")) && rule.selector.includes(".cdt-spinner__label"),
+    );
+    expect(reveal?.decls["position"]).toBe("static");
+    expect(reveal?.decls["clip"]).toBe("auto");
+    for (const part of reveal?.selector.split(",") ?? []) {
+      expect(part.trim()).toMatch(/^(?::root|\[data-cdt-theme\]) \.cdt-spinner__label$/);
+    }
+  });
+});

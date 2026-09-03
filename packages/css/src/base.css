@@ -64,6 +64,22 @@
   }
 
   /*
+   * The spinner label is screen-reader-only by default and becomes visible
+   * under reduced motion (FR-CMP-008 AC-5). Both halves live in cdt.base on
+   * purpose: FR-CSS-005 AC-4 pins the reduced-motion rule to this layer, and a
+   * later layer would out-rank it regardless of specificity — the clipping
+   * rule used to sit in cdt.component and the reveal never applied (DEV-029).
+   */
+  .cdt-spinner__label {
+    position: absolute;
+    inline-size: 1px; /* cdt-allow-literal: screen-reader-only clipping geometry */
+    block-size: 1px; /* cdt-allow-literal: screen-reader-only clipping geometry */
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  /*
    * Reduced motion, without `!important` (ADR-005 bans it) and without the
    * global `*` the source used (FR-CSS-005 AC-4).
    *

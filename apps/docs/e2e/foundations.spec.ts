@@ -95,7 +95,16 @@ test("FR-CSS-005 AC-1 through AC-3: reduced motion shows zero durations without 
 
   await expect(page.getByText("Reduced motion is enabled; final component states remain unchanged.")).toBeVisible();
   for (const value of await page.locator("[data-motion-value]").allTextContents()) expect(value).toMatch(/^0s\b/);
-  await expect(page.locator(".cdt-spinner__label")).toBeVisible();
+  // toBeVisible()은 1×1px로 잘린 상자도 "보인다"고 판정한다 — 계산값과 상자 크기로 노출을 건다 (DEV-029).
+  const spinnerLabel = page.locator(".cdt-spinner__label");
+  await expect(spinnerLabel).toBeVisible();
+  expect(
+    await spinnerLabel.evaluate((element) => {
+      const style = getComputedStyle(element);
+      const box = element.getBoundingClientRect();
+      return { position: style.position, clip: style.clip, revealed: box.width > 1 && box.height > 1 };
+    }),
+  ).toEqual({ position: "static", clip: "auto", revealed: true });
   await expect(page.getByText("64%", { exact: true })).toBeVisible();
   const computed = await page.locator('[data-motion-target="button"]').evaluate((element) => ({
     animationDuration: getComputedStyle(element).animationDuration,

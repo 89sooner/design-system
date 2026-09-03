@@ -767,17 +767,15 @@
   .cdt-progress-ring, .cdt-spinner { position: relative; display: inline-grid; place-items: center; }
   .cdt-progress-ring { inline-size: var(--cdt-progress-ring-size); block-size: var(--cdt-progress-ring-size); }
   .cdt-progress-ring--sm { inline-size: var(--cdt-progress-ring-size-compact); block-size: var(--cdt-progress-ring-size-compact); }
-  .cdt-spinner { inline-size: var(--cdt-spinner-size); block-size: var(--cdt-spinner-size); }
-  .cdt-spinner--sm { inline-size: var(--cdt-spinner-size-compact); block-size: var(--cdt-spinner-size-compact); }
-  .cdt-progress-ring svg, .cdt-spinner svg { inline-size: 100%; block-size: 100%; transform: rotate(-90deg); }
+  .cdt-progress-ring svg { inline-size: 100%; block-size: 100%; transform: rotate(-90deg); }
   .cdt-progress-ring__track, .cdt-spinner__track { fill: none; stroke: var(--cdt-progress-ring-track-stroke); stroke-width: 4; /* cdt-allow-literal: SVG stroke geometry */ }
   .cdt-progress-ring__indicator, .cdt-spinner__indicator { fill: none; stroke: var(--cdt-progress-ring-indicator-stroke); stroke-width: 4; /* cdt-allow-literal: SVG stroke geometry */ stroke-linecap: round; }
   .cdt-progress-ring__indicator { stroke-dasharray: 88; /* cdt-allow-literal: circle circumference approximation */ stroke-dashoffset: calc(88 * (1 - var(--cdt-progress-ring-ratio))); transition: stroke-dashoffset var(--cdt-motion-standard); }
   .cdt-progress-ring__label { color: var(--cdt-progress-ring-label-text); font-size: var(--cdt-font-size-sm); }
   .cdt-spinner__track { stroke: var(--cdt-spinner-track-stroke); }
   .cdt-spinner__indicator { stroke: var(--cdt-spinner-indicator-stroke); stroke-dasharray: 66; /* cdt-allow-literal: spinner visible arc */ stroke-linecap: round; }
-  .cdt-spinner svg { animation: cdt-spin var(--cdt-motion-spin) infinite; }
-  .cdt-spinner__label { position: absolute; inline-size: 1px; /* cdt-allow-literal: screen-reader-only clipping geometry */ block-size: 1px; /* cdt-allow-literal: screen-reader-only clipping geometry */ overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+  .cdt-spinner svg { inline-size: var(--cdt-spinner-size); block-size: var(--cdt-spinner-size); transform: rotate(-90deg); animation: cdt-spin var(--cdt-motion-spin) infinite; }
+  .cdt-spinner--sm svg { inline-size: var(--cdt-spinner-size-compact); block-size: var(--cdt-spinner-size-compact); }
 
   /* cdt.component outranks cdt.reset, so shadow-bearing controls must restate the complete ring. */
   .cdt-btn:focus-visible,
