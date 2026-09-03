@@ -625,7 +625,7 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
   - `app.css:1198-1213` — 4방향 슬라이드 키프레임.
   - **결정**: 소스는 배경과 전경을 리터럴로 선언한다(`app.css:1180-1181`, `1195`). `--cdt-tooltip-background`, `--cdt-tooltip-text`, `--cdt-tooltip-arrow-fill` component 토큰으로 치환하며, 각각 `surface.overlay` 계열과 `text.primary`를 참조한다.
   - **결정**: 소스 `z-index: 100`은 스케일 밖이다. `--cdt-z-popover`(50)를 사용한다. Radix Portal의 DOM 순서가 `Dialog` 위 표시를 보장한다.
-  - **결정**: 트리거 기준 원점(`--radix-popper-transform-origin`)에서 `scale(0.97)`+`opacity`로 `motion.fast`(140ms) 진입·퇴장한다. Radix가 `delayed-open`·`instant-open` 둘을 쓰므로 진입 규칙은 둘 다 건다(DEV-032).
+  - **결정**: 트리거 기준 원점(`--radix-popper-transform-origin`)에서 `scale(0.97)`+`opacity`로 진입·퇴장한다. Tooltip은 작은 팝오버라 양방향 모두 `motion.fast`(140ms)다 — 가장 빠른 토큰이라 퇴장을 더 줄일 곳이 없고, 툴팁은 사라짐이 느리면 커서를 따라다니는 것처럼 보인다. Radix가 `delayed-open`·`instant-open` 둘을 쓰므로 진입 규칙은 둘 다 건다(DEV-032).
 
 **합성 API**: `Tooltip.Provider`, `Tooltip.Root`, `Tooltip.Trigger`, `Tooltip.Content`. `Tooltip.Provider`는 Radix `Tooltip.Provider`를 그대로 재수출하며 앱 루트에 1회 배치한다.
 
@@ -660,7 +660,7 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
   - `app.css:954-957` — `.dropdown-item:hover, .dropdown-item:focus { background: var(--state-hover) !important }`.
   - **결정**: 위 `!important` 규칙은 계승하지 않는다(FR-CSS-001 AC-2). 하이라이트는 `.cdt-menu__item[data-highlighted]` 속성 셀렉터로 표현하며, Radix가 키보드와 포인터 하이라이트를 하나의 속성으로 통합한다. CR-018 이후 배경은 `accent.soft`, 전경은 `text.primary`를 사용해 탐색 위치를 Primary 액션보다 낮은 시각 단계로 유지한다.
   - **결정**: 소스 `.SelectItem`의 `border-radius: 4px`는 스케일 밖이다. `--cdt-radius-xs`(6px)를 사용한다.
-  - **결정**: 트리거 기준 원점(`--radix-popper-transform-origin`)에서 `scale(0.97)`+`opacity`로 `motion.fast`(140ms) 진입·퇴장한다(DEV-032).
+  - **결정**: 트리거 기준 원점(`--radix-popper-transform-origin`)에서 `scale(0.97)`+`opacity`로 진입한다. Menu는 트리거에서 떨어지는 목록이라 `Select`와 같은 `motion.standard`(240ms) 예산을 쓰고, 퇴장은 `motion.fast`(140ms)로 그보다 빠르다(DEV-032).
 
 **합성 API**: `DropdownMenu.Root`, `DropdownMenu.Trigger`, `DropdownMenu.Content`, `DropdownMenu.Item`, `DropdownMenu.Label`, `DropdownMenu.Separator`.
 

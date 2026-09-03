@@ -581,8 +581,13 @@
     transform-origin: var(--radix-popper-transform-origin);
   }
 
+  /*
+   * Menu는 트리거에서 떨어지는 목록이라 `Select`와 같은 부류다 —
+   * 지속시간 예산도 같은 것을 쓴다. `Tooltip`만 작은 팝오버 예산(더 짧은
+   * 토큰)을 쓴다 (DEV-032).
+   */
   .cdt-menu[data-state="open"] {
-    animation: cdt-popover-enter var(--cdt-motion-fast);
+    animation: cdt-popover-enter var(--cdt-motion-standard);
   }
 
   .cdt-menu[data-state="closed"] {

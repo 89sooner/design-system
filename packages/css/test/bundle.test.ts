@@ -564,7 +564,8 @@ describe("FR-CMP-006 surface entrance motion", () => {
   // dist는 속성 선택자의 따옴표를 지운다.
   const ENTER = [
     [".cdt-select__content[data-state=open]", "cdt-popover-enter var(--cdt-motion-standard)"],
-    [".cdt-menu[data-state=open]", "cdt-popover-enter var(--cdt-motion-fast)"],
+    // Menu는 드롭다운이라 Select와 같은 예산을 쓴다. Tooltip만 작은 팝오버 예산이다.
+    [".cdt-menu[data-state=open]", "cdt-popover-enter var(--cdt-motion-standard)"],
     [".cdt-drawer--right[data-state=open]", "cdt-drawer-enter-right var(--cdt-motion-standard)"],
     [".cdt-drawer--left[data-state=open]", "cdt-drawer-enter-left var(--cdt-motion-standard)"],
   ] as const;
@@ -582,6 +583,29 @@ describe("FR-CMP-006 surface entrance motion", () => {
     // Banner는 data-state가 없다 — 마운트 애니메이션 하나뿐이다.
     const banner = rulesInLayer(css, "cdt.component").find((entry) => entry.selector === ".cdt-banner");
     expect(banner?.decls["animation"]).toBe("cdt-banner-enter var(--cdt-motion-fast)");
+  });
+
+  test.each(bundles)("%s: Tooltip covers both of Radix's open states", (_name, css) => {
+    // Radix는 지연 열림과 즉시 열림을 다른 값으로 준다. 하나만 걸면 그 경로에서 모션이 사라진다.
+    const tooltip = rulesInLayer(css, "cdt.component").find((entry) =>
+      entry.selector.includes(".cdt-tooltip[data-state=delayed-open]"),
+    );
+    expect(tooltip?.selector).toContain(".cdt-tooltip[data-state=instant-open]");
+  });
+
+  test.each(bundles)("%s: every closed state animates out with fill-mode forwards", (_name, css) => {
+    // `forwards`가 빠지면 Presence가 언마운트하기 직전 한 프레임 원래 모습으로 튄다.
+    const EXIT = [
+      [".cdt-select__content[data-state=closed]", "cdt-popover-exit var(--cdt-motion-fast) forwards"],
+      [".cdt-tooltip[data-state=closed]", "cdt-popover-exit var(--cdt-motion-fast) forwards"],
+      [".cdt-menu[data-state=closed]", "cdt-popover-exit var(--cdt-motion-fast) forwards"],
+      [".cdt-drawer--right[data-state=closed]", "cdt-drawer-exit-right var(--cdt-motion-fast) forwards"],
+      [".cdt-drawer--left[data-state=closed]", "cdt-drawer-exit-left var(--cdt-motion-fast) forwards"],
+    ] as const;
+    for (const [selector, animation] of EXIT) {
+      const rule = rulesInLayer(css, "cdt.component").find((entry) => entry.selector === selector);
+      expect(rule?.decls["animation"]).toBe(animation);
+    }
   });
 
   test.each(bundles)("%s: trigger-anchored surfaces read Radix's transform origin", (_name, css) => {
