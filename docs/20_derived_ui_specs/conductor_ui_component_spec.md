@@ -1,6 +1,6 @@
 # Conductor Design System UI 컴포넌트 명세서
 
-> 상태: review | 버전: v0.7 | 갱신일: 2026-08-06
+> 상태: review | 버전: v0.8 | 갱신일: 2026-09-03
 
 ## 0. 문서 위치와 범위
 
@@ -351,7 +351,7 @@ export type IconButtonProps = PolymorphicProps<"button", IconButtonOwnProps> & {
   - `app.css:497-507` — `.badge` `display: inline-flex`, `gap: 6px`, `border-radius: 9999px`, `padding: 4px 10px`, `font-size: 12px`, `font-weight: 600`, `letter-spacing: 0.5px`, `text-transform: uppercase`.
   - **결정**: 소스 `.badge`는 형태만 선언하고 색상을 선언하지 않는다(호출부가 인라인으로 지정했다). 따라서 `tone`별 색은 component 토큰으로 새로 정의하고, semantic 상태 토큰을 참조한다. `info`는 `status.running`, `success`는 `status.success`, `warning`은 `status.waiting`, `danger`는 `status.danger`, `accent`는 `accent`, `neutral`은 `text.muted` + `border.default`를 참조한다(`tokens.css:33-39`, `tokens.css:27-30`, `tokens.css:17`).
   - **결정**: `border-radius: 9999px`는 리터럴이므로 `--cdt-radius-pill` 토큰을 요구한다. 이 토큰은 `tokens.css`의 반경 스케일(`tokens.css:65-69`)에 없으므로 `@conductor-by-89soone/tokens`가 새로 정의해야 한다.
-  - **결정**: 제거 가능한 칩은 배지 **안에** 제거 버튼을 두고 `.cdt-badge__dismiss`를 함께 붙인다. 그 클래스가 버튼을 배지의 글자 높이(`--cdt-badge-line-height`)에 맞춘다 — 기본 `IconButton`(34px)을 그대로 넣으면 배지가 28px에서 44px로 커져 칩이 아니게 된다(DEV-033).
+  - **결정**: 제거 가능한 **배지**는 배지 안에 제거 버튼을 두고 `.cdt-badge__dismiss`를 함께 붙인다(FR-CMP-004 AC-6). 그 클래스는 버튼의 **보이는** 크기를 배지의 글자 높이(`--cdt-badge-line-height`)에 맞춘다 — 기본 `IconButton`(34px)의 보이는 크기를 그대로 쓰면 배지가 28px에서 44px로 커져 짧은 라벨의 알약 형태가 무너진다(DEV-033). **조작 대상 크기는 줄이지 않는다** — 보이는 글리프와 조작 영역을 분리해 `IconButton`의 compact 계약(34px)을 유지한다(DEV-036). 이 훅은 `Badge`의 표시 계층에 한정되며 필터·칩 컴포넌트군(F-CMP-010, OD-003 open)을 승인하지 않는다.
 
 | 이름 | 타입 | 기본값 | 필수 | 설명 |
 | --- | --- | --- | --- | --- |
@@ -427,7 +427,7 @@ export type IconButtonProps = PolymorphicProps<"button", IconButtonOwnProps> & {
   - `app.css:551-555` — `.table-scroll` `overflow-x: auto`, `border-radius: inherit`.
   - `app.css:557-560` — `.num` `font-variant-numeric: tabular-nums`, 모노스페이스. FR-CMP-005 AC-2의 근거.
   - `app.css:1052-1056` — 뷰포트 800px 미만에서 `.table`이 `display: block; overflow-x: auto`로 전환된다. FR-CMP-005 AC-1의 근거.
-  - **결정**: `aria-sort`를 스크린 리더에만 알리지 않는다. 헤더 셀이 값에 따라 `::after` 글리프(`↕` 감쇠 · `↑` · `↓`)를 그려 정렬 열과 방향이 눈으로도 읽힌다. 글리프는 `content`의 대체 텍스트 문법(`"↑" / ""`)으로 접근성 이름에서 뺀다 — 빼지 않으면 `aria-sort`가 이미 알리는 것을 글자로 한 번 더 읽는다. `aria-sort`가 없는 열에는 아무것도 그리지 않는다(DEV-033).
+  - **결정**: `aria-sort`를 스크린 리더에만 알리지 않는다(FR-CMP-005 AC-6). 헤더 셀이 값에 따라 `::after` 글리프(`↕` 감쇠 · `↑` · `↓`)를 그려 정렬 열과 방향이 눈으로도 읽힌다. 글리프는 `content`의 대체 텍스트 문법(`"↑" / ""`)으로 접근성 이름에서 뺀다 — 빼지 않으면 `aria-sort`가 이미 알리는 것을 글자로 한 번 더 읽는다. `aria-sort`가 없는 열에는 아무것도 그리지 않는다(DEV-033). **시각으로 표현하지 않는 값에도 그리지 않는다** — `aria-sort="other"`는 네이티브 계약이 허용하는 값이지만 이 디자인 시스템에 대응 글리프가 없으므로, `none`과 같은 미정렬 글리프를 내어 스크린 리더와 다른 사실을 말하는 대신 아무것도 내지 않는다(DEV-038).
 
 **합성 API**
 
