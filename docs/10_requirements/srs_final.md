@@ -1,6 +1,6 @@
 # Conductor Design System 최종 요구사항 정의서
 
-> 상태: baseline | 버전: v1.5 | 갱신일: 2026-08-29
+> 상태: baseline | 버전: v1.6 | 갱신일: 2026-09-03
 
 ## 1. 문서 개요
 
@@ -477,11 +477,11 @@ FR-QA-004(시각 회귀)와 FR-CMP-009(셸 컴포넌트군)는 2026-07-10에 OD-
 | 우선순위 | Must |
 | 출처 | F-CMP-004 / SRC-AAP `.badge` |
 | 요구사항 | 시스템은 항상 `Badge`, `StatusBadge`, `SeverityTag`를 제공하고, 상태와 심각도를 색·아이콘·텍스트 세 가지로 동시에 전달하여야 한다. |
-| 수용 기준 | AC-1: `StatusBadge status="running"`이 상태색 배경, 상태 아이콘, 상태 텍스트를 모두 렌더한다. AC-2: 아이콘 요소가 `aria-hidden="true"`를 갖고 텍스트가 접근 가능한 이름을 제공한다. AC-3: `status` props가 FR-TOK-005의 7개 값으로 타입 제한되며, 그 외 값은 TypeScript 컴파일 오류다. AC-4: `SeverityTag severity="destructive"`가 심각도색과 경고 아이콘, `destructive` 텍스트를 렌더한다. AC-5: 그레이스케일 렌더 시 상태 7종이 텍스트로 구분 가능하다. |
+| 수용 기준 | AC-1: `StatusBadge status="running"`이 상태색 배경, 상태 아이콘, 상태 텍스트를 모두 렌더한다. AC-2: 아이콘 요소가 `aria-hidden="true"`를 갖고 텍스트가 접근 가능한 이름을 제공한다. AC-3: `status` props가 FR-TOK-005의 7개 값으로 타입 제한되며, 그 외 값은 TypeScript 컴파일 오류다. AC-4: `SeverityTag severity="destructive"`가 심각도색과 경고 아이콘, `destructive` 텍스트를 렌더한다. AC-5: 그레이스케일 렌더 시 상태 7종이 텍스트로 구분 가능하다. AC-6: 제거 가능한 배지는 배지 안의 제거 버튼에 `cdt-badge__dismiss` 스타일 훅을 제공한다. 그 훅은 버튼의 **보이는** 크기를 배지 글자 높이에 맞추되 `IconButton`의 조작 대상 크기(FR-CMP-002)를 줄이지 않는다. 훅은 스타일 계층만 제공하며 제거 동작과 상태는 소비자가 소유한다. |
 | 검증 방법 | test |
 | 관련 화면 | W-020, W-021, W-040 |
 | 관련 API/데이터 | API-CMP-004 / ENT-CMP-001 |
-| 예외/실패 처리 | 텍스트를 숨기는 `iconOnly` 모드를 제공하지 않는다. 공간이 부족하면 소비자가 `Tooltip`으로 감싼다. |
+| 예외/실패 처리 | 텍스트를 숨기는 `iconOnly` 모드를 제공하지 않는다. 공간이 부족하면 소비자가 `Tooltip`으로 감싼다. 제거 버튼 스타일 훅은 `Badge`의 표시 계층에 한정된다 — 필터·칩 컴포넌트군(F-CMP-010)은 OD-003이 열려 있는 동안 여전히 승인 범위가 아니며, 이 훅이 그것을 승인하지 않는다. |
 
 #### FR-CMP-005 데이터 표시 컴포넌트군
 
@@ -491,11 +491,11 @@ FR-QA-004(시각 회귀)와 FR-CMP-009(셸 컴포넌트군)는 2026-07-10에 OD-
 | 우선순위 | Must |
 | 출처 | F-CMP-005 / SRC-AAP `.table`, `.timeline`, `.num`, `.mono`, `kbd` |
 | 요구사항 | 시스템은 항상 `Table`, `Timeline`, `CodeBlock`, `Kbd`를 제공하여야 한다. |
-| 수용 기준 | AC-1: `Table`이 가로 스크롤 컨테이너를 자체 소유하고, 뷰포트 800px 미만에서 스크롤이 활성화된다. AC-2: 숫자 셀에 `cdt-num` 클래스가 적용되면 `font-variant-numeric: tabular-nums`가 계산값으로 확인된다. AC-3: `Timeline`의 각 단계가 `button` 또는 `div` 중 `onSelect` 여부에 따라 렌더되고, 대화형일 때 키보드로 도달한다. AC-4: `CodeBlock`이 JSON 페이로드를 모노스페이스 폰트로 렌더하고 가로 스크롤을 제공한다. AC-5: `Table`에 `caption` 또는 `aria-label`이 없으면 개발 빌드에서 콘솔 경고를 출력한다. |
+| 수용 기준 | AC-1: `Table`이 가로 스크롤 컨테이너를 자체 소유하고, 뷰포트 800px 미만에서 스크롤이 활성화된다. AC-2: 숫자 셀에 `cdt-num` 클래스가 적용되면 `font-variant-numeric: tabular-nums`가 계산값으로 확인된다. AC-3: `Timeline`의 각 단계가 `button` 또는 `div` 중 `onSelect` 여부에 따라 렌더되고, 대화형일 때 키보드로 도달한다. AC-4: `CodeBlock`이 JSON 페이로드를 모노스페이스 폰트로 렌더하고 가로 스크롤을 제공한다. AC-5: `Table`에 `caption` 또는 `aria-label`이 없으면 개발 빌드에서 콘솔 경고를 출력한다. AC-6: 헤더 셀에 `aria-sort`가 있으면 시스템이 그 값을 시각 표시기로도 그린다. 표시기는 `content`의 대체 텍스트 문법으로 접근성 이름에서 제외해 `aria-sort`와 중복해 읽히지 않는다. `aria-sort`가 없는 열에는 그리지 않으며, 시각으로 표현하지 않는 값에는 표시기를 내지 않는다. |
 | 검증 방법 | test |
 | 관련 화면 | W-020, W-021 |
 | 관련 API/데이터 | API-CMP-005 / ENT-CMP-001 |
-| 예외/실패 처리 | 정렬, 페이지네이션, 가상 스크롤은 제공하지 않는다. `Table`은 시각 계층만 담당하고 데이터 로직은 소비자가 소유한다. |
+| 예외/실패 처리 | 정렬, 페이지네이션, 가상 스크롤은 제공하지 않는다. `Table`은 시각 계층만 담당하고 데이터 로직은 소비자가 소유한다. AC-6의 표시기는 소비자가 정한 `aria-sort` 값을 그리는 표시 계층이며, 정렬 로직과 그 값의 결정은 그대로 소비자가 소유한다. |
 
 #### FR-CMP-006 오버레이 컴포넌트군
 
