@@ -125,8 +125,16 @@
      */
     :root:not([data-cdt-theme]) .cdt-overlay[data-state="closed"],
     :root:not([data-cdt-theme]) .cdt-dialog[data-state="closed"],
+    :root:not([data-cdt-theme]) .cdt-select__content[data-state="closed"],
+    :root:not([data-cdt-theme]) .cdt-tooltip[data-state="closed"],
+    :root:not([data-cdt-theme]) .cdt-menu[data-state="closed"],
+    :root:not([data-cdt-theme]) .cdt-drawer[data-state="closed"],
     [data-cdt-theme] .cdt-overlay[data-state="closed"],
-    [data-cdt-theme] .cdt-dialog[data-state="closed"] {
+    [data-cdt-theme] .cdt-dialog[data-state="closed"],
+    [data-cdt-theme] .cdt-select__content[data-state="closed"],
+    [data-cdt-theme] .cdt-tooltip[data-state="closed"],
+    [data-cdt-theme] .cdt-menu[data-state="closed"],
+    [data-cdt-theme] .cdt-drawer[data-state="closed"] {
       display: none;
     }
 

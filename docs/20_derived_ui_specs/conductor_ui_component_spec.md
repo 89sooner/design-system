@@ -592,6 +592,7 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
   - `app.css:1063-1067` — 뷰포트 800px 미만에서 `width: min(100%, 560px)`, 패딩 축소.
   - **결정**: 소스는 오른쪽 진입만 정의한다. `side="left"`는 `slideInRight`의 부호를 뒤집은 대칭 규칙으로 정의한다. `AppShell`(C-070)의 오프캔버스 내비가 왼쪽에서 들어오므로(`app.css:997` `translateX(-105%)`) 좌측 진입의 근거는 소스에 존재한다.
   - **결정**: 소스 `.drawer-overlay`의 `z-index: 50`은 `.radix-overlay`의 `40`과 어긋난다. Radix 기반으로 통일하므로 오버레이는 `--cdt-z-overlay`(40), 패널은 `--cdt-z-popover`(50)를 쓴다.
+  - **결정**: 자기 가장자리에서 밀려 들어온다. `side`에 따라 `translateX(±100%)` → `0`으로 `motion.standard`(240ms) 진입하고 닫힘은 `motion.fast`(140ms)다. 백분율이라 폭이 바뀌어도 성립한다(DEV-032).
 
 **합성 API**: `Drawer.Root`, `Drawer.Trigger`, `Drawer.Content`, `Drawer.Title`, `Drawer.Description`, `Drawer.Close`. Radix `Dialog` 프리미티브 위에 구현하며, 시각만 다르다.
 
@@ -622,6 +623,7 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
   - `app.css:1198-1213` — 4방향 슬라이드 키프레임.
   - **결정**: 소스는 배경과 전경을 리터럴로 선언한다(`app.css:1180-1181`, `1195`). `--cdt-tooltip-background`, `--cdt-tooltip-text`, `--cdt-tooltip-arrow-fill` component 토큰으로 치환하며, 각각 `surface.overlay` 계열과 `text.primary`를 참조한다.
   - **결정**: 소스 `z-index: 100`은 스케일 밖이다. `--cdt-z-popover`(50)를 사용한다. Radix Portal의 DOM 순서가 `Dialog` 위 표시를 보장한다.
+  - **결정**: 트리거 기준 원점(`--radix-popper-transform-origin`)에서 `scale(0.97)`+`opacity`로 `motion.fast`(140ms) 진입·퇴장한다. Radix가 `delayed-open`·`instant-open` 둘을 쓰므로 진입 규칙은 둘 다 건다(DEV-032).
 
 **합성 API**: `Tooltip.Provider`, `Tooltip.Root`, `Tooltip.Trigger`, `Tooltip.Content`. `Tooltip.Provider`는 Radix `Tooltip.Provider`를 그대로 재수출하며 앱 루트에 1회 배치한다.
 
@@ -656,6 +658,7 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
   - `app.css:954-957` — `.dropdown-item:hover, .dropdown-item:focus { background: var(--state-hover) !important }`.
   - **결정**: 위 `!important` 규칙은 계승하지 않는다(FR-CSS-001 AC-2). 하이라이트는 `.cdt-menu__item[data-highlighted]` 속성 셀렉터로 표현하며, Radix가 키보드와 포인터 하이라이트를 하나의 속성으로 통합한다. CR-018 이후 배경은 `accent.soft`, 전경은 `text.primary`를 사용해 탐색 위치를 Primary 액션보다 낮은 시각 단계로 유지한다.
   - **결정**: 소스 `.SelectItem`의 `border-radius: 4px`는 스케일 밖이다. `--cdt-radius-xs`(6px)를 사용한다.
+  - **결정**: 트리거 기준 원점(`--radix-popper-transform-origin`)에서 `scale(0.97)`+`opacity`로 `motion.fast`(140ms) 진입·퇴장한다(DEV-032).
 
 **합성 API**: `DropdownMenu.Root`, `DropdownMenu.Trigger`, `DropdownMenu.Content`, `DropdownMenu.Item`, `DropdownMenu.Label`, `DropdownMenu.Separator`.
 
@@ -783,6 +786,7 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
   - `app.css:1249-1267` — `.SelectItem` 높이 32px, `[data-highlighted]` 강조색 채움.
   - **결정**: `.SelectContent`의 `z-index: 60`은 스케일 밖이다. `--cdt-z-popover`(50)를 사용한다.
   - **결정**: `.SelectTrigger:focus`는 `:focus-visible`이 아닌 `:focus`를 사용한다. FR-A11Y-001 AC-4(마우스 포커스에서 링 미표시)를 만족하도록 `:focus-visible`로 옮긴다.
+  - **결정**: 목록은 트리거 기준 원점(`--radix-select-content-transform-origin`)에서 `scale(0.97)`+`opacity`로 `motion.standard`(240ms) 진입하고, 닫힘은 `motion.fast`(140ms) 퇴장이다. 감소 모드는 토큰 명세 9.2절(DEV-032).
   - **CR-018 결정**: 선택 항목의 `[data-highlighted]`는 DropdownMenu와 동일한 `accent.soft` + `text.primary` 조합을 사용한다. 선택 여부는 Radix의 `aria-selected`와 항목 텍스트가 전달하며, 강조색 면 채움에만 의존하지 않는다.
   - **CR-018 구현 검증**: `Select.Content`는 전달받은 `children`을 `RadixSelect.Viewport` 안에 렌더해야 한다. 자식을 버리면 선택 항목뿐 아니라 닫힌 Trigger의 현재 값도 비어 보이므로, `defaultValue`의 ItemText가 Trigger에 표시되는 단위 테스트를 둔다(DEV-011).
 
@@ -880,6 +884,7 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
   - **결정**: 세 규칙의 공통 flex 구조를 `tone` 축으로 통합한다. CR-018에서 넓은 상태색 면이 본문보다 먼저 읽히는 문제를 수정해, 배경은 세 tone 모두 `surface.raised`, 본문은 `text.secondary`를 사용한다. tone은 3px 시작 가장자리와 아이콘 색으로 병기하고 제목은 `text.primary`를 사용한다. 색만으로 의미를 전달하지 않는 P-2와 다크·라이트 본문 대비를 동시에 보존한다.
   - **결정**: `tone` 값은 `info`, `warning`, `danger` 3종으로 고정한다. `success` 배너는 소스에 시각 근거가 없고 FR-CMP-008 AC-1이 요구하지 않으므로 추가하지 않는다. 성공 상태는 `StatusBadge status="success"`(C-021)로 전달한다.
   - **결정**: `--cdt-banner-<tone>-background|border|text` component 토큰으로 구조를 유지한다. background는 `surface.raised`, border는 각 상태 semantic 토큰, text는 `text.secondary`를 참조하므로 테마별 컴포넌트 분기 없이 같은 CSS가 동작한다(FR-THM-002).
+  - **결정**: 마운트 시 `translateY(-4px)`+`opacity`로 `motion.fast`(140ms) 진입한다. 조건부 렌더로 나타나므로 `data-state`가 없고 퇴장도 없다 — 상태가 바뀌면 사라진다(DEV-032).
 
 | 이름 | 타입 | 기본값 | 필수 | 설명 |
 | --- | --- | --- | --- | --- |

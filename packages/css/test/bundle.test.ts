@@ -554,3 +554,56 @@ describe("FR-CMP-008 meter fill animates on the compositor", () => {
     expect(offenders).toEqual([]);
   });
 });
+
+describe("FR-CMP-006 surface entrance motion", () => {
+  const reducedRules = (css: string) =>
+    mediaRules(css, "cdt.base", /prefers-reduced-motion/).filter((rule) =>
+      /reduce/.test(rule.media.join(" ")),
+    );
+
+  // dist는 속성 선택자의 따옴표를 지운다.
+  const ENTER = [
+    [".cdt-select__content[data-state=open]", "cdt-popover-enter var(--cdt-motion-standard)"],
+    [".cdt-menu[data-state=open]", "cdt-popover-enter var(--cdt-motion-fast)"],
+    [".cdt-drawer--right[data-state=open]", "cdt-drawer-enter-right var(--cdt-motion-standard)"],
+    [".cdt-drawer--left[data-state=open]", "cdt-drawer-enter-left var(--cdt-motion-standard)"],
+  ] as const;
+
+  test.each(bundles)("%s: every surface that appears has an entrance", (_name, css) => {
+    for (const [selector, animation] of ENTER) {
+      const rule = rulesInLayer(css, "cdt.component").find((entry) => entry.selector === selector);
+      expect(rule?.decls["animation"]).toBe(animation);
+    }
+    // Tooltip은 Radix가 delayed-open·instant-open 둘을 쓴다.
+    const tooltip = rulesInLayer(css, "cdt.component").find((entry) =>
+      entry.selector.includes(".cdt-tooltip[data-state=delayed-open]"),
+    );
+    expect(tooltip?.decls["animation"]).toBe("cdt-popover-enter var(--cdt-motion-fast)");
+    // Banner는 data-state가 없다 — 마운트 애니메이션 하나뿐이다.
+    const banner = rulesInLayer(css, "cdt.component").find((entry) => entry.selector === ".cdt-banner");
+    expect(banner?.decls["animation"]).toBe("cdt-banner-enter var(--cdt-motion-fast)");
+  });
+
+  test.each(bundles)("%s: trigger-anchored surfaces read Radix's transform origin", (_name, css) => {
+    const origins: Record<string, string> = {
+      ".cdt-select__content": "var(--radix-select-content-transform-origin)",
+      ".cdt-tooltip": "var(--radix-popper-transform-origin)",
+      ".cdt-menu": "var(--radix-popper-transform-origin)",
+    };
+    for (const [selector, expected] of Object.entries(origins)) {
+      const rule = rulesInLayer(css, "cdt.component").find((entry) => entry.selector === selector);
+      expect(rule?.decls["transform-origin"]).toBe(expected);
+    }
+    // 모달은 면제다 — 중앙에서 등장한다.
+    const dialog = rulesInLayer(css, "cdt.component").find((entry) => entry.selector === ".cdt-dialog");
+    expect(dialog?.decls["transform-origin"]).toBeUndefined();
+  });
+
+  test.each(bundles)("%s: reduced motion hides every closed popover so Presence unmounts at once", (_name, css) => {
+    const hidden = reducedRules(css).filter((rule) => rule.decls["display"] === "none");
+    const selectors = hidden.flatMap((rule) => rule.selector.split(",").map((part) => part.trim()));
+    for (const surface of [".cdt-select__content", ".cdt-tooltip", ".cdt-menu", ".cdt-drawer"]) {
+      expect(selectors.some((part) => part.endsWith(`${surface}[data-state=closed]`))).toBe(true);
+    }
+  });
+});
