@@ -53,6 +53,15 @@ export default defineConfig({
           include: ["src/**/*.test.ts"],
         },
       },
+      {
+        // 릴리스 게이트 스크립트는 실제 git 저장소를 만들어 확인한다 (DEV-040).
+        test: {
+          name: "scripts",
+          root: fromRoot("./scripts"),
+          environment: "node",
+          include: ["*.test.mjs"],
+        },
+      },
     ],
   },
 });
