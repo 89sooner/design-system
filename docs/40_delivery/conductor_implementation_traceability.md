@@ -1,6 +1,6 @@
 # Conductor Design System 구현 추적 원장
 
-> 상태: review | 버전: v0.26 | 갱신일: 2026-09-03
+> 상태: review | 버전: v0.27 | 갱신일: 2026-09-03
 
 ## 1. 목적과 갱신 규칙
 
@@ -172,6 +172,28 @@ PR Search 소비처의 `DEV-380`이 트리거다: 화면 계약이 최대 20계�
 | 검증 | `pnpm test` 580/580 · `test:a11y` 164 통과(1 skipped) · `check:contrast` 232 중 0 실패 · `check:api` 3 report 정상 · `lint` 0건 · `lint:tokens` 0 위반 · `size` PASS(css 9.52 KiB/20 KiB) · docs e2e 41 통과 · `typecheck`·`build` 통과 |
 | 릴리스 | `.changeset/rtl-direction-aware-motion.md`·`.changeset/dismiss-target-and-sort-indicator.md`(둘 다 css patch). `check:changesets` 2건 0 위반 |
 
+### 0.3.1 발행과 릴리스 태그 게이트 정정 (2026-09-03)
+
+`CR-037`·`DEV-035`~`DEV-038`을 담은 patch 릴리스다. version PR #22가 `css`·`react`를 0.3.1로 올렸고 `tokens`는 바뀐 것이 없어 0.3.0에 머물렀다.
+
+| 단계 | 결과 |
+| --- | --- |
+| 발행 전 게이트 | `check:changesets --require-empty` 통과 · `pnpm audit --audit-level high` **통과**(high 이상 0건, 이전 라운드에서 0.3.0을 막았던 권고는 #19가 해소했다) · `check:secrets` 273파일 0건 · `build`·`check:api` 통과 |
+| npm | `@conductor-by-89soone/css@0.3.1`·`@conductor-by-89soone/react@0.3.1` 발행 확인. `tokens`는 0.3.0 그대로 |
+| **`check:release-tags`** | **실패** — `tokens@0.3.0`의 태그가 release HEAD가 아니라고 잡았다. `DEV-040` |
+| 결과 | 발행은 성공했으나 `git push origin --tags`가 실행되지 않아 `css@0.3.1`·`react@0.3.1` 태그가 원격에 없는 상태로 남았다 |
+
+게이트를 고치고 회귀 넷을 세웠다 — 임시 git 저장소를 실제로 만들어 확인한다.
+
+| 시나리오 | 기대 |
+| --- | --- |
+| 버전이 오르지 않은 패키지의 태그가 이전 릴리스 커밋을 가리킨다 | 통과 (이것이 막혀 있던 정상 릴리스다) |
+| 태그가 그 버전을 선언한 적 없는 커밋에 놓였다 | `declares version …, not …`로 실패 |
+| 태그가 없다 | `local tag is missing`으로 실패 |
+| 가벼운 태그(annotated 아님) | `expected an annotated tag object`로 실패 |
+
+변이(판정을 무조건 실패로 되돌림) 1건 킬. `pnpm test` 584/584.
+
 ## 3. 요구사항 → 코드/테스트 매핑 표
 
 `srs_final.md` §9에 승인된 FR 49개 전부를 나열한다. 구현 모듈·테스트 파일·WP 열은 코드가 작성될 때 채운다.
@@ -236,6 +258,7 @@ PR Search 소비처의 `DEV-380`이 트리거다: 화면 계약이 최대 20계�
 
 | DEV ID | 발견일 | 유형 | 내용 | 관련 ID | 처리 CR | 상태 |
 | --- | --- | --- | --- | --- | --- | --- |
+| DEV-040 | 2026-09-03 | 구현 결함 | **릴리스 게이트가 정상적인 patch 릴리스를 막았고, 그 실패가 npm 발행 뒤에 왔다.** `check-release-tags.mjs`가 세 패키지 **전부**의 태그에 release HEAD를 요구했는데, 0.3.1에서는 `css`·`react`만 오르고 `tokens`는 바뀐 것이 없어 0.3.0에 머물렀다. 그 태그는 이전 릴리스 커밋(`2549675`)을 가리키는 것이 옳은데 게이트가 `target … is not release HEAD`로 잡았다. 스크립트 주석이 근거로 삼은 "세 패키지는 `linked`라 함께 오른다"는 전제가 틀렸다 — `linked`는 **함께 오를 때 같은 번호를 쓴다**는 뜻이다. 더 나쁜 것은 순서다: 게이트가 `changeset publish` **뒤에** 있어 npm이 두 패키지를 이미 받은 상태에서 실패했고, 그 결과 `git push origin --tags`가 실행되지 않아 **발행은 됐는데 릴리스 태그가 원격에 없는** 상태가 남았다(FR-DX-005의 태그 계약 위반). 판정 기준을 네트워크 없이 정확한 것으로 바꿨다 — **태그가 가리키는 커밋의 manifest가 이미 그 버전을 담고 있는가.** 담고 있으면 그 릴리스가 이 버전을 만든 것이고 태그는 자기 소스를 옳게 가리킨다. 담고 있지 않으면 그 버전을 선언한 적 없는 커밋에 태그가 놓인 것이며, 원래 막으려던 실패 모드가 그것이다 | FR-DX-005, JOB-REL-001 | 불필요 — 승인된 릴리스 계약의 구현 결함이며 문서 변경이 없다 | closed |
 | DEV-039 | 2026-09-03 | 문서 결함 | **원장이 소비처의 요구사항 ID를 자기 문서에 심어 문서 validator가 미상 ID로 잡았다.** `DEV-034`가 관련 ID 칸과 본문에 PR Search의 접근성 NFR(그쪽 007번)을 적었는데 이 저장소의 NFR은 001~005다. `validate_srs_prd_env.py --root .`가 그 ID를 `unknown requirement ID`로 냈다. **이 문단이 그 ID를 그대로 적으면 검사가 그것까지 세어 오류가 재현된다** — 검사는 코드 펜스나 인용을 가리지 않는다. 그래서 여기서는 번호만 서술한다. `CR-036`이 소비처의 `DEV-380`을 본문 서술로만 인용한 것이 옳은 선례다 — 다른 저장소의 ID는 출처를 밝혀 서술하되 자기 추적 칸에 넣지 않는다. 관련 ID 칸에서 빼고 본문을 `FR-A11Y-001` 기준으로 다시 적었다. 사실은 그대로 남는다. PR #20 머지 후 리뷰가 요구한 validator 기록에서 드러났다 | FR-A11Y-001 | 불필요 — 문서 표기 정정이며 요구사항 변경이 없다 | closed |
 | DEV-038 | 2026-09-03 | 구현 편차 | `aria-sort`가 표현하지 않는 값에도 정렬되지 않은 상태의 글리프를 냈다. `.cdt-table__header-cell[aria-sort]::after` catch-all이 값을 가리지 않아, 네이티브가 허용하는 `aria-sort="other"`가 `none`과 똑같은 `↕`(opacity 0.4)를 받았다(실측). 보조 기술은 "다른 기준으로 정렬됨"을 읽는데 눈에는 "정렬 안 됨"이 보여 같은 열에 대해 둘이 다른 사실을 말했다. 값마다 셀렉터를 적어 `none`·`ascending`·`descending`만 그리고 나머지에는 아무것도 내지 않는다. PR #15 검토가 찾았다 | FR-CMP-005 AC-6, C-034 Table | CR-037 (계약) | closed |
 | DEV-037 | 2026-09-03 | 구현 편차 | `Drawer` 진입·퇴장이 RTL에서 화면을 가로질렀다. 배치는 논리 속성(`inset-inline-end`·`inset-inline-start`)이 정하는데 이동은 물리 축(`translateX(±100%)`)이라, RTL에서 `--right` 서랍이 왼쪽에 안착하면서 오른쪽 밖(컨테이너 300~900에서 801~1301)부터 출발했다(실측). keyframe은 방향을 모르므로 `--cdt-drawer-shift`로 부호를 넘겨, 규칙 넷을 여덟으로 불리지 않고 두 방향이 같은 곡선을 쓰게 했다. PR #15 검토가 찾았다 | FR-CMP-006, C-046 Drawer | 불필요 — 공개 API를 넓히지 않는 구현 결함이다. 논리 배치와 물리 변형이 어긋난 것이며 승인된 계약(FR-CMP-006·008)이 이미 요구하는 동작을 되찾는다 | closed |

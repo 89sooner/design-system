@@ -67,30 +67,40 @@ for (const packageDir of PACKAGE_DIRS) {
     problems.push(`${tag}: target ${target} is not an ancestor of release HEAD ${head}`);
   } else if (target !== head) {
     /*
-     * The tag must name the commit that was published (PR #3 review P1, PR #12 review P1).
+     * The tag must name the commit whose contents were published (PR #3 review P1, PR #12 review P1).
      *
      * `--is-ancestor` asks whether one commit precedes another and nothing more. When a tag-push run
      * supplies an annotated tag for the current version on an older commit and `main` has since
-     * advanced without another version bump, Changesets publishes the newer contents while its
-     * attempt to recreate the existing tag fails silently — and both checks here pass, because the
-     * stale object is an ancestor and the same object already reached the remote. The published
-     * artifact then carries a release tag that identifies different source.
+     * advanced, Changesets publishes while its attempt to recreate the existing tag fails silently —
+     * and both checks here pass, because the stale object is an ancestor and the same object already
+     * reached the remote. The published artifact then carries a release tag that identifies
+     * different source.
      *
      * Comparing only the package's own directory does not close that gap: the CSS build embeds the
      * tokens output, and every build reads root inputs such as `pnpm-lock.yaml`, so a tarball can
-     * change without a single file under `packages/<name>/` moving. Enumerating "all inputs capable
-     * of affecting the artifact" is a list that goes stale the first time the build graph changes,
-     * and a list that must stay complete to stay correct is the wrong shape for this check.
+     * change without a single file under `packages/<name>/` moving.
      *
-     * `changeset publish` publishes the working tree at release HEAD, so requiring the tag to point
-     * there needs no such list. The three packages are `linked` in the Changesets config and take a
-     * version together, so this rejects no legitimate release — a package that did not change gets
-     * a tag at the same commit as the others.
+     * **A package that did not take a version bump is not part of this release** (DEV-040). `linked`
+     * means the three packages share a number when they move together, not that they always move —
+     * 0.3.1 raised `css` and `react` while `tokens` stayed at 0.3.0 because nothing under it changed.
+     * `changeset publish` only publishes versions absent from the registry, so that package is not
+     * republished here and its tag rightly names the earlier release commit. Requiring release HEAD
+     * for it rejected a legitimate patch release and left the run failing *after* npm had already
+     * accepted the two packages that did move.
+     *
+     * The question that separates the two cases needs no network: does the tag's own commit already
+     * carry this version in the package manifest? If it does, that release produced this version and
+     * the tag names its source correctly. If it does not, the tag was placed on a commit that never
+     * declared this version — the failure mode above.
      */
-    problems.push(
-      `${tag}: target ${target} is not release HEAD ${head} — ` +
-        "the published artifact and the tag would identify different source",
-    );
+    const manifestAtTarget = git(["show", `${target}:${packageDir}/package.json`], { allowFailure: true });
+    const versionAtTarget = manifestAtTarget === null ? null : JSON.parse(manifestAtTarget).version;
+    if (versionAtTarget !== manifest.version) {
+      problems.push(
+        `${tag}: target ${target} declares version ${versionAtTarget ?? "(no manifest)"}, not ${manifest.version} — ` +
+          "the tag names a commit that never carried this version",
+      );
+    }
   }
 
   if (remote !== null) {
