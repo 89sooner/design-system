@@ -929,7 +929,7 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
   - `app.css:1308-1314` — `.linear-progress-bg` 반투명 흰색 트랙, `border-radius: 9999px`, `height: 8px`, `overflow: hidden`.
   - `app.css:1316-1320` — `.linear-progress-fill` `height: 100%`, 동일 반경, `transition: width 1s ..., background-color 0.5s ease`.
   - `tokens.css:41-43` — `--meter-normal`, `--meter-warning`, `--meter-exceeded`.
-  - **결정**: 채움 폭은 `--cdt-meter-ratio` 커스텀 프로퍼티로 전달하고 CSS가 `width: calc(var(--cdt-meter-ratio) * 100%)`로 계산한다(공통 계약 2.3-2항). 인라인 `style`로 색상을 주입하지 않는다.
+  - **결정**: 채움 폭은 `--cdt-meter-ratio` 커스텀 프로퍼티로 전달하고 CSS가 `transform: scaleX(var(--cdt-meter-ratio))`로 그린다(공통 계약 2.3-2항). 레이아웃 속성을 전환하지 않기 위해서다(DEV-031). 인라인 `style`로 색상을 주입하지 않는다.
   - **결정**: 소스 `transition` 시간 1s / 0.5s는 리터럴이다. `--cdt-motion-standard`로 통일한다. 모션 감소 설정에서는 0ms가 된다(FR-CSS-005 AC-1).
   - **결정**: 트랙 배경은 리터럴 반투명 흰색이다. `--cdt-surface-track` semantic 토큰을 요구한다. `state.hover`(`tokens.css:78`)와 값이 근접하지만 의미가 다르므로 별도 키로 둔다.
 

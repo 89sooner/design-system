@@ -1,6 +1,6 @@
 # Conductor Design System 구현 추적 원장
 
-> 상태: review | 버전: v0.19 | 갱신일: 2026-09-03
+> 상태: review | 버전: v0.20 | 갱신일: 2026-09-03
 
 ## 1. 목적과 갱신 규칙
 
@@ -209,6 +209,7 @@ PR Search 소비처의 `DEV-380`이 트리거다: 화면 계약이 최대 20계�
 
 | DEV ID | 발견일 | 유형 | 내용 | 관련 ID | 처리 CR | 상태 |
 | --- | --- | --- | --- | --- | --- | --- |
+| DEV-031 | 2026-09-03 | 구현 편차 | `Meter` 채움이 레이아웃 속성 `inline-size`를 전환했다(`components.css`의 `transition: inline-size var(--cdt-motion-standard), …`). 소스 전체에서 유일한 레이아웃 전환이며 프레임마다 레이아웃·페인트·합성을 유발한다. 소비처 PR Search의 운영 잡 화면은 30초마다 갱신되어 행마다 이 전환이 돌았다. 채움을 폭 100%에 `transform: scaleX(var(--cdt-meter-ratio))`·`transform-origin: left center`로 바꾸고 `transform`만 전환한다. 커스텀 프로퍼티 계약은 그대로이며 가시 폭도 같다(Chromium 실측: 비율 0·0.05·0.5·1에서 현재와 동일). 컴포넌트 레이어의 전환이 레이아웃 속성을 겨누지 않는지 묻는 시험을 더했다 | FR-CMP-008, FR-CSS-005, C-062 Meter |  | closed |
 | DEV-030 | 2026-09-03 | 구현 편차 | 오버레이 계열에 퇴장이 없었다. `.cdt-overlay`·`.cdt-dialog`는 `[data-state="open"]` 진입 keyframe만 있고 `[data-state="closed"]` 규칙이 0건이라 240ms에 걸쳐 나타난 뒤 한 프레임에 사라졌고, 모바일 스크림은 진입 페이드도 없었다. 진입의 역방향 keyframe을 `--cdt-motion-fast`(140ms)·`forwards`로 닫힘 상태에 걸었다. Radix Presence가 `animationend`를 기다리므로 감소 모드(0s)에서는 이벤트에 기대지 않고 `cdt.base` 축소 블록이 닫힘 상태를 `display: none`으로 두어 즉시 언마운트하게 했다(Chromium에서 실제 Radix Dialog로 실측). 모바일 서랍은 `cdt.component`가 `display: flex`를 선언해 그 탈출구가 닿지 않으므로 퇴장을 두지 않았다. 회귀 시험 셋을 더했다 | FR-CMP-006, FR-CSS-005 |  | closed |
 | DEV-029 | 2026-09-03 | 구현 편차 | 축소 모드에서 `Spinner` 라벨이 한 번도 드러난 적이 없었다. 노출 규칙(`base.css`, `cdt.base`)은 있었으나 숨김 규칙(`components.css`의 `.cdt-spinner__label { position: absolute; … clip: rect(0, 0, 0, 0) }`)이 더 뒤 레이어 `cdt.component`에 있어 명시도와 무관하게 항상 이겼다(Chromium 실측: 축소 모드에서도 `position: absolute`, 1×1px). `FR-CMP-008` AC-5(Must)가 충족되지 않았고, 문서 e2e의 `toBeVisible()`은 1×1px 상자도 통과시켜 잡지 못했다. `FR-CSS-005` AC-4가 축소 규칙을 `cdt.base`에 묶으므로 숨김 규칙을 `cdt.base`로 옮겨 같은 레이어에서 명시도로 겨루게 했다. **노출만으로는 부족했다**: 라벨이 `position: static`이 되면 `.cdt-spinner`의 고정 24px 그리드에 둘째 항목으로 들어가 svg가 폭 0으로 무너지고 한국어 라벨이 세로로 흘러넘쳤다(`검색 결과를 불러오는 중` → 24×210px, 넘침). 고정 크기를 컨테이너에서 svg로 옮겨(`.cdt-spinner svg`가 `--cdt-spinner-size`를 갖고 `.cdt-spinner`는 내용에 맞춰 자란다) 일반 모드 렌더링은 그대로 두고 축소 모드에서 원 24px·라벨 한 줄이 되게 했다. 축소 모드에서 컨테이너가 커져 뒤 콘텐츠가 밀리는 것은 의도한 동작이다. `ProgressRing`은 영향받지 않는다. 번들 시험 셋과 e2e 계산값 단언을 더했고, 토큰 스펙 §9.3의 `display` 서술을 실제(`position`·`clip`)로 고쳤다. 계획 001 머지 후 검토가 찾았다 | FR-CMP-008 AC-5, FR-CSS-005 AC-4, C-064 Spinner |  | closed |
 | DEV-028 | 2026-09-03 | 구현 편차 | `Spinner`가 회전하지 않았다. `components.css`의 `animation: cdt-spin var(--cdt-motion-standard) linear infinite`는 토큰이 `240ms cubic-bezier(…)`로 치환된 뒤 이징이 둘이 되어 선언 전체가 무효였다(Chromium 계산값 `animation-name: none`, 실측 2026-09-02). 회전을 거는 시험이 없어 v0.2.0까지 발견되지 않았고, 소비처 PR Search의 로딩 표시 전부가 정지된 호로 보였다. 고쳐도 `240ms`는 초당 4회전이라 상수 운동용 토큰 `motion.spin`(1000ms linear)과 프리미티브 `ease.linear`를 더해 스피너가 그것만 읽게 했다. 감소 모드 재정의와 번들 시험의 토큰 목록에 함께 넣었고, 단축 선언에 이징이 둘 들어가는 것을 막는 시험을 더했다 | FR-CMP-008, FR-CSS-005, C-064 Spinner |  | closed |

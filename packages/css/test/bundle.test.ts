@@ -537,3 +537,20 @@ describe("FR-CMP-006 overlay exit", () => {
     expect(css).not.toMatch(/\.cdt-app-shell__(?:overlay|nav)[^{]*\[data-state=closed\]/);
   });
 });
+
+describe("FR-CMP-008 meter fill animates on the compositor", () => {
+  const LAYOUT_PROPERTY = /\b(?:inline-size|block-size|width|height|margin|padding|top|right|bottom|left|inset)\b/;
+
+  test.each(bundles)("%s: the meter fill transitions transform and background only", (_name, css) => {
+    const fill = ruleFor(css, "cdt.component", /^\.cdt-meter__fill$/);
+    expect(fill?.decls["transform"]).toBe("scaleX(var(--cdt-meter-ratio))");
+    expect(fill?.decls["transition"]).toMatch(/^transform var\(--cdt-motion-standard\), ?background var\(--cdt-motion-standard\)$/);
+  });
+
+  test.each(bundles)("%s: no component transition targets a layout property", (_name, css) => {
+    const offenders = rulesInLayer(css, "cdt.component")
+      .filter((rule) => rule.decls["transition"] !== undefined && LAYOUT_PROPERTY.test(rule.decls["transition"]))
+      .map((rule) => rule.selector);
+    expect(offenders).toEqual([]);
+  });
+});
