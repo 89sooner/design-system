@@ -1,5 +1,40 @@
 # @conductor-by-89soone/css
 
+## 0.3.0
+
+### Patch Changes
+
+- 64ecc42: 브라우저 기본이 새어 나오던 자리 셋을 막고 정렬 표시기를 더한다. `mark`는 UA 기본 형광 노랑 대신 accent 표면으로, `fieldset`·`legend`는 UA 기본 `2px groove`와 여백 대신 시맨틱만 남기고 그린다. `Table`의 헤더 셀이 `aria-sort` 값에 따라 `↕`·`↑`·`↓` 글리프를 그려 정렬 열과 방향이 눈으로도 읽힌다. 배지 안에 넣을 수 있는 `.cdt-badge__dismiss`를 더해 제거 가능한 칩이 배지 높이를 유지한다.
+
+  Refs: FR-CSS-002 FR-CMP-004 FR-CMP-005
+
+- 64ecc42: 키보드로 포커스한 버튼에 마우스가 겹쳐도 포커스 링이 사라지지 않는다. 버튼의 hover 규칙이 명시성으로 `:focus-visible`을 이겨 링 그림자를 덮고 있었고, `outline`은 `none`이라 대체 표시가 없었다(WCAG 2.4.7 위반). 버튼 셀렉터의 명시성을 hover와 맞춰 소스 순서로 결정되게 했고, 더 높은 명시성을 가진 배지 제거 버튼의 hover 규칙에는 같은 명시성의 링 규칙을 세웠다. 그림자를 칠하는 hover 규칙이 링을 이기지 못하게 막는 구조적 시험을 함께 넣었다. 다른 컨트롤은 영향받지 않는다.
+
+  Refs: NFR-007 FR-A11Y-001 FR-CMP-002
+
+- 72d5a27: `Meter` 채움이 레이아웃 속성 대신 `transform`을 전환한다. `inline-size`를 240ms 전환하면 프레임마다 레이아웃이 다시 돌았다. 채움을 트랙 폭 100%에 두고 `scaleX(var(--cdt-meter-ratio))`로 줄이며, 원점은 시작 변이다. 값 전달 계약(`--cdt-meter-ratio`)과 가시 폭은 그대로다.
+
+  Refs: FR-CMP-008 FR-CSS-005
+
+- 72d5a27: `Dialog`의 스크림과 콘텐츠가 닫힐 때 140ms 동안 사라진다(진입의 역방향, `motion.fast`). 모바일 내비의 스크림은 서랍과 같이 페이드 인한다. 감소 모드에서는 닫힘 상태를 `display: none`으로 두어 Radix Presence가 0s 애니메이션을 기다리지 않고 즉시 언마운트한다.
+
+  Refs: FR-CMP-006 FR-CSS-005
+
+- 72d5a27: `prefers-reduced-motion: reduce`에서 `Spinner`의 `label` 텍스트가 실제로 드러난다. 노출 규칙은 `cdt.base`에 있었지만 화면 밖 숨김 규칙이 더 뒤 레이어 `cdt.component`에 있어 명시도와 무관하게 항상 이겼다. 숨김 규칙을 노출 규칙과 같은 레이어로 옮겼고, 라벨이 들어갈 자리를 만들기 위해 고정 지름을 컨테이너에서 svg로 옮겼다(`.cdt-spinner`가 내용에 맞춰 자란다). 일반 모드의 렌더링은 바뀌지 않으며 `ProgressRing`은 영향받지 않는다.
+
+  Refs: FR-CMP-008 FR-CSS-005
+
+- 72d5a27: `Spinner`가 실제로 회전한다. `animation: cdt-spin var(--cdt-motion-standard) linear infinite`는 토큰 치환 뒤 이징이 둘이 되어 선언 전체가 무효였고(`animation-name: none`), 모든 로딩 표시가 정지된 호로 보였다. 상수 운동 전용 토큰 `motion.spin`(`1000ms linear`)과 프리미티브 `ease.linear`를 추가하고 스피너가 그 토큰만 읽게 했다. 감소 모드에서는 다른 모션 토큰과 같이 `0s`가 된다.
+
+  Refs: FR-CMP-008 FR-CSS-005
+
+- 64ecc42: `Select` 목록·`Tooltip`·`DropdownMenu`·`Drawer`·`Banner`가 등장 모션을 갖는다. 팝오버 셋은 트리거 기준 원점(Radix가 주는 `--radix-*-transform-origin`)에서 `scale(0.97)`로 자라 나오고, `Drawer`는 자기 가장자리에서 밀려 들어오며, `Banner`는 살짝 내려앉는다. `Select`·`DropdownMenu`·`Drawer`는 `motion.standard` 진입에 그보다 빠른 `motion.fast` 퇴장을 갖고, `Tooltip`은 작은 팝오버라 양방향 모두 `motion.fast`다. 감소 모드에서는 즉시 사라진다. 모달은 중앙 등장이라 원점을 주지 않는다.
+
+  Refs: FR-CMP-006 FR-CMP-008 FR-CSS-005
+
+- Updated dependencies [72d5a27]
+  - @conductor-by-89soone/tokens@0.3.0
+
 ## 0.2.1
 
 ### Patch Changes
