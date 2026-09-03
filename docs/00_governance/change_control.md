@@ -57,6 +57,7 @@
 | CR-035 | 2026-08-06 | correction | 분석 리포트 적용(APPLY.md G-04 ~ G-06) + `DEV-027` | **CR-006의 해소안 A를 폐기하고 값 교정으로 대체한다.** CR-006은 소스 값 `#475569`를 보존하는 대가로 `status.neutralEnd`의 `usage`를 `decorative`로 낮췄고, 원장은 그 대가를 "다크 테마에서 종료 상태 점이 흐리게 읽힌다"는 승인된 제약으로 기록하면서 "시인성 불만이 제기되면 CR을 열어 값 교정을 검토한다"고 남겨 두었다. 그 CR이다. 다크 `status.neutralEnd`를 `slate.400`(`#94a3b8`)으로 올려 `surface.raised` 위 6.61:1을 확보하고 `usage`를 `nonText`로 되돌린다. 마커는 채움이 아니라 링으로 그려 queued의 채운 점과 형태로도 구분된다. 대비 쌍은 **새 ID CP-042**로 선언한다 — CP-025는 영구 결번이다. 함께 (1) 문서가 산문으로만 금지하던 조합을 `forbiddenPairs`(FP-001, FP-002)로 토큰 그래프 위에 선언해 별칭을 거쳐 도달하는 경로까지 `checkContrast`가 차단하고 매 실행마다 재측정하며, (2) 라이트 팔레트 파생을 `derivePalette`로 바꿔 base에 없는 키를 `TOK-THEME-KEY` 빌드 오류로 만든다(키 집합만 보는 FR-QA-001 검사가 볼 수 없는 유일한 실버그다). 라이트 값 `#3f4b5f`는 그대로다 **사용자 승인 기록 (2026-08-31, PR #8 리뷰 P1).** 이 교체가 확정된 대비 결정을 `focusRing`·`border.control` 밖에서 바꾼다는 지적이 있었고, 사용자가 현재 값 `#94a3b8`(`nonText`, 6.61:1)을 그 결정의 교체로 **승인했다.** 리뷰 시점에 없던 것은 기록이지 판단이 아니었다 — 근거는 이 행이 이미 담고 있었고 승인만 비어 있었다. | DEV-027, CR-006, FR-THM-005 AC-6, FR-THM-004, FR-A11Y-003, FR-A11Y-004, FR-QA-001, CP-042, FP-001, FP-002, WP-007, WP-010, WP-013 | `srs_final.md`(§9.2 FR-THM-005, §12.1), `conductor_design_system_tokens.md`, `conductor_ui_component_spec.md`, `conductor_release_validation_plan.md`, `conductor_work_packages.md`, 토큰 소스·대비 검사기, `packages/css/src/components.css`, 배송 원장 | closed |
 | CR-036 | 2026-08-29 | design | PR Search 소비처의 `DEV-380`(차트가 20계열을 색으로 구분해야 하는데 승인된 디자인 시스템에 계열 색이 없다) | 차트 계열용 semantic 색 계열 `dataviz`를 추가한다. 범주형 `dataviz.series.1`~`20`과 순서형 `dataviz.sequential.1`~`5`(합 25키)이며 두 테마에 각각 정의된다. Conductor에는 차트 프리미티브가 없으므로(ADR-006) 차트는 semantic 토큰으로 구현되는데, 계열을 구분할 색만 빠져 있었다. 25키 모두 `usage`가 `nonText`이고 차트가 놓이는 세 표면(`surface.base`·`canvas`·`raised`)에 대해 두 테마 모두 3:1 이상을 새 쌍 CP-043~CP-117로 검사한다(그래픽 객체, WCAG 1.4.11; 실측 최악 3.28). 범주형은 서로 간 대비를 요구하지 않고 소비 제품이 범례·직접 라벨·표 대체로 계열 정보를 중복 전달한다(WCAG 1.4.1; 표 대체는 소비 제품 몫). 색 컴포넌트는 여전히 범위 밖이며(4.3 Out of Scope 유지) 색 토큰만 제공한다. 함께 CR-035가 문서에 남긴 잔재를 바로잡는다: `conductor_design_system_tokens.md` §8.2 표의 CP-042 행 누락과 개수 문장, §8.6 요약의 `neutralEnd` `decorative` 표기. 기존 색·기존 대비 쌍·공개 React API는 바꾸지 않는다 | DEV-380(PR Search), FR-TOK-005, FR-THM-002, FR-THM-004, FR-A11Y-004, FR-QA-001, CP-043~CP-117, WP-002, WP-007, WP-010 | `srs_final.md`(§9.1 FR-TOK-005, §12.1), `prd.md`(FR-TOK-005), `glossary.md`(dataviz 토큰), `requirements_screen_traceability_matrix.md`(FR-TOK-005), `conductor_design_system_tokens.md`(§5.14, §8.2, §8.6), 토큰 소스(`palette.dark.ts`·`palette.light.ts`·`schema.ts`·`contrast-pairs.ts`), 배송 원장 | closed |
 | CR-037 | 2026-09-03 | correction | PR #14·#15 머지 후 리뷰 P1 둘 (0.3.0의 공개 계약 변경이 CR 없이 원장에서 closed 처리됐다) | **0.3.0 폴리시 라운드가 노출한 공개 계약을 사후에 승인 범위로 들인다.** 이 CR은 역사를 다시 쓰지 않는다 — `DEV-028`~`DEV-034`는 이미 구현·발행됐고, 그 과정에서 CR을 먼저 열지 않은 것이 이 정정의 대상이다. 세 갈래로 판정했다. (1) **기존 FR 범위 안**: `motion.spin` 토큰은 FR-TOK-001 AC-2가 모션 리터럴을 금지하므로 토큰화가 그 AC를 지키는 유일한 수단이었다(요구사항 확장이 아니라 공개 API 노출). 등장 모션 다섯은 FR-CMP-006·FR-CSS-004의 시각 구현이고 `prefers-reduced-motion` 처리는 FR-CSS-005가 이미 요구한다. `mark`·`fieldset` 리셋은 FR-CSS-002의 정규화다. SRS 변경 없음. (2) **문서화되지 않은 계약 확장**: `cdt-badge__dismiss` 제거 버튼 훅과 `aria-sort` 시각 표시기는 어느 AC도 승인한 적이 없다. FR-CMP-004 AC-6과 FR-CMP-005 AC-6으로 계약을 명시한다. (3) **파생이 상위 범위를 선취한 표현**: `conductor_ui_component_spec.md`가 제거 가능한 배지를 "칩"이라 불렀는데 칩은 F-CMP-010의 이름이고 OD-003이 열려 있다. 표현을 배지 범위로 좁히고, FR-CMP-004의 예외 처리에 "이 훅은 F-CMP-010을 승인하지 않는다"를 못 박는다 | FR-CMP-004 AC-6, FR-CMP-005 AC-6, DEV-028~DEV-034, OD-003(유지) | `srs_final.md`, `conductor_ui_component_spec.md`, `conductor_implementation_traceability.md` | closed |
+| CR-038 | 2026-09-03 | correction | PR #23·#24 머지 후 리뷰 (등록된 DEV가 CR에 연결되지 않았다 · 릴리스 게이트가 manifest 동일성으로 소유를 판정한다) | **0.3.1 라운드가 남긴 구현 정정과 릴리스 게이트 정정을 한 CR로 묶는다.** 원장 1장이 "DEV를 등록하고 `change_control.md`의 CR로 연결한다"를 규율로 두는데, `DEV-035`·`DEV-037`·`DEV-039`·`DEV-040`이 "불필요"로 적힌 채 닫혀 있었다 — 그 표기는 이 저장소의 규율에 없다. 넷을 이 CR에 연결하고 성격을 여기서 분류한다. 함께 `DEV-041`을 등록해 게이트의 남은 구멍을 막는다: `DEV-040`이 세운 manifest 동일성 판정은 "버전이 오른 뒤 npm에 없는 채로 main이 전진한" 경우를 통과시키는데, 그때 발행되는 것은 HEAD의 내용이고 태그는 bump 커밋을 가리켜 둘이 갈린다. 판정 근거를 **발행 전 레지스트리 스냅숏**으로 바꿔 "이번 실행이 이 패키지를 발행했는가"를 직접 묻는다 | DEV-035, DEV-037, DEV-039, DEV-040, DEV-041 | `conductor_implementation_traceability.md`, `scripts/check-release-tags.mjs`, `.github/workflows/release.yml` | closed |
 
 유형: `scope`(범위 변경), `design`(설계 변경), `implementation`(구현 편차 DEV-### 처리), `correction`(문서 오류 수정)
 
@@ -385,6 +386,23 @@ WP-009 완료 검증에서 발견한 작업 패키지 검증 명령의 문서 �
 - [x] 검사가 코드 펜스·인용을 가리지 않는다는 것을 이 CR에서도 확인했다 — `--strict`의 미결 표식 게이트가 "정렬되지 않음"을 뜻하던 한 낱말 안의 부분 문자열을 세어 ERROR 2건을 냈다 — 그 낱말을 여기 그대로 적으면 이 문장까지 세어 오류가 재현되므로 적지 않는다. 뜻을 잃지 않는 표현("정렬되지 않은 상태의 글리프")으로 바꿔 해소했다. **문서를 지워 게이트를 통과시키지 않는다** — 이 경우는 서술을 더 명확히 한 것이지 이력을 지운 것이 아니다
 - [x] `pnpm test` 580/580 · `check:api` 3 report 정상 · `check:changesets` 위반 0
 - [x] AC-6이 드러낸 구현 결함 둘을 `DEV-036`(조작 대상 18×18)·`DEV-038`(`aria-sort="other"`)로 등록해 PR #21에서 고쳤다 — `main` `ca29e40`. 같은 PR이 `DEV-035`·`DEV-037`(RTL 방향)도 함께 닫았고, 0.3.1이 그 결과를 담는다
+
+### CR-038 cascade
+
+**요구사항 변경이 없다.** 이 CR은 구현 결함 넷의 추적을 규율대로 세우고, 릴리스 게이트의 판정 근거를 고친다. SRS·PRD·파생 문서는 바뀌지 않는다.
+
+| DEV | 성격 | 이 CR에서의 분류 |
+| --- | --- | --- |
+| `DEV-035` · `DEV-037` | 구현 편차 (RTL) | 논리 배치와 물리 변형이 어긋난 것. 승인된 계약(FR-CMP-006·008)이 이미 요구하는 동작을 되찾았고 공개 API를 넓히지 않았다 |
+| `DEV-039` | 문서 결함 | 소비처 ID를 자기 추적 칸에 심어 validator가 미상 ID로 잡았다. 표기 정정이며 사실은 보존된다 |
+| `DEV-040` | 구현 결함 | 릴리스 게이트가 버전이 오르지 않은 패키지에도 release HEAD를 요구해 정상 patch 릴리스를 막았다 |
+| `DEV-041` | 구현 결함 | 그 정정이 남긴 구멍 — manifest 동일성은 "이번 실행이 발행했는가"를 답하지 못한다 |
+
+- [x] `conductor_implementation_traceability.md` — 넷의 처리 CR을 `CR-038`로 연결하고 `DEV-041`을 등록
+- [x] `scripts/check-release-tags.mjs` — `--snapshot`(발행 전 레지스트리 상태 기록)과 `--published-before`(그 기록으로 판정) 추가. 스냅숏이 없으면 manifest 동일성으로 물러서고 **그 사실을 출력에 적는다**
+- [x] `.github/workflows/release.yml` — `changeset publish` **앞에** 스냅숏 단계를 넣고, 두 검증 단계가 그 파일을 읽는다. 발행 뒤에는 건너뛴 패키지와 발행된 패키지를 구분할 수 없다 — 그때는 양쪽 다 레지스트리에 있다
+- [x] `scripts/check-release-tags.test.mjs` — 시험 일곱. 변이 둘 킬(발행 판정 무시 · 건너뛴 패키지에도 HEAD 요구)
+- [x] `pnpm test` 587/587 · `lint` 0 · `typecheck` 통과 · validator `--root .`·`--report`·`--strict` 종료 0
 
 ## 6. 미해소 오픈 결정
 

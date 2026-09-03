@@ -167,16 +167,23 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
+      # **발행 전에** 레지스트리 상태를 찍는다 (DEV-041). 이 시점에 이미 있는 버전은
+      # `changeset publish`가 건너뛰므로 그 패키지의 태그는 이전 릴리스의 것이 옳고,
+      # 없는 버전은 이 실행이 발행하므로 태그가 release HEAD를 가리켜야 한다. 발행
+      # 뒤에는 둘을 구분할 수 없다 — 그때는 양쪽 다 레지스트리에 있다.
+      - name: snapshot registry state before publishing
+        run: pnpm check:release-tags -- --snapshot "$RUNNER_TEMP/published-before.json"
+
       - name: publish with provenance
         run: pnpm changeset publish
         env:
           NPM_CONFIG_PROVENANCE: "true"
 
       - name: verify local release tags
-        run: pnpm check:release-tags
+        run: pnpm check:release-tags -- --published-before "$RUNNER_TEMP/published-before.json"
 
       - name: push release tags
         run: git push origin --tags
 
       - name: verify pushed release tags
-        run: pnpm check:release-tags -- --remote origin
+        run: pnpm check:release-tags -- --remote origin --published-before "$RUNNER_TEMP/published-before.json"
