@@ -713,12 +713,13 @@ describe("FR-A11Y-001 the focus ring survives a hovering pointer", () => {
     expect(focusAt).toBeGreaterThan(hoverAt);
   });
 
-  test.each(bundles)("%s: no hover rule that paints a shadow can out-rank the focus ring", (_name, css) => {
+  test.each(bundles)("%s: no hover or press rule that paints a shadow can out-rank the focus ring", (_name, css) => {
     /*
-     * 개별 사례가 아니라 부류를 막는다. 그림자를 칠하는 hover 규칙이 링 규칙보다
-     * 명시성이 높으면(또는 같으면서 뒤에 오면) 포커스 표시가 사라진다. 실제로
-     * `.cdt-badge__dismiss.cdt-btn:not(:disabled):hover`(0,4,0)가 공용 링
-     * 규칙(0,3,0)을 이겨 그렇게 됐다 (DEV-034).
+     * 개별 사례가 아니라 부류를 막는다. 그림자를 칠하는 hover·press 규칙이 링
+     * 규칙보다 명시성이 높으면(또는 같으면서 뒤에 오면) 포커스 표시가 사라진다.
+     * 실제로 `.cdt-badge__dismiss.cdt-btn:not(:disabled):hover`(0,4,0)가 공용 링
+     * 규칙(0,3,0)을 이겨 그렇게 됐다. 키보드로 버튼을 누르면 `:active`와
+     * `:focus-visible`이 함께 걸리므로 그 상태도 같이 본다 (DEV-034).
      */
     const rules = rulesInLayer(css, "cdt.component");
     const parts = (rule: { selector: string }) => rule.selector.split(",").map((s) => s.trim());
@@ -731,8 +732,8 @@ describe("FR-A11Y-001 the focus ring survives a hovering pointer", () => {
 
     const offenders = rules
       .map((rule, index) => ({ index, rule }))
-      .filter(({ rule }) => rule.decls["box-shadow"] !== undefined && rule.selector.includes(":hover"))
-      .flatMap(({ index, rule }) => parts(rule).filter((s) => s.includes(":hover")).map((s) => ({ selector: s, index, spec: specificityB(s) })))
+      .filter(({ rule }) => rule.decls["box-shadow"] !== undefined && /:hover|:active/.test(rule.selector))
+      .flatMap(({ index, rule }) => parts(rule).filter((s) => /:hover|:active/.test(s)).map((s) => ({ selector: s, index, spec: specificityB(s) })))
       .filter((hover) => !focus.some((f) => f.spec > hover.spec || (f.spec === hover.spec && f.index > hover.index)))
       .map((hover) => hover.selector);
 
