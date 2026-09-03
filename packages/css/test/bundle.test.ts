@@ -626,11 +626,13 @@ describe("FR-CSS-002 browser defaults never leak", () => {
 describe("FR-CMP-005 sort direction is visible, not only announced", () => {
   test.each(bundles)("%s: the header cell draws a glyph per aria-sort value", (_name, css) => {
     const component = rulesInLayer(css, "cdt.component");
+    // `/ ""`는 대체 텍스트다. 없으면 글리프가 접근성 이름에 들어가 `aria-sort`와
+    // 중복으로 읽힌다 (Chromium AX 트리로 실측). 그것까지 함께 건다.
     const glyphs: Record<string, string> = {
       // dist는 `::after`를 `:after`로 줄이고 속성 선택자의 따옴표를 지운다.
-      '.cdt-table__header-cell[aria-sort]:after': '"↕"',
-      '.cdt-table__header-cell[aria-sort=ascending]:after': '"↑"',
-      '.cdt-table__header-cell[aria-sort=descending]:after': '"↓"',
+      '.cdt-table__header-cell[aria-sort]:after': '"↕" / ""',
+      '.cdt-table__header-cell[aria-sort=ascending]:after': '"↑" / ""',
+      '.cdt-table__header-cell[aria-sort=descending]:after': '"↓" / ""',
     };
     for (const [selector, content] of Object.entries(glyphs)) {
       const rule = component.find((entry) => entry.selector === selector);

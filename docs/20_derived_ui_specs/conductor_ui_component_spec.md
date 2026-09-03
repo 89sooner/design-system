@@ -427,7 +427,7 @@ export type IconButtonProps = PolymorphicProps<"button", IconButtonOwnProps> & {
   - `app.css:551-555` — `.table-scroll` `overflow-x: auto`, `border-radius: inherit`.
   - `app.css:557-560` — `.num` `font-variant-numeric: tabular-nums`, 모노스페이스. FR-CMP-005 AC-2의 근거.
   - `app.css:1052-1056` — 뷰포트 800px 미만에서 `.table`이 `display: block; overflow-x: auto`로 전환된다. FR-CMP-005 AC-1의 근거.
-  - **결정**: `aria-sort`를 스크린 리더에만 알리지 않는다. 헤더 셀이 값에 따라 `::after` 글리프(`↕` 감쇠 · `↑` · `↓`)를 그려 정렬 열과 방향이 눈으로도 읽힌다. `aria-sort`가 없는 열에는 아무것도 그리지 않는다(DEV-033).
+  - **결정**: `aria-sort`를 스크린 리더에만 알리지 않는다. 헤더 셀이 값에 따라 `::after` 글리프(`↕` 감쇠 · `↑` · `↓`)를 그려 정렬 열과 방향이 눈으로도 읽힌다. 글리프는 `content`의 대체 텍스트 문법(`"↑" / ""`)으로 접근성 이름에서 뺀다 — 빼지 않으면 `aria-sort`가 이미 알리는 것을 글자로 한 번 더 읽는다. `aria-sort`가 없는 열에는 아무것도 그리지 않는다(DEV-033).
 
 **합성 API**
 
