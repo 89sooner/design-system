@@ -37,3 +37,8 @@ Thumbs.db
 .env
 .env.*
 !.env.example
+
+# 작업 계획서. 감사·설계 과정의 개인 산출물이며 정본이 아니다 — 결정과 결과는
+# `docs/00_governance/change_control.md`와 원장이 갖는다. 추적하지도 무시하지도
+# 않으면 작업 트리가 늘 더러운 채로 남는다.
+plans/

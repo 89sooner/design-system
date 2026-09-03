@@ -13,7 +13,7 @@
  * Refs: DEV-040 FR-DX-005 JOB-REL-001
  */
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, writeFileSync, copyFileSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, copyFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -53,9 +53,23 @@ const makeRepo = () => {
 const tag = (repo, name, version, commit) =>
   git(repo, "tag", "-a", `@conductor-by-89soone/${name}@${version}`, "-m", `@conductor-by-89soone/${name}@${version}`, commit);
 
-const run = (repo) => {
+/** 발행 전 레지스트리 상태를 흉내낸다. `published: true`면 이번 실행이 그 패키지를 건너뛴다. */
+const snapshot = (repo, entries) => {
+  const file = join(repo, "published-before.json");
+  const body = {};
+  for (const [name, published] of Object.entries(entries)) {
+    const version = JSON.parse(readFileSync(join(repo, `packages/${name}/package.json`), "utf8")).version;
+    body[`@conductor-by-89soone/${name}`] = { version, published };
+  }
+  writeFileSync(file, `${JSON.stringify(body, null, 2)}\n`);
+  return file;
+};
+
+const run = (repo, snapshotFile = null) => {
+  const args = ["scripts/check-release-tags.mjs"];
+  if (snapshotFile !== null) args.push("--published-before", snapshotFile);
   try {
-    return { ok: true, output: execFileSync("node", ["scripts/check-release-tags.mjs"], { cwd: repo, encoding: "utf8" }) };
+    return { ok: true, output: execFileSync("node", args, { cwd: repo, encoding: "utf8" }) };
   } catch (error) {
     return { ok: false, output: `${error.stdout ?? ""}\n${error.stderr ?? ""}` };
   }
@@ -116,5 +130,59 @@ describe("릴리스 태그 게이트 (DEV-040)", () => {
     const result = run(repo);
     expect(result.ok).toBe(false);
     expect(result.output).toContain("expected an annotated tag object");
+  });
+});
+
+describe("발행 스냅숏이 있으면 소유를 실측으로 가른다 (DEV-041)", () => {
+  /*
+   * manifest 동일성만으로는 답하지 못하는 자리가 있다 (PR #24 리뷰 P1): 버전이 오른 뒤
+   * npm에 아직 없는 채로 main이 전진하면, bump 커밋에 남은 태그와 실제로 발행되는
+   * HEAD 내용이 갈린다. 두 커밋 다 같은 버전을 선언하므로 옛 판정은 통과시켰다.
+   */
+  it("이번 실행이 발행한 패키지의 태그가 옛 커밋에 있으면 잡는다", () => {
+    const repo = makeRepo();
+    const bump = commitVersions(repo, { tokens: "0.3.0", css: "0.3.1", react: "0.3.1" }, "bump to 0.3.1");
+    tag(repo, "css", "0.3.1", bump);
+    tag(repo, "react", "0.3.1", bump);
+    tag(repo, "tokens", "0.3.0", bump);
+    // 버전은 그대로인 채 소스가 더 움직인다 — 발행되는 것은 이 트리다.
+    writeFileSync(join(repo, "packages/css/src.txt"), "changed after the bump\n");
+    git(repo, "add", "-A");
+    git(repo, "commit", "-qm", "source moves after the bump");
+
+    // 셋 다 레지스트리에 없다 = 이번 실행이 전부 발행한다.
+    const file = snapshot(repo, { tokens: false, css: false, react: false });
+    const result = run(repo, file);
+    expect(result.ok).toBe(false);
+    expect(result.output).toContain("this run published this version");
+    expect(result.output).toContain("css@0.3.1");
+  });
+
+  it("이번 실행이 건너뛴 패키지의 태그는 옛 커밋이어도 통과한다", () => {
+    const repo = makeRepo();
+    const first = commitVersions(repo, { tokens: "0.3.0", css: "0.3.0", react: "0.3.0" }, "release 0.3.0");
+    for (const name of PACKAGES) tag(repo, name, "0.3.0", first);
+    const second = commitVersions(repo, { tokens: "0.3.0", css: "0.3.1", react: "0.3.1" }, "release 0.3.1");
+    tag(repo, "css", "0.3.1", second);
+    tag(repo, "react", "0.3.1", second);
+
+    // tokens 0.3.0은 이미 레지스트리에 있다 = 이번 실행이 건너뛴다.
+    const file = snapshot(repo, { tokens: true, css: false, react: false });
+    const result = run(repo, file);
+    expect(result.ok).toBe(true);
+    expect(result.output).not.toContain("fallback");
+  });
+
+  it("스냅숏이 없으면 약한 판정으로 물러서고 그 사실을 말한다", () => {
+    const repo = makeRepo();
+    const first = commitVersions(repo, { tokens: "0.3.0", css: "0.3.0", react: "0.3.0" }, "release 0.3.0");
+    for (const name of PACKAGES) tag(repo, name, "0.3.0", first);
+    const second = commitVersions(repo, { tokens: "0.3.0", css: "0.3.1", react: "0.3.1" }, "release 0.3.1");
+    tag(repo, "css", "0.3.1", second);
+    tag(repo, "react", "0.3.1", second);
+
+    const result = run(repo);
+    expect(result.ok).toBe(true);
+    expect(result.output).toContain("manifest-equality fallback");
   });
 });

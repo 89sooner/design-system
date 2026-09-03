@@ -9,7 +9,7 @@
 // distance between the last release and the working branch — that is the question it asks, and
 // outside a release the answer is expected to be non-zero.
 import { execFileSync } from "node:child_process";
-import { readFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -29,19 +29,67 @@ function git(args, { allowFailure = false } = {}) {
   }
 }
 
-function parseRemote(argv) {
-  const index = argv.indexOf("--remote");
+function parseValue(argv, flag) {
+  const index = argv.indexOf(flag);
   if (index === -1) return null;
-  const remote = argv[index + 1];
-  if (remote === undefined || remote.startsWith("--")) {
-    console.error("usage: node scripts/check-release-tags.mjs [--remote <name>]");
+  const value = argv[index + 1];
+  if (value === undefined || value.startsWith("--")) {
+    console.error(
+      "usage: node scripts/check-release-tags.mjs [--remote <name>] [--snapshot <file> | --published-before <file>]",
+    );
     process.exit(2);
   }
-  return remote;
+  return value;
 }
 
-const remote = parseRemote(process.argv.slice(2));
+/**
+ * Which versions the registry already had **before** this run published.
+ *
+ * A package absent from that snapshot is one this run publishes, so its tag must name release HEAD.
+ * A package already present is skipped by `changeset publish` and keeps the tag of the release that
+ * produced it. Historical manifest equality cannot answer this (PR #24 review P1): after a version
+ * bump, main can advance with source changes while the version stays absent from npm, and then a
+ * tag left on the bump commit would name different source from the tarball that gets published.
+ */
+async function readSnapshot(file) {
+  return JSON.parse(await readFile(file, "utf8"));
+}
+
+function registryHasVersion(name, version) {
+  try {
+    const out = execFileSync("npm", ["view", `${name}@${version}`, "version"], {
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "ignore"],
+    }).trim();
+    return out !== "";
+  } catch {
+    return false; // `npm view` exits non-zero when the version does not exist
+  }
+}
+
+const argv = process.argv.slice(2);
+const remote = parseValue(argv, "--remote");
+const snapshotOut = parseValue(argv, "--snapshot");
+const publishedBeforeFile = parseValue(argv, "--published-before");
 const head = git(["rev-parse", "HEAD"]);
+
+if (snapshotOut !== null) {
+  // 발행 **전에** 부른다. 이 시점에 레지스트리가 이미 가진 버전은 이 실행이 발행하지 않는다.
+  const snapshot = {};
+  for (const packageDir of PACKAGE_DIRS) {
+    const manifest = JSON.parse(await readFile(resolve(ROOT, packageDir, "package.json"), "utf8"));
+    snapshot[manifest.name] = { version: manifest.version, published: registryHasVersion(manifest.name, manifest.version) };
+  }
+  await writeFile(snapshotOut, `${JSON.stringify(snapshot, null, 2)}\n`);
+  const skipped = Object.entries(snapshot).filter(([, entry]) => entry.published).map(([name]) => name);
+  console.log(
+    `[check:release-tags] snapshot written to ${snapshotOut}` +
+      (skipped.length > 0 ? ` — already on the registry: ${skipped.join(", ")}` : " — every package is new to the registry"),
+  );
+  process.exit(0);
+}
+
+const publishedBefore = publishedBeforeFile === null ? null : await readSnapshot(publishedBeforeFile);
 const problems = [];
 
 for (const packageDir of PACKAGE_DIRS) {
@@ -93,13 +141,28 @@ for (const packageDir of PACKAGE_DIRS) {
      * the tag names its source correctly. If it does not, the tag was placed on a commit that never
      * declared this version — the failure mode above.
      */
-    const manifestAtTarget = git(["show", `${target}:${packageDir}/package.json`], { allowFailure: true });
-    const versionAtTarget = manifestAtTarget === null ? null : JSON.parse(manifestAtTarget).version;
-    if (versionAtTarget !== manifest.version) {
+    const skippedThisRun = publishedBefore?.[manifest.name]?.published === true;
+    if (publishedBefore !== null && !skippedThisRun) {
       problems.push(
-        `${tag}: target ${target} declares version ${versionAtTarget ?? "(no manifest)"}, not ${manifest.version} — ` +
-          "the tag names a commit that never carried this version",
+        `${tag}: target ${target} is not release HEAD ${head} — ` +
+          "this run published this version, so the tag and the tarball would identify different source",
       );
+    } else if (publishedBefore === null) {
+      /*
+       * No snapshot: fall back to the weaker question the repository can answer offline — does the
+       * tag's own commit already carry this version? It separates "an earlier release produced this
+       * version" from "the tag sits on a commit that never declared it", but it cannot see source
+       * that moved after the bump while the version stayed unpublished. The release workflow always
+       * passes `--published-before`; this branch serves local runs and says so.
+       */
+      const manifestAtTarget = git(["show", `${target}:${packageDir}/package.json`], { allowFailure: true });
+      const versionAtTarget = manifestAtTarget === null ? null : JSON.parse(manifestAtTarget).version;
+      if (versionAtTarget !== manifest.version) {
+        problems.push(
+          `${tag}: target ${target} declares version ${versionAtTarget ?? "(no manifest)"}, not ${manifest.version} — ` +
+            "the tag names a commit that never carried this version",
+        );
+      }
     }
   }
 
@@ -121,5 +184,6 @@ if (problems.length > 0) {
 }
 
 console.log(
-  `[check:release-tags] ${PACKAGE_DIRS.length} annotated package tag(s) verified${remote === null ? " locally" : ` locally and on ${remote}`}`,
+  `[check:release-tags] ${PACKAGE_DIRS.length} annotated package tag(s) verified${remote === null ? " locally" : ` locally and on ${remote}`}` +
+    (publishedBefore === null ? " (no pre-publish snapshot: manifest-equality fallback)" : ""),
 );
