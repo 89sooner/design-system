@@ -376,11 +376,15 @@ WP-009 완료 검증에서 발견한 작업 패키지 검증 명령의 문서 �
 
 ### CR-037 cascade
 
+**승인.** 결정자가 이 정정을 지시하며 세 가지를 명시적으로 승인했다 — (1) `motion.spin` 공개 API의 CR 누락 지적 수용, (2) `DEV-032`·`DEV-033`의 미지정 공개 동작을 거버넌스 감사 대상으로 인정, (3) `CR-037` 번호 사용. cascade 범위에 대해서는 "기존 FR이 충분히 승인하고 있다면 SRS의 의미를 새로 확장하지 않고, 실제 계약 확장이 맞다면 정상 cascade를 수행한다"고 지시했다. `srs_final.md`가 `baseline`이므로 그 변경은 사용자 승인 사항이며(`AGENTS.md`), **이 승인이 그 근거다.** 상태는 `baseline`을 유지한다 — 승격이 아니라 승인된 계약 확장이다.
+
 - [x] `srs_final.md` v1.6 — FR-CMP-004에 AC-6(제거 버튼 스타일 훅, 조작 대상 크기를 줄이지 않는다)과 예외 처리의 F-CMP-010 경계, FR-CMP-005에 AC-6(`aria-sort` 시각 표시기, 표현하지 않는 값에는 내지 않는다)과 예외 처리의 소유 경계
-- [x] `conductor_ui_component_spec.md` — 제거 가능한 배지 절의 "칩" 표현을 배지 범위로 좁히고 AC-6을 인용
-- [x] `conductor_implementation_traceability.md` — `DEV-028`~`DEV-034`의 처리 CR을 `CR-037`로 연결하고, 사후 정정임을 4장 머리말에 기록. 원래 발견일과 수정 시각은 보존한다
-- [x] `pnpm test` · `pnpm check:api` — 공개 토큰 API 스냅숏과 클래스 계약에 드리프트가 없음을 확인
-- [ ] 이 CR은 코드를 바꾸지 않는다. AC-6이 드러낸 구현 결함(제거 버튼의 조작 대상이 18×18)은 별도 DEV로 처리한다
+- [x] `conductor_ui_component_spec.md` v0.9 — 제거 가능한 배지 절의 "칩" 표현을 배지 범위로 좁히고 두 AC-6을 인용. 상태 헤더가 갱신되지 않은 채 `DEV-033` 내용이 들어가 있던 것도 함께 정정
+- [x] `conductor_implementation_traceability.md` v0.26 — `DEV-028`~`DEV-034`의 처리 CR을 `CR-037 (사후)`로 연결하고 4장 머리말에 사후 정정임을 기록. 원래 발견일·내용·상태는 보존
+- [x] **validator** `validate_srs_prd_env.py --root .` → `OK: no structural or traceability issues found.` (종료 0) · `--report` 종료 0 · `--strict` 종료 0. **이 CR 이전(`2549675`)에는 ERROR 1건이었다** — `DEV-034`가 소비처의 접근성 NFR ID를 자기 추적 칸에 심어 `unknown requirement ID`로 잡히던 것이며, `DEV-039`로 정정해 함께 해소했다. 순증감 -1
+- [x] 검사가 코드 펜스·인용을 가리지 않는다는 것을 이 CR에서도 확인했다 — `--strict`의 미결 표식 게이트가 "정렬되지 않음"을 뜻하던 한 낱말 안의 부분 문자열을 세어 ERROR 2건을 냈다 — 그 낱말을 여기 그대로 적으면 이 문장까지 세어 오류가 재현되므로 적지 않는다. 뜻을 잃지 않는 표현("정렬되지 않은 상태의 글리프")으로 바꿔 해소했다. **문서를 지워 게이트를 통과시키지 않는다** — 이 경우는 서술을 더 명확히 한 것이지 이력을 지운 것이 아니다
+- [x] `pnpm test` 580/580 · `check:api` 3 report 정상 · `check:changesets` 위반 0
+- [x] AC-6이 드러낸 구현 결함 둘을 `DEV-036`(조작 대상 18×18)·`DEV-038`(`aria-sort="other"`)로 등록해 PR #21에서 고쳤다 — `main` `ca29e40`. 같은 PR이 `DEV-035`·`DEV-037`(RTL 방향)도 함께 닫았고, 0.3.1이 그 결과를 담는다
 
 ## 6. 미해소 오픈 결정
 

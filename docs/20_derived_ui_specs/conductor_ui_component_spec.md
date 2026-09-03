@@ -1,6 +1,6 @@
 # Conductor Design System UI 컴포넌트 명세서
 
-> 상태: review | 버전: v0.8 | 갱신일: 2026-09-03
+> 상태: review | 버전: v0.9 | 갱신일: 2026-09-03
 
 ## 0. 문서 위치와 범위
 
@@ -427,7 +427,7 @@ export type IconButtonProps = PolymorphicProps<"button", IconButtonOwnProps> & {
   - `app.css:551-555` — `.table-scroll` `overflow-x: auto`, `border-radius: inherit`.
   - `app.css:557-560` — `.num` `font-variant-numeric: tabular-nums`, 모노스페이스. FR-CMP-005 AC-2의 근거.
   - `app.css:1052-1056` — 뷰포트 800px 미만에서 `.table`이 `display: block; overflow-x: auto`로 전환된다. FR-CMP-005 AC-1의 근거.
-  - **결정**: `aria-sort`를 스크린 리더에만 알리지 않는다(FR-CMP-005 AC-6). 헤더 셀이 값에 따라 `::after` 글리프(`↕` 감쇠 · `↑` · `↓`)를 그려 정렬 열과 방향이 눈으로도 읽힌다. 글리프는 `content`의 대체 텍스트 문법(`"↑" / ""`)으로 접근성 이름에서 뺀다 — 빼지 않으면 `aria-sort`가 이미 알리는 것을 글자로 한 번 더 읽는다. `aria-sort`가 없는 열에는 아무것도 그리지 않는다(DEV-033). **시각으로 표현하지 않는 값에도 그리지 않는다** — `aria-sort="other"`는 네이티브 계약이 허용하는 값이지만 이 디자인 시스템에 대응 글리프가 없으므로, `none`과 같은 미정렬 글리프를 내어 스크린 리더와 다른 사실을 말하는 대신 아무것도 내지 않는다(DEV-038).
+  - **결정**: `aria-sort`를 스크린 리더에만 알리지 않는다(FR-CMP-005 AC-6). 헤더 셀이 값에 따라 `::after` 글리프(`↕` 감쇠 · `↑` · `↓`)를 그려 정렬 열과 방향이 눈으로도 읽힌다. 글리프는 `content`의 대체 텍스트 문법(`"↑" / ""`)으로 접근성 이름에서 뺀다 — 빼지 않으면 `aria-sort`가 이미 알리는 것을 글자로 한 번 더 읽는다. `aria-sort`가 없는 열에는 아무것도 그리지 않는다(DEV-033). **시각으로 표현하지 않는 값에도 그리지 않는다** — `aria-sort="other"`는 네이티브 계약이 허용하는 값이지만 이 디자인 시스템에 대응 글리프가 없으므로, `none`과 같은 정렬되지 않은 상태의 글리프를 내어 스크린 리더와 다른 사실을 말하는 대신 아무것도 내지 않는다(DEV-038).
 
 **합성 API**
 
