@@ -257,6 +257,19 @@ describe("발행 전 게이트 (DEV-042)", () => {
     expect(snap["@conductor-by-89soone/css"].published).toBe(false);
   });
 
+  it("발행할 패키지의 태그가 HEAD의 가벼운 태그여도 발행 전에 막는다", () => {
+    const repo = makeRepo();
+    const head = commitVersions(repo, { tokens: "0.3.0", css: "0.3.1", react: "0.3.1" }, "bump");
+    tag(repo, "tokens", "0.3.0", head);
+    // 현재 버전 이름의 lightweight 태그가 이미 HEAD에 있다 — Changesets는 이것을 대체하지 못한다.
+    git(repo, "tag", "@conductor-by-89soone/css@0.3.1", head);
+    const npmBin = fakeNpm(repo, { published: ["@conductor-by-89soone/tokens@0.3.0"] });
+    const result = snapshotRun(repo, npmBin, join(repo, "snap.json"));
+    expect(result.ok).toBe(false);
+    expect(result.output).toContain("stale tag(s) before publishing");
+    expect(result.output).toContain("not an annotated tag object");
+  });
+
   it("404가 아닌 레지스트리 오류에는 스냅숏을 중단한다", () => {
     const repo = makeRepo();
     commitVersions(repo, { tokens: "0.3.0", css: "0.3.1", react: "0.3.1" }, "bump");

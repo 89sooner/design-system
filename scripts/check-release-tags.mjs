@@ -105,6 +105,22 @@ if (snapshotOut !== null) {
     const ref = `refs/tags/${manifest.name}@${manifest.version}`;
     const localObject = git(["rev-parse", "--verify", ref], { allowFailure: true });
     if (localObject === null) continue; // 아직 없다 — `changeset publish`가 발행하며 만든다
+
+    /*
+     * **종류도 여기서 본다** (PR #26 리뷰 P1). Changesets는 annotated tag 생성 실패를 publish
+     * 실패로 전파하지 않는다(`release.yml`이 그 사실을 근거로 이 게이트를 둔다). 그래서 현재
+     * 버전 이름의 lightweight tag가 이미 HEAD에 놓여 있으면, 이 실행은 그것을 대체하지 못한 채
+     * npm에만 게시하고 종류 검사는 발행 뒤에야 실패한다 — 되돌릴 수 없는 자리를 지난 뒤다.
+     */
+    const objectType = git(["cat-file", "-t", localObject]);
+    if (objectType !== "tag") {
+      stale.push(
+        `${manifest.name}@${manifest.version}: tag already exists as ${objectType}, not an annotated tag object — ` +
+          "Changesets would publish without replacing it",
+      );
+      continue;
+    }
+
     const target = git(["rev-list", "-n", "1", ref]);
     if (target !== head) {
       stale.push(

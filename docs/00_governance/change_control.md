@@ -59,6 +59,7 @@
 | CR-037 | 2026-09-03 | correction | PR #14·#15 머지 후 리뷰 P1 둘 (0.3.0의 공개 계약 변경이 CR 없이 원장에서 closed 처리됐다) | **0.3.0 폴리시 라운드가 노출한 공개 계약을 사후에 승인 범위로 들인다.** 이 CR은 역사를 다시 쓰지 않는다 — `DEV-028`~`DEV-034`는 이미 구현·발행됐고, 그 과정에서 CR을 먼저 열지 않은 것이 이 정정의 대상이다. 세 갈래로 판정했다. (1) **기존 FR 범위 안**: `motion.spin` 토큰은 FR-TOK-001 AC-2가 모션 리터럴을 금지하므로 토큰화가 그 AC를 지키는 유일한 수단이었다(요구사항 확장이 아니라 공개 API 노출). 등장 모션 다섯은 FR-CMP-006·FR-CSS-004의 시각 구현이고 `prefers-reduced-motion` 처리는 FR-CSS-005가 이미 요구한다. `mark`·`fieldset` 리셋은 FR-CSS-002의 정규화다. SRS 변경 없음. (2) **문서화되지 않은 계약 확장**: `cdt-badge__dismiss` 제거 버튼 훅과 `aria-sort` 시각 표시기는 어느 AC도 승인한 적이 없다. FR-CMP-004 AC-6과 FR-CMP-005 AC-6으로 계약을 명시한다. (3) **파생이 상위 범위를 선취한 표현**: `conductor_ui_component_spec.md`가 제거 가능한 배지를 "칩"이라 불렀는데 칩은 F-CMP-010의 이름이고 OD-003이 열려 있다. 표현을 배지 범위로 좁히고, FR-CMP-004의 예외 처리에 "이 훅은 F-CMP-010을 승인하지 않는다"를 못 박는다 | FR-CMP-004 AC-6, FR-CMP-005 AC-6, DEV-028~DEV-034, OD-003(유지) | `srs_final.md`, `conductor_ui_component_spec.md`, `conductor_implementation_traceability.md` | closed |
 | CR-038 | 2026-09-03 | correction | PR #23·#24 머지 후 리뷰 (등록된 DEV가 CR에 연결되지 않았다 · 릴리스 게이트가 manifest 동일성으로 소유를 판정한다) | **0.3.1 라운드가 남긴 구현 정정과 릴리스 게이트 정정을 한 CR로 묶는다.** 원장 1장이 "DEV를 등록하고 `change_control.md`의 CR로 연결한다"를 규율로 두는데, `DEV-035`·`DEV-037`·`DEV-039`·`DEV-040`이 "불필요"로 적힌 채 닫혀 있었다 — 그 표기는 이 저장소의 규율에 없다. 넷을 이 CR에 연결하고 성격을 여기서 분류한다. 함께 `DEV-041`을 등록해 게이트의 남은 구멍을 막는다: `DEV-040`이 세운 manifest 동일성 판정은 "버전이 오른 뒤 npm에 없는 채로 main이 전진한" 경우를 통과시키는데, 그때 발행되는 것은 HEAD의 내용이고 태그는 bump 커밋을 가리켜 둘이 갈린다. 판정 근거를 **발행 전 레지스트리 스냅숏**으로 바꿔 "이번 실행이 이 패키지를 발행했는가"를 직접 묻는다 | DEV-035, DEV-037, DEV-039, DEV-040, DEV-041 | `conductor_implementation_traceability.md`, `scripts/check-release-tags.mjs`, `.github/workflows/release.yml` | closed |
 | CR-039 | 2026-09-03 | correction | PR #25 머지 후 리뷰 (발행 뒤 검사는 늦다 · 레지스트리 조회 오류를 미발행으로 센다) | **`CR-038`이 세운 게이트를 발행 앞으로 옮긴다.** 스냅숏 단계가 상태를 기록만 하고 돌아와, `DEV-041` 시나리오가 여전히 `changeset publish` 뒤에 보고됐다 — tarball이 이미 올라간 뒤이고 npm은 같은 버전을 다시 받지 않으므로 고친 소스로 재발행할 수도 없다. 스냅숏 단계가 그 자리에서 낡은 태그를 거부하게 했다(`DEV-042`). 함께 `npm view`의 실패 처리를 고쳤다 — 404가 아닌 실패(권한·프록시·일시 오류)를 "미발행"으로 세면 이미 발행된 패키지를 이번 실행이 발행한 것으로 오분류하고, 그 오류가 다른 패키지가 발행된 뒤에야 드러난다. 404만 `false`로 답하고 나머지는 스냅숏을 중단한다 | DEV-042 | `scripts/check-release-tags.mjs`, `.github/workflows/release.yml`, `conductor_implementation_traceability.md` | closed |
+| CR-040 | 2026-09-03 | correction | PR #26 머지 후 리뷰 (가벼운 태그가 게시 전 게이트를 통과한다 · CR-039가 운영 문서로 cascade되지 않았다) | **게시 전 게이트가 태그의 종류도 본다.** Changesets는 annotated tag 생성 실패를 publish 실패로 전파하지 않으므로, 현재 버전 이름의 lightweight 태그가 이미 릴리스 HEAD에 놓여 있으면 이 실행은 그것을 대체하지 못한 채 npm에만 게시하고 종류 검사는 게시 뒤에야 실패한다 — 되돌릴 수 없는 자리를 지난 뒤다(`DEV-043`). 함께 `CR-039`의 빠진 cascade를 완성한다: 인프라 운영 6절과 릴리스 검증 계획 4절이 아직 "게시 먼저, 그다음 태그 검증"을 기술하고 있어 문서와 워크플로가 어긋나 있었다 | DEV-043, CR-039(cascade 보완) | `scripts/check-release-tags.mjs`, `conductor_infrastructure_operations.md`, `conductor_release_validation_plan.md`, `conductor_implementation_traceability.md` | closed |
 
 유형: `scope`(범위 변경), `design`(설계 변경), `implementation`(구현 편차 DEV-### 처리), `correction`(문서 오류 수정)
 
@@ -414,6 +415,17 @@ WP-009 완료 검증에서 발견한 작업 패키지 검증 명령의 문서 �
 - [x] `conductor_implementation_traceability.md` — `DEV-042` 등록
 - [x] `scripts/check-release-tags.test.mjs` — 시험 열(일곱 → 열). `npm` 대역으로 발행 전 거부·정상 스냅숏·404 아닌 오류 셋을 건다. 변이 둘 킬
 - [x] `pnpm test` 590/590 · `lint` 0 · `typecheck` 통과 · validator `--strict` 종료 0
+
+### CR-040 cascade
+
+**요구사항 변경이 없다.** 게시 전 게이트에 종류 검사를 더하고, `CR-039`가 남긴 문서 공백을 메운다.
+
+- [x] `scripts/check-release-tags.mjs` — 게시 전 판정이 `cat-file -t`로 종류를 먼저 본다. annotated가 아니면 그 자리에서 실패하고 위치 검사로 넘어가지 않는다
+- [x] `conductor_infrastructure_operations.md` v0.8 — 6절 4·5단계를 실제 순서로 다시 썼다. 게시 **앞**의 스냅숏·거부, 게시 **뒤**의 소유 판정, `npm view` 오류 처리, "검사의 위치가 실패의 대가를 정한다"
+- [x] `conductor_release_validation_plan.md` v0.7 — 4절 2·3단계에 게시 전 태그 게이트와 `--published-before` 판정 범위
+- [x] `conductor_implementation_traceability.md` — `DEV-043` 등록
+- [x] `scripts/check-release-tags.test.mjs` — 시험 열하나. 가벼운 태그가 HEAD에 있어도 게시 전에 막히는 것을 건다
+- [x] `pnpm test` 591/591 · `lint` 0 · `typecheck` 통과 · validator `--root .`·`--report`·`--strict` 종료 0
 
 ## 6. 미해소 오픈 결정
 
