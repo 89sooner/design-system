@@ -495,6 +495,11 @@ export const tokens: {
         readonly titleText: "var(--cdt-top-bar-title-text)";
         readonly minHeight: "var(--cdt-top-bar-min-height)";
     };
+    readonly workbench: {
+        readonly background: "var(--cdt-workbench-background)";
+        readonly compactPadding: "var(--cdt-workbench-compact-padding)";
+        readonly listHeight: "var(--cdt-workbench-list-height)";
+    };
 };
 
 // @public

@@ -1,7 +1,7 @@
 import { createRef, useState, type ComponentProps } from "react";
-import { cleanup, fireEvent, render } from "@testing-library/react";
+import { cleanup, fireEvent, render, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, test, vi } from "vitest";
-import { AppShell, NavList, TopBar, type NavItem } from "../shell";
+import { AppShell, AppShellNavTrigger, NavList, TopBar, type NavItem } from "../shell";
 import { runContractSuite } from "./contract";
 
 const items: readonly NavItem[] = [
@@ -40,7 +40,7 @@ describe("shell components", () => {
     const main = getByRole("main");
     fireEvent.click(getByRole("link", { name: "Skip to content" }));
     expect(document.activeElement).toBe(main);
-    expect(main.id).toBe("cdt-main");
+    expect(main.id).toMatch(/^cdt-main-/);
     expect(ref.current?.classList.contains("cdt-app-shell")).toBe(true);
   });
 
@@ -106,4 +106,67 @@ describe("shell components", () => {
     expect(getByRole("button", { name: "Menu" })).not.toBeNull();
     expect(getByRole("button", { name: "Theme" })).not.toBeNull();
   });
+});
+
+// Regression: an unlinked consumer trigger loses focus after Radix unmounts the drawer.
+test("FR-CMP-009: legacy trigger Escape restores focus without a consumer animation frame", async () => {
+  function Fixture() {
+    const [open, setOpen] = useState(false);
+    return <AppShell navOpen={open} onNavOpenChange={setOpen} nav={<button>Nav item</button>} skipLinkLabel="Skip" topBar={<button onClick={() => setOpen(true)}>Menu</button>}>Content</AppShell>;
+  }
+  const view = render(<Fixture />);
+  const trigger = view.getByRole("button", { name: "Menu" });
+  trigger.focus();
+  fireEvent.click(trigger);
+  fireEvent.keyDown(view.getByRole("dialog"), { key: "Escape" });
+  await waitFor(() => expect(document.activeElement).toBe(trigger));
+});
+
+test("FR-CMP-013: linked shell trigger IDs, route focus, and repeated main IDs", async () => {
+  const view = render(<AppShell nav={<button>Destination</button>} routeKey="one" skipLinkLabel="Skip" topBar={<AppShellNavTrigger>Menu</AppShellNavTrigger>}>First</AppShell>);
+  const trigger = view.getByRole("button", { name: "Menu" });
+  trigger.focus(); fireEvent.click(trigger);
+  const dialog = view.getByRole("dialog");
+  expect(trigger.getAttribute("aria-controls")).toBe(dialog.id);
+  expect(trigger.getAttribute("aria-expanded")).toBe("true");
+  view.rerender(<AppShell nav={<button>Destination</button>} routeKey="two" skipLinkLabel="Skip" topBar={<AppShellNavTrigger>Menu</AppShellNavTrigger>}>Second</AppShell>);
+  await waitFor(() => expect(document.activeElement).toBe(view.getByRole("main")));
+  expect(view.queryByRole("dialog")).toBeNull();
+  view.rerender(<><AppShell nav={null} skipLinkLabel="First">One</AppShell><AppShell nav={null} skipLinkLabel="Second">Two</AppShell></>);
+  const mains = view.getAllByRole("main");
+  expect(mains[0]?.id).not.toBe(mains[1]?.id);
+});
+
+test("FR-CMP-013: outside focus closes navigation without stealing destination focus", async () => {
+  const view = render(<AppShell nav={<button>Nav item</button>} skipLinkLabel="Skip" topBar={<AppShellNavTrigger>Menu</AppShellNavTrigger>}><button>Result action</button></AppShell>);
+  fireEvent.click(view.getByRole("button", { name: "Menu" }));
+  const destination = view.getByRole("button", { name: "Result action" });
+  destination.focus();
+  await waitFor(() => expect(view.queryByRole("dialog")).toBeNull());
+  expect(document.activeElement).toBe(destination);
+});
+
+test("FR-CMP-013: moving to desktop closes drawer and focuses visible main", async () => {
+  let listener: (() => void) | undefined;
+  const media = { matches: true, addEventListener: (_: string, callback: () => void) => { listener = callback; }, removeEventListener: vi.fn() };
+  vi.stubGlobal("matchMedia", vi.fn(() => media));
+  try {
+    const view = render(<AppShell nav={<button>Nav item</button>} skipLinkLabel="Skip" topBar={<AppShellNavTrigger>Menu</AppShellNavTrigger>}>Content</AppShell>);
+    fireEvent.click(view.getByRole("button", { name: "Menu" }));
+    expect(view.getByRole("dialog")).not.toBeNull();
+    media.matches = false;
+    listener?.();
+    await waitFor(() => expect(view.queryByRole("dialog")).toBeNull());
+    expect(document.activeElement).toBe(view.getByRole("main"));
+    view.unmount(); expect(media.removeEventListener).toHaveBeenCalled();
+  } finally { vi.unstubAllGlobals(); }
+});
+
+test("FR-CMP-013: scrim focus is a dismissal gesture and restores the opener", async () => {
+  const view = render(<AppShell nav={<button>Nav item</button>} skipLinkLabel="Skip" topBar={<AppShellNavTrigger>Menu</AppShellNavTrigger>}>Content</AppShell>);
+  const trigger = view.getByRole("button", { name: "Menu" });
+  trigger.focus(); fireEvent.click(trigger);
+  const scrim = view.getByRole("button", { name: "Close navigation" });
+  scrim.focus(); fireEvent.click(scrim);
+  await waitFor(() => expect(document.activeElement).toBe(trigger));
 });

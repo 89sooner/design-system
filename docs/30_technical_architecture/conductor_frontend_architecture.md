@@ -1,6 +1,6 @@
 # Conductor Design System 프론트엔드 아키텍처
 
-> 상태: review | 버전: v0.4 | 갱신일: 2026-07-17
+> 상태: review | 버전: v0.4 | 갱신일: 2026-09-13
 
 ## 1. 목적과 두 개의 프론트엔드
 
@@ -359,3 +359,7 @@ document.documentElement.setAttribute("data-cdt-theme", t);
 - 공개 API: `conductor_api_contracts.md`
 - 화면 ID: `../20_derived_ui_specs/conductor_product_ia.md`
 - 요구사항: `../10_requirements/srs_final.md`
+
+## CR-041 확장 영향 (FR-CMP-010~013)
+
+Radix가 제공하는 Tabs/Popover/Collapsible의 동작을 재사용한다. Combobox와 다중 선택은 별도 의미 모델이다. 그래프는 읽기 전용이며 같은 데이터의 semantic 목록을 제공한다. 상호작용 파일의 client 지시문을 실제 번들 경계에 보존한다.

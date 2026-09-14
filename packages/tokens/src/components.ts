@@ -353,6 +353,13 @@ const shell: TokenDefinition[] = [
   component("topBar.minHeight", value("68px"), "TopBar minimum height."),
 ];
 
+// FR-CMP-010: flat opt-in workspace surfaces; existing Card defaults are preserved.
+const workbench: TokenDefinition[] = [
+  component("workbench.background", ref("surface.canvas"), "Flat workspace surface."),
+  component("workbench.compactPadding", ref("space.2"), "Opt-in compact table cell padding."),
+  component("workbench.listHeight", value("240px"), "Bounded combobox option viewport."),
+];
+
 export const componentTokens: readonly TokenDefinition[] = [
   ...button,
   ...card,
@@ -370,4 +377,5 @@ export const componentTokens: readonly TokenDefinition[] = [
   ...overlay,
   ...page,
   ...shell,
+  ...workbench,
 ];

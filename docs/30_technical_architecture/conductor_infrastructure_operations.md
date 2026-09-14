@@ -1,6 +1,6 @@
 # Conductor Design System 인프라 및 운영 아키텍처
 
-> 상태: review | 버전: v0.9 | 갱신일: 2026-09-03
+> 상태: review | 버전: v0.9 | 갱신일: 2026-09-13
 
 ## 1. 범위 재정의: 서버가 없는 인프라
 
@@ -128,3 +128,7 @@ npm은 게시된 버전을 삭제할 수 없으므로(`unpublish`는 72시간 �
 - `conductor_architecture_decision_records.md`(ADR-001 모노레포, ADR-009 테스트 스택, ADR-010 Changesets + OIDC)
 - `conductor_security_privacy_architecture.md`(자격증명·시크릿·저장소 접근 권한)
 - `conductor_observability_reliability.md`(CI 실패 알림·런북)
+
+## CR-041 확장 영향 (FR-CMP-010~013)
+
+React18 Vite·React19 Vite·Next App Router와 CSS 단독 tarball 소비를 격리 fixture에서 확인한다. 네트워크/레지스트리 장애는 환경 실패로 기록한다. 이번 작업은 로컬 검증이며 push/main merge/npm publish/운영 쓰기 권한이 없다.

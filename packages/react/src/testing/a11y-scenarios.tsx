@@ -1,7 +1,7 @@
 // Refs: WP-024 FR-QA-003 FR-A11Y-002 FR-A11Y-005
-import { useState, type ReactElement } from "react";
+import { useRef, useState, type ReactElement } from "react";
 import {
-  AppShell,
+  AppShell, AppShellNavTrigger, Tabs, Popover, Collapsible, Combobox, MultiSelect, FilterChip, FilterToolbar, DataTable, WorkbenchLayout, DetailInspector, PathList, Breadcrumb, Skeleton, CopyButton, ProcessingStatus, RelationGraph,
   Badge,
   Banner,
   Button,
@@ -36,6 +36,7 @@ import {
 export type A11yState = "default" | "disabled" | "error" | "interactive" | "open";
 
 export type KeyboardPath =
+  | { readonly kind: "steps"; readonly steps: readonly { readonly target: string; readonly keys: string; readonly check: string; readonly attribute?: string; readonly expected: string }[] }
   | { readonly kind: "static" }
   | { readonly kind: "focus" }
   | { readonly kind: "toggle" }
@@ -82,7 +83,44 @@ export function AppShellKeyboardFixture({ initiallyOpen = false }: { readonly in
   return <AppShell nav={nav} navOpen={open} onNavOpenChange={setOpen} skipLinkLabel="Skip to shell content" mainId="shell-content" topBar={<TopBar menuButton={<Button data-shell-trigger="" onClick={() => setOpen(true)}>Open navigation</Button>} />}><p>Shell content</p></AppShell>;
 }
 
+const sampleOptions = [{ id: "one", label: "One" }, { id: "two", label: "Two" }];
+function ComboFixture({ disabled = false, error = false }: { readonly disabled?: boolean; readonly error?: boolean }) {
+  const [query, setQuery] = useState(""); const [value, setValue] = useState<string | null>(null);
+  return <><Combobox label="Category" options={sampleOptions} query={query} value={value} onQueryChange={setQuery} onValueChange={setValue} disabled={disabled} state={error ? "error" : "ready"} /><output data-choice="">{value ?? "none"}</output></>;
+}
+function MultiFixture() { const [value, setValue] = useState<readonly string[]>([]); return <MultiSelect label="Categories" options={sampleOptions} value={value} onValueChange={setValue} />; }
+function ChipFixture() { const [removed, setRemoved] = useState(false); return <><FilterChip removeLabel="Remove filter" onRemove={() => setRemoved(true)} disabled={removed}>Client</FilterChip><output data-outcome="">{removed ? "removed" : "present"}</output></>; }
+function DataFixture() { const [selected, select] = useState<string>(); return <><DataTable label="Loaded results" rows={[{ id: "one", title: "One" }]} columns={[{ id: "title", header: "Title", cell: row => row.title }]} rowId={row => row.id} rowLabel={row => row.title} selectedId={selected} onSelect={select} /><output data-outcome="">{selected ?? "none"}</output></>; }
+function WidthFixture() { const [width, setWidth] = useState(40); return <WorkbenchLayout width={width} onWidthChange={setWidth} inspector={<p>Preview</p>}><output data-width="">{width}</output></WorkbenchLayout>; }
+function InspectorFixture() { const [open, setOpen] = useState(true); const trigger = useRef<HTMLButtonElement | null>(null); return <><Button ref={trigger}>Return here</Button>{open && <DetailInspector label="Detail" onClose={() => setOpen(false)} returnFocusRef={trigger}>Details</DetailInspector>}<output data-outcome="">{open ? "open" : "closed"}</output></>; }
+function PathFixture() { return <PathList items={[{ id: "src", label: "Source", children: [{ id: "file", label: "search.ts" }] }]} onPathSelect={() => undefined} />; }
+function ProcessingFixture() { const [retried, setRetried] = useState(false); return <><ProcessingStatus label="Synthetic pipeline" stages={[{ id: "received", label: "Received", status: "complete", detail: "Receipt confirmed" }, { id: "indexed", label: "Indexed", status: retried ? "pending" : "failed", detail: "Index freshness not confirmed", action: { label: "Retry locally", onAction: () => setRetried(true) } }]} /><output data-outcome="">{retried ? "retried" : "failed"}</output></>; }
+function RelationFixture() { return <RelationGraph label="Synthetic relations" nodes={[{ id: "one", label: "One" }, { id: "two", label: "Two" }]} edges={[{ id: "edge", source: "one", target: "two", type: "references", label: "references", evidence: "Synthetic evidence", ambiguous: true }]} />; }
+function PopoverFixture({ open = false }: { readonly open?: boolean }) { return <Popover.Root defaultOpen={open}><Popover.Trigger {...keyboardTarget}>Show help</Popover.Trigger><Popover.Content aria-label="Help"><p>Filter instructions.</p><Popover.Close>Close</Popover.Close></Popover.Content></Popover.Root>; }
+function NewShellFixture() { return <AppShell nav={<a href="#menu-item">Menu item</a>} skipLinkLabel="Skip menu example" topBar={<AppShellNavTrigger>Open menu</AppShellNavTrigger>}>Example content</AppShell>; }
+
 export const a11yScenarios: readonly A11yScenario[] = [
+  { component: "Combobox", state: "default", keyboard: { kind: "steps", steps: [{ target: "[role=combobox]", keys: "{ArrowDown}{Enter}", check: "[data-choice]", expected: "one" }] }, render: () => <ComboFixture /> },
+  { component: "Combobox", state: "disabled", render: () => <ComboFixture disabled /> },
+  { component: "Combobox", state: "error", render: () => <ComboFixture error /> },
+  { component: "MultiSelect", state: "default", keyboard: { kind: "steps", steps: [{ target: "[role=checkbox]", keys: " ", check: "[role=checkbox]", attribute: "aria-checked", expected: "true" }] }, render: () => <MultiFixture /> },
+  { component: "FilterChip", state: "default", keyboard: { kind: "steps", steps: [{ target: "button", keys: "{Enter}", check: "[data-outcome]", expected: "removed" }] }, render: () => <ChipFixture /> },
+  { component: "FilterToolbar", state: "default", keyboard: { kind: "steps", steps: [{ target: "button", keys: "{Enter}", check: "[data-outcome]", expected: "removed" }] }, render: () => <FilterToolbar><ChipFixture /></FilterToolbar> },
+  { component: "DataTable", state: "default", keyboard: { kind: "steps", steps: [{ target: "button", keys: "{Enter}", check: "[data-outcome]", expected: "one" }] }, render: () => <DataFixture /> },
+  { component: "WorkbenchLayout", state: "default", keyboard: { kind: "steps", steps: [{ target: "input[type=range]", keys: "{ArrowRight}", check: "[data-width]", expected: "41" }] }, render: () => <WidthFixture /> },
+  { component: "DetailInspector", state: "default", keyboard: { kind: "steps", steps: [{ target: "section button", keys: "{Escape}", check: "[data-outcome]", expected: "closed" }] }, render: () => <InspectorFixture /> },
+  { component: "PathList", state: "default", keyboard: { kind: "steps", steps: [{ target: "summary", keys: "{Enter}", check: "details", attribute: "open", expected: "" }] }, render: () => <PathFixture /> },
+  { component: "Breadcrumb", state: "default", keyboard: { kind: "focus" }, render: () => <Breadcrumb><a {...keyboardTarget} href="#parent">Parent</a><span aria-current="page">Child</span></Breadcrumb> },
+  { component: "Skeleton", state: "default", keyboard: { kind: "static" }, render: () => <Skeleton label="Loading results" /> },
+  { component: "CopyButton", state: "default", keyboard: { kind: "steps", steps: [{ target: "button", keys: "{Enter}", check: ".cdt-copy-feedback [role=status]", expected: "복사" }] }, render: () => <CopyButton value="synthetic-id" /> },
+  { component: "ProcessingStatus", state: "default", keyboard: { kind: "steps", steps: [{ target: "button", keys: "{Enter}", check: "[data-outcome]", expected: "retried" }] }, render: () => <ProcessingFixture /> },
+  { component: "RelationGraph", state: "default", keyboard: { kind: "steps", steps: [{ target: "[aria-label='그래프 보기 조절'] button", keys: "{Enter}", check: "output", expected: "150%" }] }, render: () => <RelationFixture /> },
+  { component: "Tabs", state: "default", keyboard: { kind: "steps", steps: [{ target: "[role=tab]", keys: "{ArrowRight}{Enter}", check: "[role=tab][data-state=active]", expected: "History" }] }, render: () => <Tabs.Root defaultValue="results"><Tabs.List aria-label="Views"><Tabs.Trigger value="results">Results</Tabs.Trigger><Tabs.Trigger value="history">History</Tabs.Trigger></Tabs.List><Tabs.Content value="results">Results panel</Tabs.Content><Tabs.Content value="history">History panel</Tabs.Content></Tabs.Root> },
+  { component: "Popover", state: "default", keyboard: { kind: "overlay", role: "dialog" }, render: () => <PopoverFixture /> },
+  { component: "Popover", state: "open", axeSelector: '[role="dialog"]', render: () => <PopoverFixture open /> },
+  { component: "Collapsible", state: "default", keyboard: { kind: "steps", steps: [{ target: "button", keys: "{Enter}", check: "button", attribute: "aria-expanded", expected: "true" }] }, render: () => <Collapsible.Root><Collapsible.Trigger>Show evidence</Collapsible.Trigger><Collapsible.Content>Evidence</Collapsible.Content></Collapsible.Root> },
+  { component: "AppShellNavTrigger", state: "default", keyboard: { kind: "steps", steps: [{ target: "button", keys: "{Enter}", check: "button", attribute: "aria-expanded", expected: "true" }, { target: "[role=dialog] a", keys: "{Escape}", check: "button", attribute: "aria-expanded", expected: "false" }] }, render: () => <NewShellFixture /> },
+
   { component: "Button", state: "default", keyboard: { kind: "focus" }, render: () => <Button {...keyboardTarget}>Save</Button> },
   { component: "Button", state: "disabled", render: () => <Button disabled>Save</Button> },
   { component: "IconButton", state: "default", keyboard: { kind: "focus" }, render: () => <IconButton {...keyboardTarget} aria-label="Add item" icon="+" /> },

@@ -1,6 +1,6 @@
 # Conductor Design System 빌드 파이프라인 아키텍처
 
-> 상태: review | 버전: v0.3 | 갱신일: 2026-07-17
+> 상태: review | 버전: v0.3 | 갱신일: 2026-09-13
 
 ## 0. 문서 재해석
 
@@ -271,3 +271,7 @@ const THRESHOLD: Record<"body" | "large" | "nonText", number> = {
 | 실패 시 프로세스 | watch 모드에서는 오류를 출력하고 다음 변경을 계속 감시 | 즉시 종료 코드 1, 워크플로 전체 중단 |
 | 산출물 보존 | `dist/`를 로컬 디스크에 유지 | 각 Job의 아티팩트로 업로드(`conductor_async_events_jobs.md` Job 카탈로그의 아티팩트 열 참조) |
 | 대비/접근성 검사 | 개발자가 수동으로 `pnpm check:contrast`, `pnpm test:a11y` 실행 | JOB-CI-001, JOB-CI-002로 모든 PR에서 자동 실행 |
+
+## CR-041 확장 영향 (FR-CMP-010~013)
+
+영향은 빌드 파이프라인뿐이다. tarball은 source alias 없이 설치하며 workspace 의존 버전 해소를 검사한다. graph 수집·분석·재시도 서버를 구현하지 않는다.

@@ -1,6 +1,6 @@
 # Conductor Design System 토큰/메타데이터 스키마
 
-> 상태: review | 버전: v0.3 | 갱신일: 2026-07-17
+> 상태: review | 버전: v0.3 | 갱신일: 2026-09-13
 
 ## 0. 문서 재해석
 
@@ -192,3 +192,7 @@ TokenAlias[] (빌드 중간 표현) ──해석 완료 시 소멸, resolvedValu
 - **재현성 검증.** `ThemePalette.sourceHash`는 토큰 소스 디렉터리 전체를 정렬 후 SHA-256 해시한 값이다. 동일 소스 + 동일 락파일 + 동일 Node 버전(20 이상, NFR-005)에서 두 번 빌드한 산출물은 바이트 단위로 동일해야 한다.
 - **산출물 보존 기간.** `dist/`는 버전 관리 대상이 아니다(각 패키지 `.gitignore`). 릴리스된 버전의 산출물은 npm 레지스트리에 배포된 tarball이 유일한 보존 대상이며, 재현이 필요하면 해당 git 태그에서 재빌드한다.
 - **백업/복구.** 데이터베이스가 없으므로 별도 백업 절차가 없다. 복구 대상은 저장소(git)와 npm 레지스트리 배포 이력뿐이며, 롤백 절차는 `conductor_async_events_jobs.md`의 JOB-REL-001을 따른다.
+
+## CR-041 확장 영향 (FR-CMP-010~013)
+
+토큰 스키마는 기존 계층을 유지한다. 합성 관계 데이터는 stable ID·source/target·type·label·evidence/confidence·state를 받는다. 소비자가 인가·식별 충돌 방지 후 전달한다. 미확인 운영 단계와 partial은 boolean 성공으로 축약하지 않는다.

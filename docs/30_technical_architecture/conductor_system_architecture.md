@@ -1,6 +1,6 @@
 # Conductor Design System 시스템 아키텍처
 
-> 상태: review | 버전: v0.3 | 갱신일: 2026-07-17
+> 상태: review | 버전: v0.3 | 갱신일: 2026-09-13
 
 ## 1. 목적과 범위
 
@@ -282,3 +282,7 @@ OD-001은 이 검사의 대상 쌍 정의를 아직 확정하지 않았고, FR-T
 - 공개 API: `conductor_api_contracts.md`
 - 토큰 스키마: `conductor_data_model.md`
 - 빌드/CI 잡: `conductor_async_events_jobs.md`
+
+## CR-041 확장 영향 (FR-CMP-010~013)
+
+tokens → css → react → docs를 유지한다. 세 조합은 데이터를 props/callback으로 받는 정적 UI다. 서버·DB·인증·queue를 추가하지 않는다.

@@ -1,6 +1,6 @@
 # Conductor Design System UI 컴포넌트 명세서
 
-> 상태: review | 버전: v0.9 | 갱신일: 2026-09-03
+> 상태: review | 버전: v0.9 | 갱신일: 2026-09-13
 
 ## 0. 문서 위치와 범위
 
@@ -1266,5 +1266,6 @@ component 토큰은 semantic 토큰만 참조한다(FR-TOK-002 AC-3). 아래 표
 
 `font.weight.*` 스케일은 FR-TOK-007이 다루지 않으므로, `--cdt-font-weight-section-label`은 component 토큰으로 두고 semantic 토큰을 신설하지 않는다.
 
+## CR-041 확장 계약 (FR-CMP-010~013)
 
-
+기존 Button/Table/Badge/Banner/Timeline/Panel/Drawer를 우선 재사용한다. 신규 계약은 Tabs·Popover·Collapsible/Accordion, 검색 입력/필터 칩·DataTable·Workbench/Inspector·경로 탐색, 관계 그래프/목록, 운영 단계 표현이다. 각 공개 export의 타입·ref·이름·disabled/busy·이벤트 전달과 반복 ID를 검증한다. 실제 최종 API와 예제는 패키지 README와 API report를 함께 본다.

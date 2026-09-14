@@ -1,6 +1,6 @@
 # Conductor Design System 릴리스 검증 계획
 
-> 상태: review | 버전: v0.8 | 갱신일: 2026-09-03
+> 상태: review | 버전: v0.8 | 갱신일: 2026-09-13
 
 ## 1. 목적과 범위
 
@@ -131,3 +131,7 @@ Conductor Design System은 `@conductor-by-89soone/tokens`, `@conductor-by-89soon
 | OD-003 (open, 비차단) | 없음 (F-CMP-010에 FR 미부여) | 릴리스 게이트에 영향 없음 | REL-003 종료 시점에 Product가 결정한다 | Product |
 | OD-004 (2026-07-10 종결, CR-005) | FR-CMP-009, WP-023 | 셸 컴포넌트군이 `@conductor-by-89soone/react`에 포함된다. REL-003 릴리스 게이트에 셸 검증 항목이 포함된다 | 없음. WP-023 실행 | System Maintainer |
 | OD-002: 시각 회귀 검사의 v1 포함 여부 | JOB-CI-003, FR-QA-004(Should) | REL-003 착수 시점까지 CI 러너에서 렌더가 결정론적으로 재현됨을 확인하지 못하면 JOB-CI-003을 REL-004로 이월하고 FR-QA-004 상태를 `deferred`로 표시한다. v1은 수동 시각 확인으로 대체한다 | 렌더가 결정론적으로 재현되면 REL-003 게이트에 JOB-CI-003을 포함하고 §3 REL-004 체크리스트의 시각 회귀 항목을 실행한다 | QA |
+
+## CR-041 검증 게이트
+
+build 후 typecheck; test/lint/lint:deps/lint:tokens/check:contrast/test:a11y/test:visual/size/check:api/check:changesets/check:secrets를 실제 root script 계약으로 실행한다. Button gzip 4KB·CSS gzip20KB 상한을 유지한다. tarball 3패키지 일관 설치 후 React18/19 Vite와 Next App Router build/hydration/E2E를 따로 기록한다. 세 합성 흐름의 탐색·선택·복귀·관계 해석과 상태/테마/폭 matrix는 단위 검사와 별개다. 정식 handoff baseline 부재와 미실행 환경 게이트를 통과로 바꾸지 않는다.

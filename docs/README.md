@@ -171,4 +171,4 @@ python3 ~/.claude/skills/build-srs-prd-env/scripts/validate_srs_prd_env.py --roo
 | OD-002 | 시각 회귀 = **REL-004 이월** | FR-QA-004 상태 `deferred`. v1 릴리스 게이트 아님 |
 | OD-004 | 셸 컴포넌트군 = **패키지 포함** | C-070 ~ C-072이 `@conductor-by-89soone/react`에 포함. WP-023 실행 |
 
-미해소: OD-003(필터/칩 컴포넌트군). FR이 부여되지 않아 baseline을 막지 않는다.
+OD-003은 2026-09-13 CR-041 사용자 확장 요청으로 범위 조건이 해소되었다. FR-CMP-010~013과 WP-029~032를 추가했으며 SRS v1.7은 별도 baseline 승인 전 review 상태다.

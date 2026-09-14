@@ -1,6 +1,6 @@
 # Conductor Design System 구현 요청서 for AI Agent
 
-> 상태: review | 버전: v0.3 | 갱신일: 2026-07-17
+> 상태: review | 버전: v0.3 | 갱신일: 2026-09-13
 
 ## 1. 목적과 이 문서의 지위
 
@@ -222,3 +222,7 @@ CR의 cascade 갱신과 종료는 문서 소유자가 수행한다. 코딩 에�
 - `conductor_screen_qa_checklist.md`의 해당 WP 항목이 닫혔다
 - `../40_delivery/conductor_release_validation_plan.md`의 해당 릴리스 게이트가 통과한다
 - 알려진 제약이 추적 원장 §5에 기록되어 있다
+
+## CR-041 실행 확장
+
+WP-029~032 / FR-CMP-010~013을 기반→검색→관계→운영 순서로 구현·검증한다. 사용자 요청은 로컬 확장 실행 근거이며 SRS review의 정식 baseline 재승인을 사칭하지 않는다. 기존 Vanilla CSS/Radix·토큰 의존 방향을 유지한다. 실제 tarball 소비·브라우저 흐름 증거를 원장에 남기고 NOT RUN과 운영 미연동을 보고한다. Agent 추가 결정은 ADR-011의 ADEC 로그에 분류·근거·대안·영향·검증·되돌리기를 남긴다.

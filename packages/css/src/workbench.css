@@ -1,0 +1,38 @@
+/* FR-CMP-010 FR-CMP-012 · WP-030 WP-032 */
+@layer cdt.component {
+  .cdt-filter-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--cdt-space-2); }
+  .cdt-filter-chip { display: inline-flex; align-items: center; gap: var(--cdt-space-1); padding-inline-start: var(--cdt-space-2); border: var(--cdt-border-width-hairline) solid var(--cdt-border-control); border-radius: var(--cdt-radius-sm); background: var(--cdt-surface-raised); overflow-wrap: anywhere; }
+  .cdt-combobox { position: relative; display: grid; gap: var(--cdt-space-2); min-inline-size: 0; }
+  .cdt-combobox__options { position: absolute; inset-block-start: 100%; inset-inline: 0; z-index: var(--cdt-z-popover); margin: 0; padding: var(--cdt-space-1); max-block-size: var(--cdt-workbench-list-height); overflow: auto; list-style: none; border: var(--cdt-border-width-hairline) solid var(--cdt-border-control); background: var(--cdt-surface-raised); border-radius: var(--cdt-radius-sm); }
+  .cdt-combobox__options li { padding: var(--cdt-space-3); cursor: pointer; }
+  .cdt-combobox__options [data-highlighted] { background: var(--cdt-state-selected); }
+  .cdt-combobox__options [aria-disabled="true"] { color: var(--cdt-text-muted); cursor: not-allowed; }
+  .cdt-multi-select { min-inline-size: 0; margin: 0; padding: var(--cdt-space-3); border: var(--cdt-border-width-hairline) solid var(--cdt-border-default); }
+  .cdt-multi-select ul { list-style: none; padding: 0; }
+  .cdt-multi-select li label { display: flex; align-items: center; gap: var(--cdt-space-2); min-block-size: var(--cdt-input-min-height); }
+  .cdt-data-table .cdt-table__header-cell[aria-sort="ascending"]::after, .cdt-data-table .cdt-table__header-cell[aria-sort="descending"]::after { content: none; }
+  .cdt-data-table { min-inline-size: 0; }
+  .cdt-data-table[data-density="compact"] { --cdt-table-cell-padding-block: var(--cdt-workbench-compact-padding); }
+  .cdt-data-table [data-selected] { background: var(--cdt-state-selected); }
+  .cdt-data-table .cdt-table__cell { overflow-wrap: anywhere; }
+  .cdt-data-table > .cdt-filter-toolbar { padding: var(--cdt-space-3); justify-content: space-between; }
+  .cdt-workbench { display: grid; min-inline-size: 0; border: var(--cdt-border-width-hairline) solid var(--cdt-border-default); border-radius: var(--cdt-radius-md); background: var(--cdt-workbench-background); }
+  .cdt-workbench[data-inspecting] { grid-template-columns: minmax(0, 1fr) minmax(0, var(--cdt-workbench-inspector-share)); }
+  .cdt-workbench__results { min-inline-size: 0; }
+  .cdt-workbench__inspector { min-inline-size: 0; border-inline-start: var(--cdt-border-width-hairline) solid var(--cdt-border-default); padding: var(--cdt-space-4); overflow-wrap: anywhere; }
+  .cdt-workbench__resize { display: flex; flex-wrap: wrap; align-items: center; gap: var(--cdt-space-2); color: var(--cdt-text-muted); }
+  .cdt-detail-inspector header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--cdt-space-2); }
+  .cdt-detail-inspector h2 { font-size: var(--cdt-font-size-lg); }
+  .cdt-path-list { list-style: none; padding-inline-start: var(--cdt-space-3); }
+  .cdt-path-list summary { cursor: pointer; padding-block: var(--cdt-space-2); overflow-wrap: anywhere; }
+  .cdt-path-list button { white-space: normal; text-align: start; overflow-wrap: anywhere; }
+  .cdt-skeleton { min-block-size: var(--cdt-input-min-height); padding: var(--cdt-space-3); background: var(--cdt-surface-raised); color: var(--cdt-text-muted); }
+  .cdt-breadcrumb { display: flex; flex-wrap: wrap; gap: var(--cdt-space-2); color: var(--cdt-text-muted); }
+  .cdt-copy-feedback { display: inline-flex; flex-wrap: wrap; align-items: center; gap: var(--cdt-space-2); }
+  .cdt-processing-status .cdt-timeline__step { background: var(--cdt-workbench-background); }
+  @media (max-width: {breakpoint.md}) {
+    .cdt-workbench[data-inspecting] { grid-template-columns: minmax(0, 1fr); }
+    .cdt-workbench__inspector { border-inline-start: none; border-block-start: var(--cdt-border-width-hairline) solid var(--cdt-border-default); }
+    .cdt-workbench__resize { display: none; }
+  }
+}

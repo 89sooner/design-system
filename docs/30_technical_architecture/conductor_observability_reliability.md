@@ -1,6 +1,6 @@
 # Conductor Design System 관측성 및 신뢰성
 
-> 상태: review | 버전: v0.3 | 갱신일: 2026-07-17
+> 상태: review | 버전: v0.3 | 갱신일: 2026-09-13
 
 ## 1. 범위 재정의: 서비스 SLO가 아니라 파이프라인 관측성
 
@@ -123,3 +123,7 @@ Critical은 릴리스를 즉시 차단하고 System Maintainer에게 통보한�
 - `conductor_infrastructure_operations.md`(CI 잡 구성, 릴리스·롤백 절차)
 - `conductor_security_privacy_architecture.md`(취약점 게이트, 시크릿 스캔 알림)
 - `conductor_architecture_decision_records.md`(ADR-009 테스트 스택)
+
+## CR-041 확장 영향 (FR-CMP-010~013)
+
+관찰 대상은 브라우저 오류·hydration·키보드 흐름·패키지 크기·결과/그래프 입력별 지연이다. 가짜 실시간 지표·ETA·진척률을 추가하지 않는다. 측정 환경과 입력, 명령/종료 코드, 캡처 경로를 구현 원장에 연결한다.

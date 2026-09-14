@@ -1,7 +1,7 @@
 // Refs: WP-020 FR-DOC-003 FR-DX-002
 import * as Components from "@conductor-by-89soone/react";
 import generated from "./generated/component-meta.json";
-import { Component, type ReactNode } from "react";
+import { Component, useRef, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { CopyCode } from "./guides";
 
@@ -13,6 +13,43 @@ class PreviewBoundary extends Component<{ readonly children: ReactNode }, { read
   static getDerivedStateFromError(): { failed: boolean } { return { failed: true }; }
   override componentDidCatch(): void {}
   override render(): ReactNode { return this.state.failed ? <Components.Banner tone="danger">This preview could not render.</Components.Banner> : this.props.children; }
+}
+
+// FR-CMP-010~013 · WP-029~032: previews are synthetic, local interactions.
+const previewOptions = [{ id: "client", label: "Client changes" }, { id: "worker", label: "Worker changes" }, { id: "unavailable", label: "Unavailable", disabled: true }];
+function SearchControlPreview({ kind }: { readonly kind: string }) {
+  const [query, setQuery] = useState("");
+  const [value, setValue] = useState<string | null>(null);
+  const [values, setValues] = useState<readonly string[]>(["client"]);
+  const [chip, setChip] = useState(true);
+  if (kind === "Combobox") return <><Components.Combobox label="Find a category" options={previewOptions.filter(option => option.label.toLowerCase().includes(query.toLowerCase()))} query={query} onQueryChange={setQuery} value={value} onValueChange={setValue} /><p role="status">Selected: {value ?? "none"}</p></>;
+  if (kind === "MultiSelect") return <Components.MultiSelect label="Categories" options={previewOptions} value={values} onValueChange={setValues} />;
+  return <Components.FilterToolbar>{chip ? <Components.FilterChip removeLabel="Remove client category" onRemove={() => setChip(false)}>Client changes</Components.FilterChip> : <Components.Button onClick={() => setChip(true)}>Restore filter</Components.Button>}<span role="status">{chip ? "One filter applied" : "No filters applied"}</span></Components.FilterToolbar>;
+}
+function WorkbenchPreview() {
+  const rows = [{ id: "sample:a", title: "검색 조건 보존" }, { id: "sample:b", title: "Preserve investigation context" }];
+  const [selected, setSelected] = useState<string | null>(null);
+  const [width, setWidth] = useState(40);
+  const trigger = useRef<HTMLButtonElement | null>(null);
+  const row = rows.find(item => item.id === selected);
+  return <Components.WorkbenchLayout width={width} onWidthChange={setWidth} inspector={row && <Components.DetailInspector label="Selected change" onClose={() => setSelected(null)} returnFocusRef={trigger}><p>{row.title}</p><code>{row.id}</code><Components.CopyButton value={row.id} /></Components.DetailInspector>}><Components.DataTable label="Synthetic loaded changes" rows={rows} columns={[{ id: "title", header: "Title", cell: item => item.title }]} rowId={item => item.id} rowLabel={item => item.title} selectedId={selected} onSelect={(id, button) => { trigger.current = button; setSelected(id); }} /><Link to="/examples/workbench">Full search workbench</Link></Components.WorkbenchLayout>;
+}
+function InspectorPreview() {
+  const [open, setOpen] = useState(true);
+  const trigger = useRef<HTMLButtonElement | null>(null);
+  return <><Components.Button ref={trigger} onClick={() => setOpen(true)}>Open preview</Components.Button>{open && <Components.DetailInspector label="Synthetic detail" onClose={() => setOpen(false)} returnFocusRef={trigger}><p>Close or press Escape to return to the trigger.</p></Components.DetailInspector>}</>;
+}
+function PathPreview() {
+  const [selected, setSelected] = useState<string>();
+  return <><Components.PathList items={[{ id: "src", label: "src", children: [{ id: "src/search", label: "search.tsx" }, { id: "src/filter", label: "filter.tsx" }] }]} selectedId={selected} onPathSelect={setSelected} /><p role="status">Selected path: {selected ?? "none"}</p></>;
+}
+function ProcessingPreview() {
+  const [requested, setRequested] = useState(false);
+  return <Components.ProcessingStatus label="Synthetic pipeline" stages={[{ id: "received", label: "Received", status: "complete", detail: "Receipt confirmed; this does not confirm indexing." }, { id: "indexed", label: "Index", status: requested ? "pending" : "failed", detail: requested ? "Local retry queued; no service request sent." : "Synthetic failure; operator action is available.", action: requested ? undefined : { label: "Queue local retry", onAction: () => setRequested(true) } }]} />;
+}
+function ShellTriggerPreview() {
+  const [open, setOpen] = useState(false);
+  return <Components.AppShell navOpen={open} onNavOpenChange={setOpen} nav={<p>Synthetic navigation</p>} skipLinkLabel="Skip menu preview" topBar={<Components.AppShellNavTrigger>Toggle navigation</Components.AppShellNavTrigger>}><p role="status">Navigation {open ? "requested open" : "closed"}. Mobile drawer applies below the navigation breakpoint.</p></Components.AppShell>;
 }
 
 export function ComponentPreview({ compact = false, forceError = false, name }: { readonly compact?: boolean; readonly forceError?: boolean; readonly name: string }) {
@@ -49,6 +86,23 @@ export function ComponentPreview({ compact = false, forceError = false, name }: 
     case "AppShell": return <Components.AppShell nav={<span>Navigation</span>} skipLinkLabel="Skip to preview content" style={{ minHeight: "12rem" }}>Shell content</Components.AppShell>;
     case "NavList": return <Components.NavList aria-label="Example navigation" items={[{ id: "overview", label: "Overview", href: "#overview", active: true }]} renderLink={(item, props) => <a href={item.href} {...props} />} />;
     case "TopBar": return <Components.TopBar eyebrow="Design system" title="Components" actions={<Components.IconButton aria-label="Example action" icon="●" />} />;
+    case "Tabs": return <Components.Tabs.Root defaultValue="results"><Components.Tabs.List aria-label="Preview sections"><Components.Tabs.Trigger value="results">Results</Components.Tabs.Trigger><Components.Tabs.Trigger value="history">History</Components.Tabs.Trigger></Components.Tabs.List><Components.Tabs.Content value="results">Loaded results stay in this panel.</Components.Tabs.Content><Components.Tabs.Content value="history">Synthetic activity history.</Components.Tabs.Content></Components.Tabs.Root>;
+    case "Popover": return <Components.Popover.Root><Components.Popover.Trigger asChild><Components.Button>Show filter help</Components.Button></Components.Popover.Trigger><Components.Popover.Content aria-label="Filter help"><p>Conditions narrow loaded results.</p><Components.Popover.Close asChild><Components.Button>Close help</Components.Button></Components.Popover.Close></Components.Popover.Content></Components.Popover.Root>;
+    case "Collapsible": return <Components.Collapsible.Root><Components.Collapsible.Trigger>Show evidence</Components.Collapsible.Trigger><Components.Collapsible.Content>Synthetic evidence is shown without a network request.</Components.Collapsible.Content></Components.Collapsible.Root>;
+    case "Combobox": return <SearchControlPreview kind="Combobox" />;
+    case "MultiSelect": return <SearchControlPreview kind="MultiSelect" />;
+    case "FilterChip": return <SearchControlPreview kind="FilterChip" />;
+    case "FilterToolbar": return <SearchControlPreview kind="FilterToolbar" />;
+    case "DataTable": return <WorkbenchPreview />;
+    case "WorkbenchLayout": return <WorkbenchPreview />;
+    case "DetailInspector": return <InspectorPreview />;
+    case "PathList": return <PathPreview />;
+    case "Breadcrumb": return <Components.Breadcrumb aria-label="Example location"><Link to="/components">Components</Link><span aria-hidden="true"> / </span><span aria-current="page">Breadcrumb</span></Components.Breadcrumb>;
+    case "Skeleton": return <Components.Skeleton label="Loading synthetic results" />;
+    case "CopyButton": return <><code>sample:change:1</code><Components.CopyButton value="sample:change:1" label="Copy sample ID" /></>;
+    case "ProcessingStatus": return <ProcessingPreview />;
+    case "RelationGraph": return <Components.RelationGraph label="Synthetic relationships" nodes={[{ id: "sample:a", label: "Change A" }, { id: "sample:b", label: "Change B" }]} edges={[{ id: "sample:edge", source: "sample:a", target: "sample:b", type: "references", label: "references", evidence: "Synthetic reference example", ambiguous: true }]} stateMessage="Synthetic data; no production API connected." />;
+    case "AppShellNavTrigger": return <ShellTriggerPreview />;
     default: throw new Error(`Unknown component preview: ${name}`);
   }
 }

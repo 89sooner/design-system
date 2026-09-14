@@ -1,5 +1,5 @@
 // Refs: WP-024 FR-QA-003 FR-A11Y-001 FR-A11Y-002 FR-A11Y-005
-import { commands, userEvent } from "@vitest/browser/context";
+import { commands, page, userEvent } from "@vitest/browser/context";
 import { cleanup, render, waitFor } from "@testing-library/react";
 import axe, { type Result } from "axe-core";
 import { afterAll, afterEach, describe, expect, test } from "vitest";
@@ -116,6 +116,8 @@ for (const theme of themes) {
 for (const scenario of keyboardScenarios) {
   test(`FR-A11Y-002 AC-1, AC-2, AC-5: ${scenario.component} has a complete keyboard path`, async () => {
     setTheme("dark");
+    // Resize control exists only in the desktop split view; mobile stacks panels.
+    await page.viewport(scenario.component === "WorkbenchLayout" ? 1280 : 800, 600);
     const { container } = render(<><button data-keyboard-start="">Start</button><div data-keyboard-scenario="">{scenario.render()}</div><button data-keyboard-end="">End</button></>);
     const start = container.querySelector<HTMLButtonElement>("[data-keyboard-start]");
     const end = container.querySelector<HTMLButtonElement>("[data-keyboard-end]");
@@ -123,6 +125,25 @@ for (const scenario of keyboardScenarios) {
     expect(start).not.toBeNull();
     expect(end).not.toBeNull();
     start?.focus();
+
+    if (scenario.keyboard.kind === "steps") {
+      const scope = container.querySelector<HTMLElement>("[data-keyboard-scenario]");
+      for (const step of scenario.keyboard.steps) {
+        const control = scope?.querySelector<HTMLElement>(step.target) ?? document.querySelector<HTMLElement>(step.target);
+        expect(control, step.target).not.toBeNull();
+        // Verify keyboard reachability with Tab; never click/programmatically focus the control.
+        for (let attempt = 0; attempt < 40 && document.activeElement !== control; attempt++) await userEvent.tab();
+        expect(document.activeElement).toBe(control);
+        await userEvent.keyboard(step.keys);
+        await waitFor(() => {
+          const result = scope?.querySelector(step.check) ?? document.querySelector(step.check);
+          expect(result).not.toBeNull();
+          if (step.attribute) expect(result?.getAttribute(step.attribute)).toBe(step.expected);
+          else expect(result?.textContent).toContain(step.expected);
+        });
+      }
+      return;
+    }
 
     if (scenario.keyboard.kind === "static") {
       await userEvent.tab();
@@ -168,7 +189,7 @@ test("FR-A11Y-002 AC-2: AppShell mobile navigation releases focus after Escape",
   await waitFor(() => expect(document.querySelector('[role="dialog"]')).not.toBeNull());
   await userEvent.keyboard("{Escape}");
   await waitFor(() => expect(document.querySelector('[role="dialog"]')).toBeNull());
-  expect(document.activeElement).not.toBe(trigger);
+  expect(document.activeElement).toBe(trigger);
   await userEvent.tab();
   expect(document.activeElement).not.toBe(document.body);
   expect(document.querySelector('[role="dialog"]')?.contains(document.activeElement)).not.toBe(true);

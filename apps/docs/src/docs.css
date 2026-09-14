@@ -57,3 +57,15 @@
   .docs-motion-values div, .docs-motion-preview { grid-template-columns: minmax(0, 1fr); }
   .docs-motion-values dd { text-align: start; }
 }
+
+@layer cdt.component {
+  .docs-search-form { display: flex; align-items: end; gap: var(--cdt-space-3); }
+  .docs-search-form label { flex: 1; display: grid; gap: var(--cdt-space-2); min-inline-size: 0; }
+  .docs-repository-filter { flex: 1; min-inline-size: 0; }
+  .docs-wrap { overflow-wrap: anywhere; }
+  .docs-preview-focus { margin: var(--cdt-space-3); }
+}
+
+@layer cdt.component { .docs-workbench-example .cdt-data-table .cdt-table__scroll { max-block-size: calc(var(--cdt-space-8) * 18); } }
+
+@layer cdt.component { .docs-workbench-example, .docs-relation-example, .docs-operations-example { gap: var(--cdt-space-4); } }

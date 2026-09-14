@@ -59,7 +59,7 @@
 | F-CMP-007 | 폼 컴포넌트군 | 값을 입력하고 선택한다 | SRC-AAP `input`, `.input-glass`, `.SelectTrigger`, `.SwitchRoot`, `.form-label` | `TextField`, `TextArea`, `Select`, `Switch`, `Checkbox`, `Field` | 라벨·설명·오류를 `aria-describedby`로 연결 | 라벨 없는 입력 요소 렌더 금지 | Type C | P0 | 승인 | FR-CMP-007 |
 | F-CMP-008 | 피드백 컴포넌트군 | 진행·비어있음·오류를 인지한다 | SRC-AAP `.banner-error`, `.warn-box`, `.empty-state`, `.progress-ring`, `.linear-progress-*` | `Banner`, `EmptyState`, `Meter`, `ProgressRing`, `Spinner` | 5종 상태 표현 제공. **소스의 미터 3중 구현(`CircularProgress`, `LinearProgress`, `UsageCostPage`의 `Gauge`)을 `Meter`와 `ProgressRing` 둘로 통합한다** | 오류 배너는 복구 액션 슬롯 필수. 임계값 판정(비율 → 색)은 소비자가 계산해 `tone`으로 전달한다 | Type C | P0 | 승인 | FR-CMP-008 |
 | F-CMP-009 | 셸 컴포넌트군 | 앱 골격을 세운다 | SRC-AAP `.app-shell`, `.app-nav`, `.app-topbar` | `AppShell`, `NavList`, `TopBar` | 사이드 내비 + 상단바 + 본문 영역 | 라우팅 라이브러리를 강제하지 않는다 | Type C | P1 | 승인 | FR-CMP-009 |
-| F-CMP-010 | 필터/칩 컴포넌트군 | 목록을 좁힌다 | SRC-AAP `.filter-bar`, `.suggestion-chip` | `FilterBar`, `Chip` | `aria-pressed` 토글 칩 제공 | — | Type C | P2 | 보류 | — |
+| F-CMP-010 | 필터/칩 컴포넌트군 | 목록을 좁힌다 | CR-041 사용자 요청 | 검색·다중 선택·제거 가능한 필터 | 단일 선택과 다중 선택 의미 구별 | IME와 오래된 결과 보호 | Type C | P0 | review | FR-CMP-010 |
 | F-CMP-011 | 통계 타일 | 수치 하나를 라벨과 함께 읽는다 | SRC-AAP `StatCard`(IncidentDashboardPage.tsx:21-30)와 `Meta`(ArtifactPage.tsx)가 같은 패턴을 각각 중복 정의 | `StatTile` | 12px 보조 라벨 + 22px 굵은 값, 임계 색상 `tone` 옵션 | 소스에서 공유되지 않고 페이지마다 재정의된 패턴이다. 통합 가치는 있으나 v1 필수 아님 | Type C | P2 | 보류 | — |
 
 ### 2.5 DOC — 문서 사이트
@@ -113,7 +113,7 @@
 | F-X-002 | Vue / Svelte / Web Components 어댑터 | 소비자가 React 단일. `@conductor-by-89soone/css`가 프레임워크 비종속 대안을 이미 제공 | React 외 소비자 애플리케이션이 실재할 때 |
 | F-X-003 | Tailwind preset 제공 | 사용자가 Vanilla CSS + 커스텀 프로퍼티를 스타일 엔진으로 확정(ADR-002). preset은 소비자를 Tailwind에 결속 | 소비자가 Tailwind를 채택하고 `--cdt-*` 변수 직접 참조로 부족할 때 |
 | F-X-004 | 자체 아이콘 세트 제작 | 아이콘 디자인은 디자인 시스템 v1 목표가 아님. `lucide-react`를 peer dependency로 둔다 | 브랜드 아이콘 요구가 생길 때 |
-| F-X-005 | 차트/데이터 시각화 컴포넌트 | 범위가 독립적이고 크다. `ProgressRing`/`Meter`까지만 포함 | 별도 패키지 `@conductor-by-89soone/charts`로 분리 검토 |
+| F-X-005 | 범용 차트/그래프 편집 | CR-041 읽기 전용 관계 표현 FR-CMP-011만 예외 포함 | 나머지 범용 차트는 제외 유지 |
 | F-X-006 | 고대비(High Contrast) 테마 | 사용자가 다크 + 라이트 2종으로 확정. 팔레트 3벌 유지 비용 회피 | WCAG AAA 요구가 생길 때 |
 | F-X-007 | 다국어(i18n) 문자열 시스템 | 컴포넌트는 문자열을 props로 받는다. 번역은 소비자 책임 | 컴포넌트 내부 고정 문자열이 생길 때 |
 | F-X-008 | 런타임 테마 편집기 | 문서 사이트의 테마 토글(F-DOC-005)까지만 포함. 임의 토큰 값을 런타임에 바꾸는 편집기는 제외 | 디자이너가 직접 팔레트를 실험할 필요가 확인될 때 |

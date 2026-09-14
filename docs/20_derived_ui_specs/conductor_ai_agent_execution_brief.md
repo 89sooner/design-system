@@ -1,6 +1,6 @@
 # Conductor Design System Execution Brief for AI Agent
 
-> 상태: review | 버전: v0.3 | 갱신일: 2026-07-17
+> 상태: review | 버전: v0.3 | 갱신일: 2026-09-13
 
 ## 1. 이 브리프의 지위
 
@@ -167,3 +167,7 @@ design-system/
 - 테스트 이름: `FR-<AREA>-### AC-#: <설명>`
 - 모듈 파일 상단: TypeScript/TSX는 `// FR 범위: FR-CMP-002`, CSS는 `/* FR 범위: FR-CSS-004 */`
 - WP 완료 시 `validate_srs_prd_env.py --root . --report --code-root <repo>`를 실행하고 결과를 추적 원장 §2의 검증 결과 열에 기록한다
+
+## CR-041 실행 확장
+
+WP-029~032 / FR-CMP-010~013을 기반→검색→관계→운영 순서로 구현·검증한다. 사용자 요청은 로컬 확장 실행 근거이며 SRS review의 정식 baseline 재승인을 사칭하지 않는다. 기존 Vanilla CSS/Radix·토큰 의존 방향을 유지한다. 실제 tarball 소비·브라우저 흐름 증거를 원장에 남기고 NOT RUN과 운영 미연동을 보고한다. Agent 추가 결정은 ADR-011의 ADEC 로그에 분류·근거·대안·영향·검증·되돌리기를 남긴다.

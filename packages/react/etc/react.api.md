@@ -11,19 +11,26 @@ import { forwardRef } from 'react';
 import { HTMLAttributes } from 'react';
 import { MouseEventHandler } from 'react';
 import * as RadixCheckbox from '@radix-ui/react-checkbox';
+import * as RadixCollapsible from '@radix-ui/react-collapsible';
 import * as RadixDialog from '@radix-ui/react-dialog';
 import * as RadixDropdownMenu from '@radix-ui/react-dropdown-menu';
+import * as RadixPopover from '@radix-ui/react-popover';
 import * as RadixSelect from '@radix-ui/react-select';
 import * as RadixSwitch from '@radix-ui/react-switch';
+import * as RadixTabs from '@radix-ui/react-tabs';
 import * as RadixTooltip from '@radix-ui/react-tooltip';
 import * as react from 'react';
 import { ReactElement } from 'react';
 import { ReactNode } from 'react';
+import { Ref } from 'react';
 import { TdHTMLAttributes } from 'react';
 import { ThHTMLAttributes } from 'react';
 
 // @public (undocumented)
 export const AppShell: react.ForwardRefExoticComponent<AppShellProps & react.RefAttributes<HTMLDivElement>>;
+
+// @public
+export const AppShellNavTrigger: react.ForwardRefExoticComponent<Omit<RadixDialog.DialogTriggerProps & react.RefAttributes<HTMLButtonElement>, "ref"> & react.RefAttributes<HTMLButtonElement>>;
 
 // @public (undocumented)
 export interface AppShellProps extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
@@ -35,9 +42,12 @@ export interface AppShellProps extends Omit<HTMLAttributes<HTMLDivElement>, "chi
     readonly nav: ReactNode;
     readonly navCloseLabel?: string;
     // (undocumented)
+    readonly navLabel?: string;
+    // (undocumented)
     readonly navOpen?: boolean;
     // (undocumented)
     readonly onNavOpenChange?: (open: boolean) => void;
+    readonly routeKey?: string;
     // (undocumented)
     readonly skipLinkLabel: string;
     // (undocumented)
@@ -78,6 +88,9 @@ export interface BannerProps extends Omit<HTMLAttributes<HTMLDivElement>, "title
 
 // @public
 export function blockClassName(block: string): string;
+
+// @public (undocumented)
+export const Breadcrumb: react.ForwardRefExoticComponent<HTMLAttributes<HTMLElement> & react.RefAttributes<HTMLElement>>;
 
 // @public (undocumented)
 export const Button: react.ForwardRefExoticComponent<ButtonProps & react.RefAttributes<HTMLButtonElement>>;
@@ -150,11 +163,132 @@ export interface CodeBlockProps extends Omit<HTMLAttributes<HTMLDivElement>, "ch
     readonly language?: string;
 }
 
+// @public (undocumented)
+export const Collapsible: {
+    readonly Root: react.ForwardRefExoticComponent<Omit<RadixCollapsible.CollapsibleProps & react.RefAttributes<HTMLDivElement>, "ref"> & react.RefAttributes<HTMLDivElement>>;
+    readonly Trigger: react.ForwardRefExoticComponent<Omit<RadixCollapsible.CollapsibleTriggerProps & react.RefAttributes<HTMLButtonElement>, "ref"> & react.RefAttributes<HTMLButtonElement>>;
+    readonly Content: react.ForwardRefExoticComponent<Omit<RadixCollapsible.CollapsibleContentProps & react.RefAttributes<HTMLDivElement>, "ref"> & react.RefAttributes<HTMLDivElement>>;
+};
+
+// @public (undocumented)
+export const Combobox: react.ForwardRefExoticComponent<ComboboxProps & react.RefAttributes<HTMLDivElement>>;
+
+// @public (undocumented)
+export interface ComboboxProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange"> {
+    // (undocumented)
+    readonly disabled?: boolean;
+    // (undocumented)
+    readonly inputRef?: Ref<HTMLInputElement>;
+    // (undocumented)
+    readonly label: string;
+    // (undocumented)
+    readonly onQueryChange: (query: string) => void;
+    // (undocumented)
+    readonly onValueChange: (id: string | null) => void;
+    // (undocumented)
+    readonly options: readonly SearchOption[];
+    // (undocumented)
+    readonly query: string;
+    readonly resultsQuery?: string;
+    // (undocumented)
+    readonly state?: "ready" | "loading" | "error";
+    // (undocumented)
+    readonly value: string | null;
+}
+
 // @public
 export const CONSUMED_PACKAGES: readonly ["@conductor-by-89soone/tokens", "@conductor-by-89soone/css"];
 
+// @public (undocumented)
+export const CopyButton: react.ForwardRefExoticComponent<CopyButtonProps & react.RefAttributes<HTMLSpanElement>>;
+
+// @public (undocumented)
+export interface CopyButtonProps extends Omit<HTMLAttributes<HTMLSpanElement>, "children"> {
+    // (undocumented)
+    readonly label?: string;
+    // (undocumented)
+    readonly value: string;
+}
+
 // @public
 export function cx(...classNames: readonly (string | false | null | undefined)[]): string;
+
+// @public (undocumented)
+export interface DataColumn<Row> {
+    // (undocumented)
+    readonly cell: (row: Row) => ReactNode;
+    // (undocumented)
+    readonly header: string;
+    // (undocumented)
+    readonly id: string;
+    // (undocumented)
+    readonly numeric?: boolean;
+    // (undocumented)
+    readonly sortable?: boolean;
+}
+
+// @public (undocumented)
+export interface DataSort {
+    // (undocumented)
+    readonly column: string;
+    // (undocumented)
+    readonly direction: "ascending" | "descending";
+}
+
+// @public (undocumented)
+export const DataTable: <Row>(props: DataTableProps<Row> & {
+    readonly ref?: Ref<HTMLDivElement>;
+}) => ReactNode;
+
+// @public (undocumented)
+export interface DataTableProps<Row> extends Omit<HTMLAttributes<HTMLDivElement>, "onSelect"> {
+    // (undocumented)
+    readonly columns: readonly DataColumn<Row>[];
+    // (undocumented)
+    readonly density?: "comfortable" | "compact";
+    // (undocumented)
+    readonly hasMore?: boolean;
+    // (undocumented)
+    readonly label: string;
+    // (undocumented)
+    readonly loadingMore?: boolean;
+    // (undocumented)
+    readonly message?: string;
+    // (undocumented)
+    readonly onLoadMore?: () => void;
+    // (undocumented)
+    readonly onSelect?: (id: string, trigger: HTMLButtonElement) => void;
+    // (undocumented)
+    readonly onSortChange?: (sort: DataSort) => void;
+    // (undocumented)
+    readonly rowId: (row: Row) => string;
+    // (undocumented)
+    readonly rowLabel: (row: Row) => string;
+    // (undocumented)
+    readonly rows: readonly Row[];
+    // (undocumented)
+    readonly selectedId?: string | null;
+    readonly sort?: DataSort;
+    // (undocumented)
+    readonly state?: "ready" | "loading" | "error" | "partial";
+    // (undocumented)
+    readonly visibleColumns?: readonly string[];
+}
+
+// @public (undocumented)
+export const DetailInspector: react.ForwardRefExoticComponent<DetailInspectorProps & react.RefAttributes<HTMLElement>>;
+
+// @public (undocumented)
+export interface DetailInspectorProps extends HTMLAttributes<HTMLElement> {
+    // (undocumented)
+    readonly label: string;
+    // (undocumented)
+    readonly onClose: () => void;
+    // (undocumented)
+    readonly returnFocusRef?: {
+        readonly current: HTMLElement | null;
+    };
+}
 
 // @public (undocumented)
 export const Dialog: {
@@ -244,6 +378,24 @@ export interface FieldProps extends Omit<HTMLAttributes<HTMLDivElement>, "childr
 }
 
 // @public (undocumented)
+export const FilterChip: react.ForwardRefExoticComponent<FilterChipProps & react.RefAttributes<HTMLSpanElement>>;
+
+// @public (undocumented)
+export interface FilterChipProps extends Omit<HTMLAttributes<HTMLSpanElement>, "children"> {
+    // (undocumented)
+    readonly children: ReactNode;
+    // (undocumented)
+    readonly disabled?: boolean;
+    // (undocumented)
+    readonly onRemove: () => void;
+    // (undocumented)
+    readonly removeLabel: string;
+}
+
+// @public (undocumented)
+export const FilterToolbar: react.ForwardRefExoticComponent<HTMLAttributes<HTMLDivElement> & react.RefAttributes<HTMLDivElement>>;
+
+// @public (undocumented)
 export const IconButton: react.ForwardRefExoticComponent<IconButtonProps & react.RefAttributes<HTMLButtonElement>>;
 
 // @public (undocumented)
@@ -266,6 +418,16 @@ export interface KbdProps extends HTMLAttributes<HTMLElement> {
     readonly children: ReactNode;
 }
 
+// @public
+export function layoutRelationNodes(nodes: readonly RelationNode[]): {
+    x: number;
+    y: number;
+    id: string;
+    label: string;
+    description?: string;
+    unavailable?: boolean;
+}[];
+
 // @public (undocumented)
 export const Meter: react.ForwardRefExoticComponent<MeterProps & react.RefAttributes<HTMLDivElement>>;
 
@@ -285,6 +447,23 @@ export interface MeterProps extends Omit<HTMLAttributes<HTMLDivElement>, "childr
     readonly valueText: string;
     // (undocumented)
     readonly warningAt?: number;
+}
+
+// @public (undocumented)
+export const MultiSelect: react.ForwardRefExoticComponent<MultiSelectProps & react.RefAttributes<HTMLFieldSetElement>>;
+
+// @public (undocumented)
+export interface MultiSelectProps extends HTMLAttributes<HTMLFieldSetElement> {
+    // (undocumented)
+    readonly disabled?: boolean;
+    // (undocumented)
+    readonly label: string;
+    // (undocumented)
+    readonly onValueChange: (ids: readonly string[]) => void;
+    // (undocumented)
+    readonly options: readonly SearchOption[];
+    // (undocumented)
+    readonly value: readonly string[];
 }
 
 // @public (undocumented)
@@ -340,8 +519,80 @@ export interface PanelProps extends HTMLAttributes<HTMLElement> {
     readonly size?: Size;
 }
 
+// @public (undocumented)
+export interface PathItem {
+    // (undocumented)
+    readonly children?: readonly PathItem[];
+    // (undocumented)
+    readonly id: string;
+    // (undocumented)
+    readonly label: string;
+    // (undocumented)
+    readonly state?: "loading" | "error";
+}
+
+// @public (undocumented)
+export const PathList: react.ForwardRefExoticComponent<PathListProps & react.RefAttributes<HTMLUListElement>>;
+
+// @public (undocumented)
+export interface PathListProps extends HTMLAttributes<HTMLUListElement> {
+    // (undocumented)
+    readonly items: readonly PathItem[];
+    // (undocumented)
+    readonly onPathSelect?: (id: string) => void;
+    // (undocumented)
+    readonly selectedId?: string;
+}
+
 // @public
 export type PolymorphicProps<E extends ElementType, Own> = Own & Omit<ComponentPropsWithoutRef<E>, keyof Own>;
+
+// @public (undocumented)
+export const Popover: {
+    readonly Root: react.FC<RadixPopover.PopoverProps>;
+    readonly Trigger: react.ForwardRefExoticComponent<RadixPopover.PopoverTriggerProps & react.RefAttributes<HTMLButtonElement>>;
+    readonly Anchor: react.ForwardRefExoticComponent<RadixPopover.PopoverAnchorProps & react.RefAttributes<HTMLDivElement>>;
+    readonly Content: react.ForwardRefExoticComponent<Omit<RadixPopover.PopoverContentProps & react.RefAttributes<HTMLDivElement>, "ref"> & {
+        readonly container?: ComponentPropsWithoutRef<typeof RadixPopover.Portal>["container"];
+    } & react.RefAttributes<HTMLDivElement>>;
+    readonly Close: react.ForwardRefExoticComponent<RadixPopover.PopoverCloseProps & react.RefAttributes<HTMLButtonElement>>;
+    readonly Arrow: react.ForwardRefExoticComponent<RadixPopover.PopoverArrowProps & react.RefAttributes<SVGSVGElement>>;
+};
+
+// @public (undocumented)
+export type PopoverContentProps = ComponentPropsWithoutRef<typeof RadixPopover.Content> & {
+    readonly container?: ComponentPropsWithoutRef<typeof RadixPopover.Portal>["container"];
+};
+
+// @public (undocumented)
+export interface ProcessingStage {
+    // (undocumented)
+    readonly action?: {
+        readonly label: string;
+        readonly onAction: () => void;
+        readonly disabledReason?: string;
+        readonly busy?: boolean;
+    };
+    // (undocumented)
+    readonly detail: string;
+    // (undocumented)
+    readonly id: string;
+    // (undocumented)
+    readonly label: string;
+    // (undocumented)
+    readonly status: "complete" | "pending" | "delayed" | "failed" | "unknown";
+}
+
+// @public (undocumented)
+export const ProcessingStatus: react.ForwardRefExoticComponent<ProcessingStatusProps & react.RefAttributes<HTMLDivElement>>;
+
+// @public (undocumented)
+export interface ProcessingStatusProps extends HTMLAttributes<HTMLDivElement> {
+    // (undocumented)
+    readonly label: string;
+    // (undocumented)
+    readonly stages: readonly ProcessingStage[];
+}
 
 // @public (undocumented)
 export const ProgressRing: react.ForwardRefExoticComponent<ProgressRingProps & react.RefAttributes<HTMLDivElement>>;
@@ -358,6 +609,93 @@ export interface ProgressRingProps extends Omit<HTMLAttributes<HTMLDivElement>, 
     readonly value: number;
     // (undocumented)
     readonly valueText: string;
+}
+
+// @public (undocumented)
+export interface RelationEdge {
+    // (undocumented)
+    readonly ambiguous?: boolean;
+    // (undocumented)
+    readonly confidence?: string;
+    // (undocumented)
+    readonly evidence: string;
+    // (undocumented)
+    readonly id: string;
+    readonly label: string;
+    // (undocumented)
+    readonly retracted?: boolean;
+    // (undocumented)
+    readonly source: string;
+    // (undocumented)
+    readonly target: string;
+    // (undocumented)
+    readonly type: string;
+    // (undocumented)
+    readonly unresolved?: boolean;
+}
+
+// @public (undocumented)
+export const RelationGraph: react.ForwardRefExoticComponent<RelationGraphProps & react.RefAttributes<HTMLDivElement>>;
+
+// @public (undocumented)
+export interface RelationGraphProps extends Omit<HTMLAttributes<HTMLDivElement>, "children" | "onSelect"> {
+    // (undocumented)
+    readonly edges: readonly RelationEdge[];
+    // (undocumented)
+    readonly label: string;
+    // (undocumented)
+    readonly nodes: readonly RelationNode[];
+    // (undocumented)
+    readonly onRetry?: () => void;
+    // (undocumented)
+    readonly onSelectionChange?: (selection: RelationSelection) => void;
+    // (undocumented)
+    readonly onViewportChange?: (viewport: RelationViewport) => void;
+    // (undocumented)
+    readonly selection?: RelationSelection;
+    // (undocumented)
+    readonly state?: "ready" | "loading" | "empty" | "error" | "partial";
+    // (undocumented)
+    readonly stateMessage?: string;
+    // (undocumented)
+    readonly viewport?: RelationViewport;
+}
+
+// @public (undocumented)
+export interface RelationNode {
+    // (undocumented)
+    readonly description?: string;
+    // (undocumented)
+    readonly id: string;
+    // (undocumented)
+    readonly label: string;
+    readonly unavailable?: boolean;
+}
+
+// @public (undocumented)
+export type RelationSelection = {
+    readonly kind: "node" | "edge";
+    readonly id: string;
+} | null;
+
+// @public (undocumented)
+export interface RelationViewport {
+    // (undocumented)
+    readonly x: number;
+    // (undocumented)
+    readonly y: number;
+    // (undocumented)
+    readonly zoom: number;
+}
+
+// @public (undocumented)
+export interface SearchOption {
+    // (undocumented)
+    readonly disabled?: boolean;
+    // (undocumented)
+    readonly id: string;
+    // (undocumented)
+    readonly label: string;
 }
 
 // @public (undocumented)
@@ -404,6 +742,11 @@ export interface SeverityTagProps extends Omit<HTMLAttributes<HTMLSpanElement>, 
 
 // @public (undocumented)
 export type Size = "sm" | "md";
+
+// @public (undocumented)
+export const Skeleton: react.ForwardRefExoticComponent<HTMLAttributes<HTMLDivElement> & {
+    readonly label: string;
+} & react.RefAttributes<HTMLDivElement>>;
 
 // @public (undocumented)
 export const Spinner: react.ForwardRefExoticComponent<SpinnerProps & react.RefAttributes<HTMLDivElement>>;
@@ -463,6 +806,20 @@ export interface TableProps extends HTMLAttributes<HTMLDivElement> {
     // (undocumented)
     readonly scrollContainerProps?: HTMLAttributes<HTMLDivElement>;
 }
+
+// @public (undocumented)
+export const Tabs: {
+    readonly Root: react.ForwardRefExoticComponent<Omit<RadixTabs.TabsProps & react.RefAttributes<HTMLDivElement>, "ref"> & react.RefAttributes<HTMLDivElement>>;
+    readonly List: react.ForwardRefExoticComponent<Omit<RadixTabs.TabsListProps & react.RefAttributes<HTMLDivElement>, "ref"> & react.RefAttributes<HTMLDivElement>>;
+    readonly Trigger: react.ForwardRefExoticComponent<Omit<RadixTabs.TabsTriggerProps & react.RefAttributes<HTMLButtonElement>, "ref"> & react.RefAttributes<HTMLButtonElement>>;
+    readonly Content: react.ForwardRefExoticComponent<Omit<RadixTabs.TabsContentProps & react.RefAttributes<HTMLDivElement>, "ref"> & react.RefAttributes<HTMLDivElement>>;
+};
+
+// @public
+export type TabsContentProps = ComponentPropsWithoutRef<typeof RadixTabs.Content>;
+
+// @public (undocumented)
+export type TabsRootProps = ComponentPropsWithoutRef<typeof RadixTabs.Root>;
 
 // @public (undocumented)
 export const TextArea: react.ForwardRefExoticComponent<TextAreaProps & react.RefAttributes<HTMLTextAreaElement>>;
@@ -544,6 +901,19 @@ export interface TopBarProps extends Omit<HTMLAttributes<HTMLElement>, "children
     readonly menuButton?: ReactNode;
     // (undocumented)
     readonly title?: ReactNode;
+}
+
+// @public (undocumented)
+export const WorkbenchLayout: react.ForwardRefExoticComponent<WorkbenchLayoutProps & react.RefAttributes<HTMLDivElement>>;
+
+// @public (undocumented)
+export interface WorkbenchLayoutProps extends HTMLAttributes<HTMLDivElement> {
+    // (undocumented)
+    readonly inspector?: ReactNode;
+    // (undocumented)
+    readonly onWidthChange?: (width: number) => void;
+    // (undocumented)
+    readonly width?: number;
 }
 
 // Warnings were encountered during analysis:

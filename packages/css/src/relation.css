@@ -1,0 +1,28 @@
+/* Relation exploration: existing semantic tokens; SVG coordinates are layout units. */
+@layer cdt.component {
+  .cdt-relation { min-inline-size: 0; display: grid; gap: var(--cdt-space-3); }
+  .cdt-relation > * { min-inline-size: 0; }
+  .cdt-relation__toolbar { display: flex; flex-wrap: wrap; gap: var(--cdt-space-2); align-items: end; }
+  .cdt-relation__toolbar label { display: grid; gap: var(--cdt-space-1); min-inline-size: 0; }
+  .cdt-relation__toolbar input, .cdt-relation__toolbar select { max-inline-size: 100%; }
+  .cdt-relation__legend { color: var(--cdt-text-muted); font-size: var(--cdt-font-size-sm); }
+  .cdt-relation__canvas { inline-size: 100%; block-size: clamp(calc(var(--cdt-space-8) * 8), 45vh, calc(var(--cdt-space-8) * 15)); border: var(--cdt-border-width-hairline) solid var(--cdt-border-control); border-radius: var(--cdt-radius-md); background: var(--cdt-surface-base); }
+  .cdt-relation__edge { cursor: pointer; }
+  .cdt-relation__edge path { fill: none; stroke: var(--cdt-text-secondary); stroke-width: 2; }
+  .cdt-relation__edge .cdt-relation__edge-hit { stroke: transparent; stroke-width: 18; }
+  .cdt-relation__edge [data-state="uncertain"] { stroke-dasharray: 3 5; }
+  .cdt-relation__edge [data-state="retracted"] { stroke-dasharray: 12 5; }
+  .cdt-relation__edge[data-selected] path:not(.cdt-relation__edge-hit) { stroke: var(--cdt-accent); stroke-width: 4; }
+  .cdt-relation__edge-label { fill: var(--cdt-text-primary); font-size: var(--cdt-font-size-sm); paint-order: stroke; stroke: var(--cdt-surface-base); stroke-width: 4; }
+  .cdt-relation__arrow { fill: var(--cdt-text-secondary); }
+  .cdt-relation__node { cursor: pointer; }
+  .cdt-relation__node rect { fill: var(--cdt-surface-raised); stroke: var(--cdt-border-control); stroke-width: 2; }
+  .cdt-relation__node text { fill: var(--cdt-text-primary); font-size: var(--cdt-font-size-sm); }
+  .cdt-relation__node[data-selected] rect { fill: var(--cdt-accent-soft); stroke: var(--cdt-accent); stroke-width: 3; }
+  .cdt-relation__canvas [data-dimmed] { opacity: 0.35; }
+  .cdt-relation__detail { padding: var(--cdt-space-3); border-inline-start: var(--cdt-border-width-rail) solid var(--cdt-accent); background: var(--cdt-surface-raised); overflow-wrap: anywhere; }
+  .cdt-relation__nodes { display: flex; flex-wrap: wrap; gap: var(--cdt-space-2); padding: var(--cdt-space-2); list-style: none; }
+  .cdt-relation details summary { padding-block: var(--cdt-space-2); cursor: pointer; }
+  .cdt-relation .cdt-table__cell { overflow-wrap: anywhere; }
+  .cdt-relation [data-selected] .cdt-table__cell { background: var(--cdt-accent-soft); }
+}

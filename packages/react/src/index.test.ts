@@ -35,7 +35,7 @@ describe("@conductor-by-89soone/react package contract", () => {
   });
 
   test("FR-DX-003 AC-1: @conductor-by-89soone/react exposes only declared entry points", () => {
-    expect(Object.keys(manifest.exports ?? {})).toEqual([".", "./package.json"]);
+    expect(Object.keys(manifest.exports ?? {})).toEqual([".", "./package.json", "./relation"]);
   });
 
   test("FR-DX-001 AC-4: @conductor-by-89soone/react consumes @conductor-by-89soone/tokens as a workspace package", () => {
@@ -63,8 +63,15 @@ describe("@conductor-by-89soone/react package contract", () => {
     for (const file of declarations) expect(readFileSync(join(packageRoot, "dist", file), "utf8")).not.toContain("testing/");
   });
 
-  test("FR-DX-004 AC-2: production source has no browser-global access", () => {
-    const source = ["index.ts", "cx.ts", "types.ts", "shell.tsx", "testing/contract.tsx", "testing/public-components.ts", "testing/ssr.tsx"]
+  test("FR-DX-004 CR-041: component leaves preserve client boundaries and the barrel remains server safe", () => {
+    for (const file of ["shell", "data", "interaction", "workbench", "relation"]) {
+      expect(readFileSync(join(packageRoot, "dist", `${file}.js`), "utf8").startsWith('"use client";')).toBe(true);
+    }
+    expect(readFileSync(join(packageRoot, "dist/index.js"), "utf8")).not.toContain('"use client"');
+  });
+
+  test("FR-DX-004 AC-2: server-safe utility source has no browser-global access", () => {
+    const source = ["index.ts", "cx.ts", "types.ts", "testing/contract.tsx", "testing/public-components.ts", "testing/ssr.tsx"]
       .map((file) => readFileSync(join(packageRoot, "src", file), "utf8"))
       .join("\n");
     expect(source).not.toMatch(/\b(window|document|localStorage)\b/);

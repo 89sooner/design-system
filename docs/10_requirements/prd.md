@@ -1,6 +1,6 @@
 # Conductor Design System PRD
 
-> 상태: review | 버전: v0.3 | 갱신일: 2026-07-17
+> 상태: review | 버전: v0.3 | 갱신일: 2026-09-13
 
 ## 1. 문서 개요
 
@@ -25,7 +25,7 @@ Conductor Design System(이하 Conductor)은 `agent-ai-platform`의 `packages/we
 - **NG-2**: React 외 프레임워크 어댑터. 비-React 소비자는 `@conductor-by-89soone/css`를 직접 사용한다.
 - **NG-3**: agent-ai-platform의 도메인 컴포넌트(`.thread-page`, `.approval-card-*`, `.run-summary`, `.tool-grid`) 이식. 재사용되지 않는 결합을 만든다.
 - **NG-4**: agent-ai-platform 저장소를 Conductor로 마이그레이션하는 작업. Conductor v1은 독립 저장소로만 성립한다. 마이그레이션은 별도 제품 결정이다.
-- **NG-5**: 차트/데이터 시각화 라이브러리.
+- **NG-5**: 범용 차트 라이브러리·그래프 편집. CR-041 읽기 전용 관계 탐색은 예외.
 - **NG-6**: 런타임 토큰 편집기, 고대비 테마, 다국어 문자열 시스템.
 
 ## 3. 대상 사용자
@@ -69,7 +69,7 @@ Conductor Design System(이하 Conductor)은 `agent-ai-platform`의 `packages/we
 | 범위 항목 | 포함 조건 | 결정 기한 | 관련 ID |
 | --- | --- | --- | --- |
 | 시각 회귀 검사(FR-QA-004) | CI 러너에서 브라우저 렌더가 결정론적으로 재현될 때. 폰트 렌더 차이로 diff가 불안정하면 REL-004로 이월 | REL-003 착수 시점 | OD-002 |
-| 필터/칩 컴포넌트군(F-CMP-010) | REL-003 종료 시점에 잔여 용량이 있을 때 | REL-003 종료 | OD-003 |
+| 없음 | F-CMP-010은 CR-041 요청으로 FR-CMP-010에 포함 | 2026-09-13 | OD-003 resolved scope |
 | 셸 컴포넌트군(FR-CMP-009) | 라우팅 비종속 API가 성립할 때. 라우터 결합이 불가피하면 문서 사이트 내부 컴포넌트로 강등 | REL-003 착수 시점 | OD-004 |
 
 ### 5.3 Out of Scope
@@ -80,7 +80,7 @@ Conductor Design System(이하 Conductor)은 `agent-ai-platform`의 `packages/we
 | Vue / Svelte / Web Components 어댑터 | 현재 소비자는 React 단일. `@conductor-by-89soone/css`가 비-React 대안을 제공한다 |
 | Tailwind preset | ADR-002가 Vanilla CSS + 커스텀 프로퍼티를 확정했다. preset은 소비자를 Tailwind에 결속한다 |
 | 자체 아이콘 세트 | `lucide-react`를 peer dependency로 둔다. 아이콘 디자인은 v1 목표가 아니다 |
-| 차트/데이터 시각화 컴포넌트 | 독립적이고 큰 범위. `Meter`/`ProgressRing`까지만 포함한다 |
+| 범용 차트/그래프 편집 | CR-041의 읽기 전용 관계 탐색(FR-CMP-011)만 포함한다 |
 | 고대비 테마 | 팔레트 3벌 유지 비용을 회피한다. 다크/라이트 2종으로 확정 |
 | 다국어 문자열 시스템 | 컴포넌트는 문자열을 props로 받는다. 번역은 소비자 책임이다 |
 | 런타임 테마 편집기 | 문서 사이트의 테마 토글까지만 포함한다 |
@@ -229,11 +229,15 @@ Conductor Design System(이하 Conductor)은 `agent-ai-platform`의 `packages/we
 | --- | --- | --- | --- | --- | --- |
 | OD-001 | 대비율 검사 대상 전경/배경 쌍을 어떻게 정의하는가? 소스 팔레트에서 WCAG 2.1 AA 미달 5건이 실측되었다 | **최소 수정**: `focusRing`(alpha 0.30 → 0.80)과 신규 `border.control`(slate alpha 0.60)만 값을 교정하고, `text.faint`·`border.*`는 `decorative`로, `status.queued`·`status.neutralEnd`는 `nonText`로 분류해 값을 보존한다. `srs_final.md` 12.1절이 확정 표이며 FR-THM-005가 강제한다 | 2026-07-10 | Accessibility Reviewer | closed |
 | OD-002 | 시각 회귀 검사를 v1 릴리스 게이트에 포함하는가? | **REL-004로 이월**. FR-QA-004를 `deferred`로 표시한다. v1은 수동 시각 확인으로 대체한다. R-2(폰트 렌더 flake)가 v1 일정 위험보다 크다 | 2026-07-10 | QA | closed |
-| OD-003 | 필터/칩 컴포넌트군(F-CMP-010)을 v1에 넣는가? | (a) 포함 (b) v1.1로 이월 | REL-003 종료 | Product | open |
+| OD-003 | 필터/칩 컴포넌트군(F-CMP-010)을 v1에 넣는가? | CR-041 사용자 요청으로 포함 | 2026-09-13 | Product | resolved scope |
 | OD-004 | 셸 컴포넌트군을 배포 패키지에 넣는가, 문서 사이트 내부 컴포넌트로 두는가? | **`@conductor-by-89soone/react`에 포함**. `renderLink` props로 라우팅 비종속 API가 성립한다. WP-023을 실행한다 | 2026-07-10 | System Maintainer | closed |
 
-Must 우선순위 FR을 차단하는 open OD: **없음.** OD-001이 2026-07-10에 종결되어 FR-THM-004와 FR-A11Y-004의 차단이 해제되었다. OD-003은 FR이 부여되지 않은 후보에만 관련되므로 baseline을 막지 않는다.
+Must 우선순위 FR을 차단하는 open OD: **없음.** OD-001이 2026-07-10에 종결되어 FR-THM-004와 FR-A11Y-004의 차단이 해제되었다. OD-003은 CR-041로 범위 조건이 해소되었으며 새 FR의 baseline 승인은 별도다.
 
 ### 12.1 OD-001이 드러낸 사실
 
 소스 팔레트를 실측한 결과, `agent-ai-platform`의 포커스 링(`rgba(109,124,255,0.3)`)은 `surface.base` 위에서 대비율 1.50으로 WCAG 2.4.11의 3:1 요건을 만족하지 못한다. 이는 계승해서는 안 되는 접근성 결함이다. Conductor는 이 값을 alpha 0.80으로 교정하고(3.93), 폼 컨트롤 경계에 쓰이던 `border.default`(1.30)를 신규 `border.control`(3.23)로 분리한다. 나머지 미달 토큰은 실제 용도(장식, 비텍스트)에 맞게 분류하여 값을 보존한다. G-1(시각 보존)의 의도된 예외이며, 이 예외는 로드맵의 알려진 제약에 기록되었다.
+
+## CR-041 업무 탐색 확장
+
+FR-CMP-010~013은 사용자가 명시한 로컬 확장 범위다(review). 필터/칩 조건부와 시각화 제외의 읽기 전용 관계 예외를 SRS §17에 따라 변경한다. 세 합성 조합은 W-060/061/062 독립 예제 경로에서 동작하고 기존 W-040 가이드와 연결된다. 데이터 호출·검색 문법·권한·업무 재시도는 소비자 소유다. 현재 로드된 결과 미리보기와 복귀를 기본 흐름으로 삼고, 관계는 방향·근거·불확실성을 유지한다. 운영 수신과 검색 색인 최신을 동일 상태로 표시하지 않는다.

@@ -1,6 +1,6 @@
 # Conductor Design System 화면 상태 매트릭스
 
-> 상태: review | 버전: v0.3 | 갱신일: 2026-07-15
+> 상태: review | 버전: v0.3 | 갱신일: 2026-09-13
 
 ## 1. 목적과 범위
 
@@ -181,3 +181,7 @@ W-001과 W-021의 뷰포트 800px 미만 오프캔버스 내비게이션(FR-CMP-
 ## 7. 문서 간 정합성
 
 이 문서는 `conductor_wireframe_spec.md`와 `conductor_screen_flow_spec.md`가 확정한 화면과 전환 규칙 다음 단계로, 화면 ID·FR ID를 추가로 발명하지 않는다. 이 문서가 정의한 상태는 `conductor_screen_qa_checklist.md`의 이상 흐름 QA 항목이 그대로 인용한다.
+
+## CR-041 확장 계약 (FR-CMP-010~013)
+
+세 조합 공통 상태는 ready/loading/empty/error/partial/long이다. 관계의 detached/unresolved/ambiguous는 상태 설명을 보존하고 pending 분석을 모든 관계 부재로 바꾸지 않는다. 운영 단계 미확인은 완료도 0건도 아니다. 상태 전환은 mock/in-memory라고 화면에 표시한다.

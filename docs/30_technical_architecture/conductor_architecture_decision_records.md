@@ -1,6 +1,6 @@
 # Conductor Design System Architecture Decision Records
 
-> 상태: review | 버전: v0.4 | 갱신일: 2026-07-17
+> 상태: review | 버전: v0.4 | 갱신일: 2026-09-13
 
 ## 1. 목적
 
@@ -418,3 +418,142 @@ changeset 본문에 관련 FR/WP ID를 기재하므로 CHANGELOG 항목이 요�
 - 부정: 기여자가 changeset 파일을 커밋해야 한다. 잊으면 CI가 실패한다.
 - 완화: `changeset status` 검사의 실패 메시지가 누락된 패키지 목록을 출력한다. 코딩 에이전트의 작업 패키지 DoD에 changeset 생성을 포함한다.
 - 후속: OIDC 신뢰 배포는 npm CLI와 레지스트리 양쪽이 지원하는 버전을 CI 이미지에 고정한다. CR-022에서 현재 최소 조건을 Node 22.14.0/npm 11.5.1로 재검증하고 release job을 Node 22.14.0/npm 11.18.0으로 고정했다. public source repository가 아니면 provenance가 생성되지 않으므로 게시 전 사전 검사로 실패한다. 미게시 패키지는 Trusted Publisher를 등록할 수 없어 최초 1회 `bootstrap` dist-tag 생성 후 패키지별 신뢰 관계를 등록한다.
+
+## ADR-011 업무 탐색 확장과 연구 기록
+
+- 상태: review, CR-041 / FR-CMP-010~013 / WP-029~032.
+- 2026-09-13 공식 자료 확인. 아래는 설계 근거이며 실행 검증을 대신하지 않는다.
+
+| 질문 / 출처 | 확인 / 결론 | 구현·검증 위치 |
+| --- | --- | --- |
+| [Radix Tabs](https://www.radix-ui.com/primitives/docs/components/tabs) | 문서 1.1.18: controlled, manual/automatic, forceMount 제공. 기존 Radix 채택을 유지하고 기본 활성화 선택을 별도 기록 | interactions / keyboard test |
+| [APG Combobox](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/) | 단일 입력 선택·popup 계약을 다중 토큰 입력에 그대로 적용하지 않는다 | search / IME test |
+| [APG Tree](https://www.w3.org/WAI/ARIA/apg/patterns/treeview/) | 펼침·선택·포커스와 방향키 계약을 구별; 단순 역할 부착은 불충분 | path navigation / keyboard |
+| [Next server/client](https://nextjs.org/docs/app/getting-started/server-and-client-components) | client 경계는 import graph에 영향을 준다. SSR 성공만으로 RSC 소비 완료라 하지 않는다 | build entry / packed Next fixture |
+| [Primer components](https://primer.style/product/components/) | Table·SplitPageLayout·Token·TextInputWithTokens의 역할 분리를 참고. 코드·외형 복제나 stack 교체 없음 | workbench composition |
+| [WCAG 2.2 target](https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum) | 24 CSS px 및 spacing 예외가 있는 점검 목표. 제품 전체 인증 주장은 하지 않는다 | compact controls / browser |
+| [React Flow accessibility](https://reactflow.dev/learn/advanced-use/accessibility) | keyboard·label·편집 제어 옵션 검토. 읽기 전용 소규모 표현에는 외부 편집 엔진의 추가 API/CSS 비용을 피하는 SVG 대안을 검증 | relation / 50·300-node measurement |
+| [CSS Cascade 5](https://www.w3.org/TR/css-cascade-5/#layering) | 기존 cdt 레이어·portal 테마 전달을 유지하고 소비 CSS 충돌을 fixture에서 확인 | css / portal tests |
+
+### ADEC-001 결정적 관계 레이아웃
+
+| 필드 | 기록 |
+| --- | --- |
+| 분류 | Agent 자발적 추가 |
+| 결정 | 안정 ID 정렬 SVG grid와 semantic Table 대안을 채택, 편집 엔진 의존성 없음. 유형 필터에도 노드 좌표와 viewport를 보존하고 pan 버튼 제공 |
+| 필요 근거 | 사용자 요구는 읽기 전용 방향·근거 탐색, 사이클 허용, 300노드 측정. 편집 엔진 기능을 요구하지 않음 |
+| 대안 | force simulation은 지속 이동·결정성 비용, React Flow는 편집 기능·CSS·번들 계약 추가, DAG layout은 사이클 의미에 부적합 |
+| 영향 | 노드 배치가 의미적 순서/거리나 중요도를 뜻하지 않는다. 추가 네트워크·persistence 없음. 선택은 현재 메모리에서 유지 |
+| 범위 | relation 컴포넌트/CSS·합성 docs 조합·관계 테스트 |
+| 검증 | 구현 에이전트의 실제 결정성·상호작용·크기 측정은 구현 원장에 동기화; 현재 단계에서 수치 미기록 |
+| 되돌리기 | 같은 데이터·선택 계약을 유지하며 레이아웃 구현/CSS를 교체. 운영 데이터 영향 없음 |
+
+### ADEC-002 Combobox 보완 라이브러리와 Radix 확장
+
+| 필드 | 기록 |
+| --- | --- |
+| 분류 | Agent 자발적 추가 (사용자는 기능을 요구했고 패키지 선택은 지정하지 않음) |
+| 결정 | Radix tabs 1.1.21, popover 1.1.23, collapsible 1.1.20; 단일 Combobox만 Downshift 9.4.0 사용 |
+| 필요 근거 | 설치된 Radix에 Combobox 패턴이 없음. Downshift 로컬 README/타입 검토; 공식 사이트 접속 시 timeout은 미확인으로 기록. 설치 시 전이 패키지 35개 추가(설치 로그 기준) |
+| 대안 | 자체 ARIA/키보드 구현은 유지 비용, 전체 UI 엔진 교체는 기존 ADR 위반. 멀티 선택까지 같은 Combobox 의미로 묶지 않음 |
+| 영향 | 공개 의존성과 lockfile 증가, Combobox import 번들 증가. 기본 Button 경로에 강제 포함되는지 실제 번들로 확인해야 함 |
+| 범위 | React manifest/lockfile, interaction/search, 패키지 API와 fixture |
+| 검증 | 설치 완료. 최종 번들·React18/19 호환성 결과는 원장에 동기화 |
+| 되돌리기 | Combobox 구현을 동일 controlled 계약의 대안으로 교체 후 의존 제거, 소비자 업무 데이터 영향 없음 |
+
+### ADEC-003 다중 선택과 경로 탐색의 네이티브 조합
+
+| 필드 | 기록 |
+| --- | --- |
+| 분류 | Agent 자발적 추가 |
+| 결정 | 다중 선택은 fieldset/legend와 기존 Radix Checkbox group, 경로 탐색은 native details 기반 경로 목록으로 구현 |
+| 필요 근거 | 지시서는 TreeView 또는 경로 목록 대안을 허용한다. 펼침·선택 정보를 표현하는 데 tree/treegrid 전체 키보드 모델을 약속할 필요가 없음 |
+| 대안 | ARIA tree는 roving focus/방향키/typeahead의 추가 계약. 다중 선택 Combobox는 단일 입력 의미와 혼동 가능 |
+| 영향 | 경로 목록은 Tab/Enter/Space 네이티브 탐색이며 tree 방향키 모델은 제공하지 않는다. 다중 선택은 체크 상태를 각 항목에서 확인한다 |
+| 범위 | 검색 입력/경로 목록과 합성 검색 화면·접근성 검사 |
+| 검증 | 구현 및 키보드 검사는 원장에 동기화. 화면을 ARIA Tree 지원으로 표시하지 않음 |
+| 되돌리기 | 공개 경로 데이터 계약을 보존하여 보완 TreeView로 교체 가능; 키보드 모델 변화는 마이그레이션 필요 |
+
+### ADEC-004 컴포넌트 모듈 경계 보존
+
+| 필드 | 기록 |
+| --- | --- |
+| 분류 | Agent 자발적 추가 |
+| 결정 | tsup bundle:false로 모듈을 보존하고 상대 JS import의 .js 확장자를 산출 시 보완. 상호작용 컴포넌트 모듈에 use client를 보존하며 index/cx/types를 일괄 client로 만들지 않음 |
+| 필요 근거 | 기존 SSR 검사만으로 App Router 서버/클라이언트 경계를 증명할 수 없음. 패키지 모듈 평가 및 번들 경계 작은 실험을 수행 |
+| 대안 | 모든 barrel에 client 지시문은 서버 export 경계를 불필요하게 넓힘. 단일 번들은 개별 지시문을 지울 수 있음 |
+| 영향 | ESM 산출 파일 수와 import graph 변화, 기존 root 공개 import는 유지. React18/19/Next tarball 소비 확인 필요 |
+| 범위 | React tsup config·component module·dist·packed consumer |
+| 검증 | 최종 tarball·hydration·size 결과는 원장에 동기화, 미실행을 성공으로 기록하지 않음 |
+| 되돌리기 | 이전 번들 전략 복구는 RSC 경계 회귀 가능; boundary fixture를 함께 유지해 판정 |
+
+### ADEC-005 기본 밀도·분할 크기·탭 활성화
+
+| 필드 | 기록 |
+| --- | --- |
+| 분류 | Agent 자발적 추가 |
+| 결정 | DataTable comfortable 기본/compact opt-in, inspector 기본40%·25~60% range 및 좁은 폭 세로 배치, Tabs manual 기본/automatic opt-in |
+| 필요 근거 | 조밀함과 조작 영역을 분리하고 드래그 대체 조작을 제공. 비싼 패널에서 초점 이동만으로 조회가 발생하지 않도록 선택 |
+| 대안 | compact 또는 automatic 기본은 화면 밀도와 focus/조회 효과를 바꿈. 포인터 전용 resize는 키보드 동등 조작 없음 |
+| 영향 | 새 API의 기본 행 밀도, panel 공간, 탭 활성화 키가 결정됨. 기존 Table/Card 기본 시각은 유지 |
+| 범위 | workbench·interaction CSS/API·README·합성 화면 |
+| 검증 | 부모 에이전트의 키보드/반응형·패키지 검사 결과를 원장에 연결 |
+| 되돌리기 | 소비자는 density/width/activationMode를 명시하여 이전 조합에 맞출 수 있음. 기본값 변경은 이후 migration 기록 필요 |
+
+### ADEC-006 독립 조합 예제 경로
+
+| 필드 | 기록 |
+| --- | --- |
+| 분류 | Agent 자발적 추가 |
+| 결정 | W-060/061/062, /examples/workbench·relations·operations를 별도 라우트로 제공 |
+| 필요 근거 | 세 흐름을 직접 링크/캡처/브라우저 재현하고 기존 가이드 화면을 보존 |
+| 대안 | W-040 한 화면에 전부 넣으면 초기 렌더와 탐색 복잡도 증가 |
+| 영향 | docs 내비와 route 추가, 패키지 API나 운영 네트워크 변경 없음 |
+| 범위 | docs App/catalog, IA·matrix·SRS·WP |
+| 검증 | catalog docs typecheck 통과; 최종 route 브라우저 증거는 부모 기록 참조 |
+| 되돌리기 | 예제 route와 내비 제거 후 가이드 조합으로 옮김; 공유된 예제 URL 영향 |
+
+ADEC-001 실험 동기화(관계 구현 담당 보고, 2026-09-13): Chromium 개발 모드·두 animation frame 후 관찰. 50노드 선택34.9ms/zoom41.5ms/유형filter33.3ms,300노드87/53.7/34.9ms. 유형filter 후 DOM630/3355개, navigation184/202ms. 8 Vitest·타입·eslint 통과, light360 axe serious/critical0. React Flow는 설치·동등 성능 비교하지 않았으므로 상대 우월성 주장을 하지 않는다. 50노드 초과 간선 라벨은 선택 간선만 SVG에 표시하고 표에는 전부 유지하는 가독성 선택이 추가되었다. 실제 스크린리더·운영 API는 미검증.
+
+### ADEC-007 Shell 연결과 고유 기본 ID
+
+| 필드 | 기록 |
+| --- | --- |
+| 분류 | Agent 자발적 추가 (닫힘 포커스 복귀 자체는 사용자 명시 요구) |
+| 결정 | AppShellNavTrigger, navLabel, 선택적 routeKey를 추가하고 미지정 mainId를 useId로 생성 |
+| 필요 근거 | 반복 Shell의 고정 ID 충돌과 외부 trigger Escape 후 body 포커스를 재현 |
+| 대안 | 소비자 requestAnimationFrame 보완만 유지하면 라이브러리 자체 복귀 계약과 반복 배치 충돌이 남음 |
+| 영향 | 기존 고정 ID CSS/앵커 사용자는 mainId="cdt-main" 명시. routeKey는 지정한 경우에만 경로 변경 시 main 포커스·drawer 닫힘을 수행 |
+| 범위 | shell·공개 API·README·consumer fixture |
+| 검증 | Shell 단위22건, 두 테마 axe, 실제 tarball과 격리 소비자 Shell E2E. 최종 집계는 구현 원장 참조 |
+| 되돌리기 | 소비자 mainId 명시와 routeKey 미지정으로 기존 탐색 정책 유지; trigger 복귀 수정 제거 시 기존 결함 재발 |
+
+### ADEC-008 선택 진입점과 import 비용 제어
+
+| 필드 | 기록 |
+| --- | --- |
+| 분류 | Agent 자발적 추가 |
+| 결정 | ./relation 선택 진입점, 그래프 gzip 8 KiB 예산, 순수 workbench forwardRef 생성 주석과 import 비용 검사 추가 |
+| 필요 근거 | 산출물 측정에서 단일 DataTable·ProcessingStatus import가 Downshift까지 보존하는 현상을 확인 |
+| 대안 | 파일 전체를 그대로 번들하면 불필요한 의존이 남음; 모든 export를 별도 파일로 분해하면 변경 범위가 커짐 |
+| 영향 | DataTable 46,944→2,917 B, ProcessingStatus 46,941→2,679 B gzip. Combobox 46,948→42,443 B. Button 1,365 B, RelationGraph 5,432 B. React/DOM/lucide peer 제외, gzip9·같은 도구 기준. API 동작 변경 없음 |
+| 범위 | workbench 순수 생성 표시·React manifest·measure-workspaces 스크립트·README |
+| 검증 | 실제 esbuild 기여 모듈에서 Button/DataTable/ProcessingStatus의 Downshift·relation·interaction 혼입을 실패로 처리. 그래프는 기존 Button/CSS 예산과 별도로 검사 |
+| 되돌리기 | 순수 생성 표시 제거 시 동작 유지·번들 증가. subpath 제거는 해당 소비자 import 마이그레이션 필요 |
+
+### ADEC-009 예제의 탐색 위치와 읽기 공간
+
+| 필드 | 기록 |
+| --- | --- |
+| 분류 | Agent 자발적 추가 |
+| 결정 | 합성 검색 예제 선택 후 inspector에 포커스를 주고 닫을 때 선택 버튼에 preventScroll로 복귀. 예제 표만 높이를 제한하고 내부 스크롤 제공. 공유 조건은 기존 HashRouter의 hash query에 replace로 저장 |
+| 필요 근거 | 좁은 화면에서 미리보기가 긴 목록 아래에 배치됨. 첫 캡처의 긴 문서와 직접 경로 시험으로 실제 HashRouter 계약 확인 |
+| 대안 | 선택 포커스를 그대로 두면 모바일에서 미리보기를 찾아 긴 이동 필요. 전체 문서 가로 스크롤이나 URL 커서는 요구 위반 |
+| 영향 | 예제 선택의 포커스가 이동하며 목록 스크롤·로드된 행은 유지. q/repository/state/sort/direction만 공유하고 cursor는 저장하지 않음. 범용 DataTable은 소비자 onSelect 정책을 강제하지 않음 |
+| 범위 | docs 검색 예제·CSS·workspaces E2E |
+| 검증 | 검색/IME/이어 보기/상세 모달/경로/닫기/필터/재로드,360~1536px 두 테마. 텍스트200%와 reduced motion 검사이며 실제 스크린리더 인증은 아님 |
+| 되돌리기 | 예제 onSelect 포커스 이동·높이 제한 제거. 공개 컴포넌트 API·운영 데이터 영향 없음 |
+
+ADEC-001 최종 보완: 같은 행에서 중간 노드 뒤로 가려지는 간선을 위로 휘게 하여 방향을 읽도록 했다. 노드 좌표는 그대로 유지한다. 관계 대체 목록 이동은 기본 hash 이동을 막고 해당 목록에 초점/스크롤을 옮긴다. HashRouter 소비자의 현재 경로를 파괴하지 않기 위한 구현 조건이다. 그래프 유형 필터·선택·zoom 이후 viewport 보존 검증을 포함한다.
+
+사용자 명시 요구/구현 조건: 세 흐름 구현, Vanilla CSS/Radix 유지, 실제 tarball, React18/19와 Next 검증, 합성/운영 분리, IME 방지, 권한 콜백 소유, 문서 review 유지, 원격 게시 금지는 Agent가 추가한 제품 정책이 아니다. 새 polling·자동 재시도·분석 이벤트·인증 후 영속 상태는 추가하지 않았다.

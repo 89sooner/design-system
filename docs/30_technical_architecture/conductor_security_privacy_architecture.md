@@ -1,6 +1,6 @@
 # Conductor Design System 보안 및 개인정보 아키텍처
 
-> 상태: review | 버전: v0.5 | 갱신일: 2026-07-17
+> 상태: review | 버전: v0.5 | 갱신일: 2026-09-13
 
 ## 1. 범위 재정의: 이 제품은 공급망 보안 문제다
 
@@ -121,3 +121,7 @@ Conductor는 소비자 애플리케이션의 DOM에 직접 렌더되므로, Cond
 - `conductor_architecture_decision_records.md`(ADR-004 Radix 위임, ADR-009 테스트 스택, ADR-010 Changesets + OIDC)
 - `conductor_infrastructure_operations.md`(릴리스·롤백 절차)
 - `conductor_observability_reliability.md`(취약점 게이트·시크릿 스캔 실패 시 알림)
+
+## CR-041 확장 영향 (FR-CMP-010~013)
+
+합성 데이터만 공개 예제/캡처에 사용한다. 비공개 소비자의 실제 source·host·PR·사용자·토큰은 공개 산출물에 복제하지 않는다. 서버 인가로 걸러진 데이터만 표시하며 숨겨진 대상의 존재·수·간선을 생성하지 않는다. 불신 라벨/근거에 HTML 삽입을 사용하지 않는다.

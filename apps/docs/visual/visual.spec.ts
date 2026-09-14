@@ -86,10 +86,15 @@ test("FR-A11Y-003 AC-4: every public component remains identifiable in grayscale
     document.documentElement.dataset.cdtTheme = "dark";
   });
   await page.goto(docsPath("/components"));
-  await expect(page.locator(".docs-component-tile")).toHaveCount(30);
+  await expect(page.locator(".docs-component-tile")).toHaveCount(47);
   await page.addStyleTag({ content: "#root { filter: grayscale(1); }" });
   await expect(page.locator("#root")).toHaveCSS("filter", "grayscale(1)");
-  await expect(page.locator(".cdt-page")).toHaveScreenshot("AllComponents-grayscale-dark.png", {
+  // The catalog's first layout settles one pixel after its previews mount. Wait
+  // for that mount pass before Playwright begins its own screenshot stability loop.
+  await page.waitForTimeout(600);
+  // Full-page capture avoids fractional element clip-height oscillation on the long catalog.
+  await expect(page).toHaveScreenshot("AllComponents-grayscale-dark.png", {
+    fullPage: true,
     animations: "disabled",
     caret: "hide",
     maxDiffPixelRatio: 0.01,

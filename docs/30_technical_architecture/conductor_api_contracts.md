@@ -1,6 +1,6 @@
 # Conductor Design System 패키지 공개 API 계약
 
-> 상태: review | 버전: v0.4 | 갱신일: 2026-07-17
+> 상태: review | 버전: v0.4 | 갱신일: 2026-09-13
 
 ## 0. 문서 재해석
 
@@ -482,3 +482,7 @@ error[<CODE>]: <한 줄 요약>
    - CLI 플래그 삭제, 종료 코드 의미 변경
 3. **비파괴 변경.** 신규 토큰/컴포넌트/props(선택적, 기본값 존재) 추가, 버그 수정으로 인한 시각적 보정(기존 토큰 키 유지).
 4. **deprecation 절차(FR-DX-005).** deprecated 대상에 `@deprecated` JSDoc 태그와 대체 경로를 명시하고 문서 사이트에 지원 종료 표식을 노출한다. 최소 1회의 minor 릴리스 동안 동작을 유지한 뒤, 다음 major에서 제거한다. 제거 시 `CHANGELOG`에 마이그레이션 노트를 포함한다(AC-4). 변경 이력이 없는 패키지는 버전을 올리지 않는다(AC-3).
+
+## CR-041 확장 영향 (FR-CMP-010~013)
+
+API-PKG-003에 FR-CMP-010~013의 additive 표현 API를 추가한다. 검색 AST·서버 정렬·인가·URL/커서·관계 판정은 소비자 API다. Graph node/edge ID와 source/target을 소비자가 제공하고 라벨·근거는 텍스트로 렌더한다. 모든 export의 실제 서명은 생성 API report와 일치해야 한다.

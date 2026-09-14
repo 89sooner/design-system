@@ -1,6 +1,6 @@
 # Conductor Design System 구현 로드맵
 
-> 상태: review | 버전: v0.3 | 갱신일: 2026-07-17
+> 상태: review | 버전: v0.3 | 갱신일: 2026-09-13
 
 ## 1. 목적
 
@@ -70,3 +70,7 @@ REL-004  WP-026(OD-002) ∥ WP-027 → WP-028
 | 필터/칩 컴포넌트군(F-CMP-010)이 v1에 없다 | 소비자가 자체 구현한다 | v1.1. OD-003 결정에 따름 | 조건부 |
 | 소스의 도메인 컴포넌트(`.thread-page`, `.approval-card-*`, `.run-summary`, `.tool-grid`)를 이식하지 않는다 | agent-ai-platform은 이 클래스들을 자체 보유해야 한다 | 없음 (F-X-009 명시 제외) | 승인 |
 | `@conductor-by-89soone/tokens`의 primitive 토큰이 공개 API로 노출되지 않는다 | 소비자가 원시 색 ramp를 직접 참조할 수 없다 | 없음 (FR-TOK-002 AC-5 의도된 제약) | 승인 |
+
+## CR-041 로컬 확장 실행
+
+REL-004 내 독립 확장 WP-029 → WP-030 → WP-031 → WP-032로 기반/배포·검색·관계·운영을 수직 검증한다. FR-CMP-010~013을 구현하며 기존 REL 완료 이력을 소급 변경하지 않는다. 정식 baseline·원격 배포는 이번 로컬 완료와 분리한다.

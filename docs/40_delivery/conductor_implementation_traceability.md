@@ -1,6 +1,6 @@
 # Conductor Design System 구현 추적 원장
 
-> 상태: review | 버전: v0.32 | 갱신일: 2026-09-03
+> 상태: review | 버전: v0.33 | 갱신일: 2026-09-14
 
 ## 1. 목적과 갱신 규칙
 
@@ -344,3 +344,48 @@ OD-002(시각 회귀 이월)와 OD-004(셸 컴포넌트군 패키지 포함)는 
 ## 7. 요구사항 정합성 점검
 
 `validate_srs_prd_env.py --root . --report --code-root <repo>` 를 실행하면, 승인된 FR 중 코드에 `Refs:` 태그 또는 FR 범위 주석으로 연결되지 않은 항목(미태깅 요구사항)을 점검할 수 있다. 코딩 에이전트는 WP 완료 시 이 스크립트를 실행하고, 리포트 결과를 §2 WP 상태 표의 검증 결과 열에 기록한다.
+
+## CR-041 로컬 확장 실행 기록 (2026-09-13)
+
+기존 완료 기록은 당시 증거다. 아래 확장은 review 범위이며 별도 baseline·릴리스 완료를 주장하지 않는다.
+
+| WP | 요구사항 | 상태 | 구현 / 증거 |
+| --- | --- | --- | --- |
+| WP-029 | FR-CMP-013 | done | Tabs·Popover·Collapsible, AppShell trigger/복귀, RSC client leaf와 tarball 경계. React 18/19·Next 설치 fixture와 격리 소비자에서 검증. |
+| WP-030 | FR-CMP-010 | done | Combobox·checkbox 다중 선택·DataTable·Workbench/Inspector·경로 목록. IME, stable ID, 커서 이어 보기, 닫기 후 복귀와 URL 조건을 브라우저에서 검증. |
+| WP-031 | FR-CMP-011 | done | 결정적 SVG 관계 표현, 목록 대안, 방향·근거·불확실/해제 상태와 300-node 측정을 검증. |
+| WP-032 | FR-CMP-012 | done | 수신/저장/처리/색인 상태와 권한 기반 합성 행동, 세 화면 테마·폭·패키지 소비 회귀를 검증. |
+
+착수 문서 validator --report: exit 0, FR49/49, Phase7. 실제 소비자 코드는 읽기만 수행했으며 운영 연동·소비자 마이그레이션은 실행하지 않았다. 공개 기록에는 일반화된 계약과 합성 데이터만 남긴다.
+
+### CR-041 착수 검증 구분
+
+- build/typecheck: pnpm 실행 shim 구성 뒤 통과(부모 에이전트 실행 로그).
+- 초기 test 기록은 순수한 불변 baseline이 아니다. 기존 git 실행 EPERM 11건과 이번 작업 중 추가된 Shell 재현 검사 실패 1건, 통과 580건이 섞인 시점의 로그다. 이 1건을 기존 실패로 분류하지 않는다.
+- 문서 --report: 구조/추적 오류 0, FR 53/53, 아키텍처 53/53, WP 53/53. SRS review이므로 Phase6을 표시한다.
+- 문서 --strict: baseline 승인 게이트만 실패. 이는 코드 오류나 구조 실패가 아니며 임의 baseline 승격으로 통과시키지 않는다.
+
+### CR-041 문서·Skills 확인
+
+- 실제 설치 스킬: build-srs-prd-env의 SKILL과 requirement-authoring 지침을 읽고 Update/Sync로 적용했다. 기존 30개 계획 문서의 필요한 절만 cascade 수정했다. 새 계획 저장소를 만들지 않았다.
+- frontend-product-designer: 설치된 Codex/Agents skill 경로의 파일 검색 결과 없음(exit1). 이 이름의 스킬을 실행했다고 주장하지 않는다. 다른 디자인/브라우저 스킬 사용 여부는 각 실행 담당의 기록을 따른다.
+- 문서 validator 최종 재실행(구현 종료 게이트 이전): --report exit0, 구조 오류0·FR53/53·아키텍처53/53·WP53/53, Phase6. --strict exit1, 유일 오류는 사용자 승인 baseline 부재. 이는 스킬 기본값을 이유로 로컬 구현을 중단한 것이 아니다.
+- packages/react/README에 공개 API별 예제·키보드·비동기·theme/portal·RSC·소비자 책임·오용과 마이그레이션을 추가했다. 실제 소비자 변경은 수행하지 않았다.
+
+### CR-041 catalog 및 접근성 registry 통합 검증
+
+- apps/docs/src/catalog.tsx: 신규 17개 공개 컴포넌트의 실제 preview 추가. 검색/선택/분할 폭/복귀/재시도는 로컬 상태로 결과가 관찰된다. 기존 preview 유지. docs TypeScript 및 해당 파일 ESLint exit0.
+- packages/react/src/testing/a11y-scenarios.tsx·a11y.browser.test.tsx: 47개 공개 registry와 scenario/keyboard 집합 일치. 신규 controls를 static으로 분류하지 않고 실제 Tab으로 도달한 뒤 Enter/Space/방향키/Escape로 상태 결과를 검사한다. Combobox disabled/error와 열린 Popover도 두 테마 axe 대상.
+- 최초 브라우저 실행은 localhost listen EPERM으로 검사0건(exit1), 승인된 로컬 실행으로 재개. 첫 실행 237 passed/1 failed/1 skipped: 모바일 폭에서 숨겨진 desktop resize control에 접근하려던 시험 조건 오류. Workbench만1280px, 다른 키보드 흐름800px로 실제 반응형 조건을 맞춤. 제품 CSS를 바꾸거나 검사를 제거하지 않음.
+- 재실행: `node node_modules/vitest/vitest.mjs run --config vitest.a11y.config.ts` exit0, 2 files, **238 passed / 1 existing skipped (239)**,11.16초. a11y192검사(음성fixture skip1 포함), hydration47검사. 이는 Chromium 합성 컴포넌트 검사이며 운영 소비자 통합이나 실제 스크린리더 검증이 아니다.
+- AppShell의 기존 browser assertion은 닫힌 뒤 trigger가 아닌 곳에 초점이 있다고 요구했다. 새 복귀 계약에 맞춰 trigger 복귀를 검증하며 동작 자체도 브라우저에서 통과했다.
+- 실제 예제 route에 W-060/061/062를 부여하고 matrix/IA/SRS/WP 동기화. validator --report exit0: FR53/53, 화면15/15. baseline 상태는 그대로 review.
+
+### CR-041 종료 실행 증거 (2026-09-14)
+
+- 최종 소스 게이트: `pnpm build`, `typecheck`, `test`(37 files/667), `lint`, `lint:deps`, `lint:tokens`, `check:contrast`, `test:a11y`(238 passed/기존 fixture skip 1), `test:visual`(27), `size`, `check:api`, `check:changesets`, `check:secrets`가 모두 exit 0. CSS gzip 10.70 KiB/20 KiB, Button gzip 1.33 KiB/4 KiB.
+- docs 조합 브라우저: Chromium 14/14(360·768·1280·1536px, dark/light, loading/empty/error/partial/long, IME, focus 복귀, 텍스트 200%, reduced motion, 0/1/100/1000 결과, 300-node), Firefox 핵심 흐름 6/6, WebKit 핵심 흐름 6/6. 합성 화면만이며 실제 보조기술 사용 검증은 아니다.
+- 패키지 소비: 새 tarball을 React 18.3.1/Vite, React 19.2.8/Vite, React 19.2.8/Next 16.3.1에 strict peer 설치·타입·production build·browser hydration으로 검증. 최종 tarball SHA256은 tokens `97fce554f927f89031c94070dc94956d0d6e984f948a07a99c4c3de031e3e2ae`, css `a7e1b11d7469eab1f46ca82b023f7b3996f367af2d212830564ee4283c548ce9`, react `f974e99fe6091257c4a63d6c4d0a92ce4d24abf202a6a2ae01a99027333e8f41`이다.
+- 격리된 최신 소비자 사본은 최종 tarball override로 offline install, workspace TypeScript build, web typecheck, Next production build, 기존 Shell/Workbench E2E 29/29을 통과했다. 인증은 E2E mock 설정이고, 실제 GHE·운영 데이터·Redis 연동은 검증하지 않았다. 원본 소비자 작업 트리는 읽기만 수행했다.
+- dist와 격리 소비자의 tokens CSS, css index, React index/shell/interaction/workbench/relation 산출 SHA256은 모두 일치했다. 검증 산출물은 로컬 `/tmp/conductor-final*`, `/tmp/conductor-evidence` 및 비공개 소비자 임시 디렉터리에만 두며 공개 패키지·문서에 소비자 데이터를 복제하지 않았다.
+- `validate --report`는 exit 0(53/53 FR, 15/15 화면). `validate --strict`는 사용자 baseline 승인 부재만으로 exit 1이며, review 상태를 유지한다.
