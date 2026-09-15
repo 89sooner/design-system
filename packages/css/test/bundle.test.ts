@@ -350,10 +350,13 @@ describe("FR-CSS-004 action and surface primitives", () => {
 describe("FR-CMP-004 status display styles", () => {
   const components = topLevelRules(index, "cdt.component");
 
-  test("FR-CMP-004 AC-1: running status uses its semantic fill and tokenised text", () => {
-    const running = components.find((rule) => rule.selector === ".cdt-status-badge--running");
-    expect(running?.decls.background).toBe("var(--cdt-status-running)");
-    expect(running?.decls.color).toBe("var(--cdt-badge-fill-text)");
+  test("FR-CMP-004 AC-1: running status supplies its semantic tone to the soft badge surface", () => {
+    const running = components.find((rule) => rule.selector.split(",").includes(".cdt-status-badge--running"));
+    const badge = components.find((rule) => rule.selector === ".cdt-badge");
+    expect(running?.decls["--cdt-badge-tone"]).toBe("var(--cdt-status-running)");
+    expect(badge?.decls.background).toContain("var(--cdt-badge-tone)");
+    expect(badge?.decls.background).toContain("var(--cdt-surface-raised)");
+    expect(badge?.decls.color).toBe("var(--cdt-text-primary)");
   });
 
   test("FR-CMP-004 AC-4: destructive severity uses its semantic fill", () => {
@@ -449,7 +452,7 @@ describe("FR-CMP-007 form styles", () => {
     const checked = components.find((rule) => rule.selector.includes(".cdt-switch[data-state=checked]"));
     const highlighted = components.find((rule) => rule.selector === ".cdt-select__item[data-highlighted]");
     expect(checked?.decls.background).toBe("var(--cdt-accent)");
-    expect(highlighted?.decls.background).toBe("var(--cdt-accent-soft)");
+    expect(highlighted?.decls.background).toBe("var(--cdt-state-hover)");
   });
 });
 

@@ -397,3 +397,11 @@ OD-002(시각 회귀 이월)와 OD-004(셸 컴포넌트군 패키지 포함)는 
 - 검증: build → typecheck, unit 667/667, token lint 0건, contrast 232/232, Chromium a11y 238 passed/기존 fixture skip 1, size Button 1.33 KiB·CSS 10.86 KiB 통과. 초기 unit 실패 11건은 sandbox의 git subprocess EPERM이며 같은 검사를 허용된 실행 환경에서 재실행해 전부 통과했다.
 - 실제 docs 브라우저: dark/light 각각 Button·TextField·Badge·Select 캡처 확인. ghost hover/focus, 빈 입력·긴 한글, 오류 hover, disabled cursor, 360px 가로 overflow 검증 통과. 합성 docs 화면 검증이며 운영 소비자 평가는 포함하지 않는다.
 - 고정 Docker 시각 검증: 영향받는 컨트롤/조합의 스냅샷만 갱신하고 무관한 캡처 변경은 제외한 뒤, 갱신 옵션 없이 `pnpm test:visual` 27/27 통과. 문서 validator --report/--strict, changeset 규칙, diff whitespace 검사 통과.
+
+### 승인된 컨트롤 디자인 릴리스 준비 (2026-09-15)
+
+- 사용자가 다크·라이트 미리보기의 최종 디자인을 승인하고 npm 릴리스를 요청했다. FR-CMP-002·004·007 범위의 공용 CSS 수정이며 원시/의미 토큰 및 React API는 유지한다.
+- 최종 표현: 기본 버튼/입력 모서리 통일, 보조·disabled 버튼의 경계 완화, Badge/StatusBadge의 옅은 상태색 표면과 본문 전경·500 굵기·투명 경계, 입력 그림자 제거, Select 옵션 안쪽 여백과 중립 강조. SeverityTag의 별도 의미색 채움과 상태 마커의 형태 구분은 유지한다.
+- 이전 진한 badge fill과 Select 강조색을 고정하던 CSS 테스트 두 곳을 승인된 표현에 맞췄다. 실제 Chromium 접근성 238 passed/기존 fixture skip 1, unit 667/667, build→typecheck, token lint 0건, contrast 232/232, lint/API/secrets/changesets 통과. Button 1.33 KiB, CSS 11.10 KiB로 size 게이트 통과.
+- 검증하지 말라는 앞선 지시는 디자인 탐색 단계에 적용되었으며, 이번 릴리스 요청에 따라 발행용 검증을 재개했다. npm은 저장소의 version PR → GitHub Actions OIDC publish 절차로 진행한다.
+- 갱신 없는 고정 Docker 시각 회귀 27/27, 문서 --report/--strict 통과. audit는 high/critical 0건으로 발행 기준 통과(low 1, moderate 4는 기존 의존성 보고).
