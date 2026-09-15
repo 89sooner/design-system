@@ -92,7 +92,13 @@ test("FR-A11Y-003 AC-4: every public component remains identifiable in grayscale
   // The catalog's first layout settles one pixel after its previews mount. Wait
   // for that mount pass before Playwright begins its own screenshot stability loop.
   await page.waitForTimeout(600);
-  // Full-page capture avoids fractional element clip-height oscillation on the long catalog.
+  // Chromium's full-page extent alternates by one pixel on the long filtered
+  // catalog in CI. Add only trailing space to a stable 100px canvas boundary;
+  // keep every component visible and retain the existing pixel-diff threshold.
+  await page.evaluate(() => {
+    const height = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
+    document.documentElement.style.minHeight = `${Math.ceil(height / 100) * 100}px`;
+  });
   await expect(page).toHaveScreenshot("AllComponents-grayscale-dark.png", {
     fullPage: true,
     animations: "disabled",

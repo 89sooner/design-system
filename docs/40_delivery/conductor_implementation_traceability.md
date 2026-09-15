@@ -405,3 +405,4 @@ OD-002(시각 회귀 이월)와 OD-004(셸 컴포넌트군 패키지 포함)는 
 - 이전 진한 badge fill과 Select 강조색을 고정하던 CSS 테스트 두 곳을 승인된 표현에 맞췄다. 실제 Chromium 접근성 238 passed/기존 fixture skip 1, unit 667/667, build→typecheck, token lint 0건, contrast 232/232, lint/API/secrets/changesets 통과. Button 1.33 KiB, CSS 11.10 KiB로 size 게이트 통과.
 - 검증하지 말라는 앞선 지시는 디자인 탐색 단계에 적용되었으며, 이번 릴리스 요청에 따라 발행용 검증을 재개했다. npm은 저장소의 version PR → GitHub Actions OIDC publish 절차로 진행한다.
 - 갱신 없는 고정 Docker 시각 회귀 27/27, 문서 --report/--strict 통과. audit는 high/critical 0건으로 발행 기준 통과(low 1, moderate 4는 기존 의존성 보고).
+- 원격 CI(a705e90): Node 20/22 verify 모두 통과. 카탈로그 grayscale 1건만 전체 캡처 높이가 8369↔8370으로 바뀌어 5초 내 안정 캡처를 얻지 못했다(나머지 26건 통과). 테스트에서 문서의 최소 높이를 다음 100px 경계로 올려 하단 여백만 고정했다. 제품 스타일·콘텐츠·비교 임계치는 변경하지 않았다.
