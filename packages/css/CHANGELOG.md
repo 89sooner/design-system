@@ -1,5 +1,17 @@
 # @conductor-by-89soone/css
 
+## 0.4.1
+
+### Patch Changes
+
+- b890d40: Refine Button, Badge, TextField, TextArea and Select presentation with quieter button elevation, aligned icon slots, compact sentence-case badges and consistent raised input surfaces. Preserve ghost focus feedback and invalid/disabled field states (FR-CMP-002, FR-CMP-004, FR-CMP-007, FR-A11Y-001).
+
+  Refs: FR-CMP-002 FR-CMP-004 FR-CMP-007 FR-A11Y-001
+
+- a705e90: Refine control hierarchy with borderless soft tonal badges, lighter label weights, quiet secondary and disabled buttons, consistent control corners, shadow-free fields and inset Select options. Keep primary action emphasis and the existing form-control contrast boundary. Preserve the existing React and Radix APIs.
+
+  Refs: FR-CMP-002 FR-CMP-004 FR-CMP-007 FR-A11Y-001
+
 ## 0.4.0
 
 ### Minor Changes
