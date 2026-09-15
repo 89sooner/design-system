@@ -10,20 +10,40 @@
     min-block-size: var(--cdt-button-min-height);
     padding: var(--cdt-button-padding-block) var(--cdt-button-padding-inline);
     border: var(--cdt-border-width-hairline) solid var(--cdt-button-secondary-border);
-    border-radius: var(--cdt-button-radius);
+    border-radius: min(var(--cdt-button-radius), var(--cdt-radius-sm));
     background: var(--cdt-button-secondary-background);
     box-shadow: inset 0 1px 0 var(--cdt-border-subtle); /* cdt-allow-literal: one-pixel control highlight */
     color: var(--cdt-button-secondary-text);
     font-size: var(--cdt-button-font-size);
     font-weight: 600;
-    line-height: 1;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    vertical-align: middle;
     transition: background var(--cdt-motion-fast), border-color var(--cdt-motion-fast), box-shadow var(--cdt-motion-fast), transform var(--cdt-motion-fast);
+  }
+
+  .cdt-btn > span[aria-hidden="true"] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+  }
+
+  .cdt-btn > span[aria-hidden="true"] > svg,
+  .cdt-input__icon > svg {
+    inline-size: var(--cdt-space-4);
+    block-size: var(--cdt-space-4);
+  }
+
+  .cdt-badge__icon > svg {
+    inline-size: 100%;
+    block-size: 100%;
   }
 
   .cdt-btn--primary {
     border-color: transparent;
     background: var(--cdt-button-primary-background);
-    box-shadow: var(--cdt-button-primary-shadow);
+    box-shadow: inset 0 0 0 var(--cdt-border-width-hairline) var(--cdt-border-subtle);
     color: var(--cdt-button-primary-text);
   }
 
@@ -95,16 +115,15 @@
   }
 
   .cdt-btn:not(:disabled):hover {
-    border-color: var(--cdt-button-secondary-border-hover);
+    border-color: var(--cdt-border-control);
     background: var(--cdt-button-secondary-background-hover);
-    box-shadow: inset 0 1px 0 var(--cdt-border-strong), var(--cdt-elevation-raised); /* cdt-allow-literal: control highlight over shared elevation */
+    box-shadow: inset 0 1px 0 var(--cdt-border-subtle); /* cdt-allow-literal: quiet control edge */
   }
 
   .cdt-btn--primary:not(:disabled):hover {
     border-color: transparent;
     background: var(--cdt-button-primary-background);
-    box-shadow: var(--cdt-button-primary-shadow-hover);
-    transform: translateY(-1px); /* cdt-allow-literal: source hover lift */
+    box-shadow: inset 0 0 0 var(--cdt-border-width-emphasis) var(--cdt-border-strong);
   }
 
   .cdt-btn--primary.cdt-btn--tone-danger:not(:disabled):hover {
@@ -123,6 +142,8 @@
   }
 
   .cdt-btn--ghost:not(:disabled):hover {
+    border-color: transparent;
+    box-shadow: none;
     background: var(--cdt-button-ghost-background-hover);
     color: var(--cdt-button-ghost-text-hover);
   }
@@ -196,18 +217,21 @@
     display: inline-flex;
     align-items: center;
     gap: var(--cdt-badge-gap);
-    padding: var(--cdt-badge-padding-block) var(--cdt-badge-padding-inline);
+    padding: calc(var(--cdt-badge-padding-block) / 2) var(--cdt-badge-padding-inline);
     border: var(--cdt-border-width-hairline) solid transparent;
     border-radius: var(--cdt-badge-radius);
     font-size: var(--cdt-badge-font-size);
     font-weight: 600;
     line-height: var(--cdt-badge-line-height);
-    letter-spacing: 0.5px; /* cdt-allow-literal: source badge tracking */
-    box-shadow: inset 0 1px 0 var(--cdt-border-subtle); /* cdt-allow-literal: compact status highlight */
-    text-transform: uppercase;
+    letter-spacing: normal;
+    vertical-align: middle;
+    text-transform: none;
   }
 
   .cdt-badge__icon {
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
     display: inline-flex;
     inline-size: var(--cdt-badge-icon-size);
     block-size: var(--cdt-badge-icon-size);
@@ -727,19 +751,21 @@
     padding: var(--cdt-input-padding-block) var(--cdt-input-padding-inline);
     border: var(--cdt-border-width-hairline) solid var(--cdt-input-border);
     border-radius: var(--cdt-input-radius);
-    background: var(--cdt-input-background);
+    background: var(--cdt-surface-raised);
     color: var(--cdt-input-text);
     font: inherit;
-    box-shadow: inset 0 1px 0 var(--cdt-border-subtle); /* cdt-allow-literal: input surface highlight */
+    font-size: var(--cdt-font-size-md);
+    line-height: var(--cdt-font-line-height-md);
+    box-shadow: none;
     transition: background var(--cdt-motion-fast), border-color var(--cdt-motion-fast), box-shadow var(--cdt-motion-fast);
   }
 
   .cdt-input::placeholder,
   .cdt-textarea::placeholder { color: var(--cdt-input-placeholder); }
 
-  .cdt-input:hover,
-  .cdt-textarea:hover,
-  .cdt-select__trigger:hover { border-color: var(--cdt-input-border-hover); background: var(--cdt-surface-raised); }
+  .cdt-input:not(:disabled):hover,
+  .cdt-textarea:not(:disabled):hover,
+  .cdt-select__trigger:not(:disabled):hover { border-color: var(--cdt-input-border-hover); background: var(--cdt-surface-raised); }
 
   .cdt-input:focus-visible,
   .cdt-textarea:focus-visible,
@@ -750,17 +776,32 @@
   }
 
   .cdt-input:focus-visible,
-  .cdt-textarea:focus-visible { background: var(--cdt-input-background-focus); }
+  .cdt-textarea:focus-visible { background: var(--cdt-surface-raised); }
 
   .cdt-input--glass,
   .cdt-textarea--glass { background: var(--cdt-surface-tint-1); }
 
-  .cdt-input--icon-start { padding-inline-start: var(--cdt-space-7); }
+  .cdt-input--icon-start { padding-inline-start: calc(var(--cdt-space-3) + var(--cdt-space-4) + var(--cdt-space-2)); }
 
   .cdt-input--sm,
   .cdt-select__trigger--sm { min-block-size: 34px; /* cdt-allow-literal: C-051/C-053 compact control height */ }
 
   .cdt-textarea { resize: vertical; }
+
+  .cdt-input:disabled,
+  .cdt-textarea:disabled,
+  .cdt-select__trigger:disabled {
+    cursor: not-allowed;
+    background: var(--cdt-state-disabled);
+    color: var(--cdt-text-muted);
+    box-shadow: none;
+  }
+
+  .cdt-input[aria-invalid="true"]:not(:disabled),
+  .cdt-textarea[aria-invalid="true"]:not(:disabled),
+  .cdt-select__trigger[aria-invalid="true"]:not(:disabled) {
+    border-color: var(--cdt-input-border-invalid);
+  }
 
   .cdt-input--invalid,
   .cdt-textarea--invalid,

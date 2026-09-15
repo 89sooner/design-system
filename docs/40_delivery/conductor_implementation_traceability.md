@@ -389,3 +389,11 @@ OD-002(시각 회귀 이월)와 OD-004(셸 컴포넌트군 패키지 포함)는 
 - 격리된 최신 소비자 사본은 최종 tarball override로 offline install, workspace TypeScript build, web typecheck, Next production build, 기존 Shell/Workbench E2E 29/29을 통과했다. 인증은 E2E mock 설정이고, 실제 GHE·운영 데이터·Redis 연동은 검증하지 않았다. 원본 소비자 작업 트리는 읽기만 수행했다.
 - dist와 격리 소비자의 tokens CSS, css index, React index/shell/interaction/workbench/relation 산출 SHA256은 모두 일치했다. 검증 산출물은 로컬 `/tmp/conductor-final*`, `/tmp/conductor-evidence` 및 비공개 소비자 임시 디렉터리에만 두며 공개 패키지·문서에 소비자 데이터를 복제하지 않았다.
 - `validate --report`는 exit 0(53/53 FR, 15/15 화면). `validate --strict`는 사용자 baseline 승인 부재만으로 exit 1이며, review 상태를 유지한다.
+
+### 주요 컨트롤 시각 개선 (2026-09-15)
+
+- 사용자 요청에 따른 공용 CSS 개선. FR-CMP-002·FR-CMP-004·FR-CMP-007·FR-A11Y-001 범위에서 Button 모서리 상한을 form radius에 맞추고 과한 elevation/hover lift를 줄였다. Badge는 기존 pill과 상태색을 유지하면서 세로 여백을 절반으로 줄이고 강제 대문자·자간을 제거했다. 버튼·입력·배지의 SVG 슬롯 크기와 정렬을 명시했다.
+- TextField·TextArea·Select는 raised 표면과 본문 타이포그래피를 공유한다. 오류 경계는 hover에도 남고 disabled는 별도 표면과 커서를 갖는다. 원시/의미 토큰 값, 공개 props, Radix 동작, 포커스 링, 모바일 조작 높이는 유지한다. 새 요구사항이나 baseline 상태 변경은 없다.
+- 검증: build → typecheck, unit 667/667, token lint 0건, contrast 232/232, Chromium a11y 238 passed/기존 fixture skip 1, size Button 1.33 KiB·CSS 10.86 KiB 통과. 초기 unit 실패 11건은 sandbox의 git subprocess EPERM이며 같은 검사를 허용된 실행 환경에서 재실행해 전부 통과했다.
+- 실제 docs 브라우저: dark/light 각각 Button·TextField·Badge·Select 캡처 확인. ghost hover/focus, 빈 입력·긴 한글, 오류 hover, disabled cursor, 360px 가로 overflow 검증 통과. 합성 docs 화면 검증이며 운영 소비자 평가는 포함하지 않는다.
+- 고정 Docker 시각 검증: 영향받는 컨트롤/조합의 스냅샷만 갱신하고 무관한 캡처 변경은 제외한 뒤, 갱신 옵션 없이 `pnpm test:visual` 27/27 통과. 문서 validator --report/--strict, changeset 규칙, diff whitespace 검사 통과.
