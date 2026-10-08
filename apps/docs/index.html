@@ -3,6 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--
+      인라인 SVG 파비콘 (CR-042). 파비콘 파일이 없으면 브라우저가 /favicon.ico를 요청하고
+      SPA 폴백이 index.html(약 40KB)을 되돌려 주어, Fast 3G에서 첫 페인트와 대역폭을
+      다투는 쓸모없는 요청이 하나 생긴다. 데이터 URI는 요청 자체를 없앤다. 색은 다크 accent와
+      text.inverse의 값이며, 파비콘은 테마를 따르지 않는다.
+    -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%236d7cff'/%3E%3Cpath d='M21 11.5a7 7 0 1 0 0 9' fill='none' stroke='%23f4f7fb' stroke-width='3.5' stroke-linecap='round'/%3E%3C/svg%3E" />
     <title>Conductor Design System</title>
     <script>
       (() => {
