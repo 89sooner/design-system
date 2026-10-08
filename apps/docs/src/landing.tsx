@@ -1,5 +1,5 @@
 // Refs: CR-042 WP-018 FR-DOC-001 FR-DOC-005 FR-THM-003 W-001
-import { Badge, Banner, Button, Card, CardGrid, CodeBlock, CopyButton, Kbd, Meter, Panel, StatusBadge, Switch, Table, Timeline } from "@conductor-by-89soone/react";
+import { Badge, Banner, Button, Card, CardGrid, CodeBlock, CopyButton, Meter, Panel, StatusBadge, Switch, Table, Timeline } from "@conductor-by-89soone/react";
 import type { Status } from "@conductor-by-89soone/react";
 import { Accessibility, ArrowRight, Braces, CircleCheck, CirclePause, Component, Info, Layers, Loader, Palette, ShieldCheck, Sparkles } from "lucide-react";
 import { useState, type ReactNode } from "react";
@@ -11,9 +11,13 @@ import stats from "./generated/site-stats.json";
  * `document`, `navigator` or `requestAnimationFrame` during render, and every piece of local
  * state starts from the same value on the server and on the hydrating client. Colour never
  * branches on the theme in JSX: it all arrives through `--cdt-*` custom properties.
+ *
+ * The page is also the LCP route (NFR-001), so the markup stays lean: no wrapper that carries
+ * no style, three table rows, and arrows after card footers come from CSS rather than an SVG each.
  */
 
 const INSTALL_COMMAND = "pnpm add @conductor-by-89soone/react";
+const REACT_PACKAGE = "@conductor-by-89soone/react";
 
 interface Deployment {
   readonly service: string;
@@ -84,7 +88,7 @@ const packages: readonly PackageCard[] = [
   },
   {
     id: "react",
-    name: "@conductor-by-89soone/react",
+    name: REACT_PACKAGE,
     description: "Radix-based primitives that compose the stylesheet. Focus, roles and keyboard handling are delegated, never hand-rolled.",
     href: "#/components",
     cta: "Browse components",
@@ -168,7 +172,7 @@ function LandingActions({ className }: { readonly className: string }) {
     <div className={className}>
       <Link className="cdt-btn cdt-btn--primary cdt-btn--tone-accent" to="/getting-started">
         Get started
-        <span aria-hidden="true"><ArrowRight size={16} strokeWidth={1.75} /></span>
+        <ArrowRight size={16} strokeWidth={1.75} aria-hidden="true" />
       </Link>
       <Link className="cdt-btn cdt-btn--secondary cdt-btn--tone-neutral" to="/components">Browse components</Link>
     </div>
@@ -212,7 +216,10 @@ function Showcase() {
             <Badge tone="accent">web-console</Badge>
             <StatusBadge status="running" icon={<Loader size={12} aria-hidden="true" />} label="Deploying" />
           </div>
-          <div className="docs-showcase__keys" aria-hidden="true"><Kbd>⌘</Kbd><Kbd>K</Kbd></div>
+          <div className="docs-showcase__rollout">
+            <span className="docs-showcase__rollout-head"><strong>Rollout</strong><span>canary · warns at 80%</span></span>
+            <Meter aria-label="Rollout progress" value={72} warningAt={80} valueText="72%" />
+          </div>
         </div>
         <div className="docs-showcase__body">
           <div className="docs-showcase__stack">
@@ -239,13 +246,6 @@ function Showcase() {
             </Banner>
           </div>
           <Card className="docs-console">
-            <div className="docs-console__meter">
-              <div className="docs-console__meter-head">
-                <strong>Rollout</strong>
-                <span className="cdt-muted">canary · warns at 80%</span>
-              </div>
-              <Meter aria-label="Rollout progress" value={72} warningAt={80} valueText="72%" />
-            </div>
             <Timeline aria-label="Release steps">
               {releaseSteps.map((step) => (
                 <Timeline.Step key={step.title} selected={step.selected === true}>
@@ -259,7 +259,7 @@ function Showcase() {
             <div className="docs-setting-row">
               <div>
                 <strong id="docs-console-auto-promote">Auto-promote</strong>
-                <span className="cdt-muted">Promote when every check passes</span>
+                <span>Promote when every check passes</span>
               </div>
               <Switch aria-labelledby="docs-console-auto-promote" checked={autoPromote} onCheckedChange={setAutoPromote} />
             </div>
@@ -270,7 +270,7 @@ function Showcase() {
           </Card>
         </div>
       </div>
-      <p className="docs-showcase__caption">Everything above is live DOM from @conductor-by-89soone/react — switch the theme to see the tokens swap.</p>
+      <p className="docs-showcase__caption">Everything above is live DOM from <code>{REACT_PACKAGE}</code> — switch the theme to see the tokens swap.</p>
     </section>
   );
 }
@@ -278,7 +278,8 @@ function Showcase() {
 function Stats() {
   return (
     <section className="docs-stats" aria-label="Conductor in numbers">
-      <ul className="docs-stats__grid">
+      {/* `list-style: none` drops list semantics in WebKit; the explicit role keeps them. */}
+      <ul className="docs-stats__grid" role="list">
         {statTiles.map((tile) => (
           <li key={tile.label} className="docs-stats__tile">
             <strong className="docs-stats__value">{tile.value}</strong>
@@ -299,12 +300,12 @@ function Packages() {
       </SectionHead>
       <CardGrid className="docs-packages__grid">
         {packages.map((pkg) => (
-          <Card key={pkg.id} className="docs-package" href={pkg.href} aria-labelledby={`docs-package-${pkg.id}-name`} aria-describedby={`docs-package-${pkg.id}-description`}>
+          <Card key={pkg.id} className="docs-package" href={pkg.href} aria-labelledby={`docs-package-${pkg.id}-name docs-package-${pkg.id}-cta`} aria-describedby={`docs-package-${pkg.id}-description`}>
             <span className="docs-package__icon">{pkg.icon}</span>
             <span id={`docs-package-${pkg.id}-name`} className="docs-package__name">{pkg.name}</span>
             <span id={`docs-package-${pkg.id}-description`} className="docs-package__description">{pkg.description}</span>
             <PackagePreview id={pkg.id} />
-            <span className="docs-package__footer">{pkg.cta}<ArrowRight size={16} strokeWidth={1.75} aria-hidden="true" /></span>
+            <span id={`docs-package-${pkg.id}-cta`} className="docs-package__footer">{pkg.cta}</span>
           </Card>
         ))}
       </CardGrid>
@@ -339,7 +340,7 @@ function Steps() {
       <SectionHead eyebrow="Quick start" id="steps-title" title="Up and running in three steps">
         One command, one import, one component. The rest is reading the current theme.
       </SectionHead>
-      <ol className="docs-steps__list">
+      <ol className="docs-steps__list" role="list">
         {quickSteps.map((step) => (
           <li key={step.number} className="docs-step">
             <span className="docs-step__number" aria-hidden="true">{step.number}</span>
@@ -351,7 +352,7 @@ function Steps() {
           </li>
         ))}
       </ol>
-      <Link className="docs-steps__link" to="/getting-started">Read the full guide<ArrowRight size={16} strokeWidth={1.75} aria-hidden="true" /></Link>
+      <Link className="docs-steps__link" to="/getting-started">Read the full guide</Link>
     </section>
   );
 }
