@@ -50,7 +50,8 @@ test("FR-DOC-001 AC-1, AC-3, AC-4: static shell renders without external request
 test("FR-DOC-005 AC-1, AC-2, AC-5: theme switch updates and persists", async ({ page }) => {
   await page.goto(docsPath("/"));
   // The switch names the theme it moves to, so the accessible name changes with state.
-  const toggle = page.getByRole("switch");
+  // CR-042: the landing showcase renders a second switch (Auto-promote); name the theme toggle.
+  const toggle = page.getByRole("switch", { name: /Use (light|dark) theme/ });
   const root = page.locator("html");
   const initialTheme = await root.getAttribute("data-cdt-theme");
   const nextTheme = initialTheme === "dark" ? "light" : "dark";
@@ -121,7 +122,7 @@ for (const theme of ["light", "dark"] as const) {
     await page.goto(docsPath("/"));
     await expect(page.locator("html")).toHaveAttribute("data-cdt-theme", theme);
     // The toggle settles on the real theme, not the theme the prerender was drawn with.
-    await expect(page.getByRole("switch")).toHaveAttribute("aria-checked", theme === "light" ? "true" : "false");
+    await expect(page.getByRole("switch", { name: /Use (light|dark) theme/ })).toHaveAttribute("aria-checked", theme === "light" ? "true" : "false");
     expect(problems).toEqual([]);
   });
 }
