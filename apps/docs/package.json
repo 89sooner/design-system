@@ -4,11 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "node scripts/check-foundation-tokens.mjs && node scripts/build-component-catalog.mjs && node scripts/build-contrast-report.mjs && vite build && vite build --ssr src/entry-server.tsx --outDir dist-server && node scripts/prerender.mjs",
+    "build": "node scripts/check-foundation-tokens.mjs && node scripts/build-component-catalog.mjs && node scripts/build-contrast-report.mjs && node scripts/build-site-stats.mjs && vite build && vite build --ssr src/entry-server.tsx --outDir dist-server && node scripts/prerender.mjs",
     "build:pages": "pnpm run build && node scripts/build-pages-fallback.mjs",
     "dev": "vite",
     "preview": "vite preview",
-    "pretypecheck": "node scripts/build-component-catalog.mjs && node scripts/build-contrast-report.mjs",
+    "pretypecheck": "node scripts/build-component-catalog.mjs && node scripts/build-contrast-report.mjs && node scripts/build-site-stats.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test:e2e": "playwright test"
   },

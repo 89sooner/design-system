@@ -19,6 +19,7 @@ packages/tokens/src/tokens.ts
 packages/tokens/src/breakpoints.ts
 apps/docs/src/generated/component-meta.json
 apps/docs/src/generated/contrast-report.ts
+apps/docs/src/generated/site-stats.json
 
 # Tool caches
 *.tsbuildinfo
