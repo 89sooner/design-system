@@ -15,7 +15,6 @@ import {
   Component,
   ExternalLink,
   GitBranch,
-  Github,
   Home,
   LayoutGrid,
   Layers,
@@ -28,6 +27,7 @@ import {
   Sun,
   Type,
 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 import type { Theme } from "./theme";
@@ -35,6 +35,8 @@ import type { Theme } from "./theme";
 export const REPOSITORY_URL = "https://github.com/89sooner/design-system";
 export const NPM_ORG_URL = "https://www.npmjs.com/org/conductor-by-89soone";
 const NPM_PACKAGE_URL = "https://www.npmjs.com/package/@conductor-by-89soone";
+/** One switch per document; the top-bar pill is its `<label>`, so the whole pill toggles the theme. */
+const THEME_SWITCH_ID = "docs-theme-switch";
 
 type NavSection = "Start" | "Foundations" | "Reference" | "Guides" | "Workspaces";
 
@@ -108,8 +110,39 @@ export function BrandMark({ className }: { readonly className?: string }) {
   );
 }
 
+/**
+ * GitHub's mark in the lucide stroke style (the same outline lucide ships as `Github`), drawn inline
+ * because lucide marks its brand icons deprecated and removes them in v1. Decorative: the link names itself.
+ */
+function GitHubMark() {
+  return (
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+      <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+      <path d="M9 18c-4.51 2-5-2-7-2" />
+    </svg>
+  );
+}
+
+/** Screen-reader cue for `target="_blank"` links (WCAG G201); the ExternalLink icon beside it is decorative. */
+function NewTabNote() {
+  return <span className="cdt-sr-only"> (opens in a new tab)</span>;
+}
+
 export function Navigation({ close }: { readonly close?: () => void }) {
   const location = useLocation();
+  const listRef = useRef<HTMLElement>(null);
+  const [listOverflows, setListOverflows] = useState(false);
+  // The fade under the list only says "more items follow", so it exists while the list really
+  // scrolls. Measured after mount, so the prerender and the first client render stay identical.
+  useEffect(() => {
+    const list = listRef.current;
+    if (list === null || typeof ResizeObserver === "undefined") return;
+    const measure = () => setListOverflows(list.scrollHeight > list.clientHeight + 1);
+    const observer = new ResizeObserver(measure);
+    observer.observe(list);
+    measure();
+    return () => observer.disconnect();
+  }, []);
   const items = navItems.map((item) => ({ ...item, active: isActive(item.href, location.pathname) }));
   return (
     <>
@@ -119,14 +152,18 @@ export function Navigation({ close }: { readonly close?: () => void }) {
         {" "}
         <Badge className="docs-nav__version">{`v${reactPackage.version}`}</Badge>
       </Link>
-      <NavList items={items} aria-label="Documentation" renderLink={(item, props) => <Link {...props} to={item.href} onClick={close} />} />
+      <div className={listOverflows ? "docs-nav__list docs-nav__list--scrollable" : "docs-nav__list"}>
+        <NavList ref={listRef} items={items} aria-label="Documentation" renderLink={(item, props) => <Link {...props} to={item.href} onClick={close} />} />
+      </div>
       <div className="docs-nav__footer">
         <a className="docs-nav__footer-link" href={REPOSITORY_URL} target="_blank" rel="noreferrer">
           GitHub
+          <NewTabNote />
           <ExternalLink aria-hidden="true" size={12} strokeWidth={1.75} />
         </a>
         <a className="docs-nav__footer-link" href={NPM_ORG_URL} target="_blank" rel="noreferrer">
           npm
+          <NewTabNote />
           <ExternalLink aria-hidden="true" size={12} strokeWidth={1.75} />
         </a>
       </div>
@@ -161,13 +198,14 @@ export function DocsTopBar({ theme, onToggleTheme }: DocsTopBarProps) {
       title={<span className="docs-topbar__section">{sectionTitleFor(location.pathname)}</span>}
       actions={
         <>
-          <a className="cdt-btn cdt-btn--ghost cdt-btn--tone-neutral cdt-btn--icon docs-topbar__github" href={REPOSITORY_URL} target="_blank" rel="noreferrer" aria-label="GitHub repository">
-            <span aria-hidden="true"><Github size={16} strokeWidth={1.75} /></span>
+          <a className="cdt-btn cdt-btn--ghost cdt-btn--tone-neutral cdt-btn--icon docs-topbar__github" href={REPOSITORY_URL} target="_blank" rel="noreferrer" aria-label="GitHub repository (opens in a new tab)">
+            <span aria-hidden="true"><GitHubMark /></span>
           </a>
-          <div className="docs-theme-toggle">
+          {/* The pill labels the switch, so every part of it (icon included) is a real hit target; `aria-label` still names the switch. */}
+          <label className="docs-theme-toggle" htmlFor={THEME_SWITCH_ID}>
             {theme === "dark" ? <Moon aria-hidden="true" size={16} strokeWidth={1.75} /> : <Sun aria-hidden="true" size={16} strokeWidth={1.75} />}
-            <Switch checked={theme === "light"} onCheckedChange={onToggleTheme} aria-label={`Use ${next} theme`} />
-          </div>
+            <Switch id={THEME_SWITCH_ID} checked={theme === "light"} onCheckedChange={onToggleTheme} aria-label={`Use ${next} theme`} />
+          </label>
         </>
       }
     />
@@ -219,6 +257,7 @@ export function DocsFooter() {
             <li key={name}>
               <a className="docs-footer__link" href={`${NPM_PACKAGE_URL}/${name}`} target="_blank" rel="noreferrer">
                 <span className="docs-footer__package">@conductor-by-89soone/{name}</span>
+                <NewTabNote />
                 <ExternalLink aria-hidden="true" size={12} strokeWidth={1.75} />
               </a>
             </li>
