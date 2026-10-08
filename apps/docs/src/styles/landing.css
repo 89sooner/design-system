@@ -115,12 +115,13 @@
 /* ---------- Responsive ---------- */
 /* 1080 = breakpoint.lg — see base.css for why the literal is unavoidable in a media prelude. */
 @media (max-width: 1080px) {
-  .docs-packages__grid { grid-template-columns: minmax(0, 1fr); }
+  /* The compact nav leaves ~750px; two console columns would wrap every table cell. */
+  .docs-showcase__body, .docs-packages__grid { grid-template-columns: minmax(0, 1fr); }
   .docs-stats__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 /* 800 = breakpoint.md */
 @media (max-width: 800px) {
-  .docs-showcase__body, .docs-principles__grid { grid-template-columns: minmax(0, 1fr); }
+  .docs-principles__grid { grid-template-columns: minmax(0, 1fr); }
   .docs-step { grid-template-columns: var(--cdt-space-7) minmax(0, 1fr); align-items: start; }
   .docs-step__code { grid-column: 2; }
 }
