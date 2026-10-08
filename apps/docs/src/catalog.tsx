@@ -20,7 +20,6 @@ import {
   Search,
   SearchCode,
   SearchX,
-  SunMoon,
   Table2,
   Tag,
   TextCursorInput,
@@ -130,9 +129,10 @@ function ProcessingPreview() {
   const [requested, setRequested] = useState(false);
   return <Components.ProcessingStatus label="Synthetic pipeline" stages={[{ id: "received", label: "Received", status: "complete", detail: "Receipt confirmed; this does not confirm indexing." }, { id: "indexed", label: "Index", status: requested ? "pending" : "failed", detail: requested ? "Local retry queued; no service request sent." : "Synthetic failure; operator action is available.", action: requested ? undefined : { label: "Queue local retry", onAction: () => setRequested(true) } }]} />;
 }
-function ShellTriggerPreview() {
+// The tile clips this shell to a thumbnail (see CLIPPED_PREVIEWS), so the compact copy stays short enough for the narrow content column.
+function ShellTriggerPreview({ compact = false }: { readonly compact?: boolean }) {
   const [open, setOpen] = useState(false);
-  return <Components.AppShell navOpen={open} onNavOpenChange={setOpen} nav={<p>Synthetic navigation</p>} skipLinkLabel="Skip menu preview" topBar={<Components.AppShellNavTrigger>Toggle navigation</Components.AppShellNavTrigger>}><p role="status">Navigation {open ? "requested open" : "closed"}. Mobile drawer applies below the navigation breakpoint.</p></Components.AppShell>;
+  return <Components.AppShell navOpen={open} onNavOpenChange={setOpen} nav={<p>Synthetic navigation</p>} skipLinkLabel="Skip menu preview" topBar={<Components.AppShellNavTrigger>Toggle navigation</Components.AppShellNavTrigger>}><p role="status">Navigation {open ? "requested open" : "closed"}.{compact ? null : " Mobile drawer applies below the navigation breakpoint."}</p></Components.AppShell>;
 }
 
 export function ComponentPreview({ compact = false, forceError = false, name }: { readonly compact?: boolean; readonly forceError?: boolean; readonly name: string }) {
@@ -150,10 +150,10 @@ export function ComponentPreview({ compact = false, forceError = false, name }: 
     case "Timeline": return <Components.Timeline><Components.Timeline.Step>Validated</Components.Timeline.Step><Components.Timeline.Step selected>Deploying to production</Components.Timeline.Step><Components.Timeline.Step>Traffic migration</Components.Timeline.Step></Components.Timeline>;
     case "CodeBlock": return <Components.CodeBlock language="tsx" code="&lt;Button&gt;Save&lt;/Button&gt;" />;
     case "Kbd": return <Components.Kbd>Esc</Components.Kbd>;
-    case "Dialog": return <Components.Dialog.Root><Components.Dialog.Trigger>Open dialog</Components.Dialog.Trigger><Components.Dialog.Content><Components.Dialog.Title>Promote to production?</Components.Dialog.Title><Components.Dialog.Description>The release passed every required check. This action will make it available to all users.</Components.Dialog.Description><div className="docs-dialog-actions"><Components.Dialog.Close asChild><Components.Button variant="ghost">Cancel</Components.Button></Components.Dialog.Close><Components.Dialog.Close asChild><Components.Button variant="primary">Promote release</Components.Button></Components.Dialog.Close></div></Components.Dialog.Content></Components.Dialog.Root>;
-    case "Drawer": return <Components.Drawer.Root><Components.Drawer.Trigger>Open drawer</Components.Drawer.Trigger><Components.Drawer.Content><Components.Drawer.Title>Drawer</Components.Drawer.Title></Components.Drawer.Content></Components.Drawer.Root>;
-    case "Tooltip": return <Components.Tooltip.Provider><Components.Tooltip.Root><Components.Tooltip.Trigger>Tooltip trigger</Components.Tooltip.Trigger><Components.Tooltip.Content>Tooltip</Components.Tooltip.Content></Components.Tooltip.Root></Components.Tooltip.Provider>;
-    case "DropdownMenu": return <Components.DropdownMenu.Root><Components.DropdownMenu.Trigger>Menu trigger</Components.DropdownMenu.Trigger><Components.DropdownMenu.Content><Components.DropdownMenu.Item>Item</Components.DropdownMenu.Item></Components.DropdownMenu.Content></Components.DropdownMenu.Root>;
+    case "Dialog": return <Components.Dialog.Root><Components.Dialog.Trigger asChild><Components.Button>Open dialog</Components.Button></Components.Dialog.Trigger><Components.Dialog.Content><Components.Dialog.Title>Promote to production?</Components.Dialog.Title><Components.Dialog.Description>The release passed every required check. This action will make it available to all users.</Components.Dialog.Description><div className="docs-dialog-actions"><Components.Dialog.Close asChild><Components.Button variant="ghost">Cancel</Components.Button></Components.Dialog.Close><Components.Dialog.Close asChild><Components.Button variant="primary">Promote release</Components.Button></Components.Dialog.Close></div></Components.Dialog.Content></Components.Dialog.Root>;
+    case "Drawer": return <Components.Drawer.Root><Components.Drawer.Trigger asChild><Components.Button>Open drawer</Components.Button></Components.Drawer.Trigger><Components.Drawer.Content><Components.Drawer.Title>Drawer</Components.Drawer.Title></Components.Drawer.Content></Components.Drawer.Root>;
+    case "Tooltip": return <Components.Tooltip.Provider><Components.Tooltip.Root><Components.Tooltip.Trigger asChild><Components.Button>Tooltip trigger</Components.Button></Components.Tooltip.Trigger><Components.Tooltip.Content>Tooltip</Components.Tooltip.Content></Components.Tooltip.Root></Components.Tooltip.Provider>;
+    case "DropdownMenu": return <Components.DropdownMenu.Root><Components.DropdownMenu.Trigger asChild><Components.Button>Menu trigger</Components.Button></Components.DropdownMenu.Trigger><Components.DropdownMenu.Content><Components.DropdownMenu.Item>Item</Components.DropdownMenu.Item></Components.DropdownMenu.Content></Components.DropdownMenu.Root>;
     case "Field": return <Components.Field label="Workspace name" description="Shown to everyone in this workspace."><Components.TextField defaultValue="Conductor" /></Components.Field>;
     case "TextField": return <Components.Field label="Search components" description="Filter by component name or category."><Components.TextField defaultValue="Button" /></Components.Field>;
     case "TextArea": return <Components.Field label="Release notes" description="Summarize the user-visible changes in this release."><Components.TextArea defaultValue="Improved component clarity and visual hierarchy." /></Components.Field>;
@@ -165,8 +165,7 @@ export function ComponentPreview({ compact = false, forceError = false, name }: 
     case "Meter": return <div className="docs-meter"><div className="docs-meter__label"><strong>Monthly usage</strong><span className="cdt-muted">60 of 100 GB</span></div><Components.Meter aria-label="Monthly usage" value={60} valueText="60%" /></div>;
     case "ProgressRing": return <Components.ProgressRing aria-label="Example progress" value={60} valueText="60%" />;
     case "Spinner": return <Components.Spinner label="Loading" />;
-    // cdt-allow-literal: 미리보기 상자의 최소 높이(192px). 제품 간격이 아니라 문서 예시의 크기다.
-    case "AppShell": return <Components.AppShell nav={<span>Navigation</span>} skipLinkLabel="Skip to preview content" style={{ minHeight: "12rem" }}>Shell content</Components.AppShell>;
+    case "AppShell": return <Components.AppShell nav={<span>Navigation</span>} skipLinkLabel="Skip to preview content">Shell content</Components.AppShell>;
     case "NavList": return <Components.NavList aria-label="Example navigation" items={[{ id: "overview", label: "Overview", href: "#overview", active: true }]} renderLink={(item, props) => <a href={item.href} {...props} />} />;
     case "TopBar": return <Components.TopBar eyebrow="Design system" title="Components" actions={<Components.IconButton aria-label="Example action" icon="●" />} />;
     case "Tabs": return <Components.Tabs.Root defaultValue="results"><Components.Tabs.List aria-label="Preview sections"><Components.Tabs.Trigger value="results">Results</Components.Tabs.Trigger><Components.Tabs.Trigger value="history">History</Components.Tabs.Trigger></Components.Tabs.List><Components.Tabs.Content value="results">Loaded results stay in this panel.</Components.Tabs.Content><Components.Tabs.Content value="history">Synthetic activity history.</Components.Tabs.Content></Components.Tabs.Root>;
@@ -185,7 +184,7 @@ export function ComponentPreview({ compact = false, forceError = false, name }: 
     case "CopyButton": return <><code>sample:change:1</code><Components.CopyButton value="sample:change:1" label="Copy sample ID" /></>;
     case "ProcessingStatus": return <ProcessingPreview />;
     case "RelationGraph": return <Components.RelationGraph label="Synthetic relationships" nodes={[{ id: "sample:a", label: "Change A" }, { id: "sample:b", label: "Change B" }]} edges={[{ id: "sample:edge", source: "sample:a", target: "sample:b", type: "references", label: "references", evidence: "Synthetic reference example", ambiguous: true }]} stateMessage="Synthetic data; no production API connected." />;
-    case "AppShellNavTrigger": return <ShellTriggerPreview />;
+    case "AppShellNavTrigger": return <ShellTriggerPreview compact={compact} />;
     default: throw new Error(`Unknown component preview: ${name}`);
   }
 }
