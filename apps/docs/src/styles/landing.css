@@ -7,6 +7,9 @@
  * highlight that gives a glass surface its top edge. Colour never appears as a literal: tints are
  * `color-mix()` over tokens. Motion lives only under `prefers-reduced-motion: no-preference` and
  * reads the `--cdt-motion-*` durations; the only literals there are the entrance stagger delays.
+ *
+ * `/` is the LCP route (NFR-001), so nothing here restates what `cdt.base` already gives
+ * (heading margins, the 14px body size, bold `strong`); rules only carry the difference.
  */
 
 /* ---------- Page rhythm ---------- */
@@ -14,15 +17,16 @@
 .docs-landing a.cdt-btn { text-decoration: none; }
 .docs-landing__head { display: grid; gap: var(--cdt-space-2); max-width: 44rem; /* cdt-allow-literal: 읽기 폭은 간격 스케일이 아니라 줄 길이로 정한다 */ }
 .docs-landing__head .docs-eyebrow { margin: 0; font-size: var(--cdt-font-size-xs); letter-spacing: 0.08em; }
-.docs-landing__head h2 { margin: 0; text-wrap: balance; }
-.docs-landing__sub { margin: 0; color: var(--cdt-text-muted); font-size: var(--cdt-font-size-md); line-height: var(--cdt-font-line-height-md); }
+.docs-landing__head h2 { text-wrap: balance; }
+.docs-landing__sub, .docs-package__description, .docs-principle p, .docs-step__note { margin: 0; color: var(--cdt-text-muted); }
+.docs-hero__lead, .docs-cta p { margin: 0; color: var(--cdt-text-secondary); font-size: var(--cdt-page-lead-size); line-height: var(--cdt-page-lead-line-height); }
 
 /* ---------- Hero ---------- */
 .docs-hero { display: grid; justify-items: center; gap: var(--cdt-space-5); max-width: 56rem; /* cdt-allow-literal: 읽기 폭 */ margin-inline: auto; padding-block: var(--cdt-space-6) var(--cdt-space-2); text-align: center; }
 .docs-hero__pill { padding: var(--cdt-space-1) var(--cdt-space-3); border-color: color-mix(in srgb, var(--cdt-accent) 35%, transparent); border-radius: var(--cdt-radius-pill); font-weight: 600; letter-spacing: 0.01em; }
-.docs-hero__title { margin: 0; font-size: var(--cdt-page-display-size); line-height: var(--cdt-page-display-line-height); font-weight: 700; letter-spacing: -0.035em; text-wrap: balance; }
+.docs-hero__title { font-size: var(--cdt-page-display-size); line-height: var(--cdt-page-display-line-height); text-wrap: balance; }
 .docs-hero__gradient { background: linear-gradient(120deg, var(--cdt-accent), color-mix(in srgb, var(--cdt-accent) 55%, var(--cdt-text-primary))); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.docs-hero__lead { max-width: 40rem; /* cdt-allow-literal: 읽기 폭 */ margin: 0; color: var(--cdt-text-secondary); font-size: var(--cdt-page-lead-size); line-height: var(--cdt-page-lead-line-height); text-wrap: pretty; }
+.docs-hero__lead { max-width: 40rem; /* cdt-allow-literal: 읽기 폭 */ }
 .docs-hero__actions, .docs-cta__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--cdt-space-3); }
 .docs-hero__install { display: inline-flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--cdt-space-2); max-width: 100%; padding: var(--cdt-space-1) var(--cdt-space-1) var(--cdt-space-1) var(--cdt-space-4); border: var(--cdt-border-width-hairline) solid var(--cdt-border-default); border-radius: var(--cdt-radius-pill); background: var(--cdt-surface-raised); box-shadow: inset 0 1px 0 var(--cdt-border-subtle); /* cdt-allow-literal: 1px 상단 하이라이트는 유리 표면의 엣지다 */ }
 .docs-hero__install code { color: var(--cdt-text-mono-payload); font-family: var(--cdt-font-mono); font-size: var(--cdt-font-size-sm); overflow-wrap: anywhere; }
@@ -41,39 +45,37 @@
   opacity: 0.45;
   pointer-events: none;
 }
-.docs-showcase__header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--cdt-space-3); }
-.docs-showcase__badges { display: flex; flex-wrap: wrap; align-items: center; gap: var(--cdt-space-2); }
-.docs-showcase__keys { display: inline-flex; gap: var(--cdt-space-1); }
-.docs-showcase__body { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: var(--cdt-space-5); align-items: start; }
+.docs-showcase__header { display: flex; flex-wrap: wrap; align-items: center; gap: var(--cdt-space-2); }
+/* The rollout panel sits under the table so both body columns end near the same line; the console card's gaps absorb the rest. */
+.docs-showcase__rollout { display: grid; gap: var(--cdt-space-1); }
+.docs-showcase__rollout-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--cdt-space-1) var(--cdt-space-3); }
+.docs-showcase__rollout-head span, .docs-console__step span, .docs-console .docs-setting-row span { color: var(--cdt-text-muted); font-size: var(--cdt-font-size-sm); line-height: var(--cdt-font-line-height-sm); }
+.docs-showcase__body { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: var(--cdt-space-5); }
 .docs-showcase__stack { display: grid; align-content: start; gap: var(--cdt-space-4); min-width: 0; }
-.docs-console { display: grid; gap: var(--cdt-space-5); }
-.docs-console__meter { display: grid; gap: var(--cdt-space-2); }
-.docs-console__meter-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--cdt-space-3); }
-.docs-console__meter-head span { font-size: var(--cdt-font-size-sm); }
+.docs-console { display: grid; align-content: space-between; gap: var(--cdt-space-5); }
 .docs-console__step { display: grid; gap: var(--cdt-space-1); }
-.docs-console__step span { color: var(--cdt-text-muted); font-size: var(--cdt-font-size-sm); line-height: var(--cdt-font-line-height-sm); }
 .docs-console .docs-setting-row { max-width: none; }
-.docs-console .docs-setting-row span { font-size: var(--cdt-font-size-sm); line-height: var(--cdt-font-line-height-sm); }
 .docs-console__actions { display: flex; flex-wrap: wrap; gap: var(--cdt-space-2); }
 .docs-showcase__caption { margin: 0; color: var(--cdt-text-muted); font-size: var(--cdt-font-size-sm); text-align: center; text-wrap: balance; }
+.docs-showcase__caption code { font-family: var(--cdt-font-mono); font-size: var(--cdt-font-size-xs); white-space: nowrap; }
 
 /* ---------- Stats ---------- */
 .docs-stats__grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--cdt-space-4); margin: 0; padding: 0; list-style: none; }
-.docs-stats__tile { display: grid; gap: var(--cdt-space-1); padding: var(--cdt-space-5); border: var(--cdt-border-width-hairline) solid var(--cdt-border-subtle); border-radius: var(--cdt-radius-lg); background: var(--cdt-surface-raised); box-shadow: inset 0 1px 0 var(--cdt-border-subtle); /* cdt-allow-literal: 1px 상단 하이라이트 */ }
-.docs-stats__value { color: var(--cdt-text-primary); font-family: var(--cdt-font-mono); font-size: var(--cdt-page-heading-size); line-height: var(--cdt-page-heading-line-height); font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+.docs-stats__tile { display: grid; gap: var(--cdt-space-1); padding: var(--cdt-space-5); border: var(--cdt-border-width-hairline) solid var(--cdt-border-default); border-radius: var(--cdt-radius-lg); background: var(--cdt-surface-raised); box-shadow: inset 0 1px 0 var(--cdt-border-subtle); /* cdt-allow-literal: 1px 상단 하이라이트 */ }
+.docs-stats__value { font-family: var(--cdt-font-mono); font-size: var(--cdt-page-heading-size); line-height: var(--cdt-page-heading-line-height); font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
 .docs-stats__label { margin-top: var(--cdt-space-1); color: var(--cdt-text-muted); font-size: var(--cdt-font-size-xs); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
 .docs-stats__detail { color: var(--cdt-text-muted); font-size: var(--cdt-font-size-sm); line-height: var(--cdt-font-line-height-sm); }
 
 /* ---------- Packages ---------- */
 .docs-packages, .docs-principles, .docs-steps { display: grid; gap: var(--cdt-space-5); }
 .docs-packages__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--cdt-space-4); }
-.docs-package { display: grid; align-content: start; gap: var(--cdt-space-4); color: var(--cdt-text-primary); text-decoration: none; }
-.docs-package:hover, .docs-package:focus-visible { color: var(--cdt-text-primary); text-decoration: none; }
+/* The description row absorbs the height difference so every footer sits on the same line. */
+.docs-package { display: grid; grid-template-rows: auto auto 1fr auto auto; gap: var(--cdt-space-4); }
+.docs-package:hover, .docs-package:focus-visible { text-decoration: none; }
 .docs-package__icon, .docs-principle__icon { display: inline-grid; place-items: center; width: var(--cdt-space-7); height: var(--cdt-space-7); border: var(--cdt-border-width-hairline) solid color-mix(in srgb, var(--cdt-accent) 25%, transparent); border-radius: var(--cdt-radius-md); background: var(--cdt-accent-soft); color: var(--cdt-accent); }
-.docs-package__name { color: var(--cdt-text-primary); font-family: var(--cdt-font-mono); font-size: var(--cdt-font-size-base); font-weight: 600; overflow-wrap: anywhere; }
-.docs-package__description { color: var(--cdt-text-muted); font-size: var(--cdt-font-size-md); line-height: var(--cdt-font-line-height-md); }
+.docs-package__name { font-family: var(--cdt-font-mono); font-weight: 600; overflow-wrap: anywhere; }
 .docs-package__preview { display: flex; align-items: center; gap: var(--cdt-space-2); min-height: var(--cdt-space-8); padding: var(--cdt-space-3); border: var(--cdt-border-width-hairline) solid var(--cdt-border-subtle); border-radius: var(--cdt-radius-md); background: var(--cdt-surface-timeline); }
-.docs-package__chip { display: block; width: var(--cdt-space-5); height: var(--cdt-space-5); border-radius: var(--cdt-radius-sm); box-shadow: inset 0 1px 0 color-mix(in srgb, var(--cdt-text-inverse) 25%, transparent); /* cdt-allow-literal: 1px 상단 하이라이트 */ }
+.docs-package__chip { display: block; width: var(--cdt-space-5); height: var(--cdt-space-5); border-radius: var(--cdt-radius-sm); }
 .docs-package__chip--running { background: var(--cdt-status-running); }
 .docs-package__chip--success { background: var(--cdt-status-success); }
 .docs-package__chip--waiting { background: var(--cdt-status-waiting); }
@@ -84,33 +86,32 @@
 .docs-package__layer:nth-child(2) { width: 82%; background: color-mix(in srgb, var(--cdt-accent-soft) 65%, transparent); }
 .docs-package__layer:nth-child(3) { width: 64%; background: color-mix(in srgb, var(--cdt-accent-soft) 35%, transparent); }
 .docs-package__preview--badges { flex-wrap: wrap; }
-.docs-package__footer { display: inline-flex; align-items: center; gap: var(--cdt-space-1); margin-top: auto; color: var(--cdt-accent); font-size: var(--cdt-font-size-base); font-weight: 600; }
+.docs-package__footer, .docs-steps__link { display: inline-flex; align-items: center; gap: var(--cdt-space-1); color: var(--cdt-accent); font-weight: 600; }
+/* The arrow is drawn here rather than as an SVG per card; the empty alt keeps it out of the link name. */
+.docs-package__footer::after, .docs-steps__link::after { content: "→" / ""; }
 .docs-package:hover .docs-package__footer, .docs-package:focus-visible .docs-package__footer { text-decoration: underline; text-underline-offset: 0.2em; }
 
 /* ---------- Principles ---------- */
 .docs-principles__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--cdt-space-4); }
 .docs-principle { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--cdt-space-4); align-items: start; }
 .docs-principle__body { display: grid; gap: var(--cdt-space-2); }
-.docs-principle h3 { margin: 0; font-size: var(--cdt-font-size-lg); line-height: var(--cdt-font-line-height-lg); }
-.docs-principle p { margin: 0; color: var(--cdt-text-muted); font-size: var(--cdt-font-size-md); line-height: var(--cdt-font-line-height-md); }
+.docs-principle h3, .docs-step h3 { font-size: var(--cdt-font-size-lg); line-height: var(--cdt-font-line-height-lg); }
 .docs-principle code { padding: 0 var(--cdt-space-1); border-radius: var(--cdt-radius-xs); background: color-mix(in srgb, var(--cdt-accent) 10%, var(--cdt-surface-raised)); color: var(--cdt-text-mono-payload); font-family: var(--cdt-font-mono); font-size: var(--cdt-font-size-sm); overflow-wrap: anywhere; }
 
 /* ---------- Steps ---------- */
-.docs-steps__list { display: grid; margin: 0; padding: 0; border: var(--cdt-border-width-hairline) solid var(--cdt-border-subtle); border-radius: var(--cdt-radius-lg); background: var(--cdt-surface-raised); box-shadow: inset 0 1px 0 var(--cdt-border-subtle); /* cdt-allow-literal: 1px 상단 하이라이트 */ list-style: none; }
+.docs-steps__list { display: grid; margin: 0; padding: 0; border: var(--cdt-border-width-hairline) solid var(--cdt-border-default); border-radius: var(--cdt-radius-lg); background: var(--cdt-surface-raised); box-shadow: inset 0 1px 0 var(--cdt-border-subtle); /* cdt-allow-literal: 1px 상단 하이라이트 */ list-style: none; }
 .docs-step { display: grid; grid-template-columns: var(--cdt-space-7) minmax(0, 1fr) minmax(0, 1.3fr); gap: var(--cdt-space-4) var(--cdt-space-5); align-items: center; padding: var(--cdt-space-5); border-bottom: var(--cdt-border-width-hairline) solid var(--cdt-border-subtle); }
 .docs-step:last-child { border-bottom: 0; }
-.docs-step__number { display: inline-grid; place-items: center; width: var(--cdt-space-7); height: var(--cdt-space-7); border: var(--cdt-border-width-hairline) solid color-mix(in srgb, var(--cdt-accent) 25%, transparent); border-radius: var(--cdt-radius-pill); background: var(--cdt-accent-soft); color: var(--cdt-accent); font-family: var(--cdt-font-mono); font-size: var(--cdt-font-size-xs); font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: 0.04em; }
+/* Digits read in text-primary: accent on accent-soft measures under 4.5:1 in both themes. */
+.docs-step__number { display: inline-grid; place-items: center; width: var(--cdt-space-7); height: var(--cdt-space-7); border: var(--cdt-border-width-hairline) solid color-mix(in srgb, var(--cdt-accent) 25%, transparent); border-radius: var(--cdt-radius-pill); background: var(--cdt-accent-soft); font-family: var(--cdt-font-mono); font-size: var(--cdt-font-size-xs); font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: 0.04em; }
 .docs-step__text { display: grid; gap: var(--cdt-space-1); }
-.docs-step h3 { margin: 0; font-size: var(--cdt-font-size-lg); line-height: var(--cdt-font-line-height-lg); }
-.docs-step__note { margin: 0; color: var(--cdt-text-muted); font-size: var(--cdt-font-size-base); line-height: var(--cdt-font-line-height-base); }
-.docs-step__code { min-width: 0; padding: var(--cdt-space-3) var(--cdt-space-4); font-size: var(--cdt-font-size-base); }
-.docs-steps__link { display: inline-flex; align-items: center; gap: var(--cdt-space-1); justify-self: start; font-weight: 600; }
+.docs-step__code { min-width: 0; padding: var(--cdt-space-3) var(--cdt-space-4); border-radius: var(--cdt-radius-md); font-size: var(--cdt-font-size-base); }
+.docs-steps__link { justify-self: start; }
 
 /* ---------- Next steps band ---------- */
 .docs-cta { position: relative; display: grid; justify-items: center; gap: var(--cdt-space-5); padding: var(--cdt-space-8) var(--cdt-space-5); overflow: hidden; border: var(--cdt-border-width-hairline) solid color-mix(in srgb, var(--cdt-accent) 35%, var(--cdt-border-subtle)); border-radius: var(--cdt-radius-xl); background: radial-gradient(circle at 12% 0%, var(--cdt-accent-glow), transparent 45%), radial-gradient(circle at 90% 100%, var(--cdt-surface-tint-2), transparent 40%), linear-gradient(135deg, var(--cdt-accent-soft), transparent 60%), var(--cdt-surface-raised); box-shadow: inset 0 1px 0 var(--cdt-border-subtle), var(--cdt-elevation-raised); /* cdt-allow-literal: 1px 상단 하이라이트 */ text-align: center; }
 .docs-cta__body { display: grid; gap: var(--cdt-space-2); max-width: 36rem; /* cdt-allow-literal: 읽기 폭 */ }
-.docs-cta h2 { margin: 0; font-size: var(--cdt-page-heading-size); line-height: var(--cdt-page-heading-line-height); letter-spacing: -0.035em; text-wrap: balance; }
-.docs-cta p { margin: 0; color: var(--cdt-text-secondary); font-size: var(--cdt-page-lead-size); line-height: var(--cdt-page-lead-line-height); text-wrap: pretty; }
+.docs-cta h2 { font-size: var(--cdt-page-heading-size); line-height: var(--cdt-page-heading-line-height); letter-spacing: -0.035em; text-wrap: balance; }
 
 /* ---------- Responsive ---------- */
 /* 1080 = breakpoint.lg — see base.css for why the literal is unavoidable in a media prelude. */
@@ -124,6 +125,8 @@
   .docs-principles__grid { grid-template-columns: minmax(0, 1fr); }
   .docs-step { grid-template-columns: var(--cdt-space-7) minmax(0, 1fr); align-items: start; }
   .docs-step__code { grid-column: 2; }
+  /* The public table reserves 800px below breakpoint.md and scrolls; three short columns fit the panel, so it must not. */
+  .docs-showcase .cdt-table { min-inline-size: 0; }
 }
 /* 560 = breakpoint.sm */
 @media (max-width: 560px) {
@@ -143,14 +146,14 @@
     from { opacity: 0; transform: translateY(var(--cdt-space-2)); }
     to { opacity: 1; transform: translateY(0); }
   }
+  /* The pill and the h1 rise together: the h1 is the LCP candidate, so it carries no delay. */
   .docs-hero > * { animation: docs-landing-rise var(--cdt-motion-standard) both; }
-  .docs-hero > :nth-child(2) { animation-delay: 50ms; /* cdt-allow-literal: 등장 스태거 */ }
-  .docs-hero > :nth-child(3) { animation-delay: 100ms; /* cdt-allow-literal: 등장 스태거 */ }
-  .docs-hero > :nth-child(4) { animation-delay: 150ms; /* cdt-allow-literal: 등장 스태거 */ }
-  .docs-hero > :nth-child(5) { animation-delay: 200ms; /* cdt-allow-literal: 등장 스태거 */ }
-  .docs-showcase { animation: docs-landing-rise var(--cdt-motion-standard) both; animation-delay: 260ms; /* cdt-allow-literal: 등장 스태거 */ }
+  .docs-hero > :nth-child(3) { animation-delay: 40ms; /* cdt-allow-literal: 등장 스태거 */ }
+  .docs-hero > :nth-child(4) { animation-delay: 80ms; /* cdt-allow-literal: 등장 스태거 */ }
+  .docs-hero > :nth-child(5) { animation-delay: 120ms; /* cdt-allow-literal: 등장 스태거 */ }
+  .docs-showcase { animation: docs-landing-rise var(--cdt-motion-standard) both; animation-delay: 200ms; /* cdt-allow-literal: 등장 스태거 */ }
   .docs-package__icon { transition: transform var(--cdt-motion-fast), border-color var(--cdt-motion-fast); }
   .docs-package:hover .docs-package__icon, .docs-package:focus-visible .docs-package__icon { transform: scale(1.06); border-color: color-mix(in srgb, var(--cdt-accent) 55%, transparent); }
-  .docs-package__footer svg { transition: transform var(--cdt-motion-fast); }
-  .docs-package:hover .docs-package__footer svg { transform: translateX(var(--cdt-space-1)); }
+  .docs-package__footer::after { transition: translate var(--cdt-motion-fast); }
+  .docs-package:hover .docs-package__footer::after { translate: var(--cdt-space-1); }
 }

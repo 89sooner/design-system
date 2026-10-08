@@ -212,14 +212,8 @@ function Showcase() {
       <h2 id="showcase-title" className="cdt-sr-only">Live showcase</h2>
       <div className="docs-showcase__panel">
         <div className="docs-showcase__header">
-          <div className="docs-showcase__badges">
-            <Badge tone="accent">web-console</Badge>
-            <StatusBadge status="running" icon={<Loader size={12} aria-hidden="true" />} label="Deploying" />
-          </div>
-          <div className="docs-showcase__rollout">
-            <span className="docs-showcase__rollout-head"><strong>Rollout</strong><span>canary · warns at 80%</span></span>
-            <Meter aria-label="Rollout progress" value={72} warningAt={80} valueText="72%" />
-          </div>
+          <Badge tone="accent">web-console</Badge>
+          <StatusBadge status="running" icon={<Loader size={12} aria-hidden="true" />} label="Deploying" />
         </div>
         <div className="docs-showcase__body">
           <div className="docs-showcase__stack">
@@ -241,6 +235,10 @@ function Showcase() {
                 ))}
               </Table.Body>
             </Table>
+            <Panel size="sm" className="docs-showcase__rollout">
+              <span className="docs-showcase__rollout-head"><strong>Rollout</strong><span>canary · warns at 80%</span></span>
+              <Meter aria-label="Rollout progress" value={72} warningAt={80} valueText="72%" />
+            </Panel>
             <Banner tone="info" icon={<Info size={16} strokeWidth={1.75} aria-hidden="true" />} title={autoPromote ? "Auto-promote is on" : "Auto-promote is off"}>
               {autoPromote ? "The release moves to 100% once the canary stays healthy for 15 minutes." : "Promote the release by hand once every check has passed."}
             </Banner>
