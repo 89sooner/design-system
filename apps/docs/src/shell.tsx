@@ -116,7 +116,8 @@ export function Navigation({ close }: { readonly close?: () => void }) {
       <Link className="docs-nav__brand" to="/" onClick={close}>
         <BrandMark />
         <span className="docs-nav__wordmark">Conductor</span>
-        <Badge className="docs-nav__version">v{reactPackage.version}</Badge>
+        {" "}
+        <Badge className="docs-nav__version">{`v${reactPackage.version}`}</Badge>
       </Link>
       <NavList items={items} aria-label="Documentation" renderLink={(item, props) => <Link {...props} to={item.href} onClick={close} />} />
       <div className="docs-nav__footer">
@@ -208,6 +209,7 @@ export function DocsFooter() {
           <BrandMark />
           <span>Conductor Design System</span>
         </div>
+        <p className="docs-footer__note">Built with the public <span className="docs-footer__scope">@conductor-by-89soone</span> packages. No runtime requests, no telemetry.</p>
         <p className="docs-footer__license">MIT License</p>
       </div>
       <div className="docs-footer__column docs-footer__column--packages">
@@ -233,7 +235,6 @@ export function DocsFooter() {
           ))}
         </ul>
       </div>
-      <p className="docs-footer__note">Built with the public <span className="docs-footer__scope">@conductor-by-89soone</span> packages. No runtime requests, no telemetry.</p>
     </footer>
   );
 }

@@ -105,9 +105,9 @@
 /* ---- Footer ---- */
 .docs-footer {
   display: grid;
-  grid-template-areas: "brand packages docs note";
-  grid-template-columns: minmax(0, 1fr) max-content max-content minmax(0, 1.5fr);
-  gap: var(--cdt-space-6) var(--cdt-space-7);
+  grid-template-areas: "brand packages docs";
+  grid-template-columns: minmax(0, 1fr) max-content max-content;
+  gap: var(--cdt-space-6) var(--cdt-space-8);
   margin-block-start: var(--cdt-space-8);
   padding-block-start: var(--cdt-space-6);
   border-block-start: var(--cdt-border-width-hairline) solid var(--cdt-border-subtle);
@@ -115,7 +115,7 @@
   font-size: var(--cdt-font-size-base);
   line-height: var(--cdt-font-line-height-base);
 }
-.docs-footer__brand { display: grid; grid-area: brand; align-content: start; gap: var(--cdt-space-2); }
+.docs-footer__brand { display: grid; grid-area: brand; align-content: start; gap: var(--cdt-space-3); }
 .docs-footer__identity {
   display: flex;
   align-items: center;
@@ -146,11 +146,8 @@
 .docs-footer__package { font-family: var(--cdt-font-mono); font-size: var(--cdt-font-size-sm); }
 .docs-footer__scope { white-space: nowrap; }
 .docs-footer__note {
-  grid-area: note;
-  justify-self: end;
   max-inline-size: 26rem; /* cdt-allow-literal: 읽기 폭은 간격 스케일이 아니라 줄 길이로 정한다 */
   margin: 0;
-  text-align: end;
   text-wrap: pretty;
 }
 
@@ -159,26 +156,28 @@
  * 치환이 일어나지 않고, 미디어 조건은 커스텀 프로퍼티를 읽을 수 없다 (FR-TOK-009 AC-2).
  */
 @media (max-width: 1080px) {
-  .docs-footer {
-    grid-template-areas: "brand note" "packages docs";
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+  .docs-footer { gap: var(--cdt-space-6) var(--cdt-space-7); }
 }
 
 /* 800px = breakpoint.md (same substitution note as above). */
 @media (max-width: 800px) {
-  .docs-footer { margin-block-start: var(--cdt-space-7); gap: var(--cdt-space-5); }
+  .docs-footer {
+    grid-template-areas: "brand brand" "packages docs";
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--cdt-space-6) var(--cdt-space-5);
+    margin-block-start: var(--cdt-space-7);
+  }
 }
 
 /* 560px = breakpoint.sm (same substitution note as above). */
 @media (max-width: 560px) {
   .docs-topbar__brand { display: inline-flex; }
   .docs-footer {
-    grid-template-areas: "brand" "packages" "docs" "note";
+    grid-template-areas: "brand" "packages" "docs";
     grid-template-columns: minmax(0, 1fr);
+    gap: var(--cdt-space-5);
     margin-block-start: var(--cdt-space-6);
   }
-  .docs-footer__note { justify-self: start; text-align: start; }
 }
 
 /* ---- Motion: entrance and hover transitions only, token durations, never on scroll ---- */
