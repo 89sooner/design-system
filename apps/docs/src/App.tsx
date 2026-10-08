@@ -1,8 +1,10 @@
-import { AppShellNavTrigger, AppShell, Banner, CodeBlock, IconButton, NavList, Panel, Switch, Table, TopBar } from "@conductor-by-89soone/react";
+import { AppShellNavTrigger, AppShell, IconButton, Switch, TopBar } from "@conductor-by-89soone/react";
 import { Menu, Moon, Sun } from "lucide-react";
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { Link, Navigate, Route, Routes, useLocation, useParams } from "react-router-dom";
+import { Navigation } from "./shell";
 import { applyTheme, persistTheme, PRERENDER_THEME, readTheme, type Theme } from "./theme";
+import { Overview } from "./landing";
 
 // 무거운 화면(카탈로그 30개 live preview, 생성 토큰/대비 데이터, 가이드)은 라우트
 // 단위로 지연 로드한다. 첫 페인트 청크가 셸만 담아야 NFR-001 LCP p75 2.5초 예산이
@@ -13,50 +15,11 @@ const TokenReference = lazy(() => import("./token-reference").then((module) => (
 const Patterns = lazy(() => import("./guides").then((module) => ({ default: module.Patterns })));
 const Accessibility = lazy(() => import("./guides").then((module) => ({ default: module.Accessibility })));
 const FoundationPage = lazy(() => import("./foundation-page").then((module) => ({ default: module.FoundationPage })));
+const GettingStarted = lazy(() => import("./getting-started").then((module) => ({ default: module.GettingStarted })));
 
 const WorkbenchExample = lazy(() => import("./workbench-example").then(module => ({ default: module.WorkbenchExample })));
 const RelationExample = lazy(() => import("./relation-example").then(module => ({ default: module.RelationExample })));
 const OperationsExample = lazy(() => import("./operations-example").then(module => ({ default: module.OperationsExample })));
-
-const navItems = [
-  { id: "workbench", label: "검색 워크벤치", href: "/examples/workbench", section: "Workspaces" },
-  { id: "relations", label: "관계 탐색기", href: "/examples/relations", section: "Workspaces" },
-  { id: "operations", label: "수집 운영 상태", href: "/examples/operations", section: "Workspaces" },
-  { id: "overview", label: "Overview", href: "/", section: "Start" },
-  { id: "getting-started", label: "Getting Started", href: "/getting-started", section: "Start" },
-  { id: "color", label: "Color", href: "/foundations/color", section: "Foundations" },
-  { id: "typography", label: "Typography", href: "/foundations/typography", section: "Foundations" },
-  { id: "spacing", label: "Spacing & Layout", href: "/foundations/spacing", section: "Foundations" },
-  { id: "elevation", label: "Radius & Elevation", href: "/foundations/elevation", section: "Foundations" },
-  { id: "motion", label: "Motion", href: "/foundations/motion", section: "Foundations" },
-  { id: "components", label: "Components", href: "/components", section: "Reference" },
-  { id: "tokens", label: "Tokens", href: "/tokens/reference", section: "Reference" },
-  { id: "guidelines", label: "Guidelines", href: "/guidelines", section: "Guides" },
-  { id: "accessibility", label: "Accessibility", href: "/accessibility", section: "Guides" },
-] as const;
-
-function Navigation({ close }: { readonly close?: () => void }) {
-  const location = useLocation();
-  const items = navItems.map((item) => ({
-    ...item,
-    active: location.pathname === item.href || (item.href === "/components" && location.pathname.startsWith("/components/")),
-  }));
-  return <><Link className="docs-nav__brand" to="/" onClick={close}>Conductor</Link><NavList items={items} aria-label="Documentation" renderLink={(item, props) => <Link {...props} to={item.href} onClick={close} />} /></>;
-}
-
-function Overview() {
-  return <section className="cdt-page" aria-labelledby="overview-title"><div><p className="docs-eyebrow">Design system</p><h1 id="overview-title">Conductor Design System</h1><p className="docs-lead">Reusable tokens, CSS, and React primitives for a focused operational interface.</p></div><div className="cdt-card-grid">{[["@conductor-by-89soone/tokens", "Theme-aware tokens and validation."], ["@conductor-by-89soone/css", "Layered, framework-agnostic styles."], ["@conductor-by-89soone/react", "Accessible composable primitives."]].map(([name, description]) => <article className="cdt-card" key={name}><h2>{name}</h2><p className="cdt-muted">{description}</p></article>)}</div></section>;
-}
-
-const installCode = "pnpm add @conductor-by-89soone/tokens @conductor-by-89soone/css @conductor-by-89soone/react\npnpm add react react-dom lucide-react\npnpm run build";
-const styleCode = 'import "@conductor-by-89soone/css";';
-const themeCode = '<html data-cdt-theme="dark">';
-const renderCode = 'import { Button } from "@conductor-by-89soone/react";\n\nexport function SaveAction() {\n  return <Button variant="primary">Save changes</Button>;\n}';
-const ssrThemeCode = 'try {\n  const saved = localStorage.getItem("conductor-theme");\n  document.documentElement.dataset.cdtTheme = saved === "light" || saved === "dark" ? saved : matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";\n} catch {\n  document.documentElement.dataset.cdtTheme = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";\n}';
-
-function GettingStarted() {
-  return <section className="cdt-page" aria-labelledby="getting-started-title"><h1 id="getting-started-title">Getting Started</h1><Panel as="section"><h2>Requirements</h2><Table caption="Consumer requirements"><Table.Head><Table.Row><Table.HeaderCell>Requirement</Table.HeaderCell><Table.HeaderCell>Value</Table.HeaderCell></Table.Row></Table.Head><Table.Body>{[["Node", "20 or later"], ["pnpm", "10 or later"], ["React", "18 or 19"]].map(([name, value]) => <Table.Row key={name}><Table.Cell>{name}</Table.Cell><Table.Cell>{value}</Table.Cell></Table.Row>)}</Table.Body></Table></Panel><section><h2>Install</h2><p className="cdt-muted">Use these three commands or fewer in a React application.</p><CodeBlock language="bash" code={installCode} /></section><section><h2>Import the stylesheet</h2><CodeBlock language="ts" code={styleCode} /><Banner tone="warning">If this import is missing, development builds warn once in the console and components render without Conductor styles.</Banner></section><section><h2>Choose a theme</h2><CodeBlock language="html" code={themeCode} /></section><section><h2>Render a component</h2><CodeBlock language="tsx" code={renderCode} /></section><Panel as="section"><h2>Cascade layers</h2><p>The generated stylesheet fixes this declaration as its first line.</p><CodeBlock language="css" code="@layer cdt.reset, cdt.base, cdt.layout, cdt.component, cdt.utility;" /><Banner tone="info">Radix CSS custom properties such as <code>--radix-*</code> are inline runtime values, not Conductor layer rules.</Banner></Panel><Panel as="section"><h2>SSR first paint</h2><p>Components avoid browser globals during server rendering. Run this browser-only snippet in the document head before hydration so the first paint uses the intended theme.</p><CodeBlock language="js" code={ssrThemeCode} /><Banner tone="warning">Place this snippet in <code>&lt;head&gt;</code> before application JavaScript to avoid a theme flash.</Banner></Panel><Panel as="section"><h2>Build order</h2><p className="cdt-mono">tokens → css → react → docs</p></Panel></section>;
-}
 
 function Placeholder({ title }: { readonly title: string }) {
   return <section className="cdt-page" aria-labelledby="page-title"><h1 id="page-title">{title}</h1><p className="cdt-muted">This documentation page lands in a following work package.</p></section>;
