@@ -41,7 +41,7 @@ for (const theme of ["dark", "light"] as const) {
             // further clip in between all stay outside and still fail. The scroll position is restored.
             const clipsInline = (element: Element) => {
               const style = getComputedStyle(element);
-              return style.overflowX !== "visible" || /paint|content|strict/.test(style.contain) || style.clipPath !== "none";
+              return style.overflowX !== "visible" || /paint|content|strict/.test(style.contain);
             };
             // The inline window an element can be seen through: the viewport cut by every clipping ancestor.
             const visibleWindow = (element: Element) => {
@@ -56,6 +56,10 @@ for (const theme of ["dark", "light"] as const) {
               return { left, right };
             };
             const reachableByScrolling = (element: HTMLElement) => {
+              // A clip-path region cannot be measured from boxes, so a control under one gets no exemption.
+              for (let node: Element | null = element; node !== null; node = node.parentElement) {
+                if (getComputedStyle(node).clipPath !== "none") return false;
+              }
               const scroller = element.parentElement?.closest<HTMLElement>(safeScrollers);
               if (!scroller || !["auto", "scroll"].includes(getComputedStyle(scroller).overflowX)) return false;
               const saved = scroller.scrollLeft;
