@@ -4,6 +4,8 @@ import { docsPath } from "./routes";
 
 test("SCN-001 / QA-015 through QA-018: Getting Started documents the complete consumer path", async ({ page }) => {
   await page.goto(docsPath("/getting-started"));
+  // W-002 is a lazy route since CR-042; `allTextContents()` does not wait, so wait for the last step first.
+  await expect(page.getByRole("heading", { name: "Build order", exact: true })).toBeVisible();
   const headings = await page.locator("h2").allTextContents();
   expect(headings.indexOf("Install")).toBeLessThan(headings.indexOf("Import the stylesheet"));
   expect(headings.indexOf("Import the stylesheet")).toBeLessThan(headings.indexOf("Choose a theme"));
