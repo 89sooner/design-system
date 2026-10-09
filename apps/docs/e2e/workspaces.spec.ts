@@ -112,6 +112,37 @@ for (const [width, theme] of [[360, "dark"], [360, "light"], [768, "dark"], [768
       await expect(page.getByRole("heading", { name: ({ workbench: "검색 워크벤치", relations: "관계 탐색기", operations: "수집 운영 상태" } as Record<string, string>)[route]!, exact: true })).toBeVisible();
       if (route === "relations") await expect(page.locator(".cdt-relation__canvas")).toBeVisible();
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+      // Contrast is judged on the settled frame (DEV-047): the docs route fades in (CR-042) and the theme flip
+      // above transitions colours, and axe sampling mid-animation reads partial opacity as a contrast failure.
+      // Re-query every frame and leave only after 100 ms with no running document-timeline animation, so a late or
+      // chained one is waited for too, all within a 2 s bound. Anything still running then, and any paused animation
+      // (it can hold content invisible, which axe skips), fails by name. Only the package spinner may keep running:
+      // it rotates and never changes what axe measures.
+      const unsettled = await page.evaluate(async () => {
+        const deadline = performance.now() + 2000;
+        const exempt = (animation: Animation) => (animation as CSSAnimation).animationName === "cdt-spin" && ((animation.effect as KeyframeEffect | null)?.target as Element | null)?.closest(".cdt-spinner") != null;
+        const live = (state: AnimationPlayState) => document.getAnimations().filter((animation) => animation.playState === state && animation.timeline === document.timeline && !exempt(animation));
+        // One frame, or 50 ms when frames stop coming, so the bound holds without requestAnimationFrame too.
+        const frame = () => new Promise<void>((resolve) => {
+          const timer = setTimeout(resolve, 50);
+          requestAnimationFrame(() => { clearTimeout(timer); resolve(); });
+        });
+        let quietSince: number | null = null;
+        while (performance.now() < deadline) {
+          await frame();
+          if (live("running").length > 0) { quietSince = null; continue; }
+          quietSince ??= performance.now();
+          if (performance.now() - quietSince >= 100) break;
+        }
+        const label = (animation: Animation) => {
+          const effect = animation.effect as KeyframeEffect | null;
+          const target = effect?.target as Element | null | undefined;
+          const name = (animation as CSSAnimation).animationName ?? (animation as CSSTransition).transitionProperty ?? "animation";
+          return `${animation.playState} ${name} on ${target?.getAttribute("class") || target?.tagName.toLowerCase() || "?"}${effect?.pseudoElement ?? ""}`;
+        };
+        return [...live("running"), ...live("paused")].map(label);
+      });
+      expect(unsettled).toEqual([]);
       await page.addScriptTag({ content: axe.source });
       const violations = await page.evaluate(async () => (await window.axe.run(document, { runOnly: ["wcag2a", "wcag2aa", "wcag21aa"] })).violations.filter(v => v.impact === "serious" || v.impact === "critical").map(v => ({ id: v.id, targets: v.nodes.map(n => n.target) })));
       expect(violations).toEqual([]);
