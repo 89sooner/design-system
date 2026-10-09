@@ -194,7 +194,8 @@ export function DocsTopBar({ theme, onToggleTheme }: DocsTopBarProps) {
           </Link>
         </>
       }
-      eyebrow="Conductor"
+      // No `eyebrow`: the public TopBar paints it in `text.faint` (decorative, 3.44:1 dark), which axe flags as
+      // serious on every page. The brand already sits in the nav; the bar keeps only the section title (CR-042).
       title={<span className="docs-topbar__section">{sectionTitleFor(location.pathname)}</span>}
       actions={
         <>
