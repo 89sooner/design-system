@@ -112,6 +112,12 @@ for (const [width, theme] of [[360, "dark"], [360, "light"], [768, "dark"], [768
       await expect(page.getByRole("heading", { name: ({ workbench: "검색 워크벤치", relations: "관계 탐색기", operations: "수집 운영 상태" } as Record<string, string>)[route]!, exact: true })).toBeVisible();
       if (route === "relations") await expect(page.locator(".cdt-relation__canvas")).toBeVisible();
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+      // Contrast is judged on the settled frame: the docs route fades in (CR-042) and the theme flip above
+      // transitions colours, and axe sampling mid-animation reads partial opacity as a contrast failure.
+      // Only finite animations are awaited, so an infinite loader cannot hang the test.
+      await page.evaluate(() => Promise.all(document.getAnimations()
+        .filter((animation) => animation.effect?.getComputedTiming().endTime !== Infinity)
+        .map((animation) => animation.finished.catch(() => undefined))));
       await page.addScriptTag({ content: axe.source });
       const violations = await page.evaluate(async () => (await window.axe.run(document, { runOnly: ["wcag2a", "wcag2aa", "wcag21aa"] })).violations.filter(v => v.impact === "serious" || v.impact === "critical").map(v => ({ id: v.id, targets: v.nodes.map(n => n.target) })));
       expect(violations).toEqual([]);

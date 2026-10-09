@@ -33,15 +33,25 @@ for (const theme of ["dark", "light"] as const) {
             const main = document.querySelector("main");
             if (main === null) return null;
             const rect = main.getBoundingClientRect();
+            const safeScrollers = ".cdt-table__scroll, .cdt-code-block";
+            // A control scrolled out of sight inside a package-owned scroll container is reachable, not clipped:
+            // `Table` owns its horizontal scroll below 800px (FR-CMP-005 AC-1). The exemption holds only while
+            // the container itself sits inside the viewport, so a scroller that overflows the page still fails.
+            const insideSafeScroller = (element: HTMLElement) => {
+              const scroller = element.parentElement?.closest<HTMLElement>(safeScrollers);
+              if (!scroller || !["auto", "scroll"].includes(getComputedStyle(scroller).overflowX)) return false;
+              const box = scroller.getBoundingClientRect();
+              return box.left >= -1 && box.right <= window.innerWidth + 1;
+            };
             const clipped = Array.from(main.querySelectorAll<HTMLElement>("a, button, input, textarea, [role='switch'], [role='progressbar'], h1, h2"))
               .filter((element) => {
                 const style = getComputedStyle(element);
                 if (style.display === "none" || style.visibility === "hidden") return false;
                 const bounds = element.getBoundingClientRect();
-                return bounds.width > 0 && (bounds.left < -1 || bounds.right > window.innerWidth + 1);
+                return bounds.width > 0 && (bounds.left < -1 || bounds.right > window.innerWidth + 1) && !insideSafeScroller(element);
               })
               .map((element) => element.textContent?.trim() || element.getAttribute("aria-label") || element.tagName);
-            const unsafeOverflow = Array.from(main.querySelectorAll<HTMLElement>(".cdt-table__scroll, .cdt-code-block"))
+            const unsafeOverflow = Array.from(main.querySelectorAll<HTMLElement>(safeScrollers))
               .filter((element) => element.scrollWidth > element.clientWidth && !["auto", "scroll"].includes(getComputedStyle(element).overflowX))
               .map((element) => element.className);
             return {
@@ -82,19 +92,31 @@ for (const theme of ["dark", "light"] as const) {
         await page.goto(docsPath(path));
         await expect(page.getByRole("heading", { name: heading, exact: true }).first()).toBeVisible();
         const count = await page.locator("#content").evaluate((main) => {
-          const selector = "a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex='-1'])";
+          const selector = "a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), details > summary:first-of-type, [tabindex]:not([tabindex='-1'])";
+          // A Radix roving-focus group (ADR-004) is one Tab stop. Its root holds tabindex=0 only to hand focus to the
+          // item Radix picks on entry; until then every item sits at tabindex=-1 and the others stay reachable with the
+          // arrow keys. So the root is listed once as the group's stop and its items are left out. A stray
+          // tabindex=-1 control outside such a group is still listed and still fails.
+          const rovingRoot = "[data-orientation]:is([role='tablist'], [role='toolbar'], [role='radiogroup'], [role='menubar'])";
           const focusable = Array.from(main.querySelectorAll<HTMLElement>(selector)).filter((element) => {
             const style = getComputedStyle(element);
-            return style.display !== "none" && style.visibility !== "hidden" && element.getClientRects().length > 0 && element.closest("[aria-hidden='true']") === null;
+            // checkVisibility() also drops the content of a closed <details> (content-visibility: hidden), which
+            // still reports client rects but is not in the Tab sequence.
+            return style.display !== "none" && style.visibility !== "hidden" && element.getClientRects().length > 0 && element.checkVisibility() && element.closest("[aria-hidden='true']") === null && element.parentElement?.closest(rovingRoot) == null;
           });
-          focusable.forEach((element, index) => element.dataset.screenFocusIndex = String(index));
+          focusable.forEach((element, index) => {
+            element.dataset.screenFocusIndex = String(index);
+            if (element.matches(rovingRoot)) element.dataset.screenRoving = "";
+          });
           (main as HTMLElement).focus();
           return focusable.length;
         });
 
         for (let index = 0; index < count; index += 1) {
           await page.keyboard.press("Tab");
-          const focused = page.locator(`[data-screen-focus-index="${index}"]`);
+          const stop = page.locator(`[data-screen-focus-index="${index}"]`);
+          // For a roving group the focus must land on one of its items (a descendant), never on the root itself.
+          const focused = await stop.evaluate((element) => element.hasAttribute("data-screen-roving")) ? stop.locator(":focus") : stop;
           await expect(focused).toBeFocused();
           const focusStyle = await focused.evaluate((element) => ({
             boxShadow: getComputedStyle(element).boxShadow,
