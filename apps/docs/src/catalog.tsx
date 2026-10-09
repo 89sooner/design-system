@@ -189,6 +189,11 @@ export function ComponentPreview({ compact = false, forceError = false, name }: 
   }
 }
 
+// The public `.cdt-app-shell__nav` is a sticky 100vh column, so an AppShell preview is as tall as the
+// viewport. The tile clips these two to a thumbnail through the stage wrapper (never inside `.docs-preview`);
+// the detail stage still shows the full shell.
+const CLIPPED_PREVIEWS: ReadonlySet<string> = new Set(["AppShell", "AppShellNavTrigger"]);
+
 function ComponentTile({ component, hidden }: { readonly component: ComponentMeta; readonly hidden: boolean }) {
   const titleId = `component-${component.name.toLowerCase()}`;
   return <Components.Panel as="section" aria-labelledby={titleId} className="docs-component-tile" hidden={hidden}>
@@ -196,7 +201,7 @@ function ComponentTile({ component, hidden }: { readonly component: ComponentMet
       <h3 id={titleId}><Link className="docs-component-link" to={`/components/${component.name}`}>{component.name}<ArrowUpRight className="docs-component-link__icon" size={14} strokeWidth={2} aria-hidden="true" /></Link></h3>
       <Components.Badge className="docs-component-tile__family">{component.family}</Components.Badge>
     </div>
-    <div className="docs-component-tile__stage">
+    <div className={`docs-component-tile__stage${CLIPPED_PREVIEWS.has(component.name) ? " docs-component-tile__stage--clipped" : ""}`}>
       <PreviewBoundary><div className="docs-preview" aria-label={`${component.name} preview`}><ComponentPreview compact name={component.name} /></div></PreviewBoundary>
     </div>
   </Components.Panel>;
@@ -204,6 +209,9 @@ function ComponentTile({ component, hidden }: { readonly component: ComponentMet
 
 export function CatalogIndex() {
   const [query, setQuery] = useState("");
+  // Both clear controls unmount themselves on activation, so focus returns to the field instead of falling to <body>.
+  const filterRef = useRef<HTMLInputElement | null>(null);
+  const clearQuery = () => { setQuery(""); filterRef.current?.focus(); };
   const needle = normalize(query);
   const families = componentFamilies.map((family) => ({ ...family, shown: family.members.filter((component) => matchesQuery(component, needle)).length }));
   const total = componentMeta.length;
@@ -212,7 +220,7 @@ export function CatalogIndex() {
   return <section className="cdt-page docs-catalog" aria-labelledby="components-title">
     <header className="docs-catalog__head">
       <div className="docs-catalog__intro">
-        <p className="docs-eyebrow">Components</p>
+        <p className="docs-eyebrow">Reference</p>
         <h1 id="components-title">Components</h1>
         <p className="docs-lead">Every public @conductor-by-89soone/react component, rendered live from the package you install. Open one for its props, import line and class contract.</p>
       </div>
@@ -233,8 +241,8 @@ export function CatalogIndex() {
 
     <div className="docs-catalog__toolbar">
       <div className="docs-catalog__search">
-        <Components.TextField iconStart={<Search size={16} strokeWidth={1.75} aria-hidden="true" />} aria-label="Filter components" placeholder="Filter by name or family" autoComplete="off" value={query} onChange={(event) => setQuery(event.target.value)} />
-        {query === "" ? null : <Components.IconButton aria-label="Clear filter" variant="ghost" icon={<X size={16} strokeWidth={1.75} aria-hidden="true" />} onClick={() => setQuery("")} />}
+        <Components.TextField ref={filterRef} iconStart={<Search size={16} strokeWidth={1.75} aria-hidden="true" />} aria-label="Filter components" placeholder="Filter by name or family" autoComplete="off" value={query} onChange={(event) => setQuery(event.target.value)} />
+        {query === "" ? null : <Components.IconButton aria-label="Clear filter" variant="ghost" icon={<X size={16} strokeWidth={1.75} aria-hidden="true" />} onClick={clearQuery} />}
         <p className="docs-catalog__status" role="status">{shown} of {total} shown</p>
       </div>
       <ul className="docs-catalog__chips" aria-label="Component families">
@@ -252,22 +260,27 @@ export function CatalogIndex() {
           <div className="docs-family__text"><h2 id={headingId}>{family.name}</h2><p className="docs-family__note">{info.note}</p></div>
           <span className="docs-family__count">{needle === "" ? `${family.members.length} ${family.members.length === 1 ? "component" : "components"}` : `${family.shown} of ${family.members.length}`}</span>
         </div>
-        <div className="cdt-card-grid docs-family__grid">{family.members.map((component) => <ComponentTile key={component.name} component={component} hidden={!matchesQuery(component, needle)} />)}</div>
+        <div className={`cdt-card-grid docs-family__grid${family.members.length === 1 ? " docs-family__grid--single" : ""}`}>{family.members.map((component) => <ComponentTile key={component.name} component={component} hidden={!matchesQuery(component, needle)} />)}</div>
       </section>;
     })}
 
-    {shown === 0 ? <Components.EmptyState className="docs-catalog__empty" icon={<SearchX size={20} strokeWidth={1.75} aria-hidden="true" />} title="No components match" description={`Nothing is named or filed under “${query.trim()}”. Try a component name such as Button, or a family such as Forms.`} action={<Components.Button variant="secondary" onClick={() => setQuery("")}>Show all components</Components.Button>} /> : null}
+    {shown === 0 ? <Components.EmptyState className="docs-catalog__empty" icon={<SearchX size={20} strokeWidth={1.75} aria-hidden="true" />} title="No components match" description={`Nothing is named or filed under “${query.trim()}”. Try a component name such as Button, or a family such as Forms.`} action={<Components.Button variant="secondary" onClick={clearQuery}>Show all components</Components.Button>} /> : null}
   </section>;
 }
 
 export function ComponentDetail({ name, forceCopyUnavailable = false, forcePreviewError = false }: { readonly name: string; readonly forceCopyUnavailable?: boolean; readonly forcePreviewError?: boolean }) {
   const component = componentMeta.find((entry) => entry.name === name);
   if (component === undefined) {
-    return <section className="cdt-page docs-detail"><Components.EmptyState icon={<SearchX size={20} strokeWidth={1.75} aria-hidden="true" />} title="Component not found" description={`No public component named ${name} exists.`} action={<Link className="cdt-btn cdt-btn--secondary cdt-btn--tone-neutral" to="/components"><span aria-hidden="true"><ArrowLeft size={16} strokeWidth={1.75} /></span>Return to components</Link>} /></section>;
+    return <section className="cdt-page docs-detail" aria-labelledby="component-title">
+      <Link className="docs-detail__back" to="/components"><ArrowLeft size={16} strokeWidth={1.75} aria-hidden="true" />All components</Link>
+      <header className="docs-detail__head"><p className="docs-eyebrow">Component</p><h1 id="component-title">Component not found</h1></header>
+      <Components.EmptyState icon={<SearchX size={20} strokeWidth={1.75} aria-hidden="true" />} title={`No public component is named ${name}`} description="Check the spelling, or browse the catalog for every public component." action={<Link className="cdt-btn cdt-btn--secondary cdt-btn--tone-neutral" to="/components"><span aria-hidden="true"><ArrowLeft size={16} strokeWidth={1.75} /></span>Return to components</Link>} />
+    </section>;
   }
   const info = familyInfo(component.family);
   const FamilyIcon = info.icon;
   const propCount = component.props.length;
+  const requiredCount = component.props.filter((prop) => prop.required).length;
 
   return <section className="cdt-page docs-detail" aria-labelledby="component-title">
     <Link className="docs-detail__back" to="/components"><ArrowLeft size={16} strokeWidth={1.75} aria-hidden="true" />All components</Link>
@@ -282,10 +295,7 @@ export function ComponentDetail({ name, forceCopyUnavailable = false, forcePrevi
     </header>
 
     <Components.Panel as="section" className="docs-stage" aria-labelledby="preview-title">
-      <div className="docs-stage__bar">
-        <h2 id="preview-title">Live preview</h2>
-        <p className="docs-stage__hint"><SunMoon size={14} strokeWidth={1.75} aria-hidden="true" />Follows the current theme</p>
-      </div>
+      <div className="docs-stage__bar"><h2 id="preview-title">Live preview</h2></div>
       <PreviewBoundary><div className="docs-preview"><ComponentPreview forceError={forcePreviewError} name={component.name} /></div></PreviewBoundary>
     </Components.Panel>
 
@@ -309,11 +319,11 @@ export function ComponentDetail({ name, forceCopyUnavailable = false, forcePrevi
     <section className="docs-props" aria-labelledby="props-title">
       <div className="docs-props__head">
         <h2 id="props-title">Props</h2>
-        <p className="docs-props__meta">{propCount} {propCount === 1 ? "prop" : "props"} · <code>{component.propsTypeName}</code></p>
+        <p className="docs-props__meta">{propCount} {propCount === 1 ? "prop" : "props"}{requiredCount === 0 ? "" : ` · ${requiredCount} required`} · <code>{component.propsTypeName}</code></p>
       </div>
       {propCount === 0 ? <p className="docs-props__note">This component declares no props of its own beyond the native element attributes it forwards.</p> : <Components.Table caption={`${component.name} props`}>
-        <Components.Table.Head><Components.Table.Row><Components.Table.HeaderCell>Prop</Components.Table.HeaderCell><Components.Table.HeaderCell>Required</Components.Table.HeaderCell><Components.Table.HeaderCell>Type</Components.Table.HeaderCell></Components.Table.Row></Components.Table.Head>
-        <Components.Table.Body>{component.props.map((prop) => <Components.Table.Row key={prop.name}><Components.Table.Cell><code className="docs-props__name">{prop.name}</code></Components.Table.Cell><Components.Table.Cell>{prop.required ? <Components.Badge tone="accent">Required</Components.Badge> : <span className="docs-props__optional">Optional</span>}</Components.Table.Cell><Components.Table.Cell><code className="docs-props__type">{prop.type}</code></Components.Table.Cell></Components.Table.Row>)}</Components.Table.Body>
+        <Components.Table.Head><Components.Table.Row><Components.Table.HeaderCell>Prop</Components.Table.HeaderCell><Components.Table.HeaderCell>Type</Components.Table.HeaderCell></Components.Table.Row></Components.Table.Head>
+        <Components.Table.Body>{component.props.map((prop) => <Components.Table.Row key={prop.name}><Components.Table.Cell><code className="docs-props__name">{prop.name}</code>{prop.required ? <Components.Badge className="docs-props__flag" tone="accent">Required</Components.Badge> : null}</Components.Table.Cell><Components.Table.Cell><code className="docs-props__type">{prop.type}</code></Components.Table.Cell></Components.Table.Row>)}</Components.Table.Body>
       </Components.Table>}
     </section>
   </section>;

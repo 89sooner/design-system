@@ -23,9 +23,14 @@ test("W-020 / CR-042: the catalog filter narrows tiles by name or family and iso
   await expect(page.getByRole("link", { name: "Dialog", exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: "Button", exact: true })).toBeHidden();
   await expect(page.locator("[aria-label$=' preview']")).toHaveCount(componentCount);
+  // Both clear controls unmount themselves, so each must hand focus back to the field rather than to <body>.
+  await page.getByRole("button", { name: "Clear filter" }).click();
+  await expect(filter).toBeFocused();
+  await expect(page.getByRole("link", { name: "Button", exact: true })).toBeVisible();
   await filter.fill("no such component");
   await expect(page.getByText("No components match")).toBeVisible();
   await page.getByRole("button", { name: "Show all components" }).click();
+  await expect(filter).toBeFocused();
   await expect(page.getByRole("link", { name: "Button", exact: true })).toBeVisible();
 });
 

@@ -16,30 +16,32 @@
 .docs-catalog__head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--cdt-space-5); align-items: end; }
 .docs-catalog__intro { display: grid; gap: var(--cdt-space-2); max-width: 44rem; /* cdt-allow-literal: 읽기 폭은 간격 스케일이 아니라 줄 길이로 정한다 */ }
 .docs-catalog__intro .docs-eyebrow, .docs-detail__head .docs-eyebrow { margin: 0; font-size: var(--cdt-font-size-xs); letter-spacing: 0.08em; }
-.docs-catalog__intro .docs-lead, .docs-detail__head .docs-lead { margin: 0; font-size: var(--cdt-page-lead-size); line-height: var(--cdt-page-lead-line-height); text-wrap: pretty; }
+.docs-catalog__intro .docs-lead, .docs-detail__head .docs-lead { margin: 0; font-size: var(--cdt-page-lead-size, var(--cdt-font-size-lg)); line-height: var(--cdt-page-lead-line-height, var(--cdt-font-line-height-lg)); text-wrap: pretty; }
 .docs-catalog__pills { display: flex; flex-wrap: wrap; gap: var(--cdt-space-2); padding-bottom: var(--cdt-space-1); }
 .docs-pill { padding: var(--cdt-space-1) var(--cdt-space-3); border-radius: var(--cdt-radius-pill); font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: 0.01em; }
 .docs-pill.cdt-badge--neutral { border-color: var(--cdt-border-subtle); }
 .docs-pill.cdt-badge--accent { border-color: color-mix(in srgb, var(--cdt-accent) 35%, transparent); }
 
 /* ---------- Framework-agnostic CSS panel ---------- */
-.docs-framework { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: var(--cdt-space-5) var(--cdt-space-6); align-items: center; border-color: var(--cdt-border-subtle); background: linear-gradient(135deg, var(--cdt-surface-tint-1), transparent 55%), var(--cdt-surface-raised); }
+.docs-framework { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: var(--cdt-space-5) var(--cdt-space-6); align-items: center; border-color: var(--cdt-border-subtle); background: linear-gradient(135deg, var(--cdt-surface-tint-1), transparent 55%), var(--cdt-surface-raised); }
 .docs-framework__text { display: grid; gap: var(--cdt-space-3); min-width: 0; }
 .docs-framework__text h2, .docs-framework__text p { margin: 0; }
 .docs-framework__text code { font-family: var(--cdt-font-mono); color: var(--cdt-text-mono-payload); }
 .docs-framework__code { min-width: 0; }
+/* Single-line snippets wrap instead of hiding their tail behind a horizontal scroll. */
+.docs-framework__code .cdt-code-block__pre, .docs-usage .cdt-code-block__pre { white-space: pre-wrap; overflow-wrap: anywhere; }
 
 /* ---------- Filter toolbar ---------- */
 .docs-catalog__toolbar {
   position: sticky;
-  top: calc(var(--cdt-top-bar-min-height) + var(--cdt-space-3));
+  top: var(--cdt-top-bar-min-height); /* docked flush under the top bar so nothing scrolls through a gap between the two */
   z-index: var(--cdt-z-raised);
   display: grid;
   gap: var(--cdt-space-3);
   padding: var(--cdt-space-3);
   border: var(--cdt-border-width-hairline) solid var(--cdt-border-subtle);
   border-radius: var(--cdt-radius-lg);
-  background: color-mix(in srgb, var(--cdt-surface-raised) 90%, transparent);
+  background: color-mix(in srgb, var(--cdt-surface-raised) 94%, transparent);
   backdrop-filter: blur(var(--cdt-overlay-background-blur)) saturate(130%);
   box-shadow: inset 0 1px 0 var(--cdt-border-subtle), var(--cdt-elevation-raised); /* cdt-allow-literal: 1px 상단 하이라이트는 올라온 표면의 엣지다 */
 }
@@ -55,10 +57,10 @@
   min-width: var(--cdt-space-5);
   padding-inline: var(--cdt-space-1);
   border-radius: var(--cdt-radius-pill);
-  background: color-mix(in srgb, var(--cdt-accent) 14%, transparent);
-  color: var(--cdt-accent);
+  background: var(--cdt-accent-soft);
+  color: var(--cdt-text-primary); /* the accent is the tint only: accent-on-tint is below 4.5:1 at this size in both themes */
   font-family: var(--cdt-font-mono);
-  font-size: var(--cdt-font-size-2xs);
+  font-size: var(--cdt-font-size-xs);
   font-weight: 700;
   line-height: var(--cdt-font-line-height-xs);
   font-variant-numeric: tabular-nums;
@@ -82,6 +84,7 @@
 .docs-family__text h2 { margin: 0; }
 .docs-family__note, .docs-usage__note { margin: 0; max-width: 64ch; color: var(--cdt-text-muted); font-size: var(--cdt-font-size-md); line-height: var(--cdt-font-line-height-md); text-wrap: pretty; }
 .docs-family__count { color: var(--cdt-text-muted); font-family: var(--cdt-font-mono); font-size: var(--cdt-font-size-sm); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.docs-family__grid--single { grid-template-columns: minmax(0, 1fr); }
 .docs-catalog__empty { margin-top: calc(var(--cdt-space-5) * -1); }
 
 /* ---------- Component tiles ---------- */
@@ -94,7 +97,7 @@
   border-color: var(--cdt-border-subtle);
   background: var(--cdt-surface-raised);
 }
-.docs-component-tile:hover { border-color: var(--cdt-border-strong); }
+.docs-component-tile:hover { border-color: var(--cdt-border-strong); box-shadow: inset 0 1px 0 var(--cdt-border-subtle), var(--cdt-elevation-hover); /* cdt-allow-literal: 1px 상단 하이라이트 */ }
 .docs-component-tile__header { display: flex; align-items: center; justify-content: space-between; gap: var(--cdt-space-3); min-height: var(--cdt-space-6); padding-inline: var(--cdt-space-1); }
 .docs-component-tile__header h3 { margin: 0; min-width: 0; font-size: var(--cdt-font-size-lg); line-height: var(--cdt-font-line-height-lg); letter-spacing: -0.01em; }
 .docs-component-link { display: inline-flex; align-items: center; gap: var(--cdt-space-1); color: var(--cdt-text-primary); font-weight: 600; text-decoration-color: transparent; text-underline-offset: 0.2em; overflow-wrap: anywhere; }
@@ -112,6 +115,8 @@
   background: var(--cdt-surface-timeline);
 }
 .docs-component-tile__stage > .docs-preview { margin-top: 0; min-width: 0; }
+/* AppShell previews are viewport-tall (sticky 100vh nav); the tile shows a fading thumbnail instead. */
+.docs-component-tile__stage--clipped { max-height: calc(var(--cdt-space-8) * 5); overflow: hidden; mask-image: linear-gradient(to bottom, currentcolor 70%, transparent); }
 
 /* ---------- Detail: back link and header ---------- */
 .docs-detail { gap: var(--cdt-space-6); }
@@ -156,23 +161,10 @@
 }
 .docs-stage__bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--cdt-space-3); }
 .docs-stage__bar h2 { margin: 0; font-size: var(--cdt-page-sub-heading-size); line-height: var(--cdt-page-sub-heading-line-height); }
-.docs-stage__hint {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--cdt-space-1);
-  margin: 0;
-  padding: var(--cdt-space-1) var(--cdt-space-3);
-  border: var(--cdt-border-width-hairline) solid var(--cdt-border-subtle);
-  border-radius: var(--cdt-radius-pill);
-  background: var(--cdt-surface-glass);
-  color: var(--cdt-text-muted);
-  font-size: var(--cdt-font-size-xs);
-  font-weight: 600;
-}
 .docs-stage > .docs-preview { margin-top: 0; padding-block: var(--cdt-space-3); }
 
 /* ---------- Detail: import and class contract ---------- */
-.docs-detail__usage { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--cdt-space-4); }
+.docs-detail__usage { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: var(--cdt-space-4); }
 .docs-usage { display: grid; align-content: start; gap: var(--cdt-space-4); border-color: var(--cdt-border-subtle); background: var(--cdt-surface-raised); }
 .docs-usage__head { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--cdt-space-3); align-items: start; }
 .docs-usage__head h2 { margin: 0; font-size: var(--cdt-font-size-xl); line-height: var(--cdt-font-line-height-xl); }
@@ -201,8 +193,8 @@
 .docs-props__meta { margin: 0; color: var(--cdt-text-muted); font-size: var(--cdt-font-size-sm); font-variant-numeric: tabular-nums; }
 .docs-props__meta code, .docs-props__name, .docs-props__type { font-family: var(--cdt-font-mono); color: var(--cdt-text-mono-payload); overflow-wrap: anywhere; }
 .docs-props__name { font-weight: 600; }
+.docs-props__flag { margin-inline-start: var(--cdt-space-2); vertical-align: middle; }
 .docs-props__note { margin: 0; color: var(--cdt-text-muted); }
-.docs-props__optional { color: var(--cdt-text-muted); }
 
 /* ---------- Responsive ---------- */
 /* 1080 = breakpoint.lg — see base.css for why the literal is unavoidable in a media prelude. */
@@ -218,6 +210,8 @@
   .docs-family__head { grid-template-columns: auto minmax(0, 1fr); }
   .docs-family__count { grid-column: 2; }
   .docs-detail__usage { grid-template-columns: minmax(0, 1fr); }
+  /* Two columns of wrapping code need no 800px scroll floor; the Type column stays on screen. */
+  .docs-props .cdt-table { min-inline-size: 0; }
 }
 /* 560 = breakpoint.sm */
 @media (max-width: 560px) {
@@ -241,7 +235,8 @@
   .docs-framework, .docs-stage { animation: docs-catalog-rise var(--cdt-motion-standard) both; animation-delay: 60ms; /* cdt-allow-literal: 등장 스태거 */ }
   .docs-catalog__toolbar, .docs-detail__usage { animation: docs-catalog-rise var(--cdt-motion-standard) both; animation-delay: 120ms; /* cdt-allow-literal: 등장 스태거 */ }
   .docs-props { animation: docs-catalog-rise var(--cdt-motion-standard) both; animation-delay: 180ms; /* cdt-allow-literal: 등장 스태거 */ }
-  .docs-component-tile { transition: border-color var(--cdt-motion-fast); }
+  .docs-component-tile { transition: border-color var(--cdt-motion-fast), box-shadow var(--cdt-motion-fast), transform var(--cdt-motion-fast); }
+  .docs-component-tile:hover { transform: translateY(calc(var(--cdt-space-1) / -2)); }
   .docs-component-link, .docs-component-link__icon, .docs-detail__back { transition: background var(--cdt-motion-fast), color var(--cdt-motion-fast), transform var(--cdt-motion-fast); }
   .docs-component-link:hover .docs-component-link__icon, .docs-component-link:focus-visible .docs-component-link__icon { transform: translate(calc(var(--cdt-space-1) / 4), calc(var(--cdt-space-1) / -4)); }
   .docs-detail__back:hover svg { transform: translateX(calc(var(--cdt-space-1) / -2)); }
