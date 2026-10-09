@@ -79,14 +79,14 @@ async function captureMotionStates(page: Page, reducedMotion: "reduce" | "no-pre
     return { backgroundColor: style.backgroundColor, borderColor: style.borderColor, boxShadow: style.boxShadow, color: style.color, transform: style.transform };
   });
   /*
-   * Bring the button into view instantly first. The document scrolls smoothly (`scroll-behavior:
-   * smooth` in cdt.reset), and since CR-042 the redesigned page puts this example below the fold:
-   * Playwright's own scroll-into-view then animated under a pointer it had already placed, so in
-   * the no-preference run the hover was lost mid-scroll and the state read was a half-finished
-   * transition. `behavior: "instant"` overrides the CSS without touching the reduced-motion
-   * `scroll-behavior: auto` this test asserts below.
+   * Pin scrolling to `auto` while the states are read. The document scrolls smoothly (`scroll-behavior:
+   * smooth` in cdt.reset) and since CR-042 this example sits below the fold, so Chromium animated
+   * Playwright's scroll-into-view under a pointer that had already been placed: in the no-preference run
+   * the hover was lost mid-scroll and a half-finished transition was read. The inline override is
+   * removed again before returning, so the reduced-motion `scroll-behavior: auto` assertion below still
+   * reads the stylesheet, not this pin.
    */
-  await button.evaluate((element) => element.scrollIntoView({ block: "center", behavior: "instant" }));
+  await page.evaluate(() => document.documentElement.style.setProperty("scroll-behavior", "auto"));
   await button.hover();
   /*
    * hover만의 상태를 잰다. 이 함수는 마지막에 버튼을 포커스하는데, 두 번째
@@ -101,6 +101,7 @@ async function captureMotionStates(page: Page, reducedMotion: "reduce" | "no-pre
   await page.waitForTimeout(reducedMotion === "reduce" ? 50 : 400);
   const buttonFocus = await read(button);
   const switchSelected = await read(selectedSwitch);
+  await page.evaluate(() => document.documentElement.style.removeProperty("scroll-behavior"));
   return { buttonHover, buttonFocus, switchSelected };
 }
 
