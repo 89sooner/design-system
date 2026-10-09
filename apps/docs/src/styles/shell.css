@@ -1,0 +1,227 @@
+/*
+ * shell.css — navigation brand, top bar, theme toggle, route transition, footer (CR-042 §3).
+ * See docs.css for the file map. These rules are unlayered, so they outrank every `cdt.*` layer
+ * without `!important`; selectors therefore stay flat and scoped to `docs-` classes. Every
+ * length reads a `--cdt-` token or carries a `cdt-allow-literal` note saying why no token fits.
+ * Motion lives in the single `prefers-reduced-motion: no-preference` block at the end.
+ */
+
+/* ---- Brand mark (shared by the navigation, the compact top bar and the footer) ---- */
+.docs-brand-mark {
+  display: block;
+  flex: 0 0 auto;
+  inline-size: calc(var(--cdt-space-5) + var(--cdt-space-1));
+  block-size: calc(var(--cdt-space-5) + var(--cdt-space-1));
+  border-radius: var(--cdt-radius-sm);
+  box-shadow: 0 var(--cdt-space-1) var(--cdt-space-3) var(--cdt-accent-soft);
+}
+.docs-brand-mark__tile { fill: var(--cdt-accent); }
+.docs-brand-mark__arc { fill: none; stroke: var(--cdt-text-inverse); stroke-width: 2.6; stroke-linecap: round; }
+.docs-brand-mark__point { fill: var(--cdt-text-inverse); }
+
+/* ---- Navigation: brand block above the NavList ---- */
+/* Vertical spend here is kept small on purpose: every pixel comes out of the list's viewport at laptop heights. */
+.docs-nav__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--cdt-space-3);
+  margin-block-end: var(--cdt-space-2);
+  padding: var(--cdt-space-1) var(--cdt-space-3);
+  border-radius: var(--cdt-radius-md);
+  color: var(--cdt-text-primary);
+  font-weight: 700;
+  text-decoration: none;
+}
+.docs-nav__brand:hover { background: var(--cdt-state-hover); text-decoration: none; }
+.docs-nav__wordmark { font-size: var(--cdt-font-size-lg); letter-spacing: -0.02em; }
+.docs-nav__version {
+  margin-inline-start: auto;
+  font-family: var(--cdt-font-mono);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Navigation: the list scrolls on short viewports; a fade and a thin scrollbar say so ---- */
+/* The wrapper is the NavList's flex parent, so the package's own `flex: 1; overflow-y: auto` keeps working. */
+.docs-nav__list {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-block-size: 0;
+}
+.docs-nav__list > .cdt-nav-list { scrollbar-width: thin; scrollbar-color: var(--cdt-border-strong) transparent; }
+/* Fades the last visible rows into the card surface. Shown only while the list really overflows (`shell.tsx` measures it). */
+.docs-nav__list::after {
+  content: "";
+  position: absolute;
+  inset-inline: var(--cdt-border-width-hairline);
+  inset-block-end: var(--cdt-border-width-hairline);
+  display: none;
+  block-size: var(--cdt-space-7);
+  border-end-start-radius: var(--cdt-radius-xl);
+  border-end-end-radius: var(--cdt-radius-xl);
+  /* The nav-list surface is a gradient, so the fade ends in the tone its lower edge settles on in both themes. */
+  background: linear-gradient(to top, color-mix(in srgb, var(--cdt-surface-base) 70%, var(--cdt-surface-raised)), transparent);
+  pointer-events: none;
+}
+.docs-nav__list--scrollable::after { display: block; }
+
+/* ---- Navigation: quiet external links under the list ---- */
+.docs-nav__footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--cdt-space-1);
+  padding: var(--cdt-space-2) var(--cdt-space-1) 0;
+}
+.docs-nav__footer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--cdt-space-1);
+  padding: var(--cdt-space-1) var(--cdt-space-2);
+  border-radius: var(--cdt-radius-sm);
+  color: var(--cdt-text-muted);
+  font-size: var(--cdt-font-size-sm);
+  font-weight: 500;
+}
+.docs-nav__footer-link:hover { background: var(--cdt-state-hover); color: var(--cdt-text-primary); text-decoration: none; }
+
+/* ---- Top bar ---- */
+.docs-topbar__brand {
+  display: none;
+  align-items: center;
+  gap: var(--cdt-space-2);
+  margin-inline-start: var(--cdt-space-2);
+  color: var(--cdt-text-primary);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.docs-topbar__brand:hover { text-decoration: none; }
+.docs-topbar__brand .docs-brand-mark { inline-size: var(--cdt-space-5); block-size: var(--cdt-space-5); }
+.docs-topbar__section { font-variant-numeric: tabular-nums; }
+/* `.docs-topbar__github` is a plain ghost icon button: its resting colour is already muted and its hover brightens, so nothing is overridden. */
+.docs-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--cdt-space-2);
+  padding-inline: var(--cdt-space-3) var(--cdt-space-2);
+  border: var(--cdt-border-width-hairline) solid var(--cdt-border-subtle);
+  border-radius: var(--cdt-radius-pill);
+  background: var(--cdt-surface-raised);
+  box-shadow: inset 0 1px 0 var(--cdt-border-subtle); /* cdt-allow-literal: 1px inner highlight, the surface-depth cue from the brief; the border-width scale starts at the same 1px */
+  color: var(--cdt-text-muted);
+  cursor: pointer; /* the pill is the switch's label, so the whole of it toggles the theme */
+}
+.docs-theme-toggle:hover { border-color: var(--cdt-border-default); color: var(--cdt-text-primary); }
+
+/* ---- Route transition and loading skeleton ---- */
+/*
+ * `main` becomes a column so a short page still pushes the footer to the bottom of the viewport.
+ * Child combinators keep the rule off the AppShell previews the catalog nests inside `.docs-preview`.
+ */
+.docs-shell > .cdt-app-shell__content > .cdt-app-shell__main { display: flex; flex-direction: column; }
+.docs-route, .docs-route-loading { flex: 1 0 auto; min-inline-size: 0; }
+.docs-route-loading { gap: var(--cdt-space-4); }
+.docs-route-loading__bar {
+  max-inline-size: 36rem; /* cdt-allow-literal: 읽기 폭 — the skeleton stands in for a heading block, not for product spacing */
+  block-size: var(--cdt-space-4);
+  border-radius: var(--cdt-radius-sm);
+  background: var(--cdt-surface-raised);
+  box-shadow: inset 0 1px 0 var(--cdt-border-subtle); /* cdt-allow-literal: 1px inner highlight, same depth cue as the raised surfaces */
+}
+.docs-route-loading__bar--eyebrow { inline-size: calc(var(--cdt-space-8) * 2); }
+.docs-route-loading__bar--title { inline-size: 56%; block-size: var(--cdt-space-7); }
+.docs-route-loading__bar--lead { inline-size: 82%; }
+
+/* ---- Footer ---- */
+.docs-footer {
+  display: grid;
+  grid-template-areas: "brand packages docs";
+  grid-template-columns: minmax(0, 1fr) max-content max-content;
+  gap: var(--cdt-space-6) var(--cdt-space-8);
+  margin-block-start: var(--cdt-space-8);
+  padding-block-start: var(--cdt-space-6);
+  border-block-start: var(--cdt-border-width-hairline) solid var(--cdt-border-subtle);
+  color: var(--cdt-text-muted);
+  font-size: var(--cdt-font-size-base);
+  line-height: var(--cdt-font-line-height-base);
+}
+.docs-footer__brand { display: grid; grid-area: brand; align-content: start; gap: var(--cdt-space-3); }
+.docs-footer__identity {
+  display: flex;
+  align-items: center;
+  gap: var(--cdt-space-2);
+  color: var(--cdt-text-primary);
+  font-weight: 600;
+}
+.docs-footer__license { margin: 0; }
+.docs-footer__column--packages { grid-area: packages; }
+.docs-footer__column--docs { grid-area: docs; }
+.docs-footer__heading {
+  margin: 0 0 var(--cdt-space-3);
+  color: var(--cdt-text-secondary);
+  font-size: var(--cdt-font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.docs-footer__list { display: grid; gap: var(--cdt-space-2); margin: 0; padding: 0; list-style: none; }
+.docs-footer__link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--cdt-space-1);
+  color: var(--cdt-text-muted);
+  overflow-wrap: anywhere;
+}
+.docs-footer__link:hover { color: var(--cdt-text-primary); }
+.docs-footer__package { font-family: var(--cdt-font-mono); font-size: var(--cdt-font-size-sm); }
+.docs-footer__scope { white-space: nowrap; }
+.docs-footer__note {
+  max-inline-size: 26rem; /* cdt-allow-literal: 읽기 폭은 간격 스케일이 아니라 줄 길이로 정한다 */
+  margin: 0;
+  text-wrap: pretty;
+}
+
+/*
+ * 1080px = breakpoint.lg. 이 파일은 `packages/css`의 빌드를 거치지 않으므로 `{breakpoint.lg}`
+ * 치환이 일어나지 않고, 미디어 조건은 커스텀 프로퍼티를 읽을 수 없다 (FR-TOK-009 AC-2).
+ */
+@media (max-width: 1080px) {
+  .docs-footer { gap: var(--cdt-space-6) var(--cdt-space-7); }
+}
+
+/* 800px = breakpoint.md (same substitution note as above). */
+@media (max-width: 800px) {
+  .docs-footer {
+    grid-template-areas: "brand brand" "packages docs";
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--cdt-space-6) var(--cdt-space-5);
+    margin-block-start: var(--cdt-space-7);
+  }
+}
+
+/* 560px = breakpoint.sm (same substitution note as above). */
+@media (max-width: 560px) {
+  .docs-topbar__brand { display: inline-flex; }
+  .docs-footer {
+    grid-template-areas: "brand" "packages" "docs";
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--cdt-space-5);
+    margin-block-start: var(--cdt-space-6);
+  }
+}
+
+/* ---- Motion: entrance and hover transitions only, token durations, never on scroll ---- */
+@media (prefers-reduced-motion: no-preference) {
+  .docs-nav__brand,
+  .docs-nav__footer-link,
+  .docs-footer__link,
+  .docs-theme-toggle {
+    transition: background var(--cdt-motion-fast), border-color var(--cdt-motion-fast), color var(--cdt-motion-fast);
+  }
+  .docs-route { animation: docs-route-enter var(--cdt-motion-standard) both; }
+  @keyframes docs-route-enter {
+    from { opacity: 0; transform: translateY(var(--cdt-space-2)); }
+    to { opacity: 1; transform: none; }
+  }
+}

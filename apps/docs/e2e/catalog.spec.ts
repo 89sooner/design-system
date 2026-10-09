@@ -1,13 +1,37 @@
-// Refs: WP-020 FR-DOC-003
+// Refs: WP-020 CR-042 FR-DOC-003
+import { readFileSync } from "node:fs";
 import { expect, test } from "@playwright/test";
 import { docsPath } from "./routes";
+
+// The generator writes one entry per public export, so the expected tile count is read from its
+// output rather than typed here; a new component changes both sides of the assertion at once.
+const componentMeta = JSON.parse(readFileSync(new URL("../src/generated/component-meta.json", import.meta.url), "utf8")) as readonly { readonly name: string }[];
+const componentCount = componentMeta.length;
 
 test("FR-DOC-003 AC-1, AC-5: catalog mounts every public component as a live preview", async ({ page }) => {
   await page.goto(docsPath("/components"));
   await expect(page.getByRole("heading", { name: "Components" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Button", exact: true })).toBeVisible();
-  await expect(page.locator("[aria-label$=' preview']")).toHaveCount(30);
+  await expect(page.locator("[aria-label$=' preview']")).toHaveCount(componentCount);
   await expect(page.locator(".cdt-card--interactive .cdt-btn, .cdt-card--interactive input, .cdt-card--interactive a")).toHaveCount(0);
+});
+
+test("W-020 / CR-042: the catalog filter narrows tiles by name or family and isolates an empty result", async ({ page }) => {
+  await page.goto(docsPath("/components"));
+  const filter = page.getByRole("textbox", { name: "Filter components" });
+  await filter.fill("dialog");
+  await expect(page.getByRole("link", { name: "Dialog", exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Button", exact: true })).toBeHidden();
+  await expect(page.locator("[aria-label$=' preview']")).toHaveCount(componentCount);
+  // Both clear controls unmount themselves, so each must hand focus back to the field rather than to <body>.
+  await page.getByRole("button", { name: "Clear filter" }).click();
+  await expect(filter).toBeFocused();
+  await expect(page.getByRole("link", { name: "Button", exact: true })).toBeVisible();
+  await filter.fill("no such component");
+  await expect(page.getByText("No components match")).toBeVisible();
+  await page.getByRole("button", { name: "Show all components" }).click();
+  await expect(filter).toBeFocused();
+  await expect(page.getByRole("link", { name: "Button", exact: true })).toBeVisible();
 });
 
 test("FR-CSS-004 AC-3 / QA-038: public CSS classes reproduce the React primary Button", async ({ page }) => {

@@ -1,6 +1,6 @@
 # Conductor Design System 프론트엔드 아키텍처
 
-> 상태: review | 버전: v0.4 | 갱신일: 2026-09-13
+> 상태: review | 버전: v0.5 | 갱신일: 2026-10-08
 
 ## 1. 목적과 두 개의 프론트엔드
 
@@ -232,6 +232,7 @@ Storybook을 쓰지 않는 이유는 ADR-007에 기록한다. 요약하면 FR-DO
 | 컴포넌트 레지스트리 | `apps/docs/src/registry.ts` (C-### ↔ 컴포넌트 ↔ FR ID ↔ 예제 모듈) | W-020, W-021 | ENT-CMP-001 |
 | 예제 소스 원문 | Vite `?raw` import로 예제 모듈의 텍스트를 그대로 읽는다 | W-021 | FR-DOC-006 |
 | axe 허용 목록 | `axe-allowlist.json` (규칙 ID + 사유) | W-050 | FR-QA-003 AC-4, FR-A11Y-005 예외 처리 |
+| `site-stats.json` | `apps/docs/scripts/build-site-stats.mjs`가 `tokens.json`·`contrast-report.json`·컴포넌트 메타데이터에서 컴포넌트 수·토큰 수·대비 검사 수·테마 수를 센다 (CR-042) | W-001 | FR-DOC-001, FR-DOC-002 AC-1의 "하드코딩 0건" 원칙을 랜딩의 수치에도 적용 |
 
 Foundations 화면에는 토큰 값 하드코딩이 0건이다(FR-DOC-002 AC-1). 각 행은 `tokens.json`의 키, 계층, 현재 테마 값, `description` 필드를 렌더한다. `description`이 비어 있으면 화면에 `설명 없음`을 표시하고 `buildTokens`가 경고를 출력한다(FR-DOC-002 예외 처리).
 

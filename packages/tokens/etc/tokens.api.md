@@ -453,6 +453,10 @@ export const tokens: {
         readonly sectionHeadingLineHeight: "var(--cdt-page-section-heading-line-height)";
         readonly subHeadingSize: "var(--cdt-page-sub-heading-size)";
         readonly subHeadingLineHeight: "var(--cdt-page-sub-heading-line-height)";
+        readonly displaySize: "var(--cdt-page-display-size)";
+        readonly displayLineHeight: "var(--cdt-page-display-line-height)";
+        readonly leadSize: "var(--cdt-page-lead-size)";
+        readonly leadLineHeight: "var(--cdt-page-lead-line-height)";
         readonly stackGap: "var(--cdt-page-stack-gap)";
         readonly stackGapCompact: "var(--cdt-page-stack-gap-compact)";
         readonly contentStackGap: "var(--cdt-page-content-stack-gap)";

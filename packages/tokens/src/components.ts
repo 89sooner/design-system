@@ -279,6 +279,17 @@ const H2_PX = Math.round(FONT_SIZE_PX.xl * 1.3);
 const H3_PX = Math.round(FONT_SIZE_PX.xl * 1.1);
 const HEADING_LINE_HEIGHT_RATIO = 1.3;
 
+/**
+ * Display and lead steps for the documentation landing (CR-042). Same derivation as the headings
+ * above — multipliers on `font.size.xl` — so the exposed `font.size` scale stays at seven steps
+ * (FR-TOK-007 AC-1). The display range is one `clamp()` step above `page.headingSize`; the lead
+ * sits between `font.size.lg` and `font.size.xl` and keeps the 1.50 body ratio.
+ */
+const DISPLAY_MIN_PX = Math.round(FONT_SIZE_PX.xl * 1.8);
+const DISPLAY_MAX_PX = Math.round(FONT_SIZE_PX.xl * 3.2);
+const LEAD_PX = Math.round(FONT_SIZE_PX.xl * 0.9);
+const LEAD_LINE_HEIGHT_RATIO = 1.5;
+
 const page: TokenDefinition[] = [
   component(
     "page.headingSize",
@@ -309,6 +320,27 @@ const page: TokenDefinition[] = [
     "page.subHeadingLineHeight",
     value(`${roundHalfUp(H3_PX * HEADING_LINE_HEIGHT_RATIO)}px`),
     "Line height paired with `page.subHeadingSize`, at the 1.30 heading ratio.",
+  ),
+  component(
+    "page.displaySize",
+    value(`clamp(${DISPLAY_MIN_PX}px, 5.5vw, ${DISPLAY_MAX_PX}px)`),
+    "Display heading for a landing hero, derived from `font.size.xl` (× 1.8 and × 3.2). One step " +
+      "above `page.headingSize`; never a body size (CR-042).",
+  ),
+  component(
+    "page.displayLineHeight",
+    value("1.04"),
+    "Unitless like `page.headingLineHeight`: `clamp()` makes a px value impossible here.",
+  ),
+  component(
+    "page.leadSize",
+    value(`${LEAD_PX}px`),
+    "Lead paragraph under a page or hero heading. `font.size.xl` × 0.9; sits between `font.size.lg` and `font.size.xl` (CR-042).",
+  ),
+  component(
+    "page.leadLineHeight",
+    value(`${roundHalfUp(LEAD_PX * LEAD_LINE_HEIGHT_RATIO)}px`),
+    "Line height paired with `page.leadSize`, at the 1.50 body ratio.",
   ),
   component("page.stackGap", ref("space.6"), "Gap between page sections."),
   component("page.stackGapCompact", ref("space.5"), "Section gap below `breakpoint.sm`."),

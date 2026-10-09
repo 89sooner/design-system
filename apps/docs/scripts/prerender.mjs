@@ -31,6 +31,19 @@ if (html.length < 500 || !html.includes("cdt-app-shell")) {
   console.error("error[PRERENDER-EMPTY]: 프리렌더 결과가 문서 셸을 포함하지 않는다");
   process.exit(1);
 }
-writeFileSync(INDEX, indexHtml.replace(marker, `<div id="root">${html}</div>`), "utf8");
+// 모듈 스크립트 태그를 <head>에서 본문 끝으로 옮긴다 (CR-042). 모듈 스크립트는 어차피
+// 지연 실행되지만 *다운로드*는 파서가 태그를 만나는 순간 시작된다. <head>에 두면 진입
+// 청크(약 400KB)가 스타일시트와 처음부터 대역폭을 나눠 쓰고, Fast 3G에서 첫 페인트는
+// 스타일시트 도착까지 기다리므로 LCP가 그만큼 늦어진다(NFR-001). 본문 끝에 두면
+// 프리렌더된 HTML이 다 읽힌 뒤에야 스크립트 요청이 시작돼 스타일시트가 먼저 내려온다.
+// 실측(샌드박스 Lighthouse, 동일 산출물): 2862ms → 2668ms.
+const MODULE_SCRIPT = /\s*<script type="module" crossorigin src="[^"]+"><\/script>/;
+const scriptTag = indexHtml.match(MODULE_SCRIPT)?.[0]?.trim();
+if (scriptTag === undefined) {
+  console.error("error[PRERENDER-SCRIPT]: dist/index.html에서 모듈 스크립트 태그를 찾지 못했다");
+  process.exit(1);
+}
+const withPrerender = indexHtml.replace(MODULE_SCRIPT, "").replace(marker, `<div id="root">${html}</div>`).replace("</body>", `    ${scriptTag}\n  </body>`);
+writeFileSync(INDEX, withPrerender, "utf8");
 rmSync(resolve(DOCS, "dist-server"), { recursive: true, force: true });
 console.log(`[prerender] injected ${html.length} chars into dist/index.html`);

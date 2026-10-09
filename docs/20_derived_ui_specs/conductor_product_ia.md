@@ -1,6 +1,6 @@
 # Conductor Design System 제품 IA 문서
 
-> 상태: review | 버전: v0.4 | 갱신일: 2026-09-13
+> 상태: review | 버전: v0.5 | 갱신일: 2026-10-08
 
 ## 1. 문서 범위와 상위 문서
 
@@ -144,6 +144,7 @@ FR-CMP-009는 우선순위 Should이며 OD-004가 열려 있다. OD-004가 (b) �
 | 4 | Tokens | W-030 | Tokens | FR-DOC-004 |
 | 5 | Patterns | W-040 | Patterns | FR-DOC-007 |
 | 6 | Accessibility | W-050 | Accessibility | FR-A11Y-001 ~ FR-A11Y-005 |
+| 7 | Workspaces | W-060 ~ W-062 | 검색 워크벤치, 관계 탐색기, 수집 운영 상태 | FR-CMP-010 ~ FR-CMP-013 (CR-041 합성 예제). 학습 순서의 마지막에 둔다 — 조합 예제는 문서를 다 읽은 뒤 보는 것이지 첫 방문자의 진입점이 아니다 (CR-042) |
 
 내비게이션 규칙:
 
@@ -151,6 +152,8 @@ FR-CMP-009는 우선순위 Should이며 OD-004가 열려 있다. OD-004가 (b) �
 2. 그룹 헤더는 링크가 아니다. 클릭 대상이 아닌 요소는 Tab 순서에서 제외한다(FR-A11Y-002 AC-1).
 3. 현재 화면에 대응하는 내비 항목은 `aria-current="page"`를 갖는다.
 4. `NavList`는 링크 렌더를 `renderLink` props로 위임하므로 문서 사이트의 라우팅 선택이 `@conductor-by-89soone/react`로 새지 않는다(FR-CMP-009 AC-1, AC-2).
+5. 각 항목은 lucide 아이콘을 `icon` 슬롯으로 함께 그린다(CR-042). 아이콘은 `aria-hidden`이며 라벨 텍스트가 항목의 접근 가능한 이름이다 — 아이콘만으로 뜻을 나르지 않는다(FR-A11Y-003).
+6. 내비 하단에 저장소(GitHub)와 레지스트리(npm) 링크를 둔다(CR-042). 외부 링크는 새 탭으로 열리며 `rel="noreferrer"`를 갖는다. 링크는 클릭 전까지 어떤 요청도 보내지 않으므로 FR-DOC-001 AC-4(런타임 외부 요청 0건)와 충돌하지 않는다.
 
 ## 8. 화면 목록과 관련 요구사항
 

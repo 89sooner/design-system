@@ -1,6 +1,6 @@
 # Conductor Design System 와이어프레임 사양서
 
-> 상태: review | 버전: v0.3 | 갱신일: 2026-09-13
+> 상태: review | 버전: v0.4 | 갱신일: 2026-10-08
 
 ## 1. 문서 위치와 책임
 
@@ -108,37 +108,65 @@
 
 ### 레이아웃 구조
 
+CR-042가 이 화면을 랜딩 히어로 구조로 고도화했다. 섹션은 아래 순서로 세로 스택되며, 모든 수치는 빌드 산출물(`site-stats.json`)에서 읽는다 — 화면에 손으로 적은 수치는 0건이다(FR-DOC-002 AC-1의 원칙을 W-001에 확장).
+
 ```text
 <main id="content">
 ┌────────────────────────────────────────────────────────────┐
-│ H1  Conductor Design System                                │
-│ 요약 문단 (패키지 3종 + 정적 문서 사이트)                  │
+│ § 히어로 (중앙 정렬, 읽기 폭 56rem)                        │
+│   Badge (C-020, accent)  "Dark-first · tokens → css → react"│
+│   H1  [Conductor] Design System      ← 접근 가능한 이름은  │
+│       (첫 낱말만 그라디언트, page.displaySize)  변함없다    │
+│   lead 문단 (page.leadSize)                                │
+│   [Get started → W-002]  [Browse components → W-020]       │
+│     (공개 cdt-btn 클래스를 입힌 라우터 Link, FR-CSS-004 AC-3)│
+│   mono 설치 한 줄  pnpm add @conductor-by-89soone/react  [Copy]│
 ├────────────────────────────────────────────────────────────┤
-│ CardGrid (C-011) · auto-fill · 최소 컬럼 320px             │
-│ ┌──────────────┐ ┌──────────────┐ ┌──────────────┐         │
-│ │ Card (C-010) │ │ Card (C-010) │ │ Card (C-010) │         │
-│ │ @conductor-by-89soone/  │ │ @conductor-by-89soone/  │ │ @conductor-by-89soone/  │         │
-│ │   tokens     │ │   css        │ │   react      │         │
-│ │ → W-030      │ │ → W-002      │ │ → W-020      │         │
-│ └──────────────┘ └──────────────┘ └──────────────┘         │
+│ § 라이브 쇼케이스  Panel (C-012) · 점 격자 배경            │
+│   Badge · StatusBadge(running)                             │
+│   Table (C-030) 3행 · Banner │ Timeline (C-031) · Switch   │
+│   Meter (C-062) Panel        │ (C-054) · Button (C-001)    │
+│   캡션: 전부 공개 패키지의 실제 DOM이다 (FR-DOC-003 AC-1과 │
+│   같은 원칙) — 테마를 바꾸면 토큰이 바뀐다                 │
 ├────────────────────────────────────────────────────────────┤
-│ Panel (C-012)  다음 단계                                   │
-│  [Button primary → W-002]  [Button secondary → W-020]      │
+│ § 수치 4타일  components · tokens · contrast checks ·      │
+│   themes/runtime requests   (site-stats.json, tabular-nums)│
+├────────────────────────────────────────────────────────────┤
+│ § 패키지 카드 3종  CardGrid (C-011) · Card (C-010, href)   │
+│   tokens → W-030 · css → W-002 · react → W-020             │
+│   아이콘 타일 + mono 패키지명 + 한 줄 + 장식 프리뷰 + 링크  │
+├────────────────────────────────────────────────────────────┤
+│ § 원칙 4타일  Panel (C-012) × 4                            │
+│   단일 토큰 소스 · 캐스케이드 레이어(!important 0) ·       │
+│   Radix 접근성 · 런타임 외부 요청 0                        │
+├────────────────────────────────────────────────────────────┤
+│ § 3단계  01 설치 · 02 스타일 import · 03 렌더              │
+│   CodeBlock (C-032) 한 줄씩 → "Read the full guide" W-002  │
+├────────────────────────────────────────────────────────────┤
+│ § 다음 단계 띠  Panel (C-012, accent tint)                 │
+│   [Get started → W-002]  [Browse components → W-020]       │
 └────────────────────────────────────────────────────────────┘
-  뷰포트 <560px: CardGrid가 단일 컬럼으로 전환 (FR-CSS-003 AC-3)
+  뷰포트 <800px: 쇼케이스 그리드와 수치 타일이 2열 → 1열
+  뷰포트 <560px: CTA가 전체 폭으로 쌓이고 CardGrid가 단일 컬럼
+  (FR-CSS-003 AC-3). 모션은 prefers-reduced-motion: no-preference
+  에서만 재생되며 지속시간은 motion 토큰을 읽는다 (FR-CSS-005)
 ```
 
 ### 섹션 정의
 
 | 섹션 | 내용 | 근거 |
 | --- | --- | --- |
-| 제품 요약 | Conductor가 배포하는 것은 npm 패키지 3종과 정적 문서 사이트다 | FR-DOC-001 |
+| 히어로 | 제품명(H1), 한 문단 요약, 설치 경로와 카탈로그로 가는 두 CTA, 설치 한 줄과 복사 | FR-DOC-001, FR-DOC-006 (복사 상태 알림 규칙을 그대로 따른다) |
+| 라이브 쇼케이스 | 공개 컴포넌트만으로 합성한 릴리스 콘솔. 스크린샷 0건, 모든 요소가 실제 DOM | FR-DOC-001 AC-1, FR-DOC-003 AC-1·AC-4와 같은 원칙 |
+| 수치 | 컴포넌트 수·토큰 수·대비 검사 수·테마 수. `site-stats.json`에서 읽는다 | FR-DOC-002 AC-1 원칙, FR-THM-004 |
 | 패키지 카드 3종 | 각 패키지의 역할과 대응 화면 링크 | FR-DOC-001 AC-1 (문서 사이트가 이 패키지들의 소비자다) |
+| 원칙 | 확정 결정 네 가지를 한 문장씩 | ADR-002, ADR-004, ADR-005, NFR-002 |
+| 3단계 | 설치 → 스타일 import → 렌더. W-002의 요약판 | SCN-001, M-5 (명령 3개 이하) |
 | 다음 단계 | W-002 설치 경로, W-020 컴포넌트 카탈로그 | FR-DOC-001 |
 
 ### 사용 컴포넌트
 
-C-010 Card(대화형, `href` 지정), C-011 CardGrid, C-012 Panel, C-001 Button. 셸이 제공하는 C-070, C-071, C-072, C-054는 이 화면이 소유하지 않는다.
+C-010 Card(대화형, `href` 지정), C-011 CardGrid, C-012 Panel, C-020 Badge, C-021 StatusBadge, C-030 Table, C-031 Timeline, C-032 CodeBlock, C-054 Switch, C-060 Banner, C-062 Meter, C-001 Button, 그리고 `CopyButton`(CR-041). CTA는 `Button`이 아니라 라우터 `Link`에 공개 `cdt-btn` 클래스를 입힌 것이다 — 탐색은 링크 의미를 가져야 하고, 그 클래스 계약은 FR-CSS-004 AC-3이 React 없이도 같은 시각을 보장한다. 셸이 제공하는 C-070, C-071, C-072, C-054(테마 토글)는 이 화면이 소유하지 않는다.
 
 패키지 카드는 `href`를 받으므로 `a` 요소로 렌더되고 키보드 포커스를 받는다(FR-CMP-003 AC-1). 카드 내부에 중첩 대화형 요소를 넣지 않는다(FR-CMP-003 예외/실패 처리).
 
@@ -169,6 +197,10 @@ C-010 Card(대화형, `href` 지정), C-011 CardGrid, C-012 Panel, C-001 Button.
 1. 최초 페인트 시 테마가 뒤바뀌어 보이는 깜빡임이 발생하지 않아야 한다(FR-DOC-005 AC-4). 문서 사이트는 `<head>`에 인라인 테마 결정 스니펫을 삽입한다. 스니펫은 `@conductor-by-89soone/css`가 자동 주입하지 않으며 W-002가 그 소스를 노출한다(FR-THM-003 예외/실패 처리). FLOW-002 참조.
 2. 저장된 선택이 없으면 `prefers-color-scheme`을 따른다(FR-DOC-005 AC-3). 속성값이 `dark`/`light` 이외이면 다크 팔레트를 적용한다(FR-THM-003 AC-3).
 3. NFR-001의 LCP 목표(p75 2.5초 이하)를 측정하는 화면이 W-001이다. 원격 폰트와 원격 스크립트를 로드하지 않는다(SRS 5.2, FR-DOC-001 AC-4).
+4. CR-042: 히어로는 프리렌더된다(`scripts/prerender.mjs`). 쇼케이스의 로컬 상태(예: Switch)는 서버와 클라이언트가 같은 기본값으로 시작해야 hydration이 서버 DOM을 보존한다(FR-DX-004 AC-3). 마크업은 테마와 무관하고 색은 전부 `--cdt-*` 변수에서 온다(FR-THM-003).
+5. CR-042: H1의 첫 낱말에만 그라디언트를 입힌다. `background-clip: text`는 장식이며 접근 가능한 이름 "Conductor Design System"은 바뀌지 않는다. display 크기(36px 이상)는 WCAG 대형 텍스트이므로 `accent`의 3:1 기준이 두 테마에서 성립한다(SRS §12.1).
+6. CR-042: 패키지 카드는 `href`를 가진 대화형 `Card`이므로 내부에 대화형 요소를 두지 않는다(FR-CMP-003 예외 처리). 장식 프리뷰(색 칩, 레이어 막대, 정적 배지)는 포커스를 받지 않는다.
+7. CR-042: 수치 타일의 값은 `apps/docs/scripts/build-site-stats.mjs`가 빌드 때 만든 `site-stats.json`이다. 패키지가 자라면 수치도 따라 바뀐다. 손으로 적은 수치가 화면 코드에 있으면 안 된다.
 
 ---
 
@@ -259,6 +291,8 @@ C-032 CodeBlock, C-002 IconButton(복사 버튼), C-030 Table, C-060 Banner, C-0
 2. 인라인 테마 스니펫은 문서 사이트가 자신의 `<head>`에서 실제로 사용하는 코드와 동일해야 한다. 문서 사이트가 Conductor의 첫 번째 소비자이기 때문이다(FR-DOC-001 AC-1).
 3. `@conductor-by-89soone/css`를 import하지 않으면 개발 빌드가 콘솔 경고를 1회 출력하고 컴포넌트는 스타일 없이 렌더된다(SCN-001 예외 흐름). 이 사실을 스타일 import 섹션에 명시한다.
 4. 리셋 제외가 필요한 소비자는 `@conductor-by-89soone/css/component.css`만 import한다(FR-CSS-002 예외/실패 처리).
+
+CR-042 시각 고도화: 각 절은 번호(01~08)를 단 단계로 그려 세로 진행을 읽을 수 있게 한다. 모든 `CodeBlock`은 언어 라벨과 `CopyButton`이 있는 머리띠(`docs-code`) 안에 놓인다 — 복사 상태 알림 규칙은 FR-DOC-006을 따른다. `h2` 텍스트와 순서(요구 환경 → 설치 → 스타일 import → 테마 → 렌더 → 캐스케이드 레이어 → SSR → 빌드 순서)는 바뀌지 않는다.
 
 ---
 
@@ -351,6 +385,7 @@ C-030 Table, C-021 StatusBadge, C-022 SeverityTag, C-062 Meter, C-012 Panel.
 3. 용도 설명이 없는 토큰은 `설명 없음`으로 표시하고 빌드가 경고를 출력한다(FR-DOC-002 예외/실패 처리).
 4. 토큰 소스에 토큰을 추가하면 재빌드 후 이 화면에 자동으로 나타난다(FR-DOC-002 AC-2). 화면 코드에 토큰 키 목록을 나열하지 않는다.
 5. 상태·심각도 토큰의 `icon` 메타데이터 필드는 빈 문자열이 아니다(FR-TOK-005 AC-5). 아이콘은 `lucide-react`가 제공하며 Conductor는 아이콘을 번들하지 않는다(SRS 10절).
+6. CR-042: 표 위에 스와치 갤러리를 둔다. 토큰 패밀리별 카드가 현재 테마 값을 색면으로 보이고 키와 값을 mono로 적는다(Realtime Colors·Coolors식 팔레트 제시). 갤러리는 표를 대체하지 않는다 — FR-DOC-002 AC-3의 키·계층·값·용도 행은 여전히 `Table`(caption "Foundation tokens")이 제공하며 화면당 하나다.
 
 ---
 
@@ -784,6 +819,7 @@ C-011 CardGrid, C-010 Card(대화형, `href="/components/:componentId"`), C-060 
 2. 항목 수는 30개다. OD-004가 (b)로 결정되어 C-070 ~ C-072가 문서 사이트 내부 컴포넌트로 강등되면 셸 섹션이 카탈로그에서 사라지고 항목 수는 27개가 된다. 이 수는 문서가 아니라 빌드가 결정한다.
 3. 축소 프리뷰는 컴포넌트당 대표 조합 한 개만 렌더한다. 모든 `variant`와 `tone` 조합은 W-021이 렌더한다(FR-DOC-003 AC-3).
 4. 컴포넌트 클래스는 자식 구조 셀렉터(`>`, `+`, `:nth-child`)에 의존하지 않는다(FR-CSS-004 AC-4). 카드 안에서 중첩 렌더되어도 스타일이 유지되는지가 이 화면에서 관찰된다.
+5. CR-042: 컴포넌트군(family)은 메타데이터가 나른다. `build-component-catalog.mjs`가 이름 → 군 매핑으로 `family`를 함께 산출하고, 매핑에 없는 공개 export가 생기면 빌드가 `DOC-CATALOG-FAMILY`로 실패한다 — AC-5의 "카탈로그 화면 없는 export 0건"과 같은 방식으로 "군 없는 export 0건"을 강제한다. 화면은 군 순서대로 섹션(`h2`)을 그리고, 상단에 이름·군 필터(`TextField`)와 항목 수 표식을 둔다. 필터는 클라이언트 상태이며 일치하지 않는 타일은 숨긴다(`[aria-label$=" preview"]` 수는 숨겨도 유지된다). 타일 안의 프리뷰 내용은 바꾸지 않는다 — 시각 회귀 기준 이미지가 그것을 고정한다(FR-QA-004).
 
 ---
 
@@ -937,6 +973,8 @@ C-012 Panel, C-032 CodeBlock, C-002 IconButton, C-030 Table, C-020 Badge, C-001 
 5. `Banner tone="danger"` 프리뷰는 `action` 슬롯을 채운다. 슬롯이 비면 개발 빌드가 콘솔 경고를 출력한다(FR-CMP-008 AC-2).
 6. 오버레이의 `z-index`는 `z.overlay`와 `z.popover` 토큰을 사용한다(FR-CMP-006 AC-4). 프리뷰가 문서 사이트 셸 위에 렌더되어도 셸의 `z.sticky` 상단바를 덮는다.
 7. Radix가 소유하는 DOM 구조에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS-004 예외/실패 처리, FR-CMP-006 예외/실패 처리).
+
+CR-042 시각 고도화: 머리에 W-020 복귀 링크(`Link`, 아이콘 포함)와 군 `Badge`를 두고, 라이브 프리뷰 `Panel`에 점 격자 배경(`docs-preview--stage`)을 깐다. 프리뷰 요소 자체(`.docs-preview` 내부)는 바꾸지 않는다 — 시각 회귀 기준 이미지가 그 영역을 찍는다. "CSS 클래스" 절은 `cdt-<kebab>` 블록 클래스를 보여 React 없는 소비자의 진입점을 안내한다(FR-CSS-004 AC-2·AC-3).
 
 ---
 

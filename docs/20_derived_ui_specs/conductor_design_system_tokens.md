@@ -1,6 +1,6 @@
 # Conductor Design System 토큰 명세
 
-> 상태: review | 버전: v0.10 | 갱신일: 2026-09-13
+> 상태: review | 버전: v0.11 | 갱신일: 2026-10-08
 
 ## 0. 문서 성격과 범위 경계
 
@@ -939,12 +939,18 @@ CR-018 이전 구현은 상태 semantic 색을 배경 전체에 적용하고 `te
 | `page.topbarZ` | `{z.sticky}` | FR-TOK-008 |
 | `page.navZ` | `{z.drawer}` | FR-TOK-008 |
 | `page.skipLinkZ` | `{z.popover}` | FR-CSS-002 AC-5 |
+| `page.displaySize` | `clamp(36px, 5.5vw, 64px)` | FR-TOK-007 AC-4, W-001 (CR-042) |
+| `page.displayLineHeight` | `1.04` | W-001 (CR-042) |
+| `page.leadSize` | `18px` | W-001, W-002 (CR-042) |
+| `page.leadLineHeight` | `27px` | W-001, W-002 (CR-042) |
 
 `page.headingSize`의 `24px`와 `32px`는 리터럴이 아니라 5.9.2절의 파생 수식 결과다: `font.size.xl × 1.2 = 24px`, `font.size.xl × 1.6 = 32px`. 토큰 빌드가 수식을 평가해 리터럴로 산출한다. `clamp()` 인자는 CSS 커스텀 프로퍼티로 남길 수 없다 — 소비자가 `calc()` 없이 재정의하면 무효 값이 되기 때문이다.
 
 `page.sectionHeadingSize`(`h2`)와 `page.subHeadingSize`(`h3`)도 같은 방식으로 `font.size.xl`에서 파생한다(CR-034): `20 × 1.3 = 26px`, `20 × 1.1 = 22px`. 짝이 되는 줄 높이는 5.9.2절의 heading 비율 1.30과 같은 반올림 규칙을 적용해 `34px`, `29px`가 된다. 이 네 토큰은 컴포넌트 층에 있으므로 FR-TOK-007 AC-1이 고정한 `font.size` 7단은 그대로다. 이들이 없을 때 `h2`·`h3`는 사용자 에이전트 기본값으로 떨어져 본문과 크기가 거의 같았고, 문서에 `h1` 아래의 위계가 존재하지 않았다.
 
-`page.headingLineHeight`만 단위 없는 비율이다. `clamp()`로 크기가 변하는 유일한 토큰이므로 px 고정이 불가능하다.
+`page.headingLineHeight`와 `page.displayLineHeight`만 단위 없는 비율이다. `clamp()`로 크기가 변하는 두 토큰이므로 px 고정이 불가능하다.
+
+`page.displaySize`와 `page.leadSize`는 CR-042가 문서 사이트 랜딩(W-001)의 히어로를 위해 더한 두 단이다. 파생 방식은 위와 같다: `font.size.xl × 1.8 = 36px`·`× 3.2 = 64px`가 display `clamp()`의 양 끝이고, `font.size.xl × 0.9 = 18px`가 lead 크기이며 짝 줄 높이는 본문 비율 1.50과 half-up 반올림으로 `27px`다. 둘 다 컴포넌트 층이므로 FR-TOK-007 AC-1의 `font.size` 7단은 그대로다. display는 36px 이상에서만 쓰는 대형 텍스트이고(WCAG 대형 텍스트 3:1), lead는 본문 비율을 지키는 문단 크기다 — 어느 쪽도 본문 **font.size.md**를 대체하지 않는다.
 
 ### 7.8 셸 컴포넌트 토큰 (WP-023)
 
