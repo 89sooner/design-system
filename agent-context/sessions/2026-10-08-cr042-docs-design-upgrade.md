@@ -22,7 +22,11 @@
 ## 발견한 기존 결함 (이 변경이 만든 것이 아님)
 
 - DEV-046: W-020의 `RelationGraph` 프리뷰 `근거 보기` 버튼이 560·800px에서 뷰포트 밖으로 나가고, `Tabs` 프리뷰의 두 트리거가 `tabindex="-1"`이라 `e2e/screens.spec.ts`의 QA-001·002·003·004가 `/components`에서 실패한다. `origin/main`을 별도 워크트리로 빌드해 같은 측정을 하니 동일하게 재현됐다. 수정은 별도 CR(패키지 CSS의 가로 스크롤 소유 / QA 검사의 roving-focus 제외).
-- CI의 `packages/react` 시간 의존 테스트 둘(Tabs 키보드 a11y, `relation.test.tsx` 5초 타임아웃)이 WIP 커밋에서 한 번씩 실패했다. 로컬에서는 재현되지 않으며 PR 코멘트로 근거를 남겼다.
+- CI의 `packages/react` 시간 의존 테스트 둘이 실패했다. Tabs 키보드 a11y는 Radix roving-focus의 setTimeout과의 경합이라 시나리오를 두 단계로 나눴고, `relation.test.tsx`의 300노드 측정 테스트는 시간 예산을 단언하지 않는데 쿼리만 3–4초라 병렬 CI에서 기본 5초를 두 번 넘겨 명시적 타임아웃 20초를 줬다.
+
+## 종료
+
+- 2026-10-09 PR #32 head `aeed606`에서 verify(node 20/22)·visual regression 모두 success. CR-042·DEV-045 closed, DEV-046은 별도 CR 대기.
 
 ## 다음 에이전트가 지킬 것
 
@@ -35,4 +39,4 @@
 ## 참조
 
 - PR: https://github.com/89sooner/design-system/pull/32
-- CR-042 (`docs/00_governance/change_control.md`), 원장 v0.34, 브리프 `scratchpad/design-brief.md`(세션 한정)
+- CR-042 (`docs/00_governance/change_control.md`), 원장 v0.35, 브리프 `scratchpad/design-brief.md`(세션 한정)
