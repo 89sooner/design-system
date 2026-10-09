@@ -1,6 +1,6 @@
 # Conductor Design System 구현 추적 원장
 
-> 상태: review | 버전: v0.35 | 갱신일: 2026-10-09
+> 상태: review | 버전: v0.36 | 갱신일: 2026-10-09
 
 ## 1. 목적과 갱신 규칙
 
@@ -258,7 +258,9 @@ PR Search 소비처의 `DEV-380`이 트리거다: 화면 계약이 최대 20계�
 
 | DEV ID | 발견일 | 유형 | 내용 | 관련 ID | 처리 CR | 상태 |
 | --- | --- | --- | --- | --- | --- | --- |
-| DEV-046 | 2026-10-08 | 구현 결함 (기존) | **W-020 카탈로그의 두 프리뷰가 화면 QA 게이트를 이미 통과하지 못하고 있었다.** CR-042 게이트 실행에서 `e2e/screens.spec.ts`의 QA-001·002(560·800px 클리핑)와 QA-003·004(Tab 순서)가 `/components`에서 실패했고, `origin/main`을 별도 워크트리로 빌드해 같은 측정을 하니 동일하게 재현됐다 — (a) `RelationGraph` 프리뷰의 `근거 보기` 버튼이 560·800px에서 뷰포트 밖으로 나간다(컴포넌트의 표가 자체 가로 스크롤 컨테이너를 갖지 않는다), (b) `Tabs` 프리뷰의 두 트리거가 모두 `tabindex="-1"`이라 검사가 세는 포커스 순서와 실제 Tab 순서가 어긋난다. 둘 다 CR-041이 카탈로그에 더한 프리뷰 안의 문제이며 이번 재설계의 docs CSS는 `.docs-preview` 내부를 건드리지 않는다(브리프 §0.3). 수정 제안: (a) `packages/css`의 `.cdt-relation` 표에 `.cdt-table__scroll`과 같은 가로 스크롤 소유를 주고, (b) 화면 QA 검사가 Radix roving-focus 그룹(`[role=tablist]`)의 `tabindex=-1` 항목을 DOM 순서 비교에서 제외하도록 한다. 이 CR의 범위를 넓히지 않기 위해 여기서는 등록만 한다 | FR-CMP-011, FR-CMP-013, FR-A11Y-002, FR-DOC-003 | CR-042 (등록) · 수정은 별도 CR | open |
+| DEV-048 | 2026-10-09 | 문서 결함 | **검증 계획과 CI가 docs E2E 실행 시점에서 어긋난다.** `conductor_release_validation_plan.md`의 e2e 행은 `pnpm test:e2e`를 PR·main에서 실행한다고 적지만, `.github/workflows/ci.yml`에 그 단계가 없고 루트 `package.json`에도 `test:e2e`가 없다(스크립트는 `apps/docs`에만 있다). `conductor_async_events_jobs.md`의 CI 작업(JOB-CI-001~004)에도 docs E2E 작업이 정의돼 있지 않다. 그래서 DEV-046이 CR-041부터 CR-042까지 드러나지 않았고, CR-042는 E2E 6건 실패를 안은 채 CI green으로 종료할 수 있었다. 해소는 별도 CR이다 — CI에 docs E2E 단계를 더하거나 검증 계획을 실제에 맞춘다 | FR-DOC-001~007, FR-QA-003 | CR-043 (등록) · 해소는 별도 CR | open |
+| DEV-047 | 2026-10-09 | 구현 편차 | **`e2e/workspaces.spec.ts`의 FR-QA-003 axe가 light 1280·1536에서 간헐적으로 `color-contrast` serious를 냈다.** CR-042의 `.docs-route` 진입 페이드(opacity 0→1) 도중에 대비를 잰 타이밍 경합이다 — reduce 모션이거나 800ms 뒤에 재면 0건, 즉시 재면 테마 전환 여부와 무관하게 재현된다(대기 없이 31/36, 대기 뒤 0/24). CR-028(DEV-021)과 같이 한 프레임 뒤 문서 타임라인의 실행 중 애니메이션이 끝날 때까지 2초 안에서 기다린 뒤 axe를 실행하고, 남은 애니메이션은 이름으로 실패시킨다(회전 전용 `cdt-spin`만 허용) | FR-QA-003, FR-A11Y-004 | CR-043 | closed |
+| DEV-046 | 2026-10-08 | 구현 결함 (기존) | **W-020 카탈로그의 두 프리뷰가 화면 QA 게이트를 이미 통과하지 못하고 있었다.** CR-042 게이트 실행에서 `e2e/screens.spec.ts`의 QA-001·002(560·800px 클리핑)와 QA-003·004(Tab 순서)가 `/components`에서 실패했고, `origin/main`을 별도 워크트리로 빌드해 같은 측정을 하니 동일하게 재현됐다 — (a) `RelationGraph` 프리뷰의 `근거 보기` 버튼이 560·800px에서 뷰포트 밖으로 나간다(컴포넌트의 표가 자체 가로 스크롤 컨테이너를 갖지 않는다), (b) `Tabs` 프리뷰의 두 트리거가 모두 `tabindex="-1"`이라 검사가 세는 포커스 순서와 실제 Tab 순서가 어긋난다. 둘 다 CR-041이 카탈로그에 더한 프리뷰 안의 문제이며 이번 재설계의 docs CSS는 `.docs-preview` 내부를 건드리지 않는다(브리프 §0.3). 수정 제안: (a) `packages/css`의 `.cdt-relation` 표에 `.cdt-table__scroll`과 같은 가로 스크롤 소유를 주고, (b) 화면 QA 검사가 Radix roving-focus 그룹(`[role=tablist]`)의 `tabindex=-1` 항목을 DOM 순서 비교에서 제외하도록 한다. 이 CR의 범위를 넓히지 않기 위해 여기서는 등록만 한다. **결과 (CR-043, 2026-10-09): 원인은 프리뷰가 아니라 검사였다.** (a)의 가설은 틀렸다 — `RelationGraph`의 관계 목록은 `Table`이고 `Table`은 `.cdt-table__scroll`(`overflow-x: auto`)을 이미 소유한다(FR-CMP-005 AC-1). `packages/css` 수정 제안은 철회한다. (b)는 현상이 맞았으나 항목을 빼는 대신 롤링 그룹을 Tab 정지점 하나로 세고 포커스가 그룹 안 항목에 들어가는지, 방향키로 모든 항목에 닿는지 확인한다. 첫 불일치에서 루프가 멈춰 가려져 있던 검사 결함 둘(`details > summary` 누락, 닫힌 `details` 내용 포함)도 고쳤다. 컴포넌트·CSS·공개 API 변경 없음 | FR-CMP-005, FR-CMP-011, FR-CMP-013, FR-A11Y-002, FR-DOC-003, FR-THM-001, FR-THM-002 | CR-042 (등록) · CR-043 (수정) | closed |
 | DEV-045 | 2026-10-08 | 검증 편차 | **시각 회귀 기준 이미지를 고정 컨테이너 밖에서 재생성했다.** FR-QA-004·JOB-CI-003은 `Dockerfile.visual`의 Playwright 1.61.1 Noble 이미지에서만 기준 이미지를 갱신하도록 정한다. 이 세션의 샌드박스에는 Docker 데몬이 없고 `cdn.playwright.dev`가 egress 정책으로 막혀 Chromium 1228도 받을 수 없었다. 대신 같은 Ubuntu 24.04·같은 폰트 세트의 샌드박스에서 Chromium 1194로, 이미지에 없는 `Inter`를 fontconfig로 제외한 채 렌더하니 **갱신 전** 커밋 기준 이미지 27장과 1% 임계 안에서 일치했고(변경하지 않은 컴포넌트 12종×2테마가 PR CI의 고정 컨테이너에서도 통과), 같은 조건으로 기준 이미지를 갱신했다. 최종 판정은 PR CI의 `visual regression` 잡이다 — 그 잡이 1% 임계를 넘기면 고정 컨테이너에서 `pnpm test:visual --update`로 다시 찍는다. **결과: PR #32 head `aeed606`의 `visual regression` 잡이 이 기준 이미지로 success(2026-10-09) — 재촬영 불필요** | FR-QA-004, JOB-CI-003 | CR-042 | closed |
 | DEV-044 | 2026-09-03 | 문서 결함 | **`CR-040`이 쓴 문장이 코드보다 넓게 말했다.** 두 운영 문서가 "이번 실행이 게시하지 않은 패키지의 태그는 판정 대상이 아니다"라고 적었는데, **게시 뒤 검증 모드**(`--published-before`)는 건너뛴 패키지에도 존재·annotated 여부·릴리스 HEAD 도달성·원격 일치를 그대로 적용하며, 면제되는 것은 "태그 대상이 릴리스 HEAD와 같아야 한다"는 요구 **하나뿐**이다. **게시 전 모드**(`--snapshot`)는 다르다 — 레지스트리에 이미 있는 버전을 만나면 그 자리에서 `continue`하므로 그 패키지의 태그를 아예 보지 않는다. 두 모드를 구분해 적지 않으면 스냅숏 단계의 실패를 진단하는 운영자가 검사되지 않은 태그를 들여다보게 된다. 막힌 재실행을 진단하는 운영자를 오도할 수 있는 표현이었다. 두 문장을 그 범위로 좁혔다. PR #27 머지 후 리뷰가 찾았다 | FR-DX-005 | CR-040 (문서 정정) | closed |
 | DEV-043 | 2026-09-03 | 구현 결함 | **게시 전 게이트가 태그의 위치만 보고 종류를 보지 않았다.** 현재 버전 이름의 lightweight 태그가 이미 릴리스 HEAD에 놓여 있으면 `rev-list`가 HEAD를 돌려주므로 판정이 통과한다. 그런데 Changesets는 annotated tag 생성 실패를 publish 실패로 전파하지 않으므로(`release.yml`이 그 사실을 근거로 이 게이트를 둔다), 이 실행은 그 태그를 대체하지 못한 채 npm에만 게시하고 종류 검사는 **게시 뒤**에야 실패한다 — `DEV-042`가 옮긴 자리의 바로 옆 구멍이다. 게시 전 판정이 `cat-file -t`로 종류를 먼저 본다. 함께 `CR-039`가 인프라 운영 6절과 릴리스 검증 계획 4절로 cascade되지 않아 문서가 "게시 먼저, 그다음 태그 검증"을 기술하던 것도 정정했다. PR #26 머지 후 리뷰 둘이 찾았다 | FR-DX-005, JOB-REL-001 | CR-040 | closed |
@@ -430,3 +432,15 @@ OD-002(시각 회귀 이월)와 OD-004(셸 컴포넌트군 패키지 포함)는 
 | 검토 반영 | 영역별 계약·디자인 2렌즈 검토의 high/medium을 전부 처리했다. 코드 블록 포커스 링 억제, 11px 칩 셋의 대비 미달(4.04·3.90·4.34:1), 상단바 eyebrow(text.faint) axe 위반, 중첩 AppShell 프리뷰로 새던 셸 규칙, 내비 목록 잘림, 오버레이 트리거 무스타일, 필터 지우기 뒤 포커스 유실을 고쳤다 |
 | 테스트 견고화 | Tabs 키보드 시나리오를 두 단계로 나눠 Radix roving-focus의 setTimeout과의 경합을 없앴다(CI에서 4회 중 2회 실패하던 플레이크). 모션 E2E는 측정 구간에만 scroll-behavior를 auto로 고정하고, Getting Started E2E는 지연 라우트 렌더를 기다린다. `relation.test.tsx`의 300노드 측정 테스트(시간 예산 단언 없음, 쿼리만 3–4초)는 병렬 CI에서 기본 5초를 두 번 넘겨 명시적 타임아웃 20초를 줬다 |
 | CI · 종료 | PR #32 head `aeed606`에서 verify(node 20/22)·visual regression 모두 success. DEV-045 closed, CR-042 closed(2026-10-09). DEV-046은 별도 CR 대기 |
+
+
+### CR-043 화면 QA 검사 판정 정정 (2026-10-09)
+
+CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건이 프리뷰가 아니라 `apps/docs/e2e/screens.spec.ts`의 판정 오류였음을 확인하고 고쳤다. 요구사항·화면·패키지는 바뀌지 않았다. 고친 면제가 실제 결함을 숨기지 않는지 결함 주입 검증으로 확인했다.
+
+| 범위 | 결과 |
+| --- | --- |
+| 원인 | QA-001·002: `.cdt-table__scroll` 안에서 스크롤로 가려진 "근거 보기"를 잘림으로 셌다(`Table`은 FR-CMP-005 AC-1대로 스크롤을 이미 소유). QA-004: Radix 롤링 그룹을 정지점 여러 개로 셌고, `details > summary`를 빠뜨렸고, 닫힌 `details` 내용을 정지점으로 셌다 |
+| 수정 | `380c15f`(오판 넷) → `9a232e5`(행동 기반 스크롤 면제, 롤링 루트 상시 나열·등록 항목만 제외, 방향키 순회, 꼬리 정지점 검사, axe 정착 대기 강화) |
+| 적대적 검증 | 4관점 결함 주입. 1차에서 면제가 숨긴 결함 계열(시작 쪽 넘침·중간 클립·absolute 탈출 / Tab 정지점 없는 그룹·비항목 컨트롤·방향키·꼬리 / 무한 페이드·늦은·멈춘 애니메이션)을 찾아 `9a232e5`로 막았다 |
+| DEV | DEV-046 closed(원인 정정), DEV-047 closed(axe 경합), DEV-048 open(검증 계획 ↔ CI 불일치, 별도 CR) |
