@@ -1,6 +1,6 @@
 # Conductor Design System 구현 추적 원장
 
-> 상태: review | 버전: v0.36 | 갱신일: 2026-10-09
+> 상태: review | 버전: v0.37 | 갱신일: 2026-10-09
 
 ## 1. 목적과 갱신 규칙
 
@@ -258,6 +258,7 @@ PR Search 소비처의 `DEV-380`이 트리거다: 화면 계약이 최대 20계�
 
 | DEV ID | 발견일 | 유형 | 내용 | 관련 ID | 처리 CR | 상태 |
 | --- | --- | --- | --- | --- | --- | --- |
+| DEV-049 | 2026-10-09 | 검증 편차 | **릴리스 audit 게이트가 패치 없는 권고 1건을 제외한 채 통과한다.** `braces` 3.0.3(GHSA-vfj7-8cjw-p6xm, high)은 최신판이고 패치 버전이 없어 overrides로 고칠 수 없다. 개발 도구 전이 의존성(changesets·eslint·vite·tsup 등 34개 경로)에만 있고 입력이 저장소에 고정된 glob이며, tokens·css·react 런타임 트리에는 없다(`pnpm audit --prod` high 0). 사용자 결정으로 `pnpm.auditConfig.ignoreGhsas`에 이 GHSA만 넣었다. 패치가 나오면 overrides로 바꾸고 예외를 지운 뒤 닫는다 | NFR-002, JOB-REL-001 | CR-044 | open |
 | DEV-048 | 2026-10-09 | 문서 결함 | **검증 계획과 CI가 docs E2E 실행 시점에서 어긋난다.** `conductor_release_validation_plan.md`의 e2e 행은 `pnpm test:e2e`를 PR·main에서 실행한다고 적지만, `.github/workflows/ci.yml`에 그 단계가 없고 루트 `package.json`에도 `test:e2e`가 없다(스크립트는 `apps/docs`에만 있다). `conductor_async_events_jobs.md`의 CI 작업(JOB-CI-001~004)에도 docs E2E 작업이 정의돼 있지 않다. 그래서 DEV-046이 CR-041부터 CR-042까지 드러나지 않았고, CR-042는 E2E 6건 실패를 안은 채 CI green으로 종료할 수 있었다. 해소는 별도 CR이다 — CI에 docs E2E 단계를 더하거나 검증 계획을 실제에 맞춘다 | FR-DOC-001~007, FR-QA-003 | CR-043 (등록) · 해소는 별도 CR | open |
 | DEV-047 | 2026-10-09 | 구현 편차 | **`e2e/workspaces.spec.ts`의 FR-QA-003 axe가 light 1280·1536에서 간헐적으로 `color-contrast` serious를 냈다.** CR-042의 `.docs-route` 진입 페이드(opacity 0→1) 도중에 대비를 잰 타이밍 경합이다 — reduce 모션이거나 800ms 뒤에 재면 0건, 즉시 재면 테마 전환 여부와 무관하게 재현된다(대기 없이 31/36, 대기 뒤 0/24). CR-028(DEV-021)과 같이 한 프레임 뒤 문서 타임라인의 실행 중 애니메이션이 끝날 때까지 2초 안에서 기다린 뒤 axe를 실행하고, 남은 애니메이션은 이름으로 실패시킨다(회전 전용 `cdt-spin`만 허용) | FR-QA-003, FR-A11Y-004 | CR-043 | closed |
 | DEV-046 | 2026-10-08 | 구현 결함 (기존) | **W-020 카탈로그의 두 프리뷰가 화면 QA 게이트를 이미 통과하지 못하고 있었다.** CR-042 게이트 실행에서 `e2e/screens.spec.ts`의 QA-001·002(560·800px 클리핑)와 QA-003·004(Tab 순서)가 `/components`에서 실패했고, `origin/main`을 별도 워크트리로 빌드해 같은 측정을 하니 동일하게 재현됐다 — (a) `RelationGraph` 프리뷰의 `근거 보기` 버튼이 560·800px에서 뷰포트 밖으로 나간다(컴포넌트의 표가 자체 가로 스크롤 컨테이너를 갖지 않는다), (b) `Tabs` 프리뷰의 두 트리거가 모두 `tabindex="-1"`이라 검사가 세는 포커스 순서와 실제 Tab 순서가 어긋난다. 둘 다 CR-041이 카탈로그에 더한 프리뷰 안의 문제이며 이번 재설계의 docs CSS는 `.docs-preview` 내부를 건드리지 않는다(브리프 §0.3). 수정 제안: (a) `packages/css`의 `.cdt-relation` 표에 `.cdt-table__scroll`과 같은 가로 스크롤 소유를 주고, (b) 화면 QA 검사가 Radix roving-focus 그룹(`[role=tablist]`)의 `tabindex=-1` 항목을 DOM 순서 비교에서 제외하도록 한다. 이 CR의 범위를 넓히지 않기 위해 여기서는 등록만 한다. **결과 (CR-043, 2026-10-09): 원인은 프리뷰가 아니라 검사였다.** (a)의 가설은 틀렸다 — `RelationGraph`의 관계 목록은 `Table`이고 `Table`은 `.cdt-table__scroll`(`overflow-x: auto`)을 이미 소유한다(FR-CMP-005 AC-1). `packages/css` 수정 제안은 철회한다. (b)는 현상이 맞았으나 항목을 빼는 대신 롤링 그룹을 Tab 정지점 하나로 세고 포커스가 그룹 안 항목에 들어가는지, 방향키로 모든 항목에 닿는지 확인한다. 첫 불일치에서 루프가 멈춰 가려져 있던 검사 결함 둘(`details > summary` 누락, 닫힌 `details` 내용 포함)도 고쳤다. 컴포넌트·CSS·공개 API 변경 없음 | FR-CMP-005, FR-CMP-011, FR-CMP-013, FR-A11Y-002, FR-DOC-003, FR-THM-001, FR-THM-002 | CR-042 (등록) · CR-043 (수정) | closed |
