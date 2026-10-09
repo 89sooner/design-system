@@ -1,6 +1,6 @@
 # Conductor Design System 릴리스 검증 계획
 
-> 상태: review | 버전: v0.8 | 갱신일: 2026-09-13
+> 상태: review | 버전: v0.9 | 갱신일: 2026-10-09
 
 ## 1. 목적과 범위
 
@@ -80,7 +80,7 @@ Conductor Design System은 `@conductor-by-89soone/tokens`, `@conductor-by-89soon
 - [x] OD-002의 REL-004 이월에 따라 `pnpm test:visual`에서 12개 컴포넌트 × 2테마 = 24 스냅샷 비교, 픽셀 차이 1% 이하(FR-QA-004) — 3회 연속 diff 0건
 - [x] FR-QA-004가 `deferred`로 표시되어 REL-001~REL-003 게이트에서는 생략됐고, REL-004의 JOB-CI-003으로 활성화됐음을 원장에 기록
 - [x] `Button` 단독 gzip 4KB 이하, `@conductor-by-89soone/css` gzip 20KB 이하(NFR-001, JOB-CI-004)
-- [x] `pnpm audit --audit-level high` 취약점 0건(NFR-002) — 실측 high 이상 0건(2026-07-13)
+- [x] `pnpm audit --audit-level high` 취약점 0건(NFR-002) — 실측 high 이상 0건(2026-07-13). 2026-10-09부터 패치 없는 `braces` 권고 1건(GHSA-vfj7-8cjw-p6xm)을 `pnpm.auditConfig.ignoreGhsas`로 제외한다(CR-044, DEV-049 — 런타임 트리 high 0, 패치가 나오면 해제)
 - [x] npm 배포 인증이 OIDC 기반이며 장기 토큰을 사용하지 않음(NFR-002, JOB-REL-001) — public org `conductor-by-89soone`의 0.0.0 bootstrap 3종과 패키지별 Trusted Publisher 등록 후 Release run 29569125471이 OIDC로 0.1.0 3종을 게시. 세 버전 모두 SLSA provenance v1 attestation을 노출하고 저장소에 `NPM_TOKEN` 참조 0건
 - [x] 롤백 리허설이 10분 이내에 완료된 기록 존재(NFR-004) — npm 3종을 실제로 deprecate하고 `latest: 0.1.0 → 0.0.0`으로 전환한 9단계가 323.8초에 완료됐으며, 레지스트리 원문 검증 후 deprecation 해제와 `latest=0.1.0` 복구 완료. Pages는 직전 정상 커밋 재배포 run 29568304495(214초)와 main 복원 run 29568605076(203초) 모두 성공
 
