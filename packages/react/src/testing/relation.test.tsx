@@ -76,6 +76,8 @@ describe("FR-CMP-011 relation exploration", () => {
     view.rerender(<RelationGraph label="관계" nodes={[]} edges={[]} state="loading" />);
     expect(view.container.firstElementChild?.getAttribute("aria-busy")).toBe("true");
   });
+  // Measurement only — no time budget is asserted. At 300 nodes the Testing Library queries walk ~3.3k elements and
+  // take 3–4 s on their own, so the 5 s default timed out under the parallel CI suite (twice on PR #32, CR-042).
   test.each([50, 300])("measures %i node cyclic layout/render/select/filter/zoom", (count) => {
     const input = Array.from({ length: count }, (_, i) => ({ id: `n${i}`, label: `긴 한국어 Node ${i}` }));
     const connections = input.map((node, i) => ({ id: `e${i}`, source: node.id, target: input[(i + 1) % count]!.id, type: i % 2 ? "references" : "reverts", label: "관계", evidence: "합성" }));
@@ -87,5 +89,5 @@ describe("FR-CMP-011 relation exploration", () => {
     console.info(JSON.stringify({ nodes: count, layoutMs: t1 - t0, renderMs: t2 - t1, selectMs: t3 - t2, filterMs: t4 - t3, zoomMs: t5 - t4, dom: view.container.querySelectorAll("*").length, environment: "Vitest/jsdom; timings include Testing Library queries" }));
     expect(view.container.querySelectorAll("[data-node-id]")).toHaveLength(count);
     expect(view.container.querySelectorAll("[data-edge-id]")).toHaveLength(count / 2);
-  });
+  }, 20_000);
 });
