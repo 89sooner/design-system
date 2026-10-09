@@ -4,6 +4,8 @@
 // its group above it: a swatch gallery for colour, a type specimen and scale, a spacing ruler, the
 // radius row and elevation stack, and the computed motion tiles. Colour previews take their value
 // from the token artifact for the current theme (`valueFor`), never from a literal.
+// Page styles ride with the lazy route chunks so the landing never downloads them (CR-042, NFR-001).
+import "./styles/pages.css";
 import { Badge, Banner, Button, CodeBlock, Panel, ProgressRing, Spinner, Switch, Table } from "@conductor-by-89soone/react";
 import { ArrowRight, Braces, Layers } from "lucide-react";
 import { useEffect, useMemo, useState, type CSSProperties, type ReactNode } from "react";
@@ -347,7 +349,7 @@ export function FoundationPage({ group, theme, title }: { readonly group: Founda
         <p className="docs-lead">{descriptions[group]}</p>
         <div className="docs-page-head__meta">
           <Badge tone="accent">{tokens.length} tokens</Badge>
-          {themed ? <Badge>Showing {theme} values</Badge> : null}
+          {themed ? <Badge>Showing current theme values</Badge> : null}
         </div>
       </div>
 

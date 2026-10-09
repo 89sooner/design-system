@@ -4,6 +4,8 @@
 // public component from `@conductor-by-89soone/react`; the metadata (family, root class, props)
 // comes from `scripts/build-component-catalog.mjs`, which fails the build for any public export
 // without a preview `case` below. Only public components and public `cdt-*` classes are composed.
+// W-020/W-021 styles ride with this lazy chunk so the landing never downloads them (CR-042, NFR-001).
+import "./styles/catalog.css";
 import * as Components from "@conductor-by-89soone/react";
 import {
   Activity,

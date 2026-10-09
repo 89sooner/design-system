@@ -4,6 +4,8 @@
 // examples and every asserted sentence are unchanged; the pages gain a shared head, labelled rule
 // pairs and a measured contrast stat. `CopyCode` is imported by the catalog detail screen and keeps
 // its exact button labels and live-region behaviour (FR-DOC-006).
+// Page styles ride with the lazy route chunks so the landing never downloads them (CR-042, NFR-001).
+import "./styles/pages.css";
 import { Badge, Banner, Button, CodeBlock, Dialog, Drawer, Field, Kbd, Meter, Panel, SeverityTag, StatusBadge, Table, TextField } from "@conductor-by-89soone/react";
 import { Check, ShieldCheck, TriangleAlert, Undo2, X } from "lucide-react";
 import allowList from "../../../axe-allowlist.json";

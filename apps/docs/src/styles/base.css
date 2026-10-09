@@ -6,9 +6,6 @@
  * column widths, which are page furniture rather than product spacing.
  */
 .docs-shell { background: transparent; }
-.docs-nav__brand, .docs-topbar__title { color: var(--cdt-text-primary); font-weight: 700; }
-.docs-nav__brand { display: block; padding: var(--cdt-space-3); }
-.docs-theme-toggle { display: inline-flex; align-items: center; gap: var(--cdt-space-2); }
 .docs-eyebrow { margin: 0 0 var(--cdt-space-2); color: var(--cdt-accent); font-size: var(--cdt-font-size-sm); font-weight: 700; text-transform: uppercase; }
 .docs-lead { max-width: 42rem; /* cdt-allow-literal: 읽기 폭은 간격 스케일이 아니라 줄 길이로 정한다 */ color: var(--cdt-text-muted); font-size: var(--cdt-font-size-lg); }
 .docs-token-swatch { display: block; width: var(--cdt-space-6); height: var(--cdt-space-6); border: var(--cdt-border-width-hairline) solid var(--cdt-border-default); }

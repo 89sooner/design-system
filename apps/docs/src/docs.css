@@ -6,11 +6,14 @@
  *   base.css     shared primitives (eyebrow, lead, token swatches, previews, motion guards)
  *   shell.css    navigation brand, top bar, theme toggle, route transition, footer
  *   landing.css  W-001 hero, showcase, stats, package cards, principles, steps, next-step band
- *   catalog.css  W-020 catalog families and tiles, W-021 component detail
+ *
+ * Two more files are NOT imported here. They are imported by the lazy route modules that use them, so
+ * Vite emits them as per-route CSS chunks and the prerendered landing (W-001) never waits on them —
+ * on Fast 3G every first-paint kilobyte moves LCP (NFR-001):
+ *   catalog.css  W-020 catalog families and tiles, W-021 component detail   ← catalog.tsx
  *   pages.css    W-002 getting started, W-010~014 foundations, W-030 tokens, W-040/050 guides
+ *                ← getting-started.tsx, foundation-page.tsx, token-reference.tsx, guides.tsx
  */
 @import "./styles/base.css";
 @import "./styles/shell.css";
 @import "./styles/landing.css";
-@import "./styles/catalog.css";
-@import "./styles/pages.css";

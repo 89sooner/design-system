@@ -4,6 +4,8 @@
 // The `h2` texts and their order are asserted by `e2e/guides.spec.ts`, so the step number lives
 // in the rail next to the heading, never inside it. Everything here composes public components;
 // nothing reads `document` or `navigator` at render time.
+// Page styles ride with the lazy route chunks so the landing never downloads them (CR-042, NFR-001).
+import "./styles/pages.css";
 import { Banner, CodeBlock, CopyButton, Table } from "@conductor-by-89soone/react";
 import { ArrowRight, Component } from "lucide-react";
 import type { ReactNode } from "react";
@@ -65,7 +67,7 @@ export function GettingStarted() {
         <p className="docs-lead">From an empty React application to a themed component in eight short steps. Every step composes the public packages; nothing here is specific to this site.</p>
       </div>
 
-      <ol className="docs-steps-page">
+      <ol className="docs-steps-page" role="list">
         <Step id="requirements" number="01" title="Requirements">
           <p className="docs-step-item__note">Conductor ships as ESM packages and expects a current toolchain.</p>
           <Table caption="Consumer requirements">
@@ -121,7 +123,7 @@ export function GettingStarted() {
 
         <Step id="build-order" number="08" title="Build order">
           <p className="docs-step-item__note">Each package consumes only the one before it. A reverse reference is a build error, which keeps the stylesheet usable without React.</p>
-          <ol className="docs-chain" aria-label="Build order">
+          <ol className="docs-chain" role="list" aria-label="Build order">
             {buildOrder.map((name, index) => (
               <li key={name} className="docs-chain__item">
                 <span className="docs-chain__pkg">{name}</span>

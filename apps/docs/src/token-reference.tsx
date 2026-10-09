@@ -3,6 +3,8 @@
 // W-030. The reference table keeps its caption, filter and verdict strings (asserted by
 // `e2e/tokens.spec.ts`); around it the page gains a stat strip, a summary line that follows the
 // filter, tier badges, colour chips beside colour values and a layering diagram for the z scale.
+// Page styles ride with the lazy route chunks so the landing never downloads them (CR-042, NFR-001).
+import "./styles/pages.css";
 import { Badge, Banner, EmptyState, Panel, Table, TextField } from "@conductor-by-89soone/react";
 import { Search } from "lucide-react";
 import { useState } from "react";
