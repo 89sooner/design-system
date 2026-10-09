@@ -420,9 +420,13 @@ OD-002(시각 회귀 이월)와 OD-004(셸 컴포넌트군 패키지 포함)는 
 | 셸 | 브랜드 마크·내비 아이콘·내비 하단 GitHub/npm 링크·상단바 eyebrow/섹션 제목/GitHub 액션·테마 토글 필·라우트 전환(reduced-motion 가드)·푸터. 내비 그룹 순서를 IA 7절(학습 순서)에 맞추고 Workspaces를 마지막 그룹으로 옮겼다 |
 | W-020 / W-021 | 메타데이터가 나르는 `family`(매핑 누락은 `DOC-CATALOG-FAMILY`로 빌드 실패) · 군별 섹션 · 이름/군 필터 · 항목 수 표식 · 상세 머리(복귀 링크·군 배지) · 점 격자 스테이지 프리뷰 · CSS 클래스 절 |
 | W-002 / W-010~014 / W-030 / W-040 / W-050 | 번호 단계와 복사 머리띠 · 색 스와치 갤러리 · display/lead 타입 예시 · 고도 스택 예시 · 토큰 참조 계층 칩·색 칩·요약 행 · 규칙 쌍 라벨 · 대비 요약 미터 |
-| 토큰 | `page.displaySize`·`page.displayLineHeight`·`page.leadSize`·`page.leadLineHeight` (`font.size.xl` 파생, 7단 스케일 불변). 토큰 __TOKENS__개, API 리포트 갱신, Changeset minor |
-| 정적 게이트 | build·typecheck·lint·lint:deps·lint:tokens(__LINTFILES__ 파일, 위반 0)·check:contrast(__CONTRAST__)·check:api(`any` 0)·check:changesets·check:secrets __STATIC__ |
-| 단위/접근성 | Vitest __UNIT__, axe/keyboard __A11Y__ |
-| 브라우저 | 문서 E2E __E2E__, 시각 회귀 __VISUAL__ (아래 DEV-045 참조), Lighthouse __LH__ |
-| 예산 | Button __BUTTON__/4KB, CSS __CSS__/20KiB |
+| 토큰 | `page.displaySize`·`page.displayLineHeight`·`page.leadSize`·`page.leadLineHeight` (`font.size.xl` 파생, 7단 스케일 불변). 토큰 307개, API 리포트 갱신, Changeset minor |
+| 정적 게이트 | build·typecheck·lint·lint:deps·lint:tokens(77 파일, 위반 0)·check:contrast(232/232)·check:api(`any` 0)·check:changesets·check:secrets 통과 |
+| 단위/접근성 | Vitest 667/667, axe/keyboard 238 passed + 기존 음성 픽스처 1 skipped |
+| 브라우저 | 문서 E2E 50/56 — 남은 6건은 모두 W-020의 DEV-046(origin/main에서 동일 재현), 시각 회귀 27/27 (컴포넌트 22장 + 전체 그레이스케일 1장 갱신, 프리뷰 무대 변경분) (아래 DEV-045 참조), Lighthouse 로컬 p75 2,345ms / 2,500ms(CLS 0.000, 외부 요청 0). 재설계 직후 CI 2,738ms로 예산을 넘었고, 프리렌더 스크립트를 본문 끝으로 옮기고(2,563ms) 문서 CSS를 라우트별 청크로 나눠 랜딩 첫 CSS를 137KB → 100KB로 줄여 회복했다 |
+| 예산 | Button 1.33 KiB/4KB, CSS 11.14 KiB/20KiB |
 | 문서 | validator `--report`·`--strict` 구조·추적성 오류 0 |
+
+| 내비 아이콘·외부 링크 | 내비 하단 GitHub/npm, 상단바 GitHub 아이콘 링크, 푸터 패키지 링크는 모두 새 탭이며 sr-only "(opens in a new tab)"을 갖는다. 링크는 클릭 전 요청이 없어 FR-DOC-001 AC-4(외부 요청 0건)를 유지한다 |
+| 검토 반영 | 영역별 계약·디자인 2렌즈 검토의 high/medium을 전부 처리했다. 코드 블록 포커스 링 억제, 11px 칩 셋의 대비 미달(4.04·3.90·4.34:1), 상단바 eyebrow(text.faint) axe 위반, 중첩 AppShell 프리뷰로 새던 셸 규칙, 내비 목록 잘림, 오버레이 트리거 무스타일, 필터 지우기 뒤 포커스 유실을 고쳤다 |
+| 테스트 견고화 | Tabs 키보드 시나리오를 두 단계로 나눠 Radix roving-focus의 setTimeout과의 경합을 없앴다(CI에서 4회 중 2회 실패하던 플레이크). 모션 E2E는 측정 구간에만 scroll-behavior를 auto로 고정하고, Getting Started E2E는 지연 라우트 렌더를 기다린다 |

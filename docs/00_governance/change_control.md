@@ -466,3 +466,6 @@ CR-041 구현 cascade와 로컬 검증은 2026-09-14에 종료했다. 사용자�
 | 지키는 불변식 | 토큰 외 리터럴 0건(`lint:tokens`), `!important` 0건, 모션은 `prefers-reduced-motion: no-preference` 안에서 토큰 지속시간만 사용(FR-CSS-005), 랜딩 프리렌더와 hydration 일치(FR-DX-004), 런타임 외부 요청 0건(FR-DOC-001 AC-4 — 외부 링크는 클릭 전 요청이 없다), 두 테마 동일 마크업(FR-THM-003), 키보드 경로·포커스 링(FR-A11Y-001·002), 색 단독 신호 금지(FR-A11Y-003), LCP p75 2.5초(NFR-001) |
 | 레퍼런스 접근 | 작업 샌드박스의 네트워크 egress 정책이 열거된 도메인을 모두 차단했다(403). 각 사이트의 알려진 패턴을 재구성해 적용했으며, 실제 사이트와의 대조는 사용자 검토 항목으로 남긴다 |
 | cascade | IA(내비 그룹 7 Workspaces·아이콘·외부 링크) → 와이어프레임(W-001·W-002·W-020·W-021 레이아웃) → 토큰 명세 §7.7 → 프론트엔드 아키텍처 §12(`site-stats.json`) → 구현 원장(교차 WP 유지보수 기록) → Changeset·API 리포트 |
+| 검증 (2026-10-09, 로컬) | build·typecheck·lint·lint:deps·lint:tokens(77파일, 위반 0)·check:contrast 232/232·check:api(`any` 0)·check:changesets·check:secrets 통과. Vitest 667/667, 브라우저 접근성 238 passed + 기존 1 skipped, size Button 1.33 KiB·CSS 11.14 KiB, Lighthouse LCP p75 2,345ms(예산 2,500ms), 문서 E2E 50/56(남은 6건은 DEV-046, main 동일), 시각 회귀 27/27(23장 갱신, DEV-045). validator `--strict` 오류 0 |
+| 등록한 편차 | DEV-045(시각 기준 이미지를 고정 컨테이너 밖에서 재생성), DEV-046(W-020 프리뷰의 기존 화면 QA 실패 — 별도 CR로 수정) |
+| 종료 조건 | PR CI(verify node 20/22, visual regression)가 green이 되면 종료한다. 상태 `open`은 그 외부 증거를 기다리는 것이다 |

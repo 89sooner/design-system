@@ -123,9 +123,9 @@ CR-042가 이 화면을 랜딩 히어로 구조로 고도화했다. 섹션은 �
 │   mono 설치 한 줄  pnpm add @conductor-by-89soone/react  [Copy]│
 ├────────────────────────────────────────────────────────────┤
 │ § 라이브 쇼케이스  Panel (C-012) · 점 격자 배경            │
-│   Badge · StatusBadge(running) · Kbd                       │
-│   Table (C-030) 3행  │  Meter (C-062) · Timeline (C-031)   │
-│                      │  Switch (C-054) · Button (C-001)    │
+│   Badge · StatusBadge(running)                             │
+│   Table (C-030) 3행 · Banner │ Timeline (C-031) · Switch   │
+│   Meter (C-062) Panel        │ (C-054) · Button (C-001)    │
 │   캡션: 전부 공개 패키지의 실제 DOM이다 (FR-DOC-003 AC-1과 │
 │   같은 원칙) — 테마를 바꾸면 토큰이 바뀐다                 │
 ├────────────────────────────────────────────────────────────┤
@@ -166,7 +166,7 @@ CR-042가 이 화면을 랜딩 히어로 구조로 고도화했다. 섹션은 �
 
 ### 사용 컴포넌트
 
-C-010 Card(대화형, `href` 지정), C-011 CardGrid, C-012 Panel, C-020 Badge, C-021 StatusBadge, C-030 Table, C-031 Timeline, C-032 CodeBlock, C-033 Kbd, C-054 Switch, C-062 Meter, C-001 Button, 그리고 `CopyButton`(CR-041). CTA는 `Button`이 아니라 라우터 `Link`에 공개 `cdt-btn` 클래스를 입힌 것이다 — 탐색은 링크 의미를 가져야 하고, 그 클래스 계약은 FR-CSS-004 AC-3이 React 없이도 같은 시각을 보장한다. 셸이 제공하는 C-070, C-071, C-072, C-054(테마 토글)는 이 화면이 소유하지 않는다.
+C-010 Card(대화형, `href` 지정), C-011 CardGrid, C-012 Panel, C-020 Badge, C-021 StatusBadge, C-030 Table, C-031 Timeline, C-032 CodeBlock, C-054 Switch, C-060 Banner, C-062 Meter, C-001 Button, 그리고 `CopyButton`(CR-041). CTA는 `Button`이 아니라 라우터 `Link`에 공개 `cdt-btn` 클래스를 입힌 것이다 — 탐색은 링크 의미를 가져야 하고, 그 클래스 계약은 FR-CSS-004 AC-3이 React 없이도 같은 시각을 보장한다. 셸이 제공하는 C-070, C-071, C-072, C-054(테마 토글)는 이 화면이 소유하지 않는다.
 
 패키지 카드는 `href`를 받으므로 `a` 요소로 렌더되고 키보드 포커스를 받는다(FR-CMP-003 AC-1). 카드 내부에 중첩 대화형 요소를 넣지 않는다(FR-CMP-003 예외/실패 처리).
 

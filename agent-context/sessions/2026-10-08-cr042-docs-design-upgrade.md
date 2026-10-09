@@ -16,7 +16,8 @@
 1. 브리프 작성 → 토큰 4건(`page.displaySize`·`displayLineHeight`·`leadSize`·`leadLineHeight`, `font.size.xl` 파생) → `build-site-stats.mjs`(랜딩 수치) → `App.tsx`/`docs.css`를 `shell`·`landing`·`getting-started`·`catalog`·`pages` 모듈과 `styles/*.css`로 분리.
 2. 영역별 병렬 구현(셸·랜딩·카탈로그·페이지) → 영역별 2렌즈(계약·디자인) 적대 검토 → 수정 → 일관성 검수. 모든 에이전트는 자기 파일만 편집하고 `pnpm lint:tokens`·docs `tsc`·eslint를 green으로 남겼다.
 3. 거버넌스 cascade: CR-042 등록, IA(내비 그룹 7·아이콘·외부 링크), 와이어프레임(W-001·W-002·W-010·W-020·W-021), 토큰 명세 §7.7, 프론트엔드 아키텍처 §12(`site-stats.json`), 원장(교차 WP 유지보수 절, DEV-045·DEV-046), Changeset(tokens minor), API 리포트.
-4. 게이트: __GATES__
+4. 게이트(로컬, 2026-10-09): build·typecheck·lint·lint:deps·lint:tokens·contrast 232/232·api·changesets·secrets 통과, Vitest 667/667, 접근성 238 passed + 1 skipped, size Button 1.33 KiB·CSS 11.14 KiB, Lighthouse LCP p75 2,345ms, E2E 50/56(나머지 6건 DEV-046), 시각 회귀 27/27(23장 갱신).
+5. LCP 회귀와 회복: 재설계 직후 CI LCP p75가 2,738ms로 예산을 넘었다. 프리렌더 단계가 모듈 스크립트를 본문 끝으로 옮기고(2,563ms), `catalog.css`·`pages.css`를 지연 라우트 모듈이 import하게 나눠 랜딩 첫 CSS를 137KB → 100KB로 줄였다(로컬 2,345ms).
 
 ## 발견한 기존 결함 (이 변경이 만든 것이 아님)
 
