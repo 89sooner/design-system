@@ -1,6 +1,6 @@
 # Conductor Design System 구현 추적 원장
 
-> 상태: review | 버전: v0.37 | 갱신일: 2026-10-09
+> 상태: review | 버전: v0.38 | 갱신일: 2026-10-12
 
 ## 1. 목적과 갱신 규칙
 
@@ -258,6 +258,7 @@ PR Search 소비처의 `DEV-380`이 트리거다: 화면 계약이 최대 20계�
 
 | DEV ID | 발견일 | 유형 | 내용 | 관련 ID | 처리 CR | 상태 |
 | --- | --- | --- | --- | --- | --- | --- |
+| DEV-050 | 2026-10-12 | 구현 결함 | **눌린 버튼이 다크 테마에서 윗변에 흰 테두리를 보였다.** `:active`의 `inset 0 1px 0 var(--cdt-border-strong)`이 다크 팔레트에서 밝은 `rgba(148,163,184,0.3)`으로 칠해졌다(사용자 보고, 실측 재현). primary·secondary는 중립 검정 안쪽 그림자, ghost는 1px 이동만 남기도록 고쳤고, 명시성을 유지해 키보드 누름 중 포커스 링이 살아남는다. 회귀 테스트 `DEV-050` 추가 | FR-CMP-002, FR-A11Y-001 | CR-045 | closed |
 | DEV-049 | 2026-10-09 | 검증 편차 | **릴리스 audit 게이트가 패치 없는 권고 1건을 제외한 채 통과한다.** `braces` 3.0.3(GHSA-vfj7-8cjw-p6xm, high)은 최신판이고 패치 버전이 없어 overrides로 고칠 수 없다. 개발 도구 전이 의존성(changesets·eslint·vite·tsup 등 34개 경로)에만 있고 입력이 저장소에 고정된 glob이며, tokens·css·react 런타임 트리에는 없다(`pnpm audit --prod` high 0). 사용자 결정으로 `pnpm.auditConfig.ignoreGhsas`에 이 GHSA만 넣었다. 패치가 나오면 overrides로 바꾸고 예외를 지운 뒤 닫는다 | NFR-002, JOB-REL-001 | CR-044 | open |
 | DEV-048 | 2026-10-09 | 문서 결함 | **검증 계획과 CI가 docs E2E 실행 시점에서 어긋난다.** `conductor_release_validation_plan.md`의 e2e 행은 `pnpm test:e2e`를 PR·main에서 실행한다고 적지만, `.github/workflows/ci.yml`에 그 단계가 없고 루트 `package.json`에도 `test:e2e`가 없다(스크립트는 `apps/docs`에만 있다). `conductor_async_events_jobs.md`의 CI 작업(JOB-CI-001~004)에도 docs E2E 작업이 정의돼 있지 않다. 그래서 DEV-046이 CR-041부터 CR-042까지 드러나지 않았고, CR-042는 E2E 6건 실패를 안은 채 CI green으로 종료할 수 있었다. 해소는 별도 CR이다 — CI에 docs E2E 단계를 더하거나 검증 계획을 실제에 맞춘다 | FR-DOC-001~007, FR-QA-003 | CR-043 (등록) · 해소는 별도 CR | open |
 | DEV-047 | 2026-10-09 | 구현 편차 | **`e2e/workspaces.spec.ts`의 FR-QA-003 axe가 light 1280·1536에서 간헐적으로 `color-contrast` serious를 냈다.** CR-042의 `.docs-route` 진입 페이드(opacity 0→1) 도중에 대비를 잰 타이밍 경합이다 — reduce 모션이거나 800ms 뒤에 재면 0건, 즉시 재면 테마 전환 여부와 무관하게 재현된다(대기 없이 31/36, 대기 뒤 0/24). CR-028(DEV-021)과 같이 한 프레임 뒤 문서 타임라인의 실행 중 애니메이션이 끝날 때까지 2초 안에서 기다린 뒤 axe를 실행하고, 남은 애니메이션은 이름으로 실패시킨다(회전 전용 `cdt-spin`만 허용) | FR-QA-003, FR-A11Y-004 | CR-043 | closed |
