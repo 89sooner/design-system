@@ -19,7 +19,7 @@
     line-height: 1.25;
     letter-spacing: -0.01em;
     vertical-align: middle;
-    transition: background var(--cdt-motion-fast), border-color var(--cdt-motion-fast), box-shadow var(--cdt-motion-fast), transform var(--cdt-motion-fast);
+    transition: background var(--cdt-motion-fast), border-color var(--cdt-motion-fast), box-shadow var(--cdt-motion-fast), transform var(--cdt-motion-instant);
   }
 
   .cdt-btn > span[aria-hidden="true"] {
@@ -552,7 +552,7 @@
   }
 
   .cdt-overlay[data-state="closed"] {
-    animation: cdt-overlay-exit var(--cdt-motion-fast) forwards;
+    animation: cdt-overlay-exit var(--cdt-motion-exit) forwards;
   }
 
   .cdt-dialog,
@@ -578,12 +578,18 @@
     transform: translate(-50%, -50%);
   }
 
+  /*
+   * 진입은 스프링으로 안착하고 퇴장은 가속하며 빠진다 — 들어올 때는 눈이 따라가야 하고
+   * 나갈 때는 방해하지 않아야 한다. 스프링은 진입에만 쓴다: `linear()`를 모르는 브라우저에서
+   * 선언이 통째로 무효가 되어도 진입은 정적으로 나타날 뿐이고, 퇴장은 늘 Presence가 기다릴
+   * 애니메이션을 갖는다 (CR-047).
+   */
   .cdt-dialog[data-state="open"] {
-    animation: cdt-dialog-enter var(--cdt-motion-standard);
+    animation: cdt-dialog-enter var(--cdt-motion-spring);
   }
 
   .cdt-dialog[data-state="closed"] {
-    animation: cdt-dialog-exit var(--cdt-motion-fast) forwards;
+    animation: cdt-dialog-exit var(--cdt-motion-exit) forwards;
   }
 
   .cdt-dialog--sm {
@@ -630,10 +636,11 @@
   .cdt-drawer { --cdt-drawer-shift: 100%; }
   .cdt-drawer:dir(rtl) { --cdt-drawer-shift: -100%; }
 
-  .cdt-drawer--right[data-state="open"] { animation: cdt-drawer-enter-right var(--cdt-motion-standard); }
-  .cdt-drawer--left[data-state="open"] { animation: cdt-drawer-enter-left var(--cdt-motion-standard); }
-  .cdt-drawer--right[data-state="closed"] { animation: cdt-drawer-exit-right var(--cdt-motion-fast) forwards; }
-  .cdt-drawer--left[data-state="closed"] { animation: cdt-drawer-exit-left var(--cdt-motion-fast) forwards; }
+  /* 화면 높이 전체를 가로지르는 면이라 강조 감속(`motion.slow`)으로 들어오고 퇴장 곡선으로 빠진다 (CR-047). */
+  .cdt-drawer--right[data-state="open"] { animation: cdt-drawer-enter-right var(--cdt-motion-slow); }
+  .cdt-drawer--left[data-state="open"] { animation: cdt-drawer-enter-left var(--cdt-motion-slow); }
+  .cdt-drawer--right[data-state="closed"] { animation: cdt-drawer-exit-right var(--cdt-motion-exit) forwards; }
+  .cdt-drawer--left[data-state="closed"] { animation: cdt-drawer-exit-left var(--cdt-motion-exit) forwards; }
 
   .cdt-tooltip,
   .cdt-menu {
@@ -658,8 +665,18 @@
   }
 
   .cdt-tooltip[data-state="closed"] {
-    animation: cdt-popover-exit var(--cdt-motion-fast) forwards;
+    animation: cdt-popover-exit var(--cdt-motion-exit) forwards;
   }
+
+  /*
+   * 팝오버는 트리거 쪽에서 미끄러져 나온다. Radix가 붙이는 `data-side`가 방향을 알려 주고,
+   * keyframe은 그 방향을 변수로 읽는다(서랍의 `--cdt-drawer-shift`와 같은 방식). 항목 정렬
+   * 모드의 Select처럼 `data-side`가 없으면 이동 없이 크기만 바뀐다 (CR-047).
+   */
+  .cdt-tooltip[data-side="top"], .cdt-menu[data-side="top"], .cdt-select__content[data-side="top"] { --cdt-popper-shift: translateY(var(--cdt-space-1)); }
+  .cdt-tooltip[data-side="bottom"], .cdt-menu[data-side="bottom"], .cdt-select__content[data-side="bottom"] { --cdt-popper-shift: translateY(calc(var(--cdt-space-1) * -1)); }
+  .cdt-tooltip[data-side="left"], .cdt-menu[data-side="left"], .cdt-select__content[data-side="left"] { --cdt-popper-shift: translateX(var(--cdt-space-1)); }
+  .cdt-tooltip[data-side="right"], .cdt-menu[data-side="right"], .cdt-select__content[data-side="right"] { --cdt-popper-shift: translateX(calc(var(--cdt-space-1) * -1)); }
 
   .cdt-tooltip__arrow {
     fill: var(--cdt-overlay-background);
@@ -674,14 +691,15 @@
   /*
    * Menu는 트리거에서 떨어지는 목록이라 `Select`와 같은 부류다 —
    * 지속시간 예산도 같은 것을 쓴다. `Tooltip`만 작은 팝오버 예산(더 짧은
-   * 토큰)을 쓴다 (DEV-032).
+   * 토큰)을 쓴다 (DEV-032). CR-047부터 목록은 스프링으로 안착하고, 퇴장은
+   * 모두 `motion.exit`이다.
    */
   .cdt-menu[data-state="open"] {
-    animation: cdt-popover-enter var(--cdt-motion-standard);
+    animation: cdt-popover-enter var(--cdt-motion-spring);
   }
 
   .cdt-menu[data-state="closed"] {
-    animation: cdt-popover-exit var(--cdt-motion-fast) forwards;
+    animation: cdt-popover-exit var(--cdt-motion-exit) forwards;
   }
 
   .cdt-menu__item {
@@ -862,11 +880,11 @@
   }
 
   .cdt-select__content[data-state="open"] {
-    animation: cdt-popover-enter var(--cdt-motion-standard);
+    animation: cdt-popover-enter var(--cdt-motion-spring);
   }
 
   .cdt-select__content[data-state="closed"] {
-    animation: cdt-popover-exit var(--cdt-motion-fast) forwards;
+    animation: cdt-popover-exit var(--cdt-motion-exit) forwards;
   }
 
   .cdt-select__item {
@@ -939,7 +957,7 @@
     background: var(--cdt-text-primary);
     box-shadow: 0 1px 2px var(--cdt-surface-overlay); /* cdt-allow-literal: source thumb shadow geometry */
     transform: translateX(-9px); /* cdt-allow-literal: source switch unchecked thumb offset */
-    transition: transform var(--cdt-motion-fast);
+    transition: transform var(--cdt-motion-bounce);
   }
 
   .cdt-switch__thumb[data-state="checked"] { transform: translateX(9px); /* cdt-allow-literal: source switch checked thumb offset */ }
@@ -960,6 +978,13 @@
 
   .cdt-checkbox__indicator { display: inline-flex; }
 
+  /*
+   * 체크 표시는 켜질 때만 스프링으로 튀어나온다. 해제되면 선택자가 더는 맞지 않아
+   * animation-name이 none이 되므로 Presence가 기다리지 않고 바로 내린다 (CR-047).
+   */
+  .cdt-checkbox__indicator[data-state="checked"],
+  .cdt-checkbox__indicator[data-state="indeterminate"] { animation: cdt-check-pop var(--cdt-motion-spring); }
+
   @media (max-width: {breakpoint.sm}) {
     .cdt-input,
     .cdt-textarea,
@@ -968,7 +993,7 @@
     .cdt-checkbox { min-block-size: var(--cdt-input-min-height-compact); }
   }
 
-  .cdt-banner { display: flex; align-items: flex-start; gap: var(--cdt-space-3); padding: var(--cdt-space-4); border: var(--cdt-border-width-hairline) solid var(--cdt-border-default); border-inline-start-width: var(--cdt-border-width-rail); border-radius: var(--cdt-radius-md); box-shadow: var(--cdt-elevation-raised); animation: cdt-banner-enter var(--cdt-motion-fast); }
+  .cdt-banner { display: flex; align-items: flex-start; gap: var(--cdt-space-3); padding: var(--cdt-space-4); border: var(--cdt-border-width-hairline) solid var(--cdt-border-default); border-inline-start-width: var(--cdt-border-width-rail); border-radius: var(--cdt-radius-md); box-shadow: var(--cdt-elevation-raised); animation: cdt-banner-enter var(--cdt-motion-spring); }
   .cdt-banner__icon { display: inline-grid; flex: 0 0 auto; place-items: center; inline-size: var(--cdt-space-6); block-size: var(--cdt-space-6); border-radius: var(--cdt-radius-pill); background: var(--cdt-surface-tint-1); }
   .cdt-banner__body { display: grid; min-inline-size: 0; flex: 1 1 auto; gap: var(--cdt-space-1); line-height: var(--cdt-font-line-height-md); }
   .cdt-banner__title { color: var(--cdt-text-primary); font-weight: 650; line-height: var(--cdt-font-line-height-base); }
@@ -1040,7 +1065,7 @@
   }
 
   @keyframes cdt-dialog-enter {
-    from { opacity: 0; transform: translate(-50%, -48%) scale(0.98); /* cdt-allow-literal: overlay entrance geometry */ }
+    from { opacity: 0; transform: translate(-50%, -47%) scale(0.96); /* cdt-allow-literal: overlay entrance geometry */ }
     to { opacity: 1; transform: translate(-50%, -50%) scale(1); /* cdt-allow-literal: overlay resting geometry */ }
   }
 
@@ -1055,13 +1080,18 @@
   }
 
   @keyframes cdt-popover-enter {
-    from { opacity: 0; transform: scale(0.97); /* cdt-allow-literal: popover entrance scale */ }
-    to { opacity: 1; transform: scale(1); }
+    from { opacity: 0; transform: var(--cdt-popper-shift, translate(0)) scale(0.96); /* cdt-allow-literal: popover entrance scale */ }
+    to { opacity: 1; transform: translate(0) scale(1); }
   }
 
   @keyframes cdt-popover-exit {
-    from { opacity: 1; transform: scale(1); }
-    to { opacity: 0; transform: scale(0.97); /* cdt-allow-literal: popover exit scale */ }
+    from { opacity: 1; transform: translate(0) scale(1); }
+    to { opacity: 0; transform: var(--cdt-popper-shift, translate(0)) scale(0.97); /* cdt-allow-literal: popover exit scale */ }
+  }
+
+  @keyframes cdt-check-pop {
+    from { opacity: 0; transform: scale(0.4); /* cdt-allow-literal: check mark pop origin */ }
+    to { opacity: 1; transform: scale(1); }
   }
 
   @keyframes cdt-drawer-enter-right { from { transform: translateX(var(--cdt-drawer-shift)); } to { transform: translateX(0); } }
@@ -1266,7 +1296,7 @@
       inline-size: min(86vw, 300px); /* cdt-allow-literal: source mobile navigation cap */
       block-size: 100dvh;
       background: var(--cdt-nav-list-background);
-      animation: cdt-shell-enter var(--cdt-motion-standard);
+      animation: cdt-shell-enter var(--cdt-motion-slow);
     }
 
     .cdt-app-shell__overlay {

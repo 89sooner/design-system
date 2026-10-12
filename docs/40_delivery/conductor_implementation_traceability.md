@@ -1,6 +1,6 @@
 # Conductor Design System 구현 추적 원장
 
-> 상태: review | 버전: v0.39 | 갱신일: 2026-10-12
+> 상태: review | 버전: v0.40 | 갱신일: 2026-10-12
 
 ## 1. 목적과 갱신 규칙
 
@@ -258,6 +258,7 @@ PR Search 소비처의 `DEV-380`이 트리거다: 화면 계약이 최대 20계�
 
 | DEV ID | 발견일 | 유형 | 내용 | 관련 ID | 처리 CR | 상태 |
 | --- | --- | --- | --- | --- | --- | --- |
+| DEV-052 | 2026-10-12 | 구현 편차 (기존) | **W-014가 와이어프레임의 "각 행에서 전환을 재생한다"를 구현하지 않았다.** `/foundations/motion`은 계산된 모션 값 타일과 상태 전환 예시만 보였고 토큰 행마다 재생할 수단이 없었다(`conductor_wireframe_spec.md` W-014 섹션 정의·`reduced_motion` 상태가 재생 버튼을 전제). CR-047의 Playground 패널이 이징을 가진 토큰마다 트랙과 행별 재생 버튼(+전체 재생)을 두어 해소했다 | FR-DOC-002 AC-3, FR-CSS-005 | CR-047 | closed |
 | DEV-051 | 2026-10-12 | 구현 결함 | **눌린 클릭형 카드가 다크 테마에서 윗변에 흰 선을 보였다.** DEV-050과 같은 원인으로 `.cdt-card--interactive:active`의 `inset 0 1px 0 var(--cdt-border-strong)`이 다크 팔레트에서 밝게 칠해졌다(실측 재현). CR-045와 같은 중립 검정 안쪽 그림자로 바꿨고 hover 강조 경계와 포커스 링은 그대로다. 회귀 테스트 `DEV-051` 추가 | FR-CMP-003, FR-A11Y-001 | CR-046 | closed |
 | DEV-050 | 2026-10-12 | 구현 결함 | **눌린 버튼이 다크 테마에서 윗변에 흰 테두리를 보였다.** `:active`의 `inset 0 1px 0 var(--cdt-border-strong)`이 다크 팔레트에서 밝은 `rgba(148,163,184,0.3)`으로 칠해졌다(사용자 보고, 실측 재현). primary·secondary는 중립 검정 안쪽 그림자, ghost는 1px 이동만 남기도록 고쳤고, 명시성을 유지해 키보드 누름 중 포커스 링이 살아남는다. 회귀 테스트 `DEV-050` 추가 | FR-CMP-002, FR-A11Y-001 | CR-045 | closed |
 | DEV-049 | 2026-10-09 | 검증 편차 | **릴리스 audit 게이트가 패치 없는 권고 1건을 제외한 채 통과한다.** `braces` 3.0.3(GHSA-vfj7-8cjw-p6xm, high)은 최신판이고 패치 버전이 없어 overrides로 고칠 수 없다. 개발 도구 전이 의존성(changesets·eslint·vite·tsup 등 34개 경로)에만 있고 입력이 저장소에 고정된 glob이며, tokens·css·react 런타임 트리에는 없다(`pnpm audit --prod` high 0). 사용자 결정으로 `pnpm.auditConfig.ignoreGhsas`에 이 GHSA만 넣었다. 패치가 나오면 overrides로 바꾸고 예외를 지운 뒤 닫는다 | NFR-002, JOB-REL-001 | CR-044 | open |
@@ -449,3 +450,16 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | 브라우저 (로컬) | docs E2E 전체 56/56 (`10dcd95`, CR-042 종료 시 50/56). screens.spec + workspaces.spec `--repeat-each 2` 44/44 |
 | CI · 종료 | PR #34 CI(verify node 20/22, visual regression) success. CI는 docs E2E를 돌리지 않는다(DEV-048). CR-043 closed(2026-10-09) |
 | DEV | DEV-046 closed(원인 정정), DEV-047 closed(axe 경합), DEV-048 open(검증 계획 ↔ CI 불일치, 별도 CR) |
+
+### CR-047 모션 체계 확장 (2026-10-12)
+
+사용자 요청(레퍼런스 18곳을 참고해 디자인 모션을 대폭 업데이트)에 따라 모션 어휘를 넓히고 컴포넌트·문서 사이트의 모션을 그 어휘로 다시 짰다. 요구사항은 바뀌지 않았다 — 모든 모션은 여전히 `--cdt-motion-*` 토큰을 읽고 감소 모드에서 0이 된다(FR-CSS-005).
+
+| 범위 | 결과 |
+| --- | --- |
+| 토큰 (additive) | primitive `ease.exit`·`ease.emphasized`·`ease.spring`(`linear()` 스프링 표본), semantic `motion.instant`·`motion.exit`·`motion.slow`·`motion.spring`·`motion.stagger`. `overlay.exit`가 `motion.exit`를 참조한다. API 리포트 갱신 |
+| `@conductor-by-89soone/css` | 진입: Dialog·Menu·Select·Popover·Banner·체크 표시 = `motion.spring`, 서랍·모바일 내비 = `motion.slow`. 퇴장: 오버레이·Dialog·Tooltip·Menu·Select·Popover·서랍 = `motion.exit`. 팝오버 넷이 Radix `data-side`를 읽어 트리거 쪽에서 미끄러져 나온다(`--cdt-popper-shift`). Popover에 진입·퇴장과 transform-origin, Tabs·Collapsible 내용에 자리 표시 진입, 탭·접기 트리거에 색 전환, 스위치 손잡이는 `motion.bounce`, 버튼 누름은 `motion.instant`. `linear()` 미지원 브라우저용 `@supports` 대체 블록과 감소 모드 목록(`motion.*` 5건, `.cdt-popover` 닫힘) 확장. gzip 11.59 KiB / 20 KiB |
+| 문서 사이트 | 테마 스위치의 원형 View Transition 리빌(`theme-transition.ts`, `--cdt-motion-slow` 실시간 값 사용, 감소 모드·미지원 시 즉시 교체), 랜딩 스크롤 연동 상승(transform 전용, 하이드레이션 뒤 활성화), 포인터 스포트라이트(`pointer-spotlight.ts`), 스태거 리터럴 → `motion.stagger`, 라우트·페이지 머리 진입 `motion.slow`, W-014 Playground(DEV-052) |
+| 테스트 | `CR-047 motion vocabulary` 4건(스프링은 진입 전용, 팝오버 4방향 이동, 스위치·버튼 토큰, `linear()` 대체가 같은 길이·감소 모드에 짐), 진입·퇴장 기대값 갱신, 토큰 시험 1건, docs 단위 시험 `theme-transition`·`pointer-spotlight`. 테마 클릭 E2E 2건이 다음 프레임 적용을 기다리게 바꿨다 |
+| 검증 (로컬) | build·typecheck·lint·lint:deps·lint:tokens(위반 0)·check:contrast·check:api·check:changesets·check:secrets·test·size·test:a11y 통과, docs E2E 56/56. Lighthouse LCP p75: main 2357ms, 스크롤 연동을 첫 스타일 패스에 두면 2451ms → 하이드레이션 뒤 활성화로 2338ms(CLS 0) |
+| 레퍼런스 | 작업 샌드박스의 egress 정책으로 레퍼런스 사이트를 열 수 없어 알려진 패턴(스프링 안착, 방향 인지 팝오버, 단계 진입, 스크롤 진행 상승, 포인터 스포트라이트, 원형 테마 리빌)을 재구성했다 |

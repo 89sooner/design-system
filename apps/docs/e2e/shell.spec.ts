@@ -81,6 +81,8 @@ test("FR-THM-003 AC-1, AC-4: an explicit theme wins without remounting component
   const before = await page.locator("html").evaluate((element) => getComputedStyle(element).getPropertyValue("--cdt-surface-base").trim());
 
   await page.getByRole("switch", { name: "Use dark theme" }).click();
+  // The theme reveal (CR-047) applies the new palette inside a view transition, a frame after the click.
+  await expect(page.locator("html")).toHaveAttribute("data-cdt-theme", "dark");
   const after = await page.locator("html").evaluate((element) => getComputedStyle(element).getPropertyValue("--cdt-surface-base").trim());
   const retained = await page.evaluate(() => (window as Window & { __conductorThemeNode?: Element }).__conductorThemeNode === document.querySelector("main"));
   expect(after).not.toBe(before);

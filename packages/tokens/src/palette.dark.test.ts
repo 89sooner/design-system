@@ -155,6 +155,8 @@ describe("dark palette against the source tokens.css", () => {
         ...Array.from({ length: 5 }, (_, index) => `dataviz.sequential.${index + 1}`),
         // DEV-028: constant-rate spinner rotation has no source equivalent (app.css bound it to the entrance token).
         "motion.spin",
+        // CR-047: motion vocabulary beyond the source's three bindings.
+        ...["instant", "exit", "slow", "spring", "stagger"].map((name) => `motion.${name}`),
       ].sort(),
     );
   });
@@ -163,6 +165,15 @@ describe("dark palette against the source tokens.css", () => {
     // 곡선으로 바뀌면 스피너가 매 회전마다 감속한다 — 값과 이징을 함께 고정한다.
     expect(resolved.get("motion.spin")).toBe("1000ms linear");
     expect(byKey.get("motion.spin")?.usage).toBe("decorative");
+  });
+
+  test("CR-047: exits accelerate, entrances settle on the spring, and the stagger step carries no easing", () => {
+    expect(resolved.get("motion.exit")).toBe("160ms cubic-bezier(0.4, 0, 1, 1)");
+    expect(resolved.get("motion.instant")).toMatch(/^90ms cubic-bezier\(/);
+    expect(resolved.get("motion.slow")).toBe("420ms cubic-bezier(0.05, 0.7, 0.1, 1)");
+    expect(resolved.get("motion.spring")).toMatch(/^520ms linear\(0, .*, 1\)$/);
+    expect(resolved.get("motion.stagger")).toBe("45ms");
+    expect(resolved.get("overlay.exit")).toBe(resolved.get("motion.exit"));
   });
 
   test("FR-THM-005 AC-1: `focusRing` uses the accent at alpha 0.80, not the source's 0.30", () => {

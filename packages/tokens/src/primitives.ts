@@ -128,6 +128,14 @@ const nonColour: TokenDefinition[] = [
   primitive("ease.entrance", "cubic-bezier(0.2, 0, 0, 1)", "Entrance and state-change easing."),
   primitive("ease.overshoot", "cubic-bezier(0.34, 1.56, 0.64, 1)", "Toggle settle easing."),
   primitive("ease.linear", "linear", "Constant-rate motion: spinners and marquees."),
+  // CR-047: exits accelerate away, large surfaces decelerate hard, and settles follow a sampled spring.
+  primitive("ease.exit", "cubic-bezier(0.4, 0, 1, 1)", "Exit easing: accelerates out of view."),
+  primitive("ease.emphasized", "cubic-bezier(0.05, 0.7, 0.1, 1)", "Emphasized deceleration for large surfaces and hero entrances."),
+  primitive(
+    "ease.spring",
+    "linear(0, 0.075 5%, 0.242 10%, 0.435 15%, 0.616 20%, 0.766 25%, 0.878 30%, 0.967 36%, 1.015 42%, 1.037 50%, 1.033 60%, 1.012 75%, 1)",
+    "Damped spring (ratio 0.72, ~4% overshoot) sampled into linear(); entrances only.",
+  ),
 ];
 
 export const primitiveTokens: readonly TokenDefinition[] = [

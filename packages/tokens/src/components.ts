@@ -253,7 +253,7 @@ const overlay: TokenDefinition[] = [
   component("overlay.drawerBackground", ref("surface.raised"), "Drawer panel fill."),
   component("overlay.drawerWidth", value("500px"), "Drawer panel width."),
   component("overlay.enter", ref("motion.standard"), "Overlay entrance."),
-  component("overlay.exit", ref("motion.fast"), "Overlay exit."),
+  component("overlay.exit", ref("motion.exit"), "Overlay exit."),
 ];
 
 /**

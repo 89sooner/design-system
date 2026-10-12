@@ -1,7 +1,7 @@
 @layer cdt.component {
   .cdt-collapsible { min-inline-size: 0; }
   .cdt-tabs__list { display: flex; flex-wrap: wrap; gap: var(--cdt-space-1); border-block-end: var(--cdt-border-width-hairline) solid var(--cdt-border-control); }
-  .cdt-tabs__trigger, .cdt-collapsible__trigger { min-block-size: var(--cdt-button-min-height); padding: var(--cdt-space-2) var(--cdt-space-3); border: 0; border-radius: var(--cdt-radius-sm); background: transparent; color: var(--cdt-text-secondary); font: inherit; cursor: pointer; }
+  .cdt-tabs__trigger, .cdt-collapsible__trigger { min-block-size: var(--cdt-button-min-height); padding: var(--cdt-space-2) var(--cdt-space-3); border: 0; border-radius: var(--cdt-radius-sm); background: transparent; color: var(--cdt-text-secondary); font: inherit; cursor: pointer; transition: background var(--cdt-motion-fast), color var(--cdt-motion-fast); }
   .cdt-tabs__trigger[data-state="active"] { background: var(--cdt-surface-2); color: var(--cdt-text-primary); box-shadow: inset 0 calc(-1 * var(--cdt-border-width-hairline)) var(--cdt-text-primary); }
   .cdt-tabs__trigger:disabled, .cdt-collapsible__trigger:disabled { color: var(--cdt-button-disabled-text); cursor: not-allowed; }
   .cdt-tabs__trigger:focus-visible, .cdt-collapsible__trigger:focus-visible, .cdt-tabs__content:focus-visible { outline: none; box-shadow: var(--cdt-focus-ring); }
@@ -9,6 +9,25 @@
   .cdt-tabs__content[hidden], .cdt-collapsible__content[data-state="closed"] { display: none; }
   .cdt-tabs[data-orientation="vertical"] { display: flex; gap: var(--cdt-space-3); }
   .cdt-tabs__list[data-orientation="vertical"] { flex-direction: column; }
-  .cdt-popover { z-index: var(--cdt-z-overlay); max-inline-size: min(calc(100vw - var(--cdt-space-8)), var(--radix-popover-content-available-width)); max-block-size: var(--radix-popover-content-available-height); overflow: auto; padding: var(--cdt-space-4); border: var(--cdt-border-width-hairline) solid var(--cdt-border-control); border-radius: var(--cdt-radius-md); background: var(--cdt-surface-raised); color: var(--cdt-text-primary); box-shadow: var(--cdt-elevation-overlay); }
+  .cdt-popover { transform-origin: var(--radix-popover-content-transform-origin); z-index: var(--cdt-z-overlay); max-inline-size: min(calc(100vw - var(--cdt-space-8)), var(--radix-popover-content-available-width)); max-block-size: var(--radix-popover-content-available-height); overflow: auto; padding: var(--cdt-space-4); border: var(--cdt-border-width-hairline) solid var(--cdt-border-control); border-radius: var(--cdt-radius-md); background: var(--cdt-surface-raised); color: var(--cdt-text-primary); box-shadow: var(--cdt-elevation-overlay); }
   .cdt-collapsible__content { padding: var(--cdt-space-3); }
+
+  /*
+   * CR-047. 패널 높이는 애니메이션하지 않는다(레이아웃 속성 전환 금지, FR-CMP-008 시험) —
+   * 내용이 자리에서 떠오르기만 한다. Popover는 목록 팝오버와 같은 방향 이동·스프링 진입·
+   * 퇴장 곡선을 쓴다.
+   */
+  .cdt-tabs__content[data-state="active"] { animation: cdt-panel-reveal var(--cdt-motion-standard); }
+  .cdt-collapsible__content[data-state="open"] { animation: cdt-panel-reveal var(--cdt-motion-standard); }
+  .cdt-popover[data-side="top"] { --cdt-popper-shift: translateY(var(--cdt-space-1)); }
+  .cdt-popover[data-side="bottom"] { --cdt-popper-shift: translateY(calc(var(--cdt-space-1) * -1)); }
+  .cdt-popover[data-side="left"] { --cdt-popper-shift: translateX(var(--cdt-space-1)); }
+  .cdt-popover[data-side="right"] { --cdt-popper-shift: translateX(calc(var(--cdt-space-1) * -1)); }
+  .cdt-popover[data-state="open"] { animation: cdt-popover-enter var(--cdt-motion-spring); }
+  .cdt-popover[data-state="closed"] { animation: cdt-popover-exit var(--cdt-motion-exit) forwards; }
+
+  @keyframes cdt-panel-reveal {
+    from { opacity: 0; transform: translateY(calc(var(--cdt-space-1) * -1)); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 }

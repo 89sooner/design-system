@@ -1,8 +1,10 @@
 import { AppShell } from "@conductor-by-89soone/react";
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { Navigate, Route, Routes, useLocation, useParams } from "react-router-dom";
-import { DocsFooter, DocsTopBar, Navigation, RouteLoading, RouteTransition } from "./shell";
+import { DocsFooter, DocsTopBar, Navigation, RouteLoading, RouteTransition, THEME_SWITCH_ID } from "./shell";
 import { applyTheme, persistTheme, PRERENDER_THEME, readTheme, type Theme } from "./theme";
+import { centreOf, revealTheme } from "./theme-transition";
 import { Overview } from "./landing";
 
 // 무거운 화면(카탈로그 30개 live preview, 생성 토큰/대비 데이터, 가이드)은 라우트
@@ -70,7 +72,13 @@ export function App({ initialTheme = PRERENDER_THEME }: AppProps = {}) {
     mounted.current = true;
   }, [location.pathname]);
 
-  const toggleTheme = () => { const next = theme === "dark" ? "light" : "dark"; setTheme(next); applyTheme(next, document); persistTheme(next, window); };
+  // The new palette grows out of the switch (CR-047). `flushSync` keeps the update synchronous, which the
+  // View Transitions API needs to snapshot the new state; reduced motion turns the reveal off.
+  const toggleTheme = () => {
+    const next = theme === "dark" ? "light" : "dark";
+    revealTheme(() => { flushSync(() => setTheme(next)); applyTheme(next, document); }, centreOf(document.getElementById(THEME_SWITCH_ID)));
+    persistTheme(next, window);
+  };
 
   // The shell pieces live in `./shell`; this file only wires routes, theme state and the transition.
   return <AppShell className="docs-shell" nav={<Navigation close={() => setNavOpen(false)} />} topBar={<DocsTopBar theme={theme} onToggleTheme={toggleTheme} />} navOpen={navOpen} onNavOpenChange={setNavOpen} skipLinkLabel="Skip to content" mainId="content"><Suspense fallback={<RouteLoading />}><RouteTransition><Routes><Route path="/examples/workbench" element={<WorkbenchExample />} /><Route path="/examples/relations" element={<RelationExample />} /><Route path="/examples/operations" element={<OperationsExample />} /><Route path="/" element={<Overview />} /><Route path="/getting-started" element={<GettingStarted />} /><Route path="/foundations/color" element={<FoundationPage group="color" theme={theme} title="Color" />} /><Route path="/foundations/typography" element={<FoundationPage group="typography" theme={theme} title="Typography" />} /><Route path="/foundations/spacing" element={<FoundationPage group="spacing" theme={theme} title="Spacing & Layout" />} /><Route path="/foundations/elevation" element={<FoundationPage group="elevation" theme={theme} title="Radius & Elevation" />} /><Route path="/foundations/motion" element={<FoundationPage group="motion" theme={theme} title="Motion" />} /><Route path="/components" element={<CatalogIndex />} /><Route path="/components/:componentId" element={<ComponentRoute />} /><Route path="/tokens" element={<Navigate replace to={`/tokens/reference${location.search}`} />} /><Route path="/tokens/reference" element={<TokenRoute />} /><Route path="/patterns" element={<Navigate replace to={`/guidelines${location.search}`} />} /><Route path="/guidelines" element={<Patterns />} /><Route path="/accessibility" element={<AccessibilityRoute />} /><Route path="*" element={<Placeholder title="Not found" />} /></Routes></RouteTransition></Suspense><DocsFooter /></AppShell>;

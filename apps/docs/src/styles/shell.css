@@ -211,7 +211,14 @@
   }
 }
 
-/* ---- Motion: entrance and hover transitions only, token durations, never on scroll ---- */
+/*
+ * ---- Motion: token durations only (CR-047) ----
+ * Entrances, hover and the theme reveal. Scroll-linked motion lives on the landing alone and moves
+ * transform only, never opacity, so axe never measures a half-faded section.
+ */
+/* The theme reveal clips the new snapshot from the switch outward (theme-transition.ts); neither snapshot fades. */
+::view-transition-old(root),
+::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
 @media (prefers-reduced-motion: no-preference) {
   .docs-nav__brand,
   .docs-nav__footer-link,
@@ -219,9 +226,10 @@
   .docs-theme-toggle {
     transition: background var(--cdt-motion-fast), border-color var(--cdt-motion-fast), color var(--cdt-motion-fast);
   }
-  .docs-route { animation: docs-route-enter var(--cdt-motion-standard) both; }
+  /* A route settles on the emphasized curve: fast off the mark, long soft landing. */
+  .docs-route { animation: docs-route-enter var(--cdt-motion-slow) both; }
   @keyframes docs-route-enter {
-    from { opacity: 0; transform: translateY(var(--cdt-space-2)); }
+    from { opacity: 0; transform: translateY(var(--cdt-space-3)) scale(0.995); }
     to { opacity: 1; transform: none; }
   }
 }
