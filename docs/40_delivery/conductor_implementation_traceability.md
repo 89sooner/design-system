@@ -463,3 +463,4 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | 테스트 | `CR-047 motion vocabulary` 4건(스프링은 진입 전용, 팝오버 4방향 이동, 스위치·버튼 토큰, `linear()` 대체가 같은 길이·감소 모드에 짐), 진입·퇴장 기대값 갱신, 토큰 시험 1건, docs 단위 시험 `theme-transition`·`pointer-spotlight`. 테마 클릭 E2E 2건이 다음 프레임 적용을 기다리게 바꿨다 |
 | 검증 (로컬) | build·typecheck·lint·lint:deps·lint:tokens(위반 0)·check:contrast·check:api·check:changesets·check:secrets·test·size·test:a11y 통과, docs E2E 56/56. Lighthouse LCP p75: main 2357ms, 스크롤 연동을 첫 스타일 패스에 두면 2451ms → 하이드레이션 뒤 활성화로 2338ms(CLS 0) |
 | 레퍼런스 | 작업 샌드박스의 egress 정책으로 레퍼런스 사이트를 열 수 없어 알려진 패턴(스프링 안착, 방향 인지 팝오버, 단계 진입, 스크롤 진행 상승, 포인터 스포트라이트, 원형 테마 리빌)을 재구성했다 |
+| CI · 종료 | PR #40 head `7ccaacc`에서 verify(node 20/22)·visual regression 모두 success. CR-047 closed(2026-10-12) |
