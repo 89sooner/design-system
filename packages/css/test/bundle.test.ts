@@ -767,6 +767,12 @@ describe("DEV-050 the pressed button shade reads as a dent in both themes", () =
     }
   });
 
+  test.each(bundles)("DEV-051 %s: the pressed interactive card shade does not read a palette colour that turns light", (_name, css) => {
+    const rule = rulesInLayer(css, "cdt.component").find((entry) => entry.selector === ".cdt-card--interactive:active");
+    expect(rule?.decls["box-shadow"]).toBeDefined();
+    expect(rule?.decls["box-shadow"]).not.toMatch(/--cdt-border-|--cdt-text-/);
+  });
+
   test.each(bundles)("%s: ghost buttons keep the press distance but no pressed shadow", (_name, css) => {
     const rules = rulesInLayer(css, "cdt.component");
     const base = rules.find((rule) => rule.selector === ".cdt-btn:not(:disabled):active");
