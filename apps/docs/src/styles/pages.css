@@ -171,9 +171,14 @@
 .docs-motion-lab { display: grid; gap: var(--cdt-space-2); margin: 0; padding: 0; list-style: none; }
 .docs-motion-lab__row { display: grid; grid-template-columns: minmax(8rem, 10rem) minmax(0, 1fr) auto; /* cdt-allow-literal: 토큰 키 열 폭은 키 길이로 정한다 */ gap: var(--cdt-space-3); align-items: center; }
 .docs-motion-lab__name { color: var(--cdt-text-secondary); font-size: var(--cdt-font-size-sm); }
-.docs-motion-lab__track { position: relative; display: block; block-size: var(--cdt-space-5); border: var(--cdt-border-width-hairline) solid var(--cdt-border-subtle); border-radius: var(--cdt-radius-pill); background: var(--cdt-surface-timeline); container-type: inline-size; }
-.docs-motion-lab__dot { position: absolute; inset-block: 0; inset-inline-start: 0; margin: auto 0; display: block; inline-size: var(--cdt-space-4); block-size: var(--cdt-space-4); border-radius: var(--cdt-radius-pill); background: var(--cdt-accent); box-shadow: 0 0 var(--cdt-space-2) var(--cdt-accent-glow); transform: translateX(calc(100cqi - 100%)); }
-.docs-motion-lab__dot:dir(rtl) { transform: translateX(calc((100cqi - 100%) * -1)); }
+/*
+ * The dot rests at 90% of the free track, not at its end: `motion.bounce` peaks ~10% past its target
+ * (cubic-bezier y₁ = 1.56 reaches 1.098), and a dot travelling the full track overshot onto the play
+ * button mid-animation. 0.9 × 1.098 keeps every curve's peak inside the track.
+ */
+.docs-motion-lab__track { --docs-motion-travel: calc((100cqi - 100%) * 0.9); position: relative; display: block; block-size: var(--cdt-space-5); border: var(--cdt-border-width-hairline) solid var(--cdt-border-subtle); border-radius: var(--cdt-radius-pill); background: var(--cdt-surface-timeline); container-type: inline-size; }
+.docs-motion-lab__dot { position: absolute; inset-block: 0; inset-inline-start: 0; margin: auto 0; display: block; inline-size: var(--cdt-space-4); block-size: var(--cdt-space-4); border-radius: var(--cdt-radius-pill); background: var(--cdt-accent); box-shadow: 0 0 var(--cdt-space-2) var(--cdt-accent-glow); transform: translateX(var(--docs-motion-travel)); }
+.docs-motion-lab__dot:dir(rtl) { transform: translateX(calc(var(--docs-motion-travel) * -1)); }
 .docs-motion-lab__staged { display: grid; gap: var(--cdt-space-3); justify-items: start; }
 .docs-motion-stage { display: flex; flex-wrap: wrap; gap: var(--cdt-space-2); margin: 0; padding: 0; list-style: none; }
 .docs-motion-stage__item { padding: var(--cdt-space-2) var(--cdt-space-3); border: var(--cdt-border-width-hairline) solid var(--cdt-border-default); border-radius: var(--cdt-radius-md); background: var(--cdt-surface-raised); font-family: var(--cdt-font-mono); font-size: var(--cdt-font-size-sm); }
