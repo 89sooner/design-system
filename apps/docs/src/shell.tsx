@@ -36,7 +36,7 @@ export const REPOSITORY_URL = "https://github.com/89sooner/design-system";
 export const NPM_ORG_URL = "https://www.npmjs.com/org/conductor-by-89soone";
 const NPM_PACKAGE_URL = "https://www.npmjs.com/package/@conductor-by-89soone";
 /** One switch per document; the top-bar pill is its `<label>`, so the whole pill toggles the theme. */
-const THEME_SWITCH_ID = "docs-theme-switch";
+export const THEME_SWITCH_ID = "docs-theme-switch";
 
 type NavSection = "Start" | "Foundations" | "Reference" | "Guides" | "Workspaces";
 

@@ -1,6 +1,6 @@
 # Conductor Design System 와이어프레임 사양서
 
-> 상태: review | 버전: v0.4 | 갱신일: 2026-10-08
+> 상태: review | 버전: v0.5 | 갱신일: 2026-10-12
 
 ## 1. 문서 위치와 책임
 
@@ -150,6 +150,11 @@ CR-042가 이 화면을 랜딩 히어로 구조로 고도화했다. 섹션은 �
   뷰포트 <560px: CTA가 전체 폭으로 쌓이고 CardGrid가 단일 컬럼
   (FR-CSS-003 AC-3). 모션은 prefers-reduced-motion: no-preference
   에서만 재생되며 지속시간은 motion 토큰을 읽는다 (FR-CSS-005)
+  CR-047: 히어로는 motion.stagger 간격으로 단계 진입(h1은 지연 없음,
+  LCP 후보), 쇼케이스 아래 섹션은 스크롤 진행에 맞춰 떠오르되 transform만
+  쓰고 하이드레이션 뒤에만 켜진다. 패키지 카드·수치 타일·원칙 패널은
+  마우스 hover에서 포인터를 따르는 accent 스포트라이트를 보인다.
+  테마 스위치는 스위치에서 퍼지는 원형 View Transition으로 바뀐다
 ```
 
 ### 섹션 정의
@@ -682,7 +687,7 @@ C-011 CardGrid, C-010 Card(정적, `div`로 렌더), C-030 Table, C-012 Panel.
 | 섹션 | 내용 | 근거 |
 | --- | --- | --- |
 | 현재 환경 | `prefers-reduced-motion` 감지 결과 | FR-CSS-005 |
-| 지속 시간과 이징 | 모션 토큰의 키, 계층, 현재 값, 용도. 각 행에서 전환을 재생한다 | FR-DOC-002 AC-3 |
+| 지속 시간과 이징 | 모션 토큰의 키, 계층, 현재 값, 용도. 각 행에서 전환을 재생한다. CR-047부터 "Playground" 패널이 이징을 가진 토큰마다 트랙 하나를 두어 점이 그 토큰의 실시간 값으로 이동하고(행별 재생 버튼 + 전체 재생), `motion.spring`·`motion.stagger`를 함께 쓰는 단계 진입 예시를 보인다 | FR-DOC-002 AC-3 |
 | 모션 감소 규칙 | 감소 모드에서 지속 시간 계산값 `0s`, `scroll-behavior: auto`, 최종 시각 결과 동일 | FR-CSS-005 AC-1, AC-2, AC-3 |
 | 진행 표시의 감소 모드 대체 | `Spinner`와 `ProgressRing`이 애니메이션 대신 정적 진행률 텍스트를 노출한다 | FR-CSS-005 예외/실패 처리 |
 

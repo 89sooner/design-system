@@ -1,6 +1,6 @@
 # Conductor Design System 토큰 명세
 
-> 상태: review | 버전: v0.11 | 갱신일: 2026-10-08
+> 상태: review | 버전: v0.12 | 갱신일: 2026-10-12
 
 ## 0. 문서 성격과 범위 경계
 
@@ -224,6 +224,9 @@ primitive 토큰은 CSS로 산출되지 않고 `@conductor-by-89soone/tokens` �
 | 이징 | `ease.entrance` | `cubic-bezier(0.2, 0, 0, 1)` |
 | 이징 | `ease.overshoot` | `cubic-bezier(0.34, 1.56, 0.64, 1)` |
 | 이징 | `ease.linear` | `linear` |
+| 이징 | `ease.exit` | `cubic-bezier(0.4, 0, 1, 1)` — 퇴장 가속 (CR-047) |
+| 이징 | `ease.emphasized` | `cubic-bezier(0.05, 0.7, 0.1, 1)` — 큰 면의 강조 감속 (CR-047) |
+| 이징 | `ease.spring` | `linear(0, 0.075 5%, 0.242 10%, 0.435 15%, 0.616 20%, 0.766 25%, 0.878 30%, 0.967 36%, 1.015 42%, 1.037 50%, 1.033 60%, 1.012 75%, 1)` — 감쇠비 0.72 스프링 표본, 약 4% 오버슈트 (CR-047) |
 
 두 폰트 스택 모두 원격 폰트를 로드하지 않는다. `Inter`와 `JetBrains Mono`는 소비자가 제공하거나 스택의 후속 항목으로 대체된다(SRS 5.2 기술 제약 4, FR-CSS-002 AC-4).
 
@@ -919,7 +922,7 @@ CR-018 이전 구현은 상태 semantic 색을 배경 전체에 적용하고 `te
 | `overlay.drawerBackground` | `{surface.raised}` | | FR-CMP-006 |
 | `overlay.drawerWidth` | `500px` | | FR-CMP-006 |
 | `overlay.enter` | `{motion.standard}` | | FR-CSS-005 |
-| `overlay.exit` | `{motion.fast}` | | FR-CSS-005 |
+| `overlay.exit` | `{motion.exit}` | CR-047부터 퇴장 전용 토큰 | FR-CSS-005 |
 
 `overlay.backgroundBlur`가 라이트에서 `0px`인 이유: 불투명 `{surface.elevated}` 배경 위의 `backdrop-filter`는 시각 효과를 만들지 않으면서 합성 레이어를 강제해 재페인트 비용을 발생시킨다(NFR-001의 테마 전환 100ms 목표). 값을 `0px`로 두면 브라우저가 필터를 건너뛴다.
 
@@ -1160,8 +1163,17 @@ FR-THM-005가 강제한 두 교정이 9건의 미달을 제거했다. `focusRing
 | `motion.standard` | `240ms {ease.entrance}` | 오버레이 진입, 페이지 진입, 오프캔버스 내비 |
 | `motion.bounce` | `300ms {ease.overshoot}` | 토글·스위치의 상태 확정 |
 | `motion.spin` | `1000ms {ease.linear}` | 무한 회전 스피너의 1회전 주기. 상수 운동이라 linear다 |
+| `motion.instant` | `90ms {ease.entrance}` | 누름 피드백, 포인터 추적 강조 (CR-047) |
+| `motion.exit` | `160ms {ease.exit}` | 오버레이·팝오버·서랍의 퇴장 (CR-047) |
+| `motion.slow` | `420ms {ease.emphasized}` | 서랍·모바일 내비 등 큰 면의 진입, 라우트·페이지 머리 진입, 테마 전환 리빌 (CR-047) |
+| `motion.spring` | `520ms {ease.spring}` | Dialog·Menu·Select·Popover 진입, 체크 표시, Banner 등장. **진입 전용** (CR-047) |
+| `motion.stagger` | `45ms` | 단계적 진입에서 항목 사이 지연 한 칸. 이징이 없는 지속 시간이다 (CR-047) |
 
-`{ease.entrance}` = `cubic-bezier(0.2, 0, 0, 1)`, `{ease.overshoot}` = `cubic-bezier(0.34, 1.56, 0.64, 1)`, `{ease.linear}` = `linear`. 네 토큰은 지속 시간과 이징을 한 문자열로 묶는다 — 소스가 `transition: all var(--motion-fast)` 형태로 소비하기 때문이다. 테마 무관이다.
+`{ease.entrance}` = `cubic-bezier(0.2, 0, 0, 1)`, `{ease.overshoot}` = `cubic-bezier(0.34, 1.56, 0.64, 1)`, `{ease.linear}` = `linear`. `motion.stagger`를 뺀 토큰은 지속 시간과 이징을 한 문자열로 묶는다 — 소스가 `transition: all var(--motion-fast)` 형태로 소비하기 때문이다. 테마 무관이다.
+
+CR-047이 더한 다섯 토큰의 역할 분담은 다음과 같다. 들어오는 것은 눈이 따라가야 하므로 감속하거나(`motion.slow`) 스프링으로 안착하고(`motion.spring`), 나가는 것은 방해하지 않아야 하므로 짧게 가속하며 빠진다(`motion.exit`). `motion.stagger`는 `animation-delay: calc(var(--cdt-motion-stagger) * n)`처럼 곱해서 쓰는 단위이며 단축 선언에 넣지 않는다.
+
+`ease.spring`은 CSS `linear()`로 표본화한 곡선이다. 이 함수를 모르는 브라우저에서는 `--cdt-motion-spring`을 읽는 선언 전체가 계산값 시점에 무효가 되므로, `cdt.base`의 `@supports not (animation-timing-function: linear(0, 1))` 블록이 같은 길이의 `cubic-bezier(0.22, 1.2, 0.36, 1)`로 대체한다. 그 블록은 감소 모드 블록과 셀렉터·명시도가 같고 소스 순서가 앞서서 감소 모드가 여전히 이긴다. 대체가 없더라도 진입은 정적으로 나타날 뿐이도록, 스프링은 진입에만 쓰고 퇴장·전환에는 쓰지 않는다(시험: `CR-047 motion vocabulary`).
 
 ### 9.2 감소 모드 (FR-CSS-005)
 
@@ -1180,6 +1192,11 @@ FR-THM-005가 강제한 두 교정이 9건의 미달을 제거했다. `focusRing
       --cdt-motion-standard: 0ms linear;
       --cdt-motion-bounce: 0ms linear;
       --cdt-motion-spin: 0ms linear;
+      --cdt-motion-instant: 0ms linear;
+      --cdt-motion-exit: 0ms linear;
+      --cdt-motion-slow: 0ms linear;
+      --cdt-motion-spring: 0ms linear;
+      --cdt-motion-stagger: 0ms;
       scroll-behavior: auto;
     }
   }
@@ -1196,7 +1213,7 @@ FR-THM-005가 강제한 두 교정이 9건의 미달을 제거했다. `focusRing
 
 `data-cdt-theme` 속성이 없는 요소(소비자 자신의 DOM)에는 이 규칙이 적용되지 않는다. 소비자의 모션은 소비자가 소유한다.
 
-Radix Presence는 닫힘 상태(`[data-state="closed"]`)에 진입과 다른 애니메이션 이름이 있으면 `animationend`를 기다렸다가 언마운트한다. 감소 모드에서는 그 애니메이션이 0s이므로 이벤트에 기대지 않고, 같은 `cdt.base` 블록이 `.cdt-overlay[data-state="closed"]`·`.cdt-dialog[data-state="closed"]`를 `display: none`으로 두어 Presence가 즉시 언마운트하게 한다(DEV-030). `cdt.component`가 `display`를 선언한 요소(모바일 서랍)에는 이 방식이 닿지 않으므로 그 요소에는 퇴장 애니메이션을 두지 않는다.
+Radix Presence는 닫힘 상태(`[data-state="closed"]`)에 진입과 다른 애니메이션 이름이 있으면 `animationend`를 기다렸다가 언마운트한다. 감소 모드에서는 그 애니메이션이 0s이므로 이벤트에 기대지 않고, 같은 `cdt.base` 블록이 `.cdt-overlay[data-state="closed"]`·`.cdt-dialog[data-state="closed"]`를 `display: none`으로 두어 Presence가 즉시 언마운트하게 한다(DEV-030). CR-047이 `Popover`에 퇴장 애니메이션을 더하면서 `.cdt-popover[data-state="closed"]`도 같은 목록에 들었다. `cdt.component`가 `display`를 선언한 요소(모바일 서랍)에는 이 방식이 닿지 않으므로 그 요소에는 퇴장 애니메이션을 두지 않는다.
 
 ### 9.3 감소 모드의 진행 표시
 

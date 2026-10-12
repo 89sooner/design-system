@@ -153,7 +153,18 @@ describe("FR-CSS-005 reduced motion", () => {
     // The load-bearing half: components read durations from these tokens, and a
     // later layer can never out-rank cdt.base, so the value is what must change.
     const tokens = rules.find((rule) => rule.decls["--cdt-motion-fast"] !== undefined);
-    for (const token of ["--cdt-motion-fast", "--cdt-motion-standard", "--cdt-motion-bounce", "--cdt-motion-spin"]) {
+    for (const token of [
+      "--cdt-motion-fast",
+      "--cdt-motion-standard",
+      "--cdt-motion-bounce",
+      "--cdt-motion-spin",
+      // CR-047
+      "--cdt-motion-instant",
+      "--cdt-motion-exit",
+      "--cdt-motion-slow",
+      "--cdt-motion-spring",
+      "--cdt-motion-stagger",
+    ]) {
       expect(tokens?.decls[token]).toMatch(/^0s\b/);
     }
 
@@ -521,11 +532,11 @@ describe("FR-CMP-006 overlay exit", () => {
       /reduce/.test(rule.media.join(" ")),
     );
 
-  test.each(bundles)("%s: overlay and dialog animate out through the fast token with fill-mode forwards", (_name, css) => {
+  test.each(bundles)("%s: overlay and dialog animate out through the exit token with fill-mode forwards (CR-047)", (_name, css) => {
     // dist는 속성 선택자의 따옴표를 지운다 — 저장소의 기존 시험과 같은 표기를 쓴다.
     for (const selector of [/^\.cdt-overlay\[data-state=closed\]$/, /^\.cdt-dialog\[data-state=closed\]$/]) {
       const rule = ruleFor(css, "cdt.component", selector);
-      expect(rule?.decls["animation"]).toMatch(/^cdt-(?:overlay|dialog)-exit var\(--cdt-motion-fast\) forwards$/);
+      expect(rule?.decls["animation"]).toMatch(/^cdt-(?:overlay|dialog)-exit var\(--cdt-motion-exit\) forwards$/);
     }
   });
 
@@ -566,12 +577,15 @@ describe("FR-CMP-006 surface entrance motion", () => {
     );
 
   // dist는 속성 선택자의 따옴표를 지운다.
+  // CR-047: 목록·모달은 스프링으로 안착하고, 화면을 가로지르는 서랍은 강조 감속을 쓴다.
   const ENTER = [
-    [".cdt-select__content[data-state=open]", "cdt-popover-enter var(--cdt-motion-standard)"],
+    [".cdt-select__content[data-state=open]", "cdt-popover-enter var(--cdt-motion-spring)"],
     // Menu는 드롭다운이라 Select와 같은 예산을 쓴다. Tooltip만 작은 팝오버 예산이다.
-    [".cdt-menu[data-state=open]", "cdt-popover-enter var(--cdt-motion-standard)"],
-    [".cdt-drawer--right[data-state=open]", "cdt-drawer-enter-right var(--cdt-motion-standard)"],
-    [".cdt-drawer--left[data-state=open]", "cdt-drawer-enter-left var(--cdt-motion-standard)"],
+    [".cdt-menu[data-state=open]", "cdt-popover-enter var(--cdt-motion-spring)"],
+    [".cdt-popover[data-state=open]", "cdt-popover-enter var(--cdt-motion-spring)"],
+    [".cdt-dialog[data-state=open]", "cdt-dialog-enter var(--cdt-motion-spring)"],
+    [".cdt-drawer--right[data-state=open]", "cdt-drawer-enter-right var(--cdt-motion-slow)"],
+    [".cdt-drawer--left[data-state=open]", "cdt-drawer-enter-left var(--cdt-motion-slow)"],
   ] as const;
 
   test.each(bundles)("%s: every surface that appears has an entrance", (_name, css) => {
@@ -586,7 +600,7 @@ describe("FR-CMP-006 surface entrance motion", () => {
     expect(tooltip?.decls["animation"]).toBe("cdt-popover-enter var(--cdt-motion-fast)");
     // Banner는 data-state가 없다 — 마운트 애니메이션 하나뿐이다.
     const banner = rulesInLayer(css, "cdt.component").find((entry) => entry.selector === ".cdt-banner");
-    expect(banner?.decls["animation"]).toBe("cdt-banner-enter var(--cdt-motion-fast)");
+    expect(banner?.decls["animation"]).toBe("cdt-banner-enter var(--cdt-motion-spring)");
   });
 
   test.each(bundles)("%s: Tooltip covers both of Radix's open states", (_name, css) => {
@@ -599,12 +613,14 @@ describe("FR-CMP-006 surface entrance motion", () => {
 
   test.each(bundles)("%s: every closed state animates out with fill-mode forwards", (_name, css) => {
     // `forwards`가 빠지면 Presence가 언마운트하기 직전 한 프레임 원래 모습으로 튄다.
+    // CR-047: 퇴장은 모두 가속 곡선(`motion.exit`) 하나다.
     const EXIT = [
-      [".cdt-select__content[data-state=closed]", "cdt-popover-exit var(--cdt-motion-fast) forwards"],
-      [".cdt-tooltip[data-state=closed]", "cdt-popover-exit var(--cdt-motion-fast) forwards"],
-      [".cdt-menu[data-state=closed]", "cdt-popover-exit var(--cdt-motion-fast) forwards"],
-      [".cdt-drawer--right[data-state=closed]", "cdt-drawer-exit-right var(--cdt-motion-fast) forwards"],
-      [".cdt-drawer--left[data-state=closed]", "cdt-drawer-exit-left var(--cdt-motion-fast) forwards"],
+      [".cdt-select__content[data-state=closed]", "cdt-popover-exit var(--cdt-motion-exit) forwards"],
+      [".cdt-tooltip[data-state=closed]", "cdt-popover-exit var(--cdt-motion-exit) forwards"],
+      [".cdt-menu[data-state=closed]", "cdt-popover-exit var(--cdt-motion-exit) forwards"],
+      [".cdt-popover[data-state=closed]", "cdt-popover-exit var(--cdt-motion-exit) forwards"],
+      [".cdt-drawer--right[data-state=closed]", "cdt-drawer-exit-right var(--cdt-motion-exit) forwards"],
+      [".cdt-drawer--left[data-state=closed]", "cdt-drawer-exit-left var(--cdt-motion-exit) forwards"],
     ] as const;
     for (const [selector, animation] of EXIT) {
       const rule = rulesInLayer(css, "cdt.component").find((entry) => entry.selector === selector);
@@ -617,6 +633,7 @@ describe("FR-CMP-006 surface entrance motion", () => {
       ".cdt-select__content": "var(--radix-select-content-transform-origin)",
       ".cdt-tooltip": "var(--radix-popper-transform-origin)",
       ".cdt-menu": "var(--radix-popper-transform-origin)",
+      ".cdt-popover": "var(--radix-popover-content-transform-origin)",
     };
     for (const [selector, expected] of Object.entries(origins)) {
       const rule = rulesInLayer(css, "cdt.component").find((entry) => entry.selector === selector);
@@ -630,9 +647,56 @@ describe("FR-CMP-006 surface entrance motion", () => {
   test.each(bundles)("%s: reduced motion hides every closed popover so Presence unmounts at once", (_name, css) => {
     const hidden = reducedRules(css).filter((rule) => rule.decls["display"] === "none");
     const selectors = hidden.flatMap((rule) => rule.selector.split(",").map((part) => part.trim()));
-    for (const surface of [".cdt-select__content", ".cdt-tooltip", ".cdt-menu", ".cdt-drawer"]) {
+    for (const surface of [".cdt-select__content", ".cdt-tooltip", ".cdt-menu", ".cdt-drawer", ".cdt-popover"]) {
       expect(selectors.some((part) => part.endsWith(`${surface}[data-state=closed]`))).toBe(true);
     }
+  });
+});
+
+describe("CR-047 motion vocabulary", () => {
+  const SPRING_READERS = /var\(--cdt-motion-spring\)/;
+
+  test.each(bundles)("%s: the spring only ever drives an entrance, never a closed state or a transition", (_name, css) => {
+    // `linear()`를 모르는 브라우저에서 스프링 선언은 무효가 된다. 진입이면 정적으로 나타날 뿐이지만,
+    // 퇴장이면 Presence가 기다릴 애니메이션이 사라지고, 전환이면 상태 변화가 끊긴다.
+    const offenders = rulesInLayer(css, "cdt.component")
+      .filter((rule) => {
+        const animation = rule.decls["animation"] ?? "";
+        const transition = rule.decls["transition"] ?? "";
+        return (SPRING_READERS.test(animation) && /closed|exit/.test(rule.selector + animation)) || SPRING_READERS.test(transition);
+      })
+      .map((rule) => rule.selector);
+    expect(offenders).toEqual([]);
+  });
+
+  test.each(bundles)("%s: trigger-anchored popovers slide from their Radix side", (_name, css) => {
+    for (const surface of [".cdt-tooltip", ".cdt-menu", ".cdt-select__content", ".cdt-popover"]) {
+      for (const side of ["top", "bottom", "left", "right"]) {
+        const rule = rulesInLayer(css, "cdt.component").find((entry) =>
+          entry.selector.split(",").some((part) => part.trim() === `${surface}[data-side=${side}]`),
+        );
+        expect(rule?.decls["--cdt-popper-shift"]).toMatch(side === "top" || side === "bottom" ? /^translateY\(/ : /^translateX\(/);
+      }
+    }
+  });
+
+  test.each(bundles)("%s: the switch thumb settles on the bounce token and the button press reacts on the instant token", (_name, css) => {
+    expect(ruleFor(css, "cdt.component", /^\.cdt-switch__thumb$/)?.decls["transition"]).toBe("transform var(--cdt-motion-bounce)");
+    expect(ruleFor(css, "cdt.component", /^\.cdt-btn$/)?.decls["transition"]).toMatch(/transform var\(--cdt-motion-instant\)$/);
+  });
+
+  test("the linear() fallback mirrors the spring duration and loses to reduced motion", () => {
+    // dist는 콜론 뒤 공백을 지운다.
+    const supports = index.search(/@supports not \(animation-timing-function: ?linear\(0, ?1\)\)/);
+    const reduce = index.search(/@media \(prefers-reduced-motion: ?reduce\)/);
+    expect(supports).toBeGreaterThan(-1);
+    // 같은 선택자·명시도이므로 소스 순서가 정한다 — 감소 모드 블록이 뒤에 있어야 이긴다.
+    expect(supports).toBeLessThan(reduce);
+    // 압축기가 토큰의 밀리초 표기를 초 단위로 바꾸므로 표기 그대로 비교한다.
+    const fallback = /--cdt-motion-spring:\s*([\d.]+m?s) cubic-bezier\(/.exec(index.slice(supports, reduce));
+    const token = /--cdt-motion-spring:\s*([\d.]+m?s) linear\(/.exec(index);
+    expect(fallback?.[1]).toBeDefined();
+    expect(fallback?.[1]).toBe(token?.[1]);
   });
 });
 

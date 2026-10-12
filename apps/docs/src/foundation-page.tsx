@@ -7,7 +7,7 @@
 // Page styles ride with the lazy route chunks so the landing never downloads them (CR-042, NFR-001).
 import "./styles/pages.css";
 import { Badge, Banner, Button, CodeBlock, Panel, ProgressRing, Spinner, Switch, Table } from "@conductor-by-89soone/react";
-import { ArrowRight, Braces, Layers } from "lucide-react";
+import { ArrowRight, Braces, Layers, Play, RotateCcw } from "lucide-react";
 import { useEffect, useMemo, useState, type CSSProperties, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { tokensFor, valueFor, type FoundationToken } from "./foundations";
@@ -284,6 +284,56 @@ function ElevationExamples({ tokens, theme }: { readonly tokens: readonly Founda
 
 /* ---------- Motion ---------- */
 
+/** `motion.stagger` is a bare duration; every other motion token binds an easing a track can play. */
+const isCurve = (token: FoundationToken) => token.key !== "motion.stagger";
+const STAGED_ITEMS = ["tokens", "css", "react", "docs", "a11y", "size"] as const;
+
+/**
+ * W-014 "each row plays its transition": a dot crosses its track on the token's live value. A row
+ * replays by remounting its dot (the run counter is the key), so no animation API is needed and
+ * reduced motion, which zeroes the token, simply shows the end state.
+ */
+function MotionPlayground({ tokens }: { readonly tokens: readonly FoundationToken[] }) {
+  const [runs, setRuns] = useState<Readonly<Record<string, number>>>({});
+  const [stagedRun, setStagedRun] = useState(0);
+  const replay = (key: string) => setRuns((current) => ({ ...current, [key]: (current[key] ?? 0) + 1 }));
+  const curves = tokens.filter(isCurve);
+  return (
+    <Panel as="section" aria-labelledby="motion-playground-title">
+      <SectionHead id="motion-playground-title" title="Playground">Each track plays its token on the live custom property: exits accelerate away, the spring overshoots and settles, the emphasized curve lands softly.</SectionHead>
+      <div className="docs-motion-lab__actions">
+        <Button variant="secondary" onClick={() => { for (const token of curves) replay(token.key); setStagedRun((count) => count + 1); }}>
+          <RotateCcw size={16} strokeWidth={1.75} aria-hidden="true" />
+          Replay all
+        </Button>
+      </div>
+      <ul className="docs-motion-lab" role="list">
+        {curves.map((token) => (
+          <li key={token.key} className="docs-motion-lab__row">
+            <code className="docs-motion-lab__name">{token.key}</code>
+            <span className="docs-motion-lab__track" aria-hidden="true">
+              <span key={runs[token.key] ?? 0} className="docs-motion-lab__dot" style={{ "--docs-motion": `var(${token.cssName})` } as CSSProperties} />
+            </span>
+            <Button variant="ghost" size="sm" aria-label={`Play ${token.key}`} onClick={() => replay(token.key)}>
+              <Play size={14} strokeWidth={1.75} aria-hidden="true" />
+            </Button>
+          </li>
+        ))}
+      </ul>
+      <div className="docs-motion-lab__staged">
+        <p className="docs-preview-meta">Staged entrance · <code>motion.spring</code> + <code>motion.stagger</code> per item</p>
+        <ul key={stagedRun} className="docs-motion-stage" role="list" aria-label="Staged entrance example">
+          {STAGED_ITEMS.map((item, index) => <li key={item} className="docs-motion-stage__item" style={{ "--docs-stage-index": index } as CSSProperties}>{item}</li>)}
+        </ul>
+        <Button variant="ghost" size="sm" onClick={() => setStagedRun((count) => count + 1)}>
+          <RotateCcw size={14} strokeWidth={1.75} aria-hidden="true" />
+          Replay staged entrance
+        </Button>
+      </div>
+    </Panel>
+  );
+}
+
 function MotionExample({ reducedMotion, tokens, values }: { readonly reducedMotion: boolean; readonly tokens: readonly FoundationToken[]; readonly values: Readonly<Record<string, string>> }) {
   return (
     <Panel as="section" aria-labelledby="motion-computed-title">
@@ -357,7 +407,7 @@ export function FoundationPage({ group, theme, title }: { readonly group: Founda
       {group === "typography" ? <><TypographyExample /><TypeScale tokens={tokens} theme={theme} /></> : null}
       {group === "spacing" ? <><SpacingRuler tokens={tokens} theme={theme} /><LayoutExamples /></> : null}
       {group === "elevation" ? <ElevationExamples tokens={tokens} theme={theme} /> : null}
-      {group === "motion" ? <MotionExample reducedMotion={reducedMotion} tokens={tokens} values={motionValues} /> : null}
+      {group === "motion" ? <><MotionPlayground tokens={tokens} /><MotionExample reducedMotion={reducedMotion} tokens={tokens} values={motionValues} /></> : null}
 
       <section className="docs-table-section" aria-labelledby="foundation-table-title">
         <SectionHead id="foundation-table-title" title="Token table">Tier, current value and usage for every token in this group, straight from the generated artifact.</SectionHead>

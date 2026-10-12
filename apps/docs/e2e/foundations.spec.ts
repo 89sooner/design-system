@@ -59,8 +59,8 @@ test("FR-THM-002 AC-4: elevation previews expose different values per theme", as
   const row = page.getByRole("row").filter({ hasText: "elevation.overlay" });
   const darkValue = await row.locator("code").last().textContent();
   await page.getByRole("switch", { name: "Use light theme" }).click();
-  const lightValue = await row.locator("code").last().textContent();
-  expect(darkValue).not.toBe(lightValue);
+  // The theme reveal (CR-047) applies the new palette inside a view transition, a frame after the click.
+  await expect(row.locator("code").last()).not.toHaveText(darkValue ?? "");
 });
 
 interface MotionState {

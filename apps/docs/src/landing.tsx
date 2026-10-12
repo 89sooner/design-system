@@ -2,9 +2,10 @@
 import { Badge, Banner, Button, Card, CardGrid, CodeBlock, CopyButton, Meter, Panel, StatusBadge, Switch, Table, Timeline } from "@conductor-by-89soone/react";
 import type { Status } from "@conductor-by-89soone/react";
 import { Accessibility, ArrowRight, Braces, CircleCheck, CirclePause, Component, Info, Layers, Loader, Palette, ShieldCheck, Sparkles } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import stats from "./generated/site-stats.json";
+import { trackSpotlight } from "./pointer-spotlight";
 
 /*
  * W-001 is the only route `scripts/prerender.mjs` renders in Node, so nothing here may touch
@@ -279,7 +280,7 @@ function Stats() {
       {/* `list-style: none` drops list semantics in WebKit; the explicit role keeps them. */}
       <ul className="docs-stats__grid" role="list">
         {statTiles.map((tile) => (
-          <li key={tile.label} className="docs-stats__tile">
+          <li key={tile.label} className="docs-stats__tile docs-spotlight" onPointerMove={trackSpotlight}>
             <strong className="docs-stats__value">{tile.value}</strong>
             <span className="docs-stats__label">{tile.label}</span>
             <span className="docs-stats__detail">{tile.detail}</span>
@@ -298,7 +299,7 @@ function Packages() {
       </SectionHead>
       <CardGrid className="docs-packages__grid">
         {packages.map((pkg) => (
-          <Card key={pkg.id} className="docs-package" href={pkg.href} aria-labelledby={`docs-package-${pkg.id}-name docs-package-${pkg.id}-cta`} aria-describedby={`docs-package-${pkg.id}-description`}>
+          <Card key={pkg.id} className="docs-package docs-spotlight" onPointerMove={trackSpotlight} href={pkg.href} aria-labelledby={`docs-package-${pkg.id}-name docs-package-${pkg.id}-cta`} aria-describedby={`docs-package-${pkg.id}-description`}>
             <span className="docs-package__icon">{pkg.icon}</span>
             <span id={`docs-package-${pkg.id}-name`} className="docs-package__name">{pkg.name}</span>
             <span id={`docs-package-${pkg.id}-description`} className="docs-package__description">{pkg.description}</span>
@@ -319,7 +320,7 @@ function Principles() {
       </SectionHead>
       <div className="docs-principles__grid">
         {principles.map((principle, index) => (
-          <Panel key={index} as="section" className="docs-principle">
+          <Panel key={index} as="section" className="docs-principle docs-spotlight" onPointerMove={trackSpotlight}>
             <span className="docs-principle__icon">{principle.icon}</span>
             <div className="docs-principle__body">
               <h3>{principle.title}</h3>
@@ -368,8 +369,16 @@ function NextSteps() {
 }
 
 export function Overview() {
+  // Arms the scroll-linked section rise one frame after hydration, never in the prerendered first
+  // paint (landing.css explains the LCP cost). The attribute is written straight to the element, not
+  // through state, so arming re-renders nothing; the server markup never carries it.
+  const landing = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => { if (landing.current !== null) landing.current.dataset.scrollReveal = ""; });
+    return () => cancelAnimationFrame(frame);
+  }, []);
   return (
-    <section className="cdt-page docs-landing" aria-labelledby="overview-title">
+    <section ref={landing} className="cdt-page docs-landing" aria-labelledby="overview-title">
       <Hero />
       <Showcase />
       <Stats />

@@ -6,7 +6,7 @@
  * scale) and drawing geometry — the dot-grid backdrop's 1px dot and 20px pitch, and the 1px inner
  * highlight that gives a glass surface its top edge. Colour never appears as a literal: tints are
  * `color-mix()` over tokens. Motion lives only under `prefers-reduced-motion: no-preference` and
- * reads the `--cdt-motion-*` durations; the only literals there are the entrance stagger delays.
+ * reads the `--cdt-motion-*` tokens, stagger included (CR-047).
  *
  * `/` is the LCP route (NFR-001), so nothing here restates what `cdt.base` already gives
  * (heading margins, the 14px body size, bold `strong`); rules only carry the difference.
@@ -140,18 +140,66 @@
   .docs-cta { padding: var(--cdt-space-6) var(--cdt-space-4); }
 }
 
-/* ---------- Motion (entrance and hover only; nothing moves on scroll) ---------- */
+/* ---------- Pointer spotlight (CR-047) ---------- */
+/*
+ * A soft accent glow follows the pointer across a card (pointer-spotlight.ts writes the two
+ * coordinates). It sits under the content (the card is `isolation: isolate`) and only shows on
+ * hover with a fine pointer, so text contrast at rest — what axe and the contrast gate measure — is
+ * unchanged.
+ */
+.docs-spotlight { position: relative; isolation: isolate; }
+.docs-spotlight::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1; /* cdt-allow-literal: isolation 안에서 배경 바로 위, 콘텐츠 아래 */
+  border-radius: inherit;
+  background: radial-gradient(16rem circle at var(--docs-spot-x, 50%) var(--docs-spot-y, 0%), color-mix(in srgb, var(--cdt-accent) 14%, transparent), transparent 70%); /* cdt-allow-literal: 스포트라이트 반경은 카드 폭에 맞춘 읽기 단위다 */
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ---------- Motion (CR-047: staged entrance, scroll-linked rise, hover) ---------- */
 @media (prefers-reduced-motion: no-preference) {
   @keyframes docs-landing-rise {
-    from { opacity: 0; transform: translateY(var(--cdt-space-2)); }
+    from { opacity: 0; transform: translateY(var(--cdt-space-3)); }
     to { opacity: 1; transform: translateY(0); }
   }
-  /* The pill and the h1 rise together: the h1 is the LCP candidate, so it carries no delay. */
-  .docs-hero > * { animation: docs-landing-rise var(--cdt-motion-standard) both; }
-  .docs-hero > :nth-child(3) { animation-delay: 40ms; /* cdt-allow-literal: 등장 스태거 */ }
-  .docs-hero > :nth-child(4) { animation-delay: 80ms; /* cdt-allow-literal: 등장 스태거 */ }
-  .docs-hero > :nth-child(5) { animation-delay: 120ms; /* cdt-allow-literal: 등장 스태거 */ }
-  .docs-showcase { animation: docs-landing-rise var(--cdt-motion-standard) both; animation-delay: 200ms; /* cdt-allow-literal: 등장 스태거 */ }
+  /* The pill and the h1 rise together on the short curve: the h1 is the LCP candidate, so it carries no delay. */
+  .docs-hero > * { animation: docs-landing-rise var(--cdt-motion-slow) both; }
+  .docs-hero > :nth-child(-n + 2) { animation: docs-landing-rise var(--cdt-motion-standard) both; }
+  .docs-hero > :nth-child(3) { animation-delay: var(--cdt-motion-stagger); }
+  .docs-hero > :nth-child(4) { animation-delay: calc(var(--cdt-motion-stagger) * 2); }
+  .docs-hero > :nth-child(5) { animation-delay: calc(var(--cdt-motion-stagger) * 3); }
+  .docs-showcase { animation: docs-landing-rise var(--cdt-motion-slow) both; animation-delay: calc(var(--cdt-motion-stagger) * 4); }
+
+  /*
+   * Sections below the fold rise into place as they scroll in. Transform only: a scroll-linked
+   * opacity would leave whatever sits at the viewport edge half-transparent when axe or a screenshot
+   * reads it. The timeline is the section's own view progress, so nothing runs while it is off-screen
+   * and the document timeline (what the E2E settle loop waits on) carries none of it.
+   *
+   * The rule only applies once `Overview` arms it after hydration. Resolving five view timelines in
+   * the first style pass pushed the prerendered paint, and so LCP, back by ~80ms in Lighthouse
+   * (p75 2379 → 2451ms against the 2500ms budget); armed later, it costs the first paint nothing,
+   * and without JavaScript the sections simply stay put.
+   */
+  @supports (animation-timeline: view()) {
+    @keyframes docs-landing-scroll-rise {
+      from { transform: translateY(var(--cdt-space-7)) scale(0.98); }
+      to { transform: none; }
+    }
+    .docs-landing[data-scroll-reveal] :is(.docs-stats, .docs-packages, .docs-principles, .docs-steps, .docs-cta) {
+      animation: docs-landing-scroll-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 80%;
+    }
+  }
+
+  .docs-spotlight::after { transition: opacity var(--cdt-motion-standard); }
+  @media (hover: hover) and (pointer: fine) {
+    .docs-spotlight:hover::after { opacity: 1; }
+  }
   .docs-package__icon { transition: transform var(--cdt-motion-fast), border-color var(--cdt-motion-fast); }
   .docs-package:hover .docs-package__icon, .docs-package:focus-visible .docs-package__icon { transform: scale(1.06); border-color: color-mix(in srgb, var(--cdt-accent) 55%, transparent); }
   .docs-package__footer::after { transition: translate var(--cdt-motion-fast); }

@@ -225,16 +225,16 @@
   .docs-stage > .docs-preview { padding-block: var(--cdt-space-2); }
 }
 
-/* ---------- Motion: entrance and hover only; nothing moves on scroll ---------- */
+/* ---------- Motion: entrance and hover only; staged by motion.stagger (CR-047) ---------- */
 @media (prefers-reduced-motion: no-preference) {
   @keyframes docs-catalog-rise {
     from { opacity: 0; transform: translateY(var(--cdt-space-2)); }
     to { opacity: 1; transform: none; }
   }
-  .docs-catalog__head, .docs-detail__back, .docs-detail__head { animation: docs-catalog-rise var(--cdt-motion-standard) both; }
-  .docs-framework, .docs-stage { animation: docs-catalog-rise var(--cdt-motion-standard) both; animation-delay: 60ms; /* cdt-allow-literal: 등장 스태거 */ }
-  .docs-catalog__toolbar, .docs-detail__usage { animation: docs-catalog-rise var(--cdt-motion-standard) both; animation-delay: 120ms; /* cdt-allow-literal: 등장 스태거 */ }
-  .docs-props { animation: docs-catalog-rise var(--cdt-motion-standard) both; animation-delay: 180ms; /* cdt-allow-literal: 등장 스태거 */ }
+  .docs-catalog__head, .docs-detail__back, .docs-detail__head { animation: docs-catalog-rise var(--cdt-motion-slow) both; }
+  .docs-framework, .docs-stage { animation: docs-catalog-rise var(--cdt-motion-slow) both; animation-delay: var(--cdt-motion-stagger); }
+  .docs-catalog__toolbar, .docs-detail__usage { animation: docs-catalog-rise var(--cdt-motion-slow) both; animation-delay: calc(var(--cdt-motion-stagger) * 2); }
+  .docs-props { animation: docs-catalog-rise var(--cdt-motion-slow) both; animation-delay: calc(var(--cdt-motion-stagger) * 3); }
   .docs-component-tile { transition: border-color var(--cdt-motion-fast), box-shadow var(--cdt-motion-fast), transform var(--cdt-motion-fast); }
   .docs-component-tile:hover { transform: translateY(calc(var(--cdt-space-1) / -2)); }
   .docs-component-link, .docs-component-link__icon, .docs-detail__back { transition: background var(--cdt-motion-fast), color var(--cdt-motion-fast), transform var(--cdt-motion-fast); }

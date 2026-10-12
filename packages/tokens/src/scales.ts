@@ -154,6 +154,12 @@ const motion: TokenDefinition[] = [
   semantic("motion.standard", "240ms {ease.entrance}", "Overlay and page entrance."),
   semantic("motion.bounce", "300ms {ease.overshoot}", "Toggle and switch settle."),
   semantic("motion.spin", "1000ms {ease.linear}", "One revolution of the indeterminate spinner."),
+  // CR-047: a press, an exit, a large surface, a spring settle, and the step between staged items.
+  semantic("motion.instant", "90ms {ease.entrance}", "Press feedback and pointer-tracking highlights."),
+  semantic("motion.exit", "160ms {ease.exit}", "Overlay, popover and drawer exits."),
+  semantic("motion.slow", "420ms {ease.emphasized}", "Drawers and other large surfaces entering."),
+  semantic("motion.spring", "520ms {ease.spring}", "Spring settle for dialogs, popovers and checked indicators (entrances only)."),
+  semantic("motion.stagger", "45ms", "Delay step between items of a staged entrance; a duration, never an easing."),
 ];
 
 export const scaleTokens: readonly TokenDefinition[] = [
