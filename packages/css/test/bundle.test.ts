@@ -750,6 +750,35 @@ describe("FR-A11Y-001 the focus ring survives a hovering pointer", () => {
   });
 });
 
+describe("DEV-050 the pressed button shade reads as a dent in both themes", () => {
+  /*
+   * 눌림 그림자가 `border.strong`을 읽으면 다크 팔레트에서 그 값이 밝아 윗변에 흰 테두리가
+   * 그려졌다(실측). 눌림 그림자는 테마와 무관하게 어두운 값이어야 하고, 표면이 없는 ghost는
+   * 눌림 거리만 남긴다.
+   */
+  test.each(bundles)("%s: no pressed button shadow reads a palette colour that turns light in the dark theme", (_name, css) => {
+    const pressed = rulesInLayer(css, "cdt.component").filter(
+      (rule) => /\.cdt-btn[\w-]*:not\(:disabled\):active/.test(rule.selector) && rule.decls["box-shadow"] !== undefined,
+    );
+    expect(pressed.length).toBeGreaterThan(0);
+    for (const rule of pressed) {
+      if (rule.decls["box-shadow"] === "none") continue;
+      expect(rule.decls["box-shadow"]).not.toMatch(/--cdt-border-|--cdt-text-/);
+    }
+  });
+
+  test.each(bundles)("%s: ghost buttons keep the press distance but no pressed shadow", (_name, css) => {
+    const rules = rulesInLayer(css, "cdt.component");
+    const base = rules.find((rule) => rule.selector === ".cdt-btn:not(:disabled):active");
+    expect(base?.decls.transform).toMatch(/^translateY\(/);
+    expect(base?.decls["box-shadow"]).toBeUndefined();
+    const ghostShadow = rules.filter(
+      (rule) => rule.selector.split(",").some((s) => s.includes(".cdt-btn--ghost") && s.includes(":active")) && rule.decls["box-shadow"] !== undefined,
+    );
+    expect(ghostShadow).toEqual([]);
+  });
+});
+
 describe("DEV-035 · DEV-037 방향을 아는 모션", () => {
   /*
    * 이 저장소는 배치를 논리 속성(`inset-inline-*`, `margin-inline-*`)으로 적는데

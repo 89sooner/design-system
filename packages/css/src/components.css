@@ -162,8 +162,19 @@
   }
 
   .cdt-btn:not(:disabled):active {
-    box-shadow: inset 0 1px 0 var(--cdt-border-strong); /* cdt-allow-literal: pressed control highlight */
     transform: translateY(1px); /* cdt-allow-literal: tactile press distance */
+  }
+
+  /*
+   * The pressed shade must read as a dent in both themes. `border.strong` is light in the dark
+   * palette, so the old inset line painted a white rim along the top edge (DEV-050). Ghost
+   * buttons have no surface to dent and keep only the press distance. Each selector stays at
+   * the base button's specificity, so the later focus-ring rule still wins while a keyboard
+   * press holds `:active` (DEV-034).
+   */
+  .cdt-btn--primary:not(:disabled):active,
+  .cdt-btn--secondary:not(:disabled):active {
+    box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.24); /* cdt-allow-literal: no semantic token is dark in both themes; a neutral black shade reads as a press on every surface */
   }
 
   .cdt-card,
