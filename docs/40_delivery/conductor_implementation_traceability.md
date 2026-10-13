@@ -262,6 +262,8 @@ PR Search 소비처의 `DEV-380`이 트리거다: 화면 계약이 최대 20계�
 
 | DEV ID | 발견일 | 유형 | 내용 | 관련 ID | 처리 CR | 상태 |
 | --- | --- | --- | --- | --- | --- | --- |
+| DEV-058 | 2026-10-13 | 소비자 검증 편차 | **`AppShell` 안의 `DropdownMenu` 항목이 라우트를 바꾸면 포커스가 새 화면의 main에 남지 않는다.** agent-ai-platform 파일럿(CR-055)에서 드러났다. 메뉴가 열린 동안 Radix 포커스 범위가 AppShell의 main 포커스(routeKey 변경)를 되돌리고, 닫힐 때 트리거로 보낸다. 트리거 복귀만 막으면 body로 빠진다. 소비자는 `DropdownMenu.Content`의 `onCloseAutoFocus`에서 기본 동작을 막고 main에 직접 포커스를 준다(파일럿 `packages/web/src/shell/AppShell.tsx`, 시험 `test/integration/shell.test.tsx`). 패키지 쪽 해법(라우트 변경 시 열린 메뉴의 복귀 대상을 main으로 바꾸는 계약)은 후속 CR 후보다 | FR-CMP-006, FR-CMP-009, FR-A11Y-002, C-070 | CR-055 | open |
+| DEV-057 | 2026-10-13 | 소비자 검증 편차 | **`component.css`만 쓰는 소비자에서는 NavList 항목의 포커스 링을 패키지가 그리지 않는다.** `component.css`는 reset을 뺀 진입점인데, NavList 항목은 reset의 전역 `:focus-visible` 링에 기대고 자기 규칙이 없다. 파일럿은 기존 전역 링 규칙(`--focus-ring` = `--cdt-focus-ring` 별칭)을 남겨 해결했다. 함께 확인한 것: 소비자의 레이어 밖 전역 규칙(`a { color }`)은 `@layer cdt.*`를 언제나 이긴다(ADR-005의 설계대로다). 파일럿은 `a:not([class*="cdt-"])`로 좁혔다. 후속 CR 후보는 두 가지다. ① NavList 항목에 컴포넌트 레이어의 링을 둔다. ② 시작 안내(W-010)에 레이어 밖 규칙과의 관계를 적는다 | FR-CSS-001, FR-A11Y-001, FR-CMP-009, ADR-005, C-071 | CR-055 | open |
 | DEV-056 | 2026-10-13 | 검증 편차 | **CR-054 PR CI의 visual regression이 실패했고, 그 기준 이미지를 고정 컨테이너 밖에서 다시 만들었다.** 실패 원인은 둘이었다. ① `visual.spec.ts`가 카탈로그 타일 수를 47로 고정해 두었다. 이제 `component-meta.json`의 길이에서 읽는다. ② 타일 4개가 늘어 `AllComponents-grayscale-dark` 전체 화면 기준 이미지가 달라졌다. 이 샌드박스에는 여전히 Docker 데몬이 없어, DEV-045와 같은 방법(Chromium 1194 + Inter를 뺀 fontconfig)으로 **이 이미지 한 장만** 갱신했다. 같은 조건에서 나머지 26장은 갱신 없이 1% 안에서 일치했다. PR CI(head `684370d`)의 visual regression 잡이 통과했다 | FR-QA-004, FR-A11Y-003 AC-4, DEV-045 | CR-054 | closed |
 | DEV-055 | 2026-10-13 | 문서 결함 | **CR-052가 SRS 4.3 Out of Scope의 "런타임 토큰 편집기" 행을 고치지 않았다.** 그 행은 "문서 사이트의 테마 토글까지만 포함한다"고 적고 있었고, 테마 플레이그라운드(FR-DOC-010)와 어긋났다. 플레이그라운드는 미리보기 영역에만 재정의를 걸고 토큰 소스를 바꾸지 않으므로 제외 취지와는 맞는다. 행의 문구를 그 경계로 고쳤다. CR-054 cascade 중 SRS를 다시 읽다가 발견했다 | FR-DOC-010, SRS 4.3 | CR-054 | closed |
 | DEV-054 | 2026-10-13 | 구현 편차 (기존) | **W-021이 FR-DOC-003 요구사항의 "사용 규칙"을 렌더하지 않았다.** 요구사항 문장과 와이어프레임 W-021 섹션 정의(§ 사용 규칙: 권장 예/금지 예와 금지 사유)는 컴포넌트마다 사용 규칙을 요구했다. 그러나 AC-1~AC-5가 프리뷰·props·조합·테마·누락만 검사해서, 상세 화면에는 프리뷰·Import·CSS 클래스·Props만 있었다(원장도 FR-DOC-003을 AC-1~AC-5로 검증됨 처리). CR-048이 AC-6을 더하고 47종 지침과 빌드 검사로 해소했다 | FR-DOC-003 | CR-048 | closed |
@@ -552,3 +554,14 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | DEV | DEV-055(CR-052의 Out of Scope 문구 누락) closed, DEV-056(시각 기준 이미지 갱신) closed |
 | 검증 (로컬) | 게이트 12종(단위 744/744, a11y 258/258), docs E2E 69/69, 시각 회귀 27/27 |
 | 검증 (CI) | PR #53 head `684370d`: verify(node 20·22), visual regression 통과 |
+
+### CR-055 agent-ai-platform 파일럿 적용 (2026-10-13)
+
+| 범위 | 결과 |
+| --- | --- |
+| 소비 저장소 | agent-ai-platform 브랜치 `claude/confident-mayer-bq19ap` 커밋 `9c9471d`(로컬). 기존 토큰 변수를 `--cdt-*` 별칭으로, C-001·C-002 셸을 `AppShell`·`TopBar`·`NavList`·`AppShellNavTrigger`·`DropdownMenu`로 바꿨다. 그 저장소의 ADR-021과 릴리스 노트 DS-PILOT-01로 기록했다 |
+| Conductor 패키지 | 변경 없음. 0.7.0을 정확한 버전으로 소비한다 |
+| 문서 | SRS v1.13 §23과 4.3 행, PRD NG-4와 범위 표 |
+| DEV | DEV-057(component.css 소비자의 NavList 포커스 링), DEV-058(메뉴 이동 뒤 포커스) open |
+| 검증 (소비 저장소, 로컬) | lint, dep:check, web typecheck, web 시험 124/124(신규 3), build 통과. sca는 변경 전과 같다. Chromium 1440px·390px 화면 확인 |
+| CI · 종료 | agent-ai-platform#3 head `e43bf3f`에서 8종 통과(그 저장소의 sca·test 선행 실패 2건을 같은 PR에서 해소). PR #54 head `bd0637d` 통과. CR-055 closed(2026-10-13). DEV-057·DEV-058 open |
