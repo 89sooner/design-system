@@ -1,7 +1,7 @@
-// Refs: CR-042 WP-018 FR-DOC-001 FR-DOC-005 FR-THM-003 W-001
-import { Badge, Banner, Button, Card, CardGrid, CodeBlock, CopyButton, Meter, Panel, StatusBadge, Switch, Table, Timeline } from "@conductor-by-89soone/react";
+// Refs: CR-042 CR-049 WP-018 FR-DOC-001 FR-DOC-005 FR-THM-003 W-001
+import { Badge, Banner, Button, Card, CardGrid, CodeBlock, CopyButton, Kbd, Meter, Panel, StatusBadge, Switch, Table, Timeline } from "@conductor-by-89soone/react";
 import type { Status } from "@conductor-by-89soone/react";
-import { Accessibility, ArrowRight, Braces, CircleCheck, CirclePause, Component, Info, Layers, Loader, Palette, ShieldCheck, Sparkles } from "lucide-react";
+import { Accessibility, ArrowRight, Bot, Braces, CircleCheck, CirclePause, Component, Info, Layers, Loader, Palette, ShieldCheck, Sparkles, Waves } from "lucide-react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import stats from "./generated/site-stats.json";
@@ -125,35 +125,6 @@ function PackagePreview({ id }: { readonly id: PackageId }) {
   );
 }
 
-interface Principle {
-  readonly title: ReactNode;
-  readonly icon: ReactNode;
-  readonly body: ReactNode;
-}
-
-const principles: readonly Principle[] = [
-  {
-    title: "One token source",
-    icon: <Braces size={20} strokeWidth={1.75} aria-hidden="true" />,
-    body: <>Every colour, length and duration is a <code>--cdt-</code> custom property generated from one TypeScript source. Component tokens reference semantic tokens only, so a theme swaps values and never keys.</>,
-  },
-  {
-    title: <>Cascade layers, never <code>!important</code></>,
-    icon: <Layers size={20} strokeWidth={1.75} aria-hidden="true" />,
-    body: <>The stylesheet opens with <code>@layer cdt.reset, cdt.base, cdt.layout, cdt.component, cdt.utility</code>. Unlayered consumer rules win by cascade order, so no override needs <code>!important</code>.</>,
-  },
-  {
-    title: "Accessibility by Radix",
-    icon: <Accessibility size={20} strokeWidth={1.75} aria-hidden="true" />,
-    body: <>Dialogs, menus, selects and switches delegate focus, roles and keyboard handling to Radix UI. Status is never colour alone: every badge carries an icon and a label.</>,
-  },
-  {
-    title: "Zero runtime requests",
-    icon: <ShieldCheck size={20} strokeWidth={1.75} aria-hidden="true" />,
-    body: <>The packages ship static CSS and components that fetch nothing and track nothing. Every colour pair is measured at build time against WCAG 2.1 AA.</>,
-  },
-];
-
 interface QuickStep {
   readonly number: string;
   readonly title: string;
@@ -197,9 +168,37 @@ function Hero() {
       <h1 id="overview-title" className="docs-hero__title"><span className="docs-hero__gradient">Conductor</span> Design System</h1>
       <p className="docs-hero__lead">Reusable tokens, a layered stylesheet and Radix-based React primitives for focused operational interfaces. Dark is canonical, light is a first-class second palette, and every colour ships with its contrast verdict.</p>
       <LandingActions className="docs-hero__actions" />
-      <div className="docs-hero__install">
+      <HeroCode />
+    </div>
+  );
+}
+
+const HERO_SNIPPET = 'import "@conductor-by-89soone/css";\nimport { Button } from "@conductor-by-89soone/react";\n\n<Button variant="primary">Deploy</Button>';
+
+/*
+ * The hero leads with the code a consumer writes (CR-049). Highlighting is three hand-placed spans,
+ * not a tokenizer, and every colour is a contrast-checked pair on `surface.raised`: accent 4.82:1 /
+ * 5.39:1, status.success 6.68:1 / 5.34:1, text.muted and text.monoPayload above both. The h1 stays
+ * the largest text node, so the LCP candidate does not move.
+ */
+function HeroCode() {
+  const pkg = (name: string) => <span className="docs-code__string">"@conductor-by-89soone/{name}"</span>;
+  return (
+    <div className="docs-hero__code">
+      <div className="docs-hero__code-bar">
+        <span className="docs-hero__code-dots" aria-hidden="true"><span /><span /><span /></span>
+        <span className="docs-hero__code-file">app.tsx</span>
+        <CopyButton value={HERO_SNIPPET} label="Copy code" />
+      </div>
+      <pre className="docs-hero__code-body" aria-label="Example: import the stylesheet once and render a Button"><code>
+        <span className="docs-code__keyword">import</span> {pkg("css")};{"\n"}
+        <span className="docs-code__keyword">import</span> {"{ Button }"} <span className="docs-code__keyword">from</span> {pkg("react")};{"\n\n"}
+        <span className="docs-code__punct">{"<"}</span>Button <span className="docs-code__attr">variant</span><span className="docs-code__punct">=</span><span className="docs-code__string">"primary"</span><span className="docs-code__punct">{">"}</span>Deploy<span className="docs-code__punct">{"</"}</span>Button<span className="docs-code__punct">{">"}</span>
+      </code></pre>
+      <div className="docs-hero__code-cmd">
+        <span className="docs-hero__code-prompt" aria-hidden="true">$</span>
         <code>{INSTALL_COMMAND}</code>
-        <CopyButton value={INSTALL_COMMAND} label="Copy" />
+        <CopyButton value={INSTALL_COMMAND} label="Copy command" />
       </div>
     </div>
   );
@@ -312,23 +311,68 @@ function Packages() {
   );
 }
 
+/** Static agent-readable files next to the site (FR-DOC-008); plain anchors, not router links. */
+const agentFile = (path: string) => `${import.meta.env.BASE_URL}${path}`;
+
+const KEYBOARD_ROWS: readonly (readonly [keys: readonly string[], action: string])[] = [
+  [["Tab"], "Next control"],
+  [["Shift", "Tab"], "Previous control"],
+  [["Enter"], "Activate"],
+  [["Esc"], "Close an overlay"],
+  [["↑", "↓"], "Move in menus and lists"],
+];
+
+/*
+ * W-001 bento (CR-049): the settled decisions as tiles of different weight. Every claim is one the
+ * packages enforce — token-only styling (lint:tokens), cascade layers, Radix keyboard behaviour,
+ * reduced motion, zero runtime requests and the generated agent docs.
+ */
 function Principles() {
   return (
     <section className="docs-principles" aria-labelledby="principles-title">
       <SectionHead eyebrow="Principles" id="principles-title" title="Settled decisions, not open questions">
         The architecture records are closed; what follows is how the packages behave because of them.
       </SectionHead>
-      <div className="docs-principles__grid">
-        {principles.map((principle, index) => (
-          <Panel key={index} as="section" className="docs-principle docs-spotlight" onPointerMove={trackSpotlight}>
-            <span className="docs-principle__icon">{principle.icon}</span>
-            <div className="docs-principle__body">
-              <h3>{principle.title}</h3>
-              <p>{principle.body}</p>
-            </div>
-          </Panel>
-        ))}
-      </div>
+      <ul className="docs-bento" role="list">
+        <li className="docs-bento__tile docs-bento__tile--tokens docs-spotlight" onPointerMove={trackSpotlight}>
+          <span className="docs-principle__icon"><Braces size={20} strokeWidth={1.75} aria-hidden="true" /></span>
+          <h3>One token source</h3>
+          <p>Every colour, length and duration is a <code>--cdt-</code> custom property generated from one TypeScript source. A theme swaps values, never keys.</p>
+          <div className="docs-bento__swatches" aria-hidden="true">
+            {previewChips.map((status) => <span key={status} className="docs-bento__swatch"><span className={`docs-package__chip docs-package__chip--${status}`} /><code>status.{status}</code></span>)}
+          </div>
+        </li>
+        <li className="docs-bento__tile docs-bento__tile--keys docs-spotlight" onPointerMove={trackSpotlight}>
+          <span className="docs-principle__icon"><Accessibility size={20} strokeWidth={1.75} aria-hidden="true" /></span>
+          <h3>Keyboard-first, by Radix</h3>
+          <p>Dialogs, menus, selects and tabs delegate focus, roles and keys to Radix UI. Status is never colour alone.</p>
+          <dl className="docs-bento__keys">
+            {KEYBOARD_ROWS.map(([keys, action]) => <div key={action}><dt>{keys.map((key) => <Kbd key={key}>{key}</Kbd>)}</dt><dd>{action}</dd></div>)}
+          </dl>
+        </li>
+        <li className="docs-bento__tile docs-spotlight" onPointerMove={trackSpotlight}>
+          <span className="docs-principle__icon"><Layers size={20} strokeWidth={1.75} aria-hidden="true" /></span>
+          <h3>Cascade layers, never <code>!important</code></h3>
+          <p>Unlayered consumer rules win by layer order.</p>
+          <code className="docs-bento__snippet">@layer cdt.reset, cdt.base, cdt.layout, cdt.component, cdt.utility;</code>
+        </li>
+        <li className="docs-bento__tile docs-spotlight" onPointerMove={trackSpotlight}>
+          <span className="docs-principle__icon"><Waves size={20} strokeWidth={1.75} aria-hidden="true" /></span>
+          <h3>Motion that steps aside</h3>
+          <p>Entrances settle on a spring, exits accelerate away, and <code>prefers-reduced-motion</code> turns every motion token to <code>0s</code>.</p>
+        </li>
+        <li className="docs-bento__tile docs-spotlight" onPointerMove={trackSpotlight}>
+          <span className="docs-principle__icon"><ShieldCheck size={20} strokeWidth={1.75} aria-hidden="true" /></span>
+          <h3>Zero runtime requests</h3>
+          <p>Static CSS and components that fetch nothing and track nothing; {stats.contrastPassed} of {stats.contrastChecks} colour pairs pass WCAG 2.1 AA at build time.</p>
+        </li>
+        <li className="docs-bento__tile docs-bento__tile--agents docs-spotlight" onPointerMove={trackSpotlight}>
+          <span className="docs-principle__icon"><Bot size={20} strokeWidth={1.75} aria-hidden="true" /></span>
+          <h3>Ready for AI agents</h3>
+          <p>The build writes a <strong>DESIGN.md</strong> with every token per theme, an <strong>llms.txt</strong> index and a Markdown page per component, all from the same sources as these pages.</p>
+          <p className="docs-bento__links"><a href={agentFile("DESIGN.md")}>DESIGN.md</a><a href={agentFile("llms.txt")}>llms.txt</a></p>
+        </li>
+      </ul>
     </section>
   );
 }
