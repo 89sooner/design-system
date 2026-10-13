@@ -502,3 +502,4 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | CSS | secondary tone 버튼 기본·hover 규칙이 `color-mix(in srgb)` 대신 `var(--cdt-tone-*)`를 읽는다 |
 | 대비 | CP-118~CP-121(`text.primary` 위 채움 4종) 추가, 240/240 통과 |
 | 검증 (로컬) | 게이트 12종, docs E2E 56/56, 토큰·CSS 시험 갱신 |
+| CI · 종료 | PR #46 head `cce0505`에서 verify(node 20/22)·visual regression success. CR-050 closed(2026-10-13) |
