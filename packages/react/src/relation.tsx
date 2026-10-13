@@ -5,6 +5,7 @@ import { forwardRef, useId, useMemo, useState, type HTMLAttributes } from "react
 import { Button } from "./action";
 import { Table } from "./data";
 import { cx } from "./cx";
+import { DEFAULT_RELATION_GRAPH_LABELS, type RelationGraphLabels } from "./labels";
 
 export interface RelationNode {
   readonly id: string;
@@ -39,6 +40,8 @@ export interface RelationGraphProps extends Omit<HTMLAttributes<HTMLDivElement>,
   readonly state?: "ready" | "loading" | "empty" | "error" | "partial";
   readonly stateMessage?: string;
   readonly onRetry?: () => void;
+  /** Every string the graph renders, merged over English defaults (CR-053). */
+  readonly labels?: Partial<RelationGraphLabels>;
 }
 
 /** Stable ID order, bounded O(n log n), and no assumption of a directed acyclic graph. */
@@ -48,14 +51,15 @@ export function layoutRelationNodes(nodes: readonly RelationNode[]) {
   return ordered.map((node, index) => ({ ...node, x: 130 + (index % columns) * 280, y: 90 + Math.floor(index / columns) * 150 }));
 }
 
-function edgeState(edge: RelationEdge) {
-  return [edge.retracted && "해제됨", edge.unresolved && "미해결", edge.ambiguous && "모호함"].filter(Boolean).join(" · ") || "확인됨";
+function edgeState(edge: RelationEdge, t: RelationGraphLabels) {
+  return [edge.retracted && t.retracted, edge.unresolved && t.unresolved, edge.ambiguous && t.ambiguous].filter(Boolean).join(" · ") || t.confirmed;
 }
 
 export const RelationGraph = forwardRef<HTMLDivElement, RelationGraphProps>(function RelationGraph(
   { nodes, edges, label, selection: controlledSelection, onSelectionChange, viewport: controlledViewport, onViewportChange,
-    state = "ready", stateMessage, onRetry, className, ...props }, ref,
+    state = "ready", stateMessage, onRetry, labels, className, ...props }, ref,
 ) {
+  const t = { ...DEFAULT_RELATION_GRAPH_LABELS, ...labels };
   const uid = useId().replace(/:/g, "");
   const [localSelection, setSelection] = useState<RelationSelection>(null);
   const [localViewport, setViewport] = useState<RelationViewport>({ x: 0, y: 0, zoom: 1 });
@@ -86,29 +90,29 @@ export const RelationGraph = forwardRef<HTMLDivElement, RelationGraphProps>(func
   const pan = (x: number, y: number) => changeViewport({ x: viewport.x + x * width / zoom / 4, y: viewport.y + y * height / zoom / 4, zoom });
   const selectedNode = selection?.kind === "node" ? byId.get(selection.id) : undefined;
   const selectedEdge = selection?.kind === "edge" ? edges.find((edge) => edge.id === selection.id) : undefined;
-  const endpointLabel = (id: string) => byId.get(id)?.label ?? "대상 정보 없음";
+  const endpointLabel = (id: string) => byId.get(id)?.label ?? t.missingEndpoint;
   const selectedHidden = selectedEdge && !visibleEdges.some((edge) => edge.id === selectedEdge.id);
   const blocked = state === "loading" || state === "error" || state === "empty";
 
   return <div {...props} ref={ref} className={cx("cdt-relation", className)} aria-label={props["aria-label"] ?? label} aria-busy={props["aria-busy"] ?? (state === "loading" || undefined)}>
     <div className="cdt-relation__toolbar">
-      <label htmlFor={`${uid}-find`}>노드 찾기<input id={`${uid}-find`} className="cdt-input" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="이름 또는 안정 ID" /></label>
-      <label htmlFor={`${uid}-type`}>관계 유형<select id={`${uid}-type`} className="cdt-input" value={type} onChange={(event) => setType(event.target.value)}><option value="">모든 유형</option>{types.map((value) => <option key={value} value={value}>{value}</option>)}</select></label>
-      <a href={`#${uid}-list`} onClick={event => { event.preventDefault(); const list = event.currentTarget.ownerDocument.getElementById(`${uid}-list`); list?.focus({ preventScroll: true }); list?.scrollIntoView({ block: "start" }); }}>동일 정보 목록으로 이동</a>
+      <label htmlFor={`${uid}-find`}>{t.findNode}<input id={`${uid}-find`} className="cdt-input" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t.findPlaceholder} /></label>
+      <label htmlFor={`${uid}-type`}>{t.relationType}<select id={`${uid}-type`} className="cdt-input" value={type} onChange={(event) => setType(event.target.value)}><option value="">{t.allTypes}</option>{types.map((value) => <option key={value} value={value}>{value}</option>)}</select></label>
+      <a href={`#${uid}-list`} onClick={event => { event.preventDefault(); const list = event.currentTarget.ownerDocument.getElementById(`${uid}-list`); list?.focus({ preventScroll: true }); list?.scrollIntoView({ block: "start" }); }}>{t.skipToList}</a>
     </div>
-    <p className="cdt-relation__legend">화살표: 출발 → 관계 → 도착. 실선: 확인됨 · 점선: 미해결/모호함 · 파선: 해제됨. 위치는 ID 순서이며 시간·병합·의존 순서를 뜻하지 않습니다.</p>
-    <p role={state === "error" ? "alert" : "status"}>{stateMessage ?? ({ ready: `${nodes.length}개 노드 · ${visibleEdges.length}개 관계`, loading: "관계 불러오는 중", empty: "확인된 관계 없음", error: "관계를 불러오지 못했습니다", partial: "부분 결과: 표시되지 않은 관계가 있을 수 있습니다" }[state])}</p>
-    {state === "error" && onRetry && <Button type="button" onClick={onRetry}>관계 다시 시도</Button>}
+    <p className="cdt-relation__legend">{t.legend}</p>
+    <p role={state === "error" ? "alert" : "status"}>{stateMessage ?? ({ ready: t.summary(nodes.length, visibleEdges.length), loading: t.loading, empty: t.empty, error: t.error, partial: t.partial }[state])}</p>
+    {state === "error" && onRetry && <Button type="button" onClick={onRetry}>{t.retry}</Button>}
     {!blocked && <>
-      <div className="cdt-relation__toolbar" aria-label="그래프 보기 조절">
-        <Button type="button" disabled={zoom >= 8} onClick={() => changeViewport({ ...viewport, zoom: Math.min(8, zoom * 1.5) })}>확대</Button>
-        <Button type="button" disabled={zoom <= 0.5} onClick={() => changeViewport({ ...viewport, zoom: Math.max(0.5, zoom / 1.5) })}>축소</Button>
-        <Button type="button" onClick={() => changeViewport({ x: 0, y: 0, zoom: 1 })}>전체 보기</Button>
-        <Button type="button" aria-label="그래프 왼쪽으로 이동" onClick={() => pan(-1, 0)}>←</Button>
-        <Button type="button" aria-label="그래프 오른쪽으로 이동" onClick={() => pan(1, 0)}>→</Button>
-        <Button type="button" aria-label="그래프 위로 이동" onClick={() => pan(0, -1)}>↑</Button>
-        <Button type="button" aria-label="그래프 아래로 이동" onClick={() => pan(0, 1)}>↓</Button>
-        <output aria-label="확대 배율">{Math.round(zoom * 100)}%</output>
+      <div className="cdt-relation__toolbar" aria-label={t.viewControls}>
+        <Button type="button" disabled={zoom >= 8} onClick={() => changeViewport({ ...viewport, zoom: Math.min(8, zoom * 1.5) })}>{t.zoomIn}</Button>
+        <Button type="button" disabled={zoom <= 0.5} onClick={() => changeViewport({ ...viewport, zoom: Math.max(0.5, zoom / 1.5) })}>{t.zoomOut}</Button>
+        <Button type="button" onClick={() => changeViewport({ x: 0, y: 0, zoom: 1 })}>{t.fit}</Button>
+        <Button type="button" aria-label={t.panLeft} onClick={() => pan(-1, 0)}>←</Button>
+        <Button type="button" aria-label={t.panRight} onClick={() => pan(1, 0)}>→</Button>
+        <Button type="button" aria-label={t.panUp} onClick={() => pan(0, -1)}>↑</Button>
+        <Button type="button" aria-label={t.panDown} onClick={() => pan(0, 1)}>↓</Button>
+        <output aria-label={t.zoomLevel}>{Math.round(zoom * 100)}%</output>
       </div>
       {/* The semantic tables below expose every SVG operation without custom keyboard roles. */}
       <svg className="cdt-relation__canvas" aria-hidden="true" focusable="false" viewBox={`${viewport.x} ${viewport.y} ${width / zoom} ${height / zoom}`}>
@@ -127,7 +131,7 @@ export const RelationGraph = forwardRef<HTMLDivElement, RelationGraphProps>(func
             <path d={path} className="cdt-relation__edge-hit" />
             <path d={path} markerEnd={`url(#${uid}-arrow)`} data-state={edge.retracted ? "retracted" : edge.unresolved || edge.ambiguous ? "uncertain" : "confirmed"} />
             {(nodes.length <= 50 || selectedEdge?.id === edge.id) && <text x={(source.x + target.x) / 2 - dy / distance * offset / 2} y={(source.y + target.y) / 2 + dx / distance * offset / 2 - 8} textAnchor="middle" className="cdt-relation__edge-label">{edge.label}</text>}
-            <title>{`${endpointLabel(edge.source)} → ${edge.label} → ${endpointLabel(edge.target)} · ${edgeState(edge)}`}</title>
+            <title>{`${endpointLabel(edge.source)} → ${edge.label} → ${endpointLabel(edge.target)} · ${edgeState(edge, t)}`}</title>
           </g>;
         })}
         {positioned.map((node) => <g key={node.id} data-node-id={node.id} className="cdt-relation__node" data-selected={selectedNode?.id === node.id || undefined} data-dimmed={neighbors.size > 0 && !neighbors.has(node.id) || undefined} onClick={() => changeSelection({ kind: "node", id: node.id })}>
@@ -135,30 +139,30 @@ export const RelationGraph = forwardRef<HTMLDivElement, RelationGraphProps>(func
           <text x={node.x} y={node.y + 5} textAnchor="middle">{node.label.length > 24 ? `${node.label.slice(0, 23)}…` : node.label}</text><title>{node.label}</title>
         </g>)}
       </svg>
-      <section aria-label="선택한 관계 상세" className="cdt-relation__detail" aria-live="polite">
-        {selectedNode ? <><strong>{selectedNode.label}</strong><p>{selectedNode.description ?? "추가 설명 없음"}</p><p>{selectedNode.unavailable ? "대상 내용을 표시할 수 없습니다." : "연결된 이웃이 강조되었습니다."}</p></>
-          : selectedEdge ? <><strong>{endpointLabel(selectedEdge.source)} → {selectedEdge.label} → {endpointLabel(selectedEdge.target)}</strong><p>유형: {selectedEdge.type} · 상태: {edgeState(selectedEdge)} · 신뢰도: {selectedEdge.confidence ?? "알 수 없음"}</p><p>근거: {selectedEdge.evidence || "제공되지 않음"}</p>{selectedHidden && <p>선택한 관계는 현재 유형 필터에서 숨겨져 있습니다.</p>}</>
-          : <p>{selection ? "선택한 항목이 현재 데이터에 없습니다." : "노드 또는 관계를 선택하면 방향, 상태, 근거를 확인할 수 있습니다."}</p>}
-        {selection && <Button type="button" onClick={() => changeSelection(null)}>선택 해제</Button>}
+      <section aria-label={t.detail} className="cdt-relation__detail" aria-live="polite">
+        {selectedNode ? <><strong>{selectedNode.label}</strong><p>{selectedNode.description ?? t.noDescription}</p><p>{selectedNode.unavailable ? t.unavailableContent : t.neighborsHighlighted}</p></>
+          : selectedEdge ? <><strong>{endpointLabel(selectedEdge.source)} → {selectedEdge.label} → {endpointLabel(selectedEdge.target)}</strong><p>{t.type}: {selectedEdge.type} · {t.state}: {edgeState(selectedEdge, t)} · {t.confidence}: {selectedEdge.confidence ?? t.unknownConfidence}</p><p>{t.evidence}: {selectedEdge.evidence || t.noEvidence}</p>{selectedHidden && <p>{t.hiddenByFilter}</p>}</>
+          : <p>{selection ? t.selectionMissing : t.selectionHint}</p>}
+        {selection && <Button type="button" onClick={() => changeSelection(null)}>{t.clearSelection}</Button>}
       </section>
-      <section id={`${uid}-list`} tabIndex={-1} aria-label="관계 대체 목록">
-        <details open={query.length > 0 || nodes.length <= 12}><summary>노드 목록 · {found.length}개 (고립된 노드 포함)</summary>
+      <section id={`${uid}-list`} tabIndex={-1} aria-label={t.alternativeList}>
+        <details open={query.length > 0 || nodes.length <= 12}><summary>{t.nodeList(found.length)}</summary>
           <ul className="cdt-relation__nodes">{found.map((node) => <li key={node.id}><Button type="button" aria-pressed={selectedNode?.id === node.id} onClick={() => {
             changeSelection({ kind: "node", id: node.id });
             if (query) changeViewport({ x: node.x - width / zoom / 2, y: node.y - height / zoom / 2, zoom });
-          }}>{node.label}</Button>{node.unavailable && <span> · 내용 표시 불가</span>}</li>)}</ul>
-          {found.length === 0 && <p>일치하는 노드 없음</p>}
+          }}>{node.label}</Button>{node.unavailable && <span> · {t.nodeUnavailable}</span>}</li>)}</ul>
+          {found.length === 0 && <p>{t.noMatches}</p>}
         </details>
-        <Table caption={`${label} — 방향과 근거 목록`}>
-          <Table.Head><Table.Row><Table.HeaderCell>출발 → 관계 → 도착</Table.HeaderCell><Table.HeaderCell>유형 · 상태</Table.HeaderCell><Table.HeaderCell>신뢰도 · 근거</Table.HeaderCell><Table.HeaderCell>선택</Table.HeaderCell></Table.Row></Table.Head>
+        <Table caption={t.edgeTable(label)}>
+          <Table.Head><Table.Row><Table.HeaderCell>{t.directionColumn}</Table.HeaderCell><Table.HeaderCell>{t.typeStateColumn}</Table.HeaderCell><Table.HeaderCell>{t.confidenceEvidenceColumn}</Table.HeaderCell><Table.HeaderCell>{t.selectColumn}</Table.HeaderCell></Table.Row></Table.Head>
           <Table.Body>{visibleEdges.map((edge) => <Table.Row key={edge.id} data-selected={selectedEdge?.id === edge.id || undefined}>
             <Table.Cell>{endpointLabel(edge.source)} → {edge.label} → {endpointLabel(edge.target)}</Table.Cell>
-            <Table.Cell>{edge.type} · {edgeState(edge)}{(!byId.has(edge.source) || !byId.has(edge.target)) && " · 끝점 정보 없음"}</Table.Cell>
-            <Table.Cell>{edge.confidence ?? "알 수 없음"} · {edge.evidence || "근거 제공되지 않음"}</Table.Cell>
-            <Table.Cell><Button type="button" aria-pressed={selectedEdge?.id === edge.id} aria-label={`관계 선택: ${edge.id}`} onClick={() => changeSelection({ kind: "edge", id: edge.id })}>근거 보기</Button></Table.Cell>
+            <Table.Cell>{edge.type} · {edgeState(edge, t)}{(!byId.has(edge.source) || !byId.has(edge.target)) && ` · ${t.endpointMissing}`}</Table.Cell>
+            <Table.Cell>{edge.confidence ?? t.unknownConfidence} · {edge.evidence || t.evidenceMissing}</Table.Cell>
+            <Table.Cell><Button type="button" aria-pressed={selectedEdge?.id === edge.id} aria-label={t.selectEdge(edge.id)} onClick={() => changeSelection({ kind: "edge", id: edge.id })}>{t.showEvidence}</Button></Table.Cell>
           </Table.Row>)}</Table.Body>
         </Table>
-        {visibleEdges.length === 0 && <p>현재 필터에서 표시할 관계가 없습니다.</p>}
+        {visibleEdges.length === 0 && <p>{t.noneForFilter}</p>}
       </section>
     </>}
   </div>;

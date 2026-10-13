@@ -1,0 +1,173 @@
+// FR-CMP-010 ~ FR-CMP-012 · CR-053
+//
+// Every string the CR-041 components render themselves, so a consumer can supply its own language.
+// Each component takes `labels?: Partial<…Labels>` and merges it over these English defaults; a
+// string that interpolates (a count, a row name) is a function. Strings the consumer already passes
+// in as props (`label`, `removeLabel`, `stateMessage`) are not repeated here.
+
+export interface ComboboxLabels {
+  readonly loading: string;
+  readonly error: string;
+  readonly empty: string;
+}
+export const DEFAULT_COMBOBOX_LABELS: ComboboxLabels = { loading: "Loading options", error: "Couldn't load options", empty: "No options" };
+
+export interface MultiSelectLabels {
+  readonly search: string;
+  readonly searchFor: (label: string) => string;
+  readonly remove: (option: string) => string;
+}
+export const DEFAULT_MULTI_SELECT_LABELS: MultiSelectLabels = { search: "Find options", searchFor: (label) => `Find ${label} options`, remove: (option) => `Remove ${option}` };
+
+export interface DataTableLabels {
+  readonly error: string;
+  readonly partial: string;
+  readonly previewColumn: string;
+  readonly select: string;
+  readonly preview: (row: string) => string;
+  readonly loading: string;
+  readonly failed: string;
+  readonly empty: string;
+  readonly loaded: (count: number) => string;
+  readonly loadMore: string;
+}
+export const DEFAULT_DATA_TABLE_LABELS: DataTableLabels = {
+  error: "Couldn't load results",
+  partial: "Showing partial results",
+  previewColumn: "Preview",
+  select: "Select",
+  preview: (row) => `Preview ${row}`,
+  loading: "Loading results",
+  failed: "Lookup failed",
+  empty: "No results",
+  loaded: (count) => `${count} loaded`,
+  loadMore: "Load more",
+};
+
+export interface WorkbenchLayoutLabels { readonly resize: string }
+export const DEFAULT_WORKBENCH_LAYOUT_LABELS: WorkbenchLayoutLabels = { resize: "Preview width" };
+
+export interface DetailInspectorLabels { readonly close: string }
+export const DEFAULT_DETAIL_INSPECTOR_LABELS: DetailInspectorLabels = { close: "Close preview" };
+
+export interface PathListLabels { readonly loading: string; readonly error: string }
+export const DEFAULT_PATH_LIST_LABELS: PathListLabels = { loading: "Loading path", error: "Couldn't load path" };
+
+export interface CopyButtonLabels { readonly copied: string; readonly unavailable: string; readonly failed: string }
+export const DEFAULT_COPY_BUTTON_LABELS: CopyButtonLabels = { copied: "Copied", unavailable: "Can't copy · select the text to copy it", failed: "Copy failed · select the text to copy it" };
+
+export interface ProcessingStatusLabels { readonly complete: string; readonly pending: string; readonly delayed: string; readonly failed: string; readonly unknown: string }
+export const DEFAULT_PROCESSING_STATUS_LABELS: ProcessingStatusLabels = { complete: "Confirmed", pending: "Pending", delayed: "Delayed", failed: "Failed", unknown: "Unknown" };
+
+export interface RelationGraphLabels {
+  readonly retracted: string;
+  readonly unresolved: string;
+  readonly ambiguous: string;
+  readonly confirmed: string;
+  readonly missingEndpoint: string;
+  readonly findNode: string;
+  readonly findPlaceholder: string;
+  readonly relationType: string;
+  readonly allTypes: string;
+  readonly skipToList: string;
+  readonly legend: string;
+  readonly summary: (nodes: number, edges: number) => string;
+  readonly loading: string;
+  readonly empty: string;
+  readonly error: string;
+  readonly partial: string;
+  readonly retry: string;
+  readonly viewControls: string;
+  readonly zoomIn: string;
+  readonly zoomOut: string;
+  readonly fit: string;
+  readonly panLeft: string;
+  readonly panRight: string;
+  readonly panUp: string;
+  readonly panDown: string;
+  readonly zoomLevel: string;
+  readonly detail: string;
+  readonly noDescription: string;
+  readonly unavailableContent: string;
+  readonly neighborsHighlighted: string;
+  readonly type: string;
+  readonly state: string;
+  readonly confidence: string;
+  readonly unknownConfidence: string;
+  readonly evidence: string;
+  readonly noEvidence: string;
+  readonly hiddenByFilter: string;
+  readonly selectionMissing: string;
+  readonly selectionHint: string;
+  readonly clearSelection: string;
+  readonly alternativeList: string;
+  readonly nodeList: (count: number) => string;
+  readonly nodeUnavailable: string;
+  readonly noMatches: string;
+  readonly edgeTable: (label: string) => string;
+  readonly directionColumn: string;
+  readonly typeStateColumn: string;
+  readonly confidenceEvidenceColumn: string;
+  readonly selectColumn: string;
+  readonly endpointMissing: string;
+  readonly evidenceMissing: string;
+  readonly selectEdge: (id: string) => string;
+  readonly showEvidence: string;
+  readonly noneForFilter: string;
+}
+export const DEFAULT_RELATION_GRAPH_LABELS: RelationGraphLabels = {
+  retracted: "Retracted",
+  unresolved: "Unresolved",
+  ambiguous: "Ambiguous",
+  confirmed: "Confirmed",
+  missingEndpoint: "No details for this endpoint",
+  findNode: "Find node",
+  findPlaceholder: "Name or stable ID",
+  relationType: "Relation type",
+  allTypes: "All types",
+  skipToList: "Skip to the equivalent list",
+  legend: "Arrows read source → relation → target. Solid: confirmed · dotted: unresolved or ambiguous · dashed: retracted. Position follows ID order and does not imply time, merge or dependency order.",
+  summary: (nodes, edges) => `${nodes} nodes · ${edges} relations`,
+  loading: "Loading relations",
+  empty: "No confirmed relations",
+  error: "Couldn't load relations",
+  partial: "Partial result: some relations may be missing",
+  retry: "Retry relations",
+  viewControls: "Graph view controls",
+  zoomIn: "Zoom in",
+  zoomOut: "Zoom out",
+  fit: "Fit all",
+  panLeft: "Pan graph left",
+  panRight: "Pan graph right",
+  panUp: "Pan graph up",
+  panDown: "Pan graph down",
+  zoomLevel: "Zoom level",
+  detail: "Selected relation details",
+  noDescription: "No description",
+  unavailableContent: "This item's content can't be shown.",
+  neighborsHighlighted: "Connected neighbours are highlighted.",
+  type: "Type",
+  state: "State",
+  confidence: "Confidence",
+  unknownConfidence: "Unknown",
+  evidence: "Evidence",
+  noEvidence: "Not provided",
+  hiddenByFilter: "The selected relation is hidden by the current type filter.",
+  selectionMissing: "The selected item is no longer in the data.",
+  selectionHint: "Select a node or relation to see its direction, state and evidence.",
+  clearSelection: "Clear selection",
+  alternativeList: "Relation list alternative",
+  nodeList: (count) => `Nodes · ${count} (including isolated nodes)`,
+  nodeUnavailable: "content unavailable",
+  noMatches: "No matching nodes",
+  edgeTable: (label) => `${label} — direction and evidence`,
+  directionColumn: "Source → relation → target",
+  typeStateColumn: "Type · state",
+  confidenceEvidenceColumn: "Confidence · evidence",
+  selectColumn: "Select",
+  endpointMissing: "endpoint details missing",
+  evidenceMissing: "no evidence provided",
+  selectEdge: (id) => `Select relation: ${id}`,
+  showEvidence: "Show evidence",
+  noneForFilter: "No relations to show for the current filter.",
+};
