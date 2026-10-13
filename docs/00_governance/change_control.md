@@ -69,6 +69,7 @@
 | CR-048 | 2026-10-13 | scope + design | 사용자 지시 (2026-10-13): 디자인 업그레이드 우선순위 리포트의 추천대로 1번(에이전트 판독용 문서)과 2번(컴포넌트 문서 틀 통일)을 진행 | **문서 사이트에 에이전트 판독용 산출물을 더하고(새 FR-DOC-008), 컴포넌트 화면의 "사용 규칙"을 검증 가능하게 만든다(FR-DOC-003 AC-6).** 산출물 루트에 DESIGN.md·llms.txt·tokens.md와 공개 컴포넌트 47종의 Markdown을 같은 데이터에서 생성한다. W-021은 목적·Use/Avoid(대체 컴포넌트 링크)·Keyboard 표·Accessibility와 Markdown 링크를 보인다. 지침 원본(ENT-DOC-002)은 47종 전수이고 누락·잘못된 대체 컴포넌트는 빌드 실패다. FR-DOC-003의 "사용 규칙"이 구현되지 않았던 편차는 DEV-054로 등록하고 종료한다. 패키지 공개 계약 변경 없음 | FR-DOC-003, FR-DOC-008, W-021, DEV-054 | `srs_final.md` v1.8, `prd.md`, `feature.md`, `glossary.md`, `requirements_screen_traceability_matrix.md`, `conductor_product_ia.md`, `conductor_wireframe_spec.md`, 아키텍처 문서 4종, `conductor_work_packages.md`, `conductor_implementation_traceability.md` | closed |
 | CR-049 | 2026-10-13 | design | 사용자 지시 (2026-10-13): 우선순위 리포트 4순위(랜딩 bento 그리드 + Kbd 단축키 칩 + 코드 중심 히어로)를 진행 | **W-001 랜딩의 히어로와 원칙 섹션을 다시 짠다. 요구사항은 바뀌지 않는다.** 히어로의 설치 한 줄을 코드 창(app.tsx 3줄 + 설치 명령, 각각 복사)으로 바꾸고, 원칙 4타일을 6타일 bento로 확장한다(키보드 타일은 Radix 동작을 Kbd 표로, 에이전트 타일은 DESIGN.md·llms.txt 링크). 구문 색은 대비 검사를 통과한 토큰 쌍만 쓴다 | W-001, FR-DOC-001, FR-DOC-006, NFR-001 | `conductor_wireframe_spec.md`, `conductor_implementation_traceability.md` | closed |
 | CR-050 | 2026-10-13 | design | 사용자 지시 (2026-10-13): 우선순위 리포트 5순위(OKLCH로 상태색 파생)를 진행하고 0.6.1을 릴리스 | **secondary tone 버튼의 상태색 8종을 렌더 시점 sRGB `color-mix()`에서 빌드 시점 OKLab 토큰으로 바꾼다. 요구사항은 바뀌지 않는다.** 시맨틱 토큰 `tone.accent.*`·`tone.danger.*`(테마당 8종, additive)를 `oklab.ts`가 같은 비율로 계산해 hex로 내보낸다. 브라우저 지원 문제가 사라지고 채움 4종이 대비 쌍 CP-118~CP-121로 측정된다. OKLCH 대신 그 직교 좌표형인 OKLab에서 섞는 이유는 토큰 명세 5.11.1에 적었다 | FR-THM-004, FR-TOK-001, FR-CMP-002 | `conductor_design_system_tokens.md`, `conductor_implementation_traceability.md`, 토큰 API 리포트, Changeset(tokens·css patch) | closed |
+| CR-051 | 2026-10-13 | scope + design | 사용자 지시 (2026-10-13): 우선순위 리포트 6순위(블록 단위 패턴)를 예시 화면 W-063~W-065로 진행하고, 새 FR 추가를 승인 | **문서 사이트에 블록 예제 화면 3개(빈 상태, 필터 테이블, 설정 폼)를 더한다.** 새 FR-DOC-009(Should)를 SRS §19에 추가한다. 패키지 공개 API와 컴포넌트·CSS 동작은 바뀌지 않으며 화면은 공개 export만 조합한다 | FR-DOC-009, W-063, W-064, W-065, WP-035 | `srs_final.md`, `prd.md`, `feature.md`, `glossary.md`, `requirements_screen_traceability_matrix.md`, `conductor_product_ia.md`, `conductor_wireframe_spec.md`, `conductor_work_packages.md`, `conductor_implementation_traceability.md` | open |
 
 유형: `scope`(범위 변경), `design`(설계 변경), `implementation`(구현 편차 DEV-### 처리), `correction`(문서 오류 수정)
 
@@ -578,3 +579,15 @@ CR-041 구현 cascade와 로컬 검증은 2026-09-14에 종료했다. 사용자�
 | 구현 | `packages/tokens/src/oklab.ts`(sRGB↔OKLab, `mixOklab`, `toneValues`), 다크·라이트 팔레트의 `tone.*` 8종, 대비 쌍 CP-118~CP-121, `components.css` secondary tone 규칙 4개 교체, 시험(`oklab.test.ts` 5건, CSS 회귀 2건, 쌍 수·키 집합 갱신) |
 | 검증 (2026-10-13, 로컬) | check:contrast 240/240 통과(새 쌍 13.67:1 이상), 게이트 12종, docs E2E 56/56. 이전 sRGB 혼합과의 색 차이는 기본 상태 채널당 최대 4.9/255 |
 | CI · 종료 | PR #46 head `cce0505`에서 verify(node 20/22)·visual regression success. CR-050 closed(2026-10-13), 0.6.1 patch 릴리스로 배포 |
+
+## CR-051 블록 예제 화면 (2026-10-13)
+
+| 항목 | 기록 |
+| --- | --- |
+| 유형 / 상태 | scope + design / open |
+| 변경 근거 | 사용자가 2026-10-13에 남은 우선순위 3·6번 중 6번(블록 단위 패턴)부터, 예시 화면 W-063~W-065 신설 방식으로 진행하라고 선택했다. 같은 답변에서 SRS 확장을 승인으로 기록하는 데 동의했다 |
+| 범위 판정 | SRS v1.8에는 블록 예제를 허용하는 FR이 없었다(W-060~W-062는 FR-CMP-010~012의 조합 예제). 새 FR-DOC-009(Should)를 SRS §19에 더하고 v1.9로 올린다. 패키지 공개 계약은 바뀌지 않으므로 changeset이 필요 없다 |
+| 설계 | 필터·정렬·검증·변경 추적은 `blocks.ts` 순수 함수로 두고 화면은 그 결과만 렌더한다. W-064는 기본 `Table`로 조합해, 큰 결과 집합용 `DataTable`(W-060)과 역할을 나눈다. `Button`의 `blockedReason`은 `title`로만 노출되므로, W-063은 보이는 사유 문장을 두고 버튼이 `aria-describedby`로 가리키게 했다 |
+| 구현 | `apps/docs/src/blocks.ts`, `blocks.test.ts`(6건), `block-examples.tsx`(W-063~W-065), `App.tsx` 라우트 3개, `shell.tsx` `Blocks` 내비 구역, `styles/base.css` 블록 레이아웃, `e2e/blocks.spec.ts`(4건), `e2e/workspaces.spec.ts` 폭·테마·axe 행렬에 세 경로 추가 |
+| 로컬 검증 중 수정 | axe `link-in-text-block`(W-064 안내 문단 안 링크에 밑줄 없음)을 E2E 행렬이 잡아 밑줄을 추가했다. 위험 구역 버튼이 패널 폭으로 늘어나던 배치를 고쳤다 |
+| 검증 (2026-10-13, 로컬) | 게이트 12종 통과(단위 시험 710/710), docs E2E 60/60(블록 4건, 폭·테마·axe 행렬 8건 포함). Lighthouse 외부 요청 0건·CLS 0. 로컬 LCP p75는 2534ms로 예산 2500ms를 넘었지만 같은 시각 main도 2566ms라 이 샌드박스의 측정 변동이다(셸 증가분은 내비 항목 3개). 배포 게이트는 Deploy Docs CI에서 판정한다 |

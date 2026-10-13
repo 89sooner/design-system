@@ -23,7 +23,10 @@ import {
   Palette,
   Rocket,
   Search,
+  SearchX,
+  Settings2,
   Sparkles,
+  SquareDashed,
   Sun,
   Type,
 } from "lucide-react";
@@ -38,7 +41,7 @@ const NPM_PACKAGE_URL = "https://www.npmjs.com/package/@conductor-by-89soone";
 /** One switch per document; the top-bar pill is its `<label>`, so the whole pill toggles the theme. */
 export const THEME_SWITCH_ID = "docs-theme-switch";
 
-type NavSection = "Start" | "Foundations" | "Reference" | "Guides" | "Workspaces";
+type NavSection = "Start" | "Foundations" | "Reference" | "Guides" | "Workspaces" | "Blocks";
 
 export interface DocsNavItem {
   readonly id: string;
@@ -65,10 +68,13 @@ export const navItems: readonly DocsNavItem[] = [
   { id: "workbench", label: "검색 워크벤치", href: "/examples/workbench", section: "Workspaces", icon: <Search {...navIconProps} /> },
   { id: "relations", label: "관계 탐색기", href: "/examples/relations", section: "Workspaces", icon: <GitBranch {...navIconProps} /> },
   { id: "operations", label: "수집 운영 상태", href: "/examples/operations", section: "Workspaces", icon: <Activity {...navIconProps} /> },
+  { id: "empty-states", label: "빈 상태", href: "/examples/empty-states", section: "Blocks", icon: <SquareDashed {...navIconProps} /> },
+  { id: "filter-table", label: "필터 테이블", href: "/examples/filter-table", section: "Blocks", icon: <SearchX {...navIconProps} /> },
+  { id: "settings-form", label: "설정 폼", href: "/examples/settings-form", section: "Blocks", icon: <Settings2 {...navIconProps} /> },
 ];
 
 /** Sections whose name belongs in the top-bar title ("Foundations · Color"); the rest read as the label alone. */
-const groupedSections: ReadonlySet<NavSection> = new Set<NavSection>(["Foundations", "Workspaces"]);
+const groupedSections: ReadonlySet<NavSection> = new Set<NavSection>(["Foundations", "Workspaces", "Blocks"]);
 
 /** Legacy paths redirect in `App.tsx` (DEV-026); the title names the destination during that frame. */
 const legacyPaths: Readonly<Record<string, string>> = { "/tokens": "/tokens/reference", "/patterns": "/guidelines" };
