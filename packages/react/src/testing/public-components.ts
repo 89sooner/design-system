@@ -17,6 +17,10 @@ import { AppShell, AppShellNavTrigger, NavList, TopBar } from "../shell";
 import { Combobox, MultiSelect, FilterChip, FilterToolbar, DataTable, WorkbenchLayout, DetailInspector, PathList, Breadcrumb, Skeleton, CopyButton, ProcessingStatus } from "../workbench";
 import { RelationGraph } from "../relation";
 import { Tabs, Popover, Collapsible } from "../interaction";
+import { Toast } from "../toast";
+import { DatePicker } from "../date-picker";
+import { CommandPalette } from "../command";
+import { Pagination } from "../pagination";
 
 export interface PublicComponent {
   readonly name: string;
@@ -72,6 +76,10 @@ export const publicComponents: readonly PublicComponent[] = [
   { name: "AppShell", testFile: "testing/shell.test.tsx", render: () => createElement(AppShell, { nav: null, skipLinkLabel: "Skip", children: "Content" }) },
   { name: "NavList", testFile: "testing/shell.test.tsx", render: () => createElement(NavList, { items: [], renderLink: () => null, "aria-label": "Navigation" }) },
   { name: "TopBar", testFile: "testing/shell.test.tsx", render: () => createElement(TopBar) },
+  { name: "Toast", testFile: "testing/controls.test.tsx", render: () => createElement(Toast.Provider, null, createElement(Toast.Viewport)) },
+  { name: "DatePicker", testFile: "testing/controls.test.tsx", render: () => createElement(DatePicker, { "aria-label": "Date", value: undefined, onValueChange() {} }) },
+  { name: "CommandPalette", testFile: "testing/controls.test.tsx", render: () => createElement(CommandPalette, { open: false, onOpenChange() {}, commands: [], onSelect() {} }) },
+  { name: "Pagination", testFile: "testing/controls.test.tsx", render: () => createElement(Pagination, { page: 1, pageCount: 3, onPageChange() {} }) },
 ];
 
 export function missingComponentTests(

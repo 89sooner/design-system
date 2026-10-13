@@ -724,7 +724,8 @@
     ],
     "avoid": [
       {
-        "rule": "Do not use it as a toast or snackbar; Conductor does not manage a notification queue."
+        "rule": "Do not use it for a transient confirmation that should disappear on its own.",
+        "instead": "Toast"
       },
       {
         "rule": "Do not use it to explain why a list has no results.",
@@ -1421,6 +1422,153 @@
       "Stages render as an ordered Timeline named by label.",
       "Each status is shown as a text Badge, not by colour alone.",
       "A blocked action is disabled and its reason is shown as visible text."
+    ]
+  },
+  "Toast": {
+    "purpose": "A transient notification, built on Radix Toast, that confirms an action or reports a background result without interrupting the page.",
+    "use": [
+      "Use to confirm an action the user just took, such as a save or a deploy, when the page itself does not change.",
+      "Pair the tone with a matching icon and a title; colour alone never carries the status.",
+      "Give any action a precise altText so screen-reader users can reach the same outcome elsewhere."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not put the only copy of important or persistent information in a toast; it dismisses itself.",
+        "instead": "Banner"
+      },
+      {
+        "rule": "Do not ask for a decision in a toast.",
+        "instead": "Dialog"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "F8",
+        "action": "Moves focus to the notification viewport (Radix hotkey)."
+      },
+      {
+        "keys": "Tab / Shift + Tab",
+        "action": "Moves between the action and close buttons of a focused toast."
+      },
+      {
+        "keys": "Escape",
+        "action": "Dismisses the focused toast."
+      }
+    ],
+    "accessibility": [
+      "Render one Toast.Provider and one Toast.Viewport near the app root; Radix announces each toast through a live region.",
+      "Radix pauses the timer while the viewport has focus or the pointer is over it.",
+      "Toast.Action requires altText, the text read instead of the button."
+    ]
+  },
+  "DatePicker": {
+    "purpose": "A single-date field whose trigger opens a calendar from react-day-picker inside a Radix popover.",
+    "use": [
+      "Use inside Field so the trigger gets the label, description and error.",
+      "Pass disabledDays for dates that cannot be chosen, such as weekends or the past.",
+      "Pass formatDate or a react-day-picker locale to match the product's language."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it for a date the user already knows by heart and types faster, such as a birth date.",
+        "instead": "TextField"
+      },
+      {
+        "rule": "Do not use it for a free-form or partial date."
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Enter / Space",
+        "action": "Opens the calendar from the focused trigger."
+      },
+      {
+        "keys": "Arrow keys",
+        "action": "Move between days; Page Up / Page Down change the month (react-day-picker)."
+      },
+      {
+        "keys": "Enter / Space",
+        "action": "Selects the focused day and closes the calendar."
+      },
+      {
+        "keys": "Escape",
+        "action": "Closes the calendar and returns focus to the trigger."
+      }
+    ],
+    "accessibility": [
+      "The calendar grid, its roles and day labels come from react-day-picker.",
+      "Focus moves into the calendar on open and returns to the trigger on close (Radix Popover).",
+      "The trigger reads the placeholder until a date is chosen, then the formatted date."
+    ]
+  },
+  "CommandPalette": {
+    "purpose": "A modal search over a list of commands, built on Radix Dialog with a downshift combobox, for keyboard-first navigation and actions.",
+    "use": [
+      "Use for applications with many actions or destinations that power users reach by typing.",
+      "Group related commands and add keywords for synonyms users might type.",
+      "Bind the opening shortcut yourself, typically Cmd or Ctrl + K, and show it on the trigger."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not make it the only way to reach an action; keep a visible control as well.",
+        "instead": "Button"
+      },
+      {
+        "rule": "Do not use it to pick a value inside a form.",
+        "instead": "Combobox"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Arrow Down / Arrow Up",
+        "action": "Moves the highlight through the matching commands (downshift)."
+      },
+      {
+        "keys": "Enter",
+        "action": "Runs the highlighted command and closes the palette."
+      },
+      {
+        "keys": "Escape",
+        "action": "Closes the palette and returns focus to the trigger."
+      }
+    ],
+    "accessibility": [
+      "The input is a combobox that points at the highlighted option with aria-activedescendant.",
+      "Groups render as role group with their heading as the accessible name.",
+      "A visually hidden status reports how many commands match."
+    ]
+  },
+  "Pagination": {
+    "purpose": "Navigation between numbered pages of a long, server-paged list, with previous and next buttons and an ellipsis for skipped ranges.",
+    "use": [
+      "Use when results are fetched page by page and users need to jump to a specific page.",
+      "Give the nav an aria-label naming the list when a page has more than one pagination.",
+      "Keep page in the URL so a reload or a shared link returns to the same page."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it for loaded results that grow as the user reads.",
+        "instead": "DataTable"
+      },
+      {
+        "rule": "Do not use it for steps in a process.",
+        "instead": "Timeline"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Tab / Shift + Tab",
+        "action": "Moves between the previous, page and next buttons."
+      },
+      {
+        "keys": "Enter / Space",
+        "action": "Goes to the focused page."
+      }
+    ],
+    "accessibility": [
+      "The current page carries aria-current=\"page\" and a distinct border, not colour alone.",
+      "Each page button is named \"Page n\"; the ellipsis is hidden from assistive technology.",
+      "Previous and Next are disabled on the first and last page."
     ]
   }
 }

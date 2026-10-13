@@ -1,6 +1,6 @@
 # Conductor Design System 최종 요구사항 정의서
 
-> 상태: baseline | 버전: v1.11 | 갱신일: 2026-10-13
+> 상태: baseline | 버전: v1.12 | 갱신일: 2026-10-13
 
 ## 1. 문서 개요
 
@@ -38,7 +38,7 @@ Conductor는 `agent-ai-platform/packages/web`의 시각 언어를 3개 npm 패�
 2. 다크(기준) 및 라이트 테마, 시스템 설정 연동, 테마별 대비 검증, 소스 계승 토큰의 접근성 교정 — FR-THM-001 ~ FR-THM-005
 3. 캐스케이드 레이어 기반 프레임워크 비종속 스타일시트 — FR-CSS-001 ~ FR-CSS-005
 4. React 프리미티브 컴포넌트 — 기존 FR-CMP-001 ~ FR-CMP-009 및 CR-041 확장 FR-CMP-010 ~ FR-CMP-013 (§17, review)
-5. 정적 문서 사이트 — FR-DOC-001 ~ FR-DOC-007 및 CR-048 확장 FR-DOC-008 (§18), CR-051 확장 FR-DOC-009 (§19), CR-052 확장 FR-DOC-010 (§20), CR-053 보강 FR-DOC-001 AC-5·FR-CMP-013 AC-5 (§21)
+5. 정적 문서 사이트 — FR-DOC-001 ~ FR-DOC-007 및 CR-048 확장 FR-DOC-008 (§18), CR-051 확장 FR-DOC-009 (§19), CR-052 확장 FR-DOC-010 (§20), CR-053 보강 FR-DOC-001 AC-5·FR-CMP-013 AC-5 (§21), CR-054 확장 FR-CMP-014 (§22)
 6. WCAG 2.1 AA 접근성 기준선 — FR-A11Y-001 ~ FR-A11Y-005
 7. 모노레포 빌드, 타입 배포, 진입점 선언, SSR 안전성, 버저닝 — FR-DX-001 ~ FR-DX-005
 8. 토큰 계약·단위·접근성·시각 회귀 검사 — FR-QA-001 ~ FR-QA-004
@@ -62,7 +62,7 @@ FR-QA-004(시각 회귀)와 FR-CMP-009(셸 컴포넌트군)는 2026-07-10에 OD-
 | 범용 차트 엔진·그래프 편집 | CR-041의 읽기 전용 관계 그래프(FR-CMP-011)만 예외로 포함한다. 임의 차트·편집 엔진은 제외 |
 | 고대비(High Contrast) 테마 | 팔레트 3벌 유지 비용을 회피한다 |
 | 다국어 문자열 시스템 | 컴포넌트는 문자열을 props로 받는다 |
-| 런타임 토큰 편집기 | 문서 사이트의 테마 토글까지만 포함한다 |
+| 런타임 토큰 편집기 | 토큰 소스를 바꾸는 편집기는 제외한다. 문서 사이트는 테마 토글과, 미리보기 영역에만 재정의를 거는 테마 플레이그라운드(FR-DOC-010, CR-052)까지 포함한다 (DEV-055) |
 | agent-ai-platform 도메인 컴포넌트 이식 | `.thread-page`, `.approval-card-*`, `.run-summary`, `.tool-grid`는 도메인 결합이다 |
 | agent-ai-platform 저장소 마이그레이션 | Conductor v1은 독립 저장소로만 성립한다 |
 | 백엔드 서비스, 데이터베이스, 인증 서버, 메시지 큐 | 이 제품은 npm 패키지와 정적 사이트를 배포한다. 서버 런타임이 존재하지 않는다 |
@@ -495,7 +495,7 @@ FR-QA-004(시각 회귀)와 FR-CMP-009(셸 컴포넌트군)는 2026-07-10에 OD-
 | 검증 방법 | test |
 | 관련 화면 | W-020, W-021 |
 | 관련 API/데이터 | API-CMP-005 / ENT-CMP-001 |
-| 예외/실패 처리 | 정렬, 페이지네이션, 가상 스크롤은 제공하지 않는다. `Table`은 시각 계층만 담당하고 데이터 로직은 소비자가 소유한다. AC-6의 표시기는 소비자가 정한 `aria-sort` 값을 그리는 표시 계층이며, 정렬 로직과 그 값의 결정은 그대로 소비자가 소유한다. |
+| 예외/실패 처리 | 정렬, 페이지네이션, 가상 스크롤은 `Table`이 제공하지 않는다(페이지 이동 컨트롤은 FR-CMP-014의 `Pagination`이 따로 제공한다). `Table`은 시각 계층만 담당하고 데이터 로직은 소비자가 소유한다. AC-6의 표시기는 소비자가 정한 `aria-sort` 값을 그리는 표시 계층이며, 정렬 로직과 그 값의 결정은 그대로 소비자가 소유한다. |
 
 #### FR-CMP-006 오버레이 컴포넌트군
 
@@ -537,7 +537,7 @@ FR-QA-004(시각 회귀)와 FR-CMP-009(셸 컴포넌트군)는 2026-07-10에 OD-
 | 검증 방법 | test |
 | 관련 화면 | W-020, W-021 |
 | 관련 API/데이터 | API-CMP-008 / ENT-CMP-001 |
-| 예외/실패 처리 | 토스트/스낵바는 제공하지 않는다. 알림 큐 관리는 소비자 책임이다. |
+| 예외/실패 처리 | 토스트는 이 FR이 아니라 FR-CMP-014가 제공한다(CR-054). 여러 알림의 순서·개수를 관리하는 알림 큐는 소비자 책임이다. |
 
 #### FR-CMP-009 셸 컴포넌트군
 
@@ -961,7 +961,7 @@ OD-001(2026-07-10 종결)이 확정한 정책이다. 소스 팔레트를 실측�
 ## 13. 우선순위와 릴리스 전략
 
 - **Must**: FR-TOK-001 ~ FR-TOK-007, FR-THM-001 ~ FR-THM-005, FR-CSS-001 ~ FR-CSS-005, FR-CMP-001 ~ FR-CMP-008, FR-DOC-001 ~ FR-DOC-005, FR-A11Y-001 ~ FR-A11Y-005, FR-DX-001 ~ FR-DX-004, FR-QA-001 ~ FR-QA-003
-- **Should**: FR-TOK-008, FR-TOK-009, FR-CMP-009, FR-DOC-006, FR-DOC-007, FR-DOC-008, FR-DOC-009, FR-DOC-010, FR-DX-005
+- **Should**: FR-TOK-008, FR-TOK-009, FR-CMP-009, FR-DOC-006, FR-DOC-007, FR-DOC-008, FR-DOC-009, FR-DOC-010, FR-CMP-014, FR-DX-005
 - **Deferred (REL-004)**: FR-QA-004 — OD-002에 따라 v1 릴리스 게이트에서 제외
 - **Could**: 없음
 - **Won't (이번 범위)**: 4.3 Out of Scope 표 전체
@@ -1109,3 +1109,21 @@ v1.10 baseline 이력을 유지한다. 사용자가 2026-10-13에 경쟁력 평�
 | --- | --- |
 | FR-DOC-001 | AC-5: 문서 사이트가 화면에 렌더하는 문구(내비, 제목, 본문, 컨트롤, 상태 알림)는 영어다. 코드 주석과 거버넌스 문서는 대상이 아니다. CJK 줄바꿈·IME 동작을 검사하는 예제 데이터에 한해 한국어 조각을 둘 수 있으며, 코드 주석으로 그 목적을 밝힌다. |
 | FR-CMP-013 | AC-5: CR-041 컴포넌트(`Combobox`, `MultiSelect`, `DataTable`, `WorkbenchLayout`, `DetailInspector`, `PathList`, `CopyButton`, `ProcessingStatus`, `RelationGraph`)가 스스로 렌더하는 모든 문구는 `labels?: Partial<…Labels>` prop으로 인스턴스마다 바꿀 수 있다. 기본값은 영어이며, 개수나 이름을 끼워 넣는 문구는 함수다. `…Labels` 타입은 공개 export다. 부분 지정은 기본값 위에 병합된다. `Breadcrumb`의 기본 `aria-label`은 `Breadcrumb`이다. |
+
+## 22. CR-054 확장 요구 (baseline)
+
+v1.11 baseline 이력을 유지한다. 사용자가 2026-10-13에 경쟁력 평가 리포트 2번(핵심 컴포넌트 보강)을 지시했고, DatePicker는 react-day-picker 의존으로 만들라고 골랐다.
+
+#### FR-CMP-014 알림·날짜·명령·페이지 컴포넌트
+
+| 항목 | 내용 |
+| --- | --- |
+| 상태 | approved |
+| 우선순위 | Should |
+| 출처 | CR-054 / 2026-10-13 사용자 실행 지시 |
+| 요구사항 | 시스템은 항상 `Toast`, `DatePicker`, `CommandPalette`, `Pagination`을 `@conductor-by-89soone/react` 공개 export로 제공하고, 각 컴포넌트의 상호작용 동작을 검증된 라이브러리에 위임하여야 한다. |
+| 수용 기준 | AC-1 (Toast, C-073): Radix Toast로 타이머·스와이프·F8 핫키·라이브 영역을 처리한다. tone(`info`·`success`·`warning`·`danger`)은 레일 색과 아이콘 슬롯으로 표현하고 제목 텍스트를 함께 쓴다. 닫기 버튼에는 기본 접근성 이름(`Dismiss notification`)이 있다. AC-2 (DatePicker, C-074): 달력 격자와 화살표 탐색은 react-day-picker가, 팝오버 포커스·닫기는 Radix Popover가 맡는다. `Field` 안에서 id·설명·오류를 이어받고, `disabledDays`로 고를 수 없는 날을 막으며, 고르면 닫히고 트리거로 포커스가 돌아온다. 라이브러리 자체 스타일시트는 쓰지 않고 모든 부분에 `cdt-date-picker__*` 클래스를 붙인다. AC-3 (CommandPalette, C-075): 모달은 Radix Dialog가, 입력+목록 키보드 모델은 downshift combobox가 맡는다. 모든 검색어 단어가 이름·그룹·키워드에 있어야 일치하며(`filterCommands`), 그룹은 `role="group"`과 이름을 갖는다. Enter로 실행하면 닫히고, 연 요소로 포커스가 돌아온다. 전역 단축키는 묶지 않는다. AC-4 (Pagination, C-076): 기본 버튼만 쓰고, 현재 페이지는 `aria-current="page"`와 테두리로 표시한다. 처음·끝·현재 ± 형제 페이지를 보이고 2쪽 이상 건너뛸 때만 생략 부호를 쓴다(`paginationRange`). 첫·끝 페이지에서 이전·다음이 비활성이다. AC-5: 네 컴포넌트 모두 `labels` prop(영어 기본값, FR-CMP-013 AC-5와 같은 규칙)을 받는다. 공개 레지스트리·SSR·하이드레이션·axe(두 테마, 열린 상태 포함)·키보드 경로 시험을 통과한다. |
+| 검증 방법 | test |
+| 관련 화면 | W-020, W-021 |
+| 관련 API/데이터 | API-CMP-010 / ENT-CMP-001 |
+| 예외/실패 처리 | 알림 큐, 날짜 범위 선택, 서버 페이지 조회, 명령 실행 권한은 소비자 책임이다. 새 런타임 의존성(`@radix-ui/react-toast`, `react-day-picker`와 그 전이 의존 `date-fns`·`@date-fns/tz`)은 정확한 버전으로 고정하고 취약점 게이트(보안 아키텍처 3.3)를 따른다. |

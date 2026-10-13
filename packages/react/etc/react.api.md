@@ -6,9 +6,11 @@
 
 import { ButtonHTMLAttributes } from 'react';
 import { ComponentPropsWithoutRef } from 'react';
+import { DayPickerProps } from 'react-day-picker';
 import { ElementType } from 'react';
 import { forwardRef } from 'react';
 import { HTMLAttributes } from 'react';
+import { Matcher } from 'react-day-picker';
 import { MouseEventHandler } from 'react';
 import * as RadixCheckbox from '@radix-ui/react-checkbox';
 import * as RadixCollapsible from '@radix-ui/react-collapsible';
@@ -18,6 +20,7 @@ import * as RadixPopover from '@radix-ui/react-popover';
 import * as RadixSelect from '@radix-ui/react-select';
 import * as RadixSwitch from '@radix-ui/react-switch';
 import * as RadixTabs from '@radix-ui/react-tabs';
+import * as RadixToast from '@radix-ui/react-toast';
 import * as RadixTooltip from '@radix-ui/react-tooltip';
 import * as react from 'react';
 import { ReactElement } from 'react';
@@ -207,6 +210,50 @@ export interface ComboboxProps extends Omit<HTMLAttributes<HTMLDivElement>, "onC
     readonly value: string | null;
 }
 
+// @public (undocumented)
+export interface Command {
+    // (undocumented)
+    readonly disabled?: boolean;
+    // (undocumented)
+    readonly group?: string;
+    // (undocumented)
+    readonly id: string;
+    readonly keywords?: readonly string[];
+    // (undocumented)
+    readonly label: string;
+    readonly shortcut?: readonly string[];
+}
+
+// @public (undocumented)
+export const CommandPalette: react.ForwardRefExoticComponent<CommandPaletteProps & react.RefAttributes<HTMLDivElement>>;
+
+// @public (undocumented)
+export interface CommandPaletteLabels {
+    // (undocumented)
+    readonly empty: string;
+    // (undocumented)
+    readonly input: string;
+    // (undocumented)
+    readonly placeholder: string;
+    // (undocumented)
+    readonly results: (count: number) => string;
+    // (undocumented)
+    readonly title: string;
+}
+
+// @public (undocumented)
+export interface CommandPaletteProps extends Omit<HTMLAttributes<HTMLDivElement>, "onSelect"> {
+    // (undocumented)
+    readonly commands: readonly Command[];
+    // (undocumented)
+    readonly labels?: Partial<CommandPaletteLabels>;
+    // (undocumented)
+    readonly onOpenChange: (open: boolean) => void;
+    readonly onSelect: (id: string) => void;
+    // (undocumented)
+    readonly open: boolean;
+}
+
 // @public
 export const CONSUMED_PACKAGES: readonly ["@conductor-by-89soone/tokens", "@conductor-by-89soone/css"];
 
@@ -322,6 +369,39 @@ export interface DataTableProps<Row> extends Omit<HTMLAttributes<HTMLDivElement>
     readonly state?: "ready" | "loading" | "error" | "partial";
     // (undocumented)
     readonly visibleColumns?: readonly string[];
+}
+
+// @public (undocumented)
+export const DatePicker: react.ForwardRefExoticComponent<DatePickerProps & react.RefAttributes<HTMLButtonElement>>;
+
+// @public (undocumented)
+export interface DatePickerLabels {
+    // (undocumented)
+    readonly dialog: string;
+    // (undocumented)
+    readonly placeholder: string;
+}
+
+// @public (undocumented)
+export interface DatePickerProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "value" | "defaultValue" | "onChange" | "children"> {
+    readonly defaultOpen?: boolean;
+    readonly disabledDays?: Matcher | Matcher[];
+    // (undocumented)
+    readonly endMonth?: Date;
+    readonly formatDate?: (date: Date) => string;
+    // (undocumented)
+    readonly invalid?: boolean;
+    // (undocumented)
+    readonly labels?: Partial<DatePickerLabels>;
+    readonly locale?: DayPickerProps["locale"];
+    // (undocumented)
+    readonly onValueChange: (date: Date | undefined) => void;
+    // (undocumented)
+    readonly size?: "sm" | "md";
+    // (undocumented)
+    readonly startMonth?: Date;
+    // (undocumented)
+    readonly value: Date | undefined;
 }
 
 // @public (undocumented)
@@ -448,6 +528,9 @@ export interface FilterChipProps extends Omit<HTMLAttributes<HTMLSpanElement>, "
     // (undocumented)
     readonly removeLabel: string;
 }
+
+// @public
+export function filterCommands(commands: readonly Command[], query: string): readonly Command[];
 
 // @public (undocumented)
 export const FilterToolbar: react.ForwardRefExoticComponent<HTMLAttributes<HTMLDivElement> & react.RefAttributes<HTMLDivElement>>;
@@ -576,6 +659,42 @@ export interface NavListProps extends Omit<HTMLAttributes<HTMLElement>, "childre
 
 // @public
 export const PACKAGE_NAME: "@conductor-by-89soone/react";
+
+// @public (undocumented)
+export const Pagination: react.ForwardRefExoticComponent<PaginationProps & react.RefAttributes<HTMLElement>>;
+
+// @public (undocumented)
+export type PaginationItem = number | "ellipsis";
+
+// @public (undocumented)
+export interface PaginationLabels {
+    // (undocumented)
+    readonly nav: string;
+    // (undocumented)
+    readonly next: string;
+    // (undocumented)
+    readonly page: (page: number) => string;
+    // (undocumented)
+    readonly previous: string;
+}
+
+// @public (undocumented)
+export interface PaginationProps extends Omit<HTMLAttributes<HTMLElement>, "onChange"> {
+    // (undocumented)
+    readonly labels?: Partial<PaginationLabels>;
+    // (undocumented)
+    readonly onPageChange: (page: number) => void;
+    // (undocumented)
+    readonly page: number;
+    // (undocumented)
+    readonly pageCount: number;
+    readonly siblings?: number;
+    // (undocumented)
+    readonly size?: Size;
+}
+
+// @public
+export function paginationRange(page: number, pageCount: number, siblings?: number): readonly PaginationItem[];
 
 // @public (undocumented)
 export const Panel: react.ForwardRefExoticComponent<PanelProps & react.RefAttributes<HTMLElement>>;
@@ -1079,6 +1198,48 @@ export interface TimelineStepProps extends Omit<HTMLAttributes<HTMLDivElement>, 
 }
 
 // @public (undocumented)
+export const Toast: {
+    readonly Provider: react.FC<RadixToast.ToastProviderProps>;
+    readonly Viewport: react.ForwardRefExoticComponent<Omit<RadixToast.ToastViewportProps & react.RefAttributes<HTMLOListElement>, "ref"> & react.RefAttributes<HTMLOListElement>>;
+    readonly Root: react.ForwardRefExoticComponent<Omit<RadixToast.ToastProps & react.RefAttributes<HTMLLIElement>, "ref"> & {
+        readonly tone?: ToastTone;
+        readonly icon?: ReactNode;
+    } & react.RefAttributes<HTMLLIElement>>;
+    readonly Title: react.ForwardRefExoticComponent<Omit<RadixToast.ToastTitleProps & react.RefAttributes<HTMLDivElement>, "ref"> & react.RefAttributes<HTMLDivElement>>;
+    readonly Description: react.ForwardRefExoticComponent<Omit<RadixToast.ToastDescriptionProps & react.RefAttributes<HTMLDivElement>, "ref"> & react.RefAttributes<HTMLDivElement>>;
+    readonly Action: react.ForwardRefExoticComponent<Omit<RadixToast.ToastActionProps & react.RefAttributes<HTMLButtonElement>, "ref"> & react.RefAttributes<HTMLButtonElement>>;
+    readonly Close: react.ForwardRefExoticComponent<Omit<RadixToast.ToastCloseProps & react.RefAttributes<HTMLButtonElement>, "ref"> & {
+        readonly labels?: Partial<ToastLabels>;
+    } & react.RefAttributes<HTMLButtonElement>>;
+};
+
+// @public
+export type ToastActionProps = ComponentPropsWithoutRef<typeof RadixToast.Action>;
+
+// @public (undocumented)
+export type ToastCloseProps = ComponentPropsWithoutRef<typeof RadixToast.Close> & {
+    readonly labels?: Partial<ToastLabels>;
+};
+
+// @public (undocumented)
+export interface ToastLabels {
+    // (undocumented)
+    readonly close: string;
+}
+
+// @public (undocumented)
+export type ToastRootProps = ComponentPropsWithoutRef<typeof RadixToast.Root> & {
+    readonly tone?: ToastTone;
+    readonly icon?: ReactNode;
+};
+
+// @public (undocumented)
+export type ToastTone = "info" | "success" | "warning" | "danger";
+
+// @public (undocumented)
+export type ToastViewportProps = ComponentPropsWithoutRef<typeof RadixToast.Viewport>;
+
+// @public (undocumented)
 export type Tone = "neutral" | "accent" | "info" | "success" | "warning" | "danger";
 
 // @public (undocumented)
@@ -1134,7 +1295,7 @@ export interface WorkbenchLayoutProps extends HTMLAttributes<HTMLDivElement> {
 
 // Warnings were encountered during analysis:
 //
-// dist/form.d.ts:54:5 - (ae-forgotten-export) The symbol "SelectRoot" needs to be exported by the entry point index.d.ts
+// dist/form.d.ts:66:5 - (ae-forgotten-export) The symbol "SelectRoot" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

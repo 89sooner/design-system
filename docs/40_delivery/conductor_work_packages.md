@@ -1,6 +1,6 @@
 # Conductor Design System 작업 패키지
 
-> 상태: review | 버전: v0.12 | 갱신일: 2026-10-13
+> 상태: review | 버전: v0.13 | 갱신일: 2026-10-13
 
 ## 1. 목적
 
@@ -780,3 +780,15 @@ design-system/
 - 완료 기준(DoD): FR-DOC-010 AC-1~AC-5를 시험으로 증명하고, `contrastRatio`가 선언된 모든 쌍에서 보고서와 일치한다.
 - 검증 방법: `measure.test.ts`, `theme-overrides.test.ts`, `e2e/playground.spec.ts`, 폭·테마·axe 행렬
 - 기록: 구현 원장 WP-036, FR-DOC-010 매핑
+
+## WP-037 알림·날짜·명령·페이지 컴포넌트 (CR-054)
+
+- 릴리스: REL-004 (CR-054, react·css minor)
+- 관련 요구사항: FR-CMP-014
+- 관련 화면: W-020, W-021
+- 선행 WP: WP-029
+- 구현 범위: `toast.tsx`, `date-picker.tsx`, `command.tsx`, `pagination.tsx`, `labels.ts` 추가 타입, `controls.css`, 공개 레지스트리·a11y 시나리오·SSR/하이드레이션, 카탈로그 미리보기와 지침 4종
+- 제외: 알림 큐, 날짜 범위 선택, 전역 단축키 바인딩, 서버 페이지 조회
+- 완료 기준(DoD): FR-CMP-014 AC-1~AC-5를 단위·브라우저·E2E 시험으로 증명한다.
+- 검증 방법: `testing/controls.test.tsx`, a11y 브라우저 시험, `e2e/controls.spec.ts`
+- 기록: 구현 원장 WP-037, FR-CMP-014 매핑

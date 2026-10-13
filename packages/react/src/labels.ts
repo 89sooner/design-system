@@ -171,3 +171,37 @@ export const DEFAULT_RELATION_GRAPH_LABELS: RelationGraphLabels = {
   showEvidence: "Show evidence",
   noneForFilter: "No relations to show for the current filter.",
 };
+
+/* CR-054 components (FR-CMP-014). Same rule: English defaults, overridable per instance. */
+
+export interface ToastLabels { readonly close: string }
+export const DEFAULT_TOAST_LABELS: ToastLabels = { close: "Dismiss notification" };
+
+export interface DatePickerLabels {
+  readonly placeholder: string;
+  readonly dialog: string;
+}
+export const DEFAULT_DATE_PICKER_LABELS: DatePickerLabels = { placeholder: "Pick a date", dialog: "Choose a date" };
+
+export interface CommandPaletteLabels {
+  readonly title: string;
+  readonly input: string;
+  readonly placeholder: string;
+  readonly empty: string;
+  readonly results: (count: number) => string;
+}
+export const DEFAULT_COMMAND_PALETTE_LABELS: CommandPaletteLabels = {
+  title: "Command palette",
+  input: "Search commands",
+  placeholder: "Type a command or search",
+  empty: "No matching commands",
+  results: (count) => (count === 1 ? "1 command" : `${count} commands`),
+};
+
+export interface PaginationLabels {
+  readonly nav: string;
+  readonly previous: string;
+  readonly next: string;
+  readonly page: (page: number) => string;
+}
+export const DEFAULT_PAGINATION_LABELS: PaginationLabels = { nav: "Pagination", previous: "Previous", next: "Next", page: (page) => `Page ${page}` };

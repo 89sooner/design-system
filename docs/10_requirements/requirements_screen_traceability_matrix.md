@@ -1,6 +1,6 @@
 # 요구사항-화면 추적 매트릭스
 
-> 상태: review | 버전: v0.7 | 갱신일: 2026-10-13
+> 상태: review | 버전: v0.8 | 갱신일: 2026-10-13
 
 ## 1. 목적
 
@@ -156,6 +156,7 @@ NFR은 화면 하나에 귀속되지 않는다. 각 NFR이 어디서 측정되�
 | FR-CMP-010 | W-060 / SFC-PKG | WP-030 | 검색·선택·미리보기·복귀, IME, 상태·커서 |
 | FR-CMP-011 | W-061 / SFC-PKG | WP-031 | 그래프/목록 방향·근거, 결정성, 50/300노드 |
 | FR-CMP-012 | W-062 / SFC-PKG | WP-032 | 단계 의미, 허용 행동, 부분/미확인 |
+| FR-CMP-014 | W-020, W-021 / SFC-PKG | WP-037 | Toast·DatePicker·CommandPalette·Pagination 동작, axe(열린 상태 포함), 키보드 경로 (CR-054) |
 | FR-CMP-013 | W-060, W-061, W-062 / SFC-PKG / SFC-REL | WP-029 | Radix 키보드·포커스와 tarball 소비 |
 
 

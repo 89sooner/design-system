@@ -1,6 +1,10 @@
 // Refs: WP-026 FR-QA-004 AC-1 AC-2 AC-4 JOB-CI-003 FR-CSS-005 AC-1
 import { expect, test, type Locator, type Page } from "@playwright/test";
+import { readFileSync } from "node:fs";
 import { docsPath } from "../e2e/routes";
+
+/** One tile per public component; the catalog generator writes the list, so the count follows the package. */
+const PUBLIC_COMPONENTS = (JSON.parse(readFileSync(new URL("../src/generated/component-meta.json", import.meta.url), "utf8")) as unknown[]).length;
 
 const components = [
   "Button",
@@ -86,7 +90,7 @@ test("FR-A11Y-003 AC-4: every public component remains identifiable in grayscale
     document.documentElement.dataset.cdtTheme = "dark";
   });
   await page.goto(docsPath("/components"));
-  await expect(page.locator(".docs-component-tile")).toHaveCount(47);
+  await expect(page.locator(".docs-component-tile")).toHaveCount(PUBLIC_COMPONENTS);
   await page.addStyleTag({ content: "#root { filter: grayscale(1); }" });
   await expect(page.locator("#root")).toHaveCSS("filter", "grayscale(1)");
   // The catalog's first layout settles one pixel after its previews mount. Wait

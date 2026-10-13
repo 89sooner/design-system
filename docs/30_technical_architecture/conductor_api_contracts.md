@@ -1,6 +1,6 @@
 # Conductor Design System 패키지 공개 API 계약
 
-> 상태: review | 버전: v0.7 | 갱신일: 2026-10-13
+> 상태: review | 버전: v0.8 | 갱신일: 2026-10-13
 
 ## 0. 문서 재해석
 
@@ -40,6 +40,7 @@ Conductor Design System에는 HTTP API, 요청/응답 엔드포인트, 인증 �
 | API-CMP-007 | TS interface | 폼군(`Field`, `TextField`, `TextArea`, `Select`, `Switch`, `Checkbox`) | FR-CMP-007 |
 | API-CMP-008 | TS interface | 피드백군(`Banner`, `EmptyState`, `Meter`, `ProgressRing`, `Spinner`) | FR-CMP-008 |
 | API-CMP-009 | TS interface | 셸군(`AppShell`, `NavList`, `TopBar`) | FR-CMP-009 |
+| API-CMP-010 | TS interface | 알림·날짜·명령·페이지(`Toast`, `DatePicker`, `CommandPalette`, `Pagination`, `filterCommands`, `paginationRange`) | FR-CMP-014 (CR-054) |
 | API-DOC-001 | 정적 라우트 계약 | 문서 사이트 W-001~W-050 | 라우트/데이터 출처 매핑 | FR-DOC-001~007 |
 | API-DOC-002 | 에이전트 판독용 산출물 계약 | AI 코딩 에이전트, 소비자 | 정적 Markdown·텍스트 파일 경로와 구조 | FR-DOC-008 |
 
@@ -542,3 +543,17 @@ CR-041 컴포넌트는 스스로 렌더하는 문구를 `labels` prop으로 받�
 | `RelationGraph` | `RelationGraphLabels` | `summary(nodes, edges)`, `nodeList(count)`, `edgeTable(label)`, `selectEdge(id)` |
 
 prop 추가는 비파괴 변경이다. 기본 문구가 한국어에서 영어로 바뀌는 것은 화면 문구를 단언하던 소비자에게 보이는 변화이므로 minor로 올리고 CHANGELOG에 이전 문구를 되살리는 방법을 적는다(6절).
+
+## CR-054 API-CMP-010 (FR-CMP-014)
+
+```ts
+export const Toast: { Provider; Viewport; Root; Title; Description; Action; Close };
+export type ToastTone = "info" | "success" | "warning" | "danger";
+export const DatePicker: ForwardRef<HTMLButtonElement, DatePickerProps>;
+export const CommandPalette: ForwardRef<HTMLDivElement, CommandPaletteProps>;
+export function filterCommands(commands: readonly Command[], query: string): readonly Command[];
+export const Pagination: ForwardRef<HTMLElement, PaginationProps>;
+export function paginationRange(page: number, pageCount: number, siblings?: number): readonly PaginationItem[];
+```
+
+새 export만 있는 비파괴 변경이라 react·css 모두 minor다. 새 런타임 의존성은 `@radix-ui/react-toast@1.2.23`, `react-day-picker@10.0.1`(정확한 버전)이다.
