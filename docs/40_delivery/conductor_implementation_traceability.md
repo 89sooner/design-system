@@ -528,3 +528,4 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | 패키지 | `contrastRatio`(빌드와 같은 연산, 선언된 240개 검사 전부 소수 넷째 자리 일치), `toOklab`·`fromOklab`·`mixOklab`·`toneValues`, `OklabColor`·`ToneName` 타입 |
 | 화면 | W-031: accent(입력·색 선택기·프리셋 4개), 반경 배율 4단, 밀도, 테마별 설정, accent 대비 9쌍 재측정, 재정의 CSS 복사 |
 | 검증 (로컬) | 게이트 12종(단위 723/723), docs E2E 65/65, Lighthouse 외부 요청 0·CLS 0 |
+| CI · 종료 | PR #49 head `ca6f161`에서 verify(node 20/22)·visual regression success. CR-052 closed(2026-10-13) |
