@@ -24,7 +24,7 @@ Conductor Design System(이하 Conductor)은 `agent-ai-platform`의 `packages/we
 - **NG-1**: 디자인 도구(Figma) 연동. 토큰 소스는 코드가 유일한 출처다.
 - **NG-2**: React 외 프레임워크 어댑터. 비-React 소비자는 `@conductor-by-89soone/css`를 직접 사용한다.
 - **NG-3**: agent-ai-platform의 도메인 컴포넌트(`.thread-page`, `.approval-card-*`, `.run-summary`, `.tool-grid`) 이식. 재사용되지 않는 결합을 만든다.
-- **NG-4**: agent-ai-platform 저장소를 Conductor로 마이그레이션하는 작업. Conductor v1은 독립 저장소로만 성립한다. 마이그레이션은 별도 제품 결정이다.
+- **NG-4**: agent-ai-platform 저장소를 Conductor로 마이그레이션하는 작업. Conductor v1은 독립 저장소로만 성립한다. 마이그레이션은 그 저장소의 별도 결정이다. 2026-10-13 파일럿(토큰·CSS·셸)은 그 저장소에서 수행됐다 (CR-055).
 - **NG-5**: 범용 차트 라이브러리·그래프 편집. CR-041 읽기 전용 관계 탐색은 예외.
 - **NG-6**: 런타임 토큰 편집기, 고대비 테마, 다국어 문자열 시스템.
 
@@ -85,7 +85,7 @@ Conductor Design System(이하 Conductor)은 `agent-ai-platform`의 `packages/we
 | 다국어 문자열 시스템 | 컴포넌트는 문자열을 props로 받는다. 번역은 소비자 책임이다 |
 | 런타임 테마 편집기 | 문서 사이트의 테마 토글까지만 포함한다 |
 | agent-ai-platform 도메인 컴포넌트 이식 | 두 번째 제품이 같은 패턴을 요구하기 전까지는 재사용 근거가 없다 |
-| agent-ai-platform 저장소 마이그레이션 | Conductor v1은 독립 저장소로만 성립한다 |
+| agent-ai-platform 저장소 마이그레이션 | Conductor v1은 독립 저장소로만 성립한다. 2026-10-13 파일럿은 소비 저장소의 작업이다 (CR-055) |
 
 ## 6. 핵심 사용자 시나리오
 
