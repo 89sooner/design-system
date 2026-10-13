@@ -515,3 +515,4 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | 화면 | W-063 빈 상태(4유형), W-064 필터 테이블(합성 배포 12건), W-065 설정 폼(일반·알림·위험 구역). 내비 `Blocks` 구역 |
 | 규칙 | `blocks.ts`: `filterDeployments`, `sortBySeconds`(동률 입력 순서 유지), `resultSummary`, `validateSettings`(이름 필수·40자, 설명 160자), `changedKeys` |
 | 검증 (로컬) | 게이트 12종(단위 710/710), docs E2E 60/60(`blocks.spec.ts` 4건, 폭·테마·axe 행렬 8건), Lighthouse 외부 요청 0·CLS 0. LCP p75 2534ms(같은 시각 main 2566ms, 샌드박스 변동) |
+| CI · 종료 | PR #48 head `8d37794`에서 verify(node 20/22)·visual regression success. CR-051 closed(2026-10-13) |
