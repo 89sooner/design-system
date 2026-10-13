@@ -1,0 +1,1426 @@
+{
+  "Button": {
+    "purpose": "A native button that triggers an action, with primary, secondary and ghost variants, tones, sizes, loading and policy-blocked states.",
+    "use": [
+      "Use for any action that happens on the current page, such as save, run or confirm.",
+      "Use the primary variant for the single main action in a region.",
+      "Use blockedReason when policy forbids the action and the user needs to know why."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use a button with no visible text label.",
+        "instead": "IconButton"
+      },
+      {
+        "rule": "Do not use a button to navigate to another page; render a link instead."
+      },
+      {
+        "rule": "Do not place several primary buttons side by side."
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Enter / Space",
+        "action": "Activates the button."
+      },
+      {
+        "keys": "Tab",
+        "action": "Moves focus to the button; disabled and blocked buttons are skipped because they are natively disabled."
+      }
+    ],
+    "accessibility": [
+      "While loading is true the button sets aria-busy and ignores clicks, and the spinner is hidden from assistive technology.",
+      "blockedReason disables the button and exposes the reason through the title attribute.",
+      "Icons passed as iconStart or iconEnd are wrapped in aria-hidden, so the text label must carry the meaning."
+    ]
+  },
+  "IconButton": {
+    "purpose": "A compact square button that shows only an icon, for familiar actions where space is tight.",
+    "use": [
+      "Use for well-known actions such as close, more options or copy in toolbars and dense rows.",
+      "Pair with a Tooltip when the icon alone may be unclear to sighted users."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use for an action whose icon is not widely recognised.",
+        "instead": "Button"
+      },
+      {
+        "rule": "Do not use as the main call to action of a page.",
+        "instead": "Button"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Enter / Space",
+        "action": "Activates the button."
+      }
+    ],
+    "accessibility": [
+      "aria-label is a required prop and a TypeScript error if missing; it is the button's only accessible name.",
+      "The icon is rendered aria-hidden, and while loading it is replaced by the spinner and the button sets aria-busy.",
+      "It inherits Button's disabled and blockedReason behaviour."
+    ]
+  },
+  "Card": {
+    "purpose": "A bordered surface that groups related content, either static or as a single clickable target.",
+    "use": [
+      "Use a static card to group a short block of related content.",
+      "Pass href to make the whole card a link, or onClick to make it a button.",
+      "Use inside a CardGrid when showing several comparable items."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not put buttons, links or inputs inside an interactive card; a development warning reports it."
+      },
+      {
+        "rule": "Do not use a card as a large page section with its own heading structure.",
+        "instead": "Panel"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Enter",
+        "action": "Follows the link when the card renders as an anchor with href."
+      },
+      {
+        "keys": "Enter / Space",
+        "action": "Activates the card when it renders as a button with onClick."
+      }
+    ],
+    "accessibility": [
+      "A static card renders as a div and does not receive focus.",
+      "An interactive card renders as a native a or button element, so its whole text content becomes the accessible name; keep it short.",
+      "Interactive cards show the shared focus ring on keyboard focus."
+    ]
+  },
+  "CardGrid": {
+    "purpose": "A layout wrapper that arranges Cards into a responsive grid.",
+    "use": [
+      "Use to lay out a set of Cards of equal importance.",
+      "Use when the number of items varies and should wrap with the viewport."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use for tabular data that users compare across columns.",
+        "instead": "Table"
+      },
+      {
+        "rule": "Do not use it to position arbitrary page regions."
+      }
+    ],
+    "keyboard": "static",
+    "accessibility": [
+      "It renders a plain div with no role, so add a heading or a list structure yourself if the group needs one.",
+      "Tab order follows source order, so keep the card order meaningful."
+    ]
+  },
+  "Panel": {
+    "purpose": "A bordered container for a region of a page, rendered as a div, section or aside.",
+    "use": [
+      "Use to frame a distinct region such as settings, a summary or a side note.",
+      "Set as to section or aside when the region has landmark meaning."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not make a panel clickable; it has no interactive mode.",
+        "instead": "Card"
+      },
+      {
+        "rule": "Do not nest panels deeply to create visual hierarchy."
+      }
+    ],
+    "keyboard": "static",
+    "accessibility": [
+      "Choose as=section or as=aside to expose the matching element semantics.",
+      "Give a section panel a heading or aria-labelledby so the region has a name."
+    ]
+  },
+  "Badge": {
+    "purpose": "A small inline label for categories, counts or metadata, with tone styling and an optional icon.",
+    "use": [
+      "Use for short metadata such as a version, a category or a count.",
+      "Use the tone prop to group related labels visually."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use for run or task status.",
+        "instead": "StatusBadge"
+      },
+      {
+        "rule": "Do not use for the risk level of an operation.",
+        "instead": "SeverityTag"
+      },
+      {
+        "rule": "Do not rely on tone colour alone to carry meaning; the text must say it."
+      }
+    ],
+    "keyboard": "static",
+    "accessibility": [
+      "The optional icon is rendered aria-hidden, so the text is the accessible content.",
+      "A removable badge should use the cdt-badge__dismiss hook on a real button inside it; the consumer owns the remove behaviour and its label."
+    ]
+  },
+  "StatusBadge": {
+    "purpose": "Shows one of seven run or task statuses through colour, icon and text together.",
+    "use": [
+      "Use for lifecycle states: queued, running, waiting, success, partial, danger and neutralEnd.",
+      "Pass the icon named by STATUS_ICONS for the status from the tokens package."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not hide the label to show only the coloured icon; there is no icon-only mode.",
+        "instead": "Tooltip"
+      },
+      {
+        "rule": "Do not use for free-form categories.",
+        "instead": "Badge"
+      },
+      {
+        "rule": "Do not use for the risk of an action.",
+        "instead": "SeverityTag"
+      }
+    ],
+    "keyboard": "static",
+    "accessibility": [
+      "status is limited to the seven typed values, and icon and label are required props.",
+      "The icon is aria-hidden and the label text provides the accessible name, so status is never conveyed by colour alone.",
+      "The rendered icon wrapper carries data-cdt-icon with the expected icon name."
+    ]
+  },
+  "SeverityTag": {
+    "purpose": "Marks the risk level of an operation as read, write, destructive or blocked, using colour, icon and text.",
+    "use": [
+      "Use next to an action or permission to show how risky it is.",
+      "Pass the icon named by SEVERITY_ICONS for the severity from the tokens package."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use for the progress or outcome of a run.",
+        "instead": "StatusBadge"
+      },
+      {
+        "rule": "Do not use for neutral metadata.",
+        "instead": "Badge"
+      }
+    ],
+    "keyboard": "static",
+    "accessibility": [
+      "severity, icon and label are required props.",
+      "The icon is aria-hidden and the label text carries the meaning, so severity is never colour alone."
+    ]
+  },
+  "Table": {
+    "purpose": "A styled native table with its own horizontal scroll container, for presenting rows of structured data.",
+    "use": [
+      "Use for structured data that users scan and compare across columns.",
+      "Mark numeric cells with the numeric prop so figures align with tabular numerals.",
+      "Set aria-sort on a header cell to show the sort direction you control."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not expect built-in sorting, pagination or virtual scrolling; the table is presentation only.",
+        "instead": "DataTable"
+      },
+      {
+        "rule": "Do not use a table for page layout.",
+        "instead": "CardGrid"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Tab",
+        "action": "Focuses the scroll container, which has tabIndex 0."
+      },
+      {
+        "keys": "Arrow keys",
+        "action": "Scroll the focused container natively when the table overflows."
+      }
+    ],
+    "accessibility": [
+      "Provide caption or aria-label; a development warning reports a table with neither.",
+      "Header cells default to scope=col.",
+      "The sort indicator drawn from aria-sort is excluded from the accessible name so it is not read twice."
+    ]
+  },
+  "Timeline": {
+    "purpose": "An ordered list of steps showing a sequence of events, with optionally selectable steps.",
+    "use": [
+      "Use to show the ordered steps of a run or process.",
+      "Pass onSelect to a step to make it selectable, and selected to mark the current one."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use for unordered collections of items.",
+        "instead": "CardGrid"
+      },
+      {
+        "rule": "Do not use for multi-column records.",
+        "instead": "Table"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Tab",
+        "action": "Moves between steps that have onSelect; steps without it are not focusable."
+      },
+      {
+        "keys": "Enter / Space",
+        "action": "Selects a step that has onSelect, which renders as a native button."
+      }
+    ],
+    "accessibility": [
+      "The timeline renders as an ordered list, so step order is announced.",
+      "A selected step gets aria-current=step.",
+      "The step marker is aria-hidden, so the step text must describe the step."
+    ]
+  },
+  "CodeBlock": {
+    "purpose": "Displays a preformatted block of code or JSON in a monospace font with horizontal scrolling.",
+    "use": [
+      "Use for multi-line code, configuration or JSON payloads.",
+      "Set language to record the language as a data attribute."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use for a single keyboard key or shortcut.",
+        "instead": "Kbd"
+      },
+      {
+        "rule": "Do not expect syntax highlighting or a copy action built in.",
+        "instead": "CopyButton"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Tab",
+        "action": "Focuses the code region, which has tabIndex 0."
+      },
+      {
+        "keys": "Arrow keys",
+        "action": "Scroll the focused region natively when the code overflows."
+      }
+    ],
+    "accessibility": [
+      "The wrapper has role=region and is focusable so keyboard users can scroll it.",
+      "Pass aria-label to name the region; the component does not set one itself."
+    ]
+  },
+  "Kbd": {
+    "purpose": "Renders a native kbd element to show a keyboard key or shortcut inline in text.",
+    "use": [
+      "Use to show a key a user should press, such as Esc or Enter.",
+      "Use one Kbd per key in a key combination."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use for blocks of code or commands.",
+        "instead": "CodeBlock"
+      },
+      {
+        "rule": "Do not use as a status or category label.",
+        "instead": "Badge"
+      }
+    ],
+    "keyboard": "static",
+    "accessibility": [
+      "It renders the native kbd element, which conveys keyboard input semantics."
+    ]
+  },
+  "Dialog": {
+    "purpose": "A modal window, built on Radix Dialog, for a focused confirmation or short task that blocks the page.",
+    "use": [
+      "Use for a focused confirmation or short task that needs an answer before continuing.",
+      "Use for destructive confirmations where the user must stop and decide."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use for contextual detail the user wants to read alongside the page.",
+        "instead": "Drawer"
+      },
+      {
+        "rule": "Do not use for a short hint or label.",
+        "instead": "Tooltip"
+      },
+      {
+        "rule": "Do not use for lightweight non-modal content anchored to a control.",
+        "instead": "Popover"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Enter / Space",
+        "action": "Opens the dialog from the focused trigger."
+      },
+      {
+        "keys": "Tab / Shift + Tab",
+        "action": "Moves focus between focusable elements inside the dialog; focus is trapped while open."
+      },
+      {
+        "keys": "Escape",
+        "action": "Closes the dialog and returns focus to the trigger."
+      }
+    ],
+    "accessibility": [
+      "Include Dialog.Title so the dialog has an accessible name; Radix warns in development when it is missing.",
+      "Use Dialog.Description for supporting text; Radix links it to the dialog.",
+      "Radix traps focus, locks background scroll and restores focus on close."
+    ]
+  },
+  "Drawer": {
+    "purpose": "A side panel on the left or right, built on Radix Dialog, for contextual detail that keeps the page visible beside it.",
+    "use": [
+      "Use for contextual detail that benefits from keeping the page alongside it.",
+      "Use for longer content such as a record inspector or a filter set.",
+      "Set side to left or right to match where the content belongs."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use for a short confirmation or decision.",
+        "instead": "Dialog"
+      },
+      {
+        "rule": "Do not use for a small menu of actions.",
+        "instead": "DropdownMenu"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Enter / Space",
+        "action": "Opens the drawer from the focused trigger."
+      },
+      {
+        "keys": "Tab / Shift + Tab",
+        "action": "Moves focus between focusable elements inside the drawer; focus is trapped while open."
+      },
+      {
+        "keys": "Escape",
+        "action": "Closes the drawer and returns focus to the trigger."
+      }
+    ],
+    "accessibility": [
+      "Include Drawer.Title so the drawer has an accessible name; Radix warns in development when it is missing.",
+      "It is modal: Radix traps focus, locks background scroll and restores focus to the trigger on close."
+    ]
+  },
+  "Tooltip": {
+    "purpose": "A short text label, built on Radix Tooltip, that appears on hover or keyboard focus of its trigger.",
+    "use": [
+      "Use to name or briefly explain an IconButton or a truncated value.",
+      "Use when a StatusBadge or Badge needs more context in tight space."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not put interactive content such as links or buttons in a tooltip.",
+        "instead": "Popover"
+      },
+      {
+        "rule": "Do not hide essential information only in a tooltip; touch users may never see it."
+      },
+      {
+        "rule": "Do not use for long explanations.",
+        "instead": "Popover"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Tab",
+        "action": "Focusing the trigger opens the tooltip."
+      },
+      {
+        "keys": "Space / Enter",
+        "action": "Closes the open tooltip."
+      },
+      {
+        "keys": "Escape",
+        "action": "Closes the open tooltip."
+      }
+    ],
+    "accessibility": [
+      "Wrap the app or region in Tooltip.Provider, which Radix requires.",
+      "The trigger must be focusable, such as a Button or IconButton, so keyboard users can reach the tooltip.",
+      "Radix links the content to the trigger with aria-describedby; it describes the trigger and does not replace an aria-label."
+    ]
+  },
+  "DropdownMenu": {
+    "purpose": "A menu of actions opened from a trigger, built on Radix Dropdown Menu, with optional icons and a danger tone.",
+    "use": [
+      "Use to group secondary actions behind a single trigger, such as an IconButton for more options.",
+      "Use the danger tone on items that delete or cannot be undone.",
+      "Use Label and Separator to group related items."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use to choose a form value.",
+        "instead": "Select"
+      },
+      {
+        "rule": "Do not use for free-form content or forms.",
+        "instead": "Popover"
+      },
+      {
+        "rule": "Do not hide the primary action of a page inside a menu.",
+        "instead": "Button"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Enter / Space",
+        "action": "On the trigger, opens the menu and focuses the first item; on an item, activates it."
+      },
+      {
+        "keys": "Arrow Down",
+        "action": "On the trigger, opens the menu; inside the menu, moves focus to the next item."
+      },
+      {
+        "keys": "Arrow Up",
+        "action": "Moves focus to the previous item."
+      },
+      {
+        "keys": "Escape",
+        "action": "Closes the menu and returns focus to the trigger."
+      }
+    ],
+    "accessibility": [
+      "Radix sets the menu and menuitem roles and manages focus; do not override them.",
+      "Item icons are aria-hidden, so every item needs a text label.",
+      "A danger tone is visual only, so the item text must state the destructive action."
+    ]
+  },
+  "Popover": {
+    "purpose": "Non-modal floating content anchored to a trigger, built on Radix Popover, for small interactive panels.",
+    "use": [
+      "Use for brief interactive content tied to a control, such as a small form or extra detail.",
+      "Pass container to portal into a locally themed region."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use for a plain text hint.",
+        "instead": "Tooltip"
+      },
+      {
+        "rule": "Do not use for a list of actions.",
+        "instead": "DropdownMenu"
+      },
+      {
+        "rule": "Do not use for a task that must block the page.",
+        "instead": "Dialog"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Enter / Space",
+        "action": "Opens or closes the popover from the focused trigger."
+      },
+      {
+        "keys": "Tab / Shift + Tab",
+        "action": "Moves focus between focusable elements in the popover."
+      },
+      {
+        "keys": "Escape",
+        "action": "Closes the popover and moves focus to the trigger."
+      }
+    ],
+    "accessibility": [
+      "Radix sets aria-expanded and aria-controls on the trigger and moves focus into the content on open.",
+      "Give the content a heading or aria-label when its purpose is not clear from the trigger.",
+      "Use Popover.Close for an explicit close button."
+    ]
+  },
+  "Field": {
+    "purpose": "Wraps a single form control with a label, optional description and error message, and wires them to the control.",
+    "use": [
+      "Use around every TextField, TextArea, Select, Switch or Checkbox that needs a visible label.",
+      "Pass error to show a validation message and mark the control invalid.",
+      "Pass required to mark the field required on its control."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not wrap more than one control in a single Field; it accepts exactly one child element."
+      },
+      {
+        "rule": "Do not expect validation logic; Field only presents the state you pass."
+      }
+    ],
+    "keyboard": "static",
+    "accessibility": [
+      "The label is linked to the control with htmlFor and id, and description and error are linked with aria-describedby.",
+      "An error sets aria-invalid on the control, so invalid state is not shown by colour alone.",
+      "The required asterisk is aria-hidden; the control itself receives required."
+    ]
+  },
+  "TextField": {
+    "purpose": "A single-line native text input with solid or glass variants, sizes, an optional leading icon and invalid styling.",
+    "use": [
+      "Use for short free-text input such as a name, URL or search term.",
+      "Place inside a Field to get a label, description and error message."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use for multi-line text.",
+        "instead": "TextArea"
+      },
+      {
+        "rule": "Do not use when the user must pick from a fixed set of options.",
+        "instead": "Select"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Tab",
+        "action": "Moves focus to the input."
+      },
+      {
+        "keys": "Arrow keys",
+        "action": "Moves the caret; typed characters enter text natively."
+      },
+      {
+        "keys": "Enter",
+        "action": "Submits the enclosing form, as a native input does."
+      }
+    ],
+    "accessibility": [
+      "Provide a Field, aria-label or aria-labelledby; a development warning reports a missing label.",
+      "Invalid state sets aria-invalid, and the leading icon is aria-hidden."
+    ]
+  },
+  "TextArea": {
+    "purpose": "A multi-line native text area with solid or glass variants and invalid styling, defaulting to three rows.",
+    "use": [
+      "Use for multi-line text such as descriptions, notes or prompts.",
+      "Place inside a Field to get a label, description and error message."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use for a single short value.",
+        "instead": "TextField"
+      },
+      {
+        "rule": "Do not use to display read-only code.",
+        "instead": "CodeBlock"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Tab",
+        "action": "Moves focus to the text area."
+      },
+      {
+        "keys": "Enter",
+        "action": "Inserts a new line."
+      }
+    ],
+    "accessibility": [
+      "Provide a Field, aria-label or aria-labelledby; a development warning reports a missing label.",
+      "Invalid state sets aria-invalid and links the error text through aria-describedby when inside a Field."
+    ]
+  },
+  "Select": {
+    "purpose": "A single-choice dropdown for form values, built on Radix Select, with a styled trigger and option list.",
+    "use": [
+      "Use to choose one value from a short, fixed list of options.",
+      "Place inside a Field so the label, description, error and required state reach the trigger and the form control."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use for a long list that needs searching.",
+        "instead": "Combobox"
+      },
+      {
+        "rule": "Do not use when several values can be chosen.",
+        "instead": "MultiSelect"
+      },
+      {
+        "rule": "Do not use to trigger actions.",
+        "instead": "DropdownMenu"
+      },
+      {
+        "rule": "Do not use for a single on or off choice.",
+        "instead": "Switch"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Enter / Space",
+        "action": "On the trigger, opens the list and focuses the selected item; on an item, selects it and closes the list."
+      },
+      {
+        "keys": "Arrow Down / Arrow Up",
+        "action": "On the trigger, opens the list; inside the list, moves between items."
+      },
+      {
+        "keys": "Escape",
+        "action": "Closes the list and returns focus to the trigger."
+      }
+    ],
+    "accessibility": [
+      "Inside a Field the trigger gets the label link, aria-describedby, aria-invalid and aria-required.",
+      "Select.Root reads required from Field so the hidden form control also enforces it.",
+      "The selected-item check indicator is aria-hidden."
+    ]
+  },
+  "Switch": {
+    "purpose": "An on or off toggle, built on Radix Switch, for settings that take effect immediately.",
+    "use": [
+      "Use for a binary setting that applies as soon as it changes.",
+      "Place inside a Field or give it an aria-label."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use for a choice that is only applied when a form is submitted.",
+        "instead": "Checkbox"
+      },
+      {
+        "rule": "Do not use for choosing among more than two options.",
+        "instead": "Select"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Space / Enter",
+        "action": "Toggles the switch."
+      }
+    ],
+    "accessibility": [
+      "Radix renders a button with role=switch and aria-checked.",
+      "Inside a Field it receives the label link, aria-describedby and aria-invalid from the Field.",
+      "Unlike TextField, it does not warn when no label is provided, so add one yourself."
+    ]
+  },
+  "Checkbox": {
+    "purpose": "A checkbox, built on Radix Checkbox, for selecting an option or agreeing to a statement.",
+    "use": [
+      "Use for independent options in a form that are applied on submit.",
+      "Use for a single consent or acknowledgement.",
+      "Use the indicator prop to replace the default check glyph."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use for a setting that takes effect immediately.",
+        "instead": "Switch"
+      },
+      {
+        "rule": "Do not use for picking several values from a long list.",
+        "instead": "MultiSelect"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Space",
+        "action": "Toggles the checkbox."
+      }
+    ],
+    "accessibility": [
+      "Radix renders a button with role=checkbox and aria-checked.",
+      "Inside a Field it receives the label link, aria-describedby and aria-invalid; outside a Field, provide an aria-label or label.",
+      "The check indicator is aria-hidden."
+    ]
+  },
+  "Banner": {
+    "purpose": "Shows an inline page-level message in an info, warning or danger tone, with an optional title, icon and action.",
+    "use": [
+      "Use it for persistent messages tied to the current page or section.",
+      "Use tone danger for failures and pass a recovery action in the action slot."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it as a toast or snackbar; Conductor does not manage a notification queue."
+      },
+      {
+        "rule": "Do not use it to explain why a list has no results.",
+        "instead": "EmptyState"
+      },
+      {
+        "rule": "Do not leave a danger banner without an action; development builds log a console warning."
+      }
+    ],
+    "keyboard": "static",
+    "accessibility": [
+      "Tone danger renders role alert; info and warning render role status.",
+      "The icon slot is wrapped in aria-hidden, so the message text must carry the meaning.",
+      "Any focusable control in the action slot keeps its own keyboard behaviour."
+    ]
+  },
+  "EmptyState": {
+    "purpose": "Explains that an area has no content yet and offers an optional next step.",
+    "use": [
+      "Use it when a list, table or panel has nothing to show.",
+      "Pass a description and an action when the user can fix the empty state."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it while data is still loading.",
+        "instead": "Skeleton"
+      },
+      {
+        "rule": "Do not use it for a failed request that needs attention.",
+        "instead": "Banner"
+      },
+      {
+        "rule": "Do not present a failed or unknown result as zero results."
+      }
+    ],
+    "keyboard": "static",
+    "accessibility": [
+      "The title prop is required and is rendered as text.",
+      "The icon is hidden from assistive technology with aria-hidden.",
+      "It sets no live role, so announce changes elsewhere if needed."
+    ]
+  },
+  "Meter": {
+    "purpose": "Shows a measured value within a known range, such as quota or usage, with optional warning and exceeded thresholds.",
+    "use": [
+      "Use it for a bounded quantity like storage or budget consumption.",
+      "Set warningAt and exceededAt to switch to the warning or exceeded tone."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it for task progress toward completion.",
+        "instead": "ProgressRing"
+      },
+      {
+        "rule": "Do not rely on the fill colour alone; always pass a meaningful valueText."
+      }
+    ],
+    "keyboard": "static",
+    "accessibility": [
+      "Renders role meter with aria-valuenow, aria-valuemin, aria-valuemax and aria-valuetext.",
+      "aria-label and valueText are required props.",
+      "The valueText is also shown visibly next to the track."
+    ]
+  },
+  "ProgressRing": {
+    "purpose": "Shows determinate progress toward a maximum as a compact ring with a visible text value.",
+    "use": [
+      "Use it when the completed amount and the total are known.",
+      "Use size sm inside dense rows or cards."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it when progress cannot be measured.",
+        "instead": "Spinner"
+      },
+      {
+        "rule": "Do not invent a completion percentage without evidence.",
+        "instead": "ProcessingStatus"
+      },
+      {
+        "rule": "Do not use it for a capacity or quota reading.",
+        "instead": "Meter"
+      }
+    ],
+    "keyboard": "static",
+    "accessibility": [
+      "Renders role progressbar with aria-valuenow, aria-valuemin, aria-valuemax and aria-valuetext.",
+      "aria-label and valueText are required; valueText stays visible as the label.",
+      "The SVG ring is aria-hidden, and under reduced motion the text value carries the progress."
+    ]
+  },
+  "Spinner": {
+    "purpose": "Indicates indeterminate, in-progress work with an animated ring and a required text label.",
+    "use": [
+      "Use it for short waits where progress cannot be measured.",
+      "Write a label that says what is loading."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it when the amount of progress is known.",
+        "instead": "ProgressRing"
+      },
+      {
+        "rule": "Do not use it as a placeholder for content layout.",
+        "instead": "Skeleton"
+      },
+      {
+        "rule": "Do not put it inside a button yourself; use the Button loading prop.",
+        "instead": "Button"
+      }
+    ],
+    "keyboard": "static",
+    "accessibility": [
+      "Renders role status with aria-live polite.",
+      "The label prop is required; it is visually hidden but kept in the DOM.",
+      "Under prefers-reduced-motion the animation stops and the label becomes visible text."
+    ]
+  },
+  "Skeleton": {
+    "purpose": "Holds the place of content that is loading, with a required text label.",
+    "use": [
+      "Use it where content will appear once a request finishes.",
+      "Give it a label that describes what is loading."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not leave it in place after loading fails.",
+        "instead": "Banner"
+      },
+      {
+        "rule": "Do not use it when a request finished with no results.",
+        "instead": "EmptyState"
+      }
+    ],
+    "keyboard": "static",
+    "accessibility": [
+      "Renders role status with the label as its text.",
+      "The label prop is required."
+    ]
+  },
+  "AppShell": {
+    "purpose": "Provides the page frame with side navigation, an optional top bar, a skip link and a focusable main region.",
+    "use": [
+      "Use it once per application as the outer layout.",
+      "Pass routeKey so a route change closes the mobile navigation and focuses main.",
+      "Place an AppShellNavTrigger in the top bar to open the navigation on narrow screens."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not nest an AppShell inside another AppShell."
+      },
+      {
+        "rule": "Do not use it for a side panel inside a page.",
+        "instead": "Drawer"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Tab",
+        "action": "The skip link is the first focusable element."
+      },
+      {
+        "keys": "Enter",
+        "action": "On the skip link, moves focus to the main region."
+      },
+      {
+        "keys": "Escape",
+        "action": "Closes the mobile navigation drawer."
+      }
+    ],
+    "accessibility": [
+      "skipLinkLabel is required; navLabel names the mobile drawer and navCloseLabel names the scrim button.",
+      "The mobile drawer is a non-modal Radix Dialog; closing it returns focus to the opener, or to main after a route change.",
+      "The main region has tabIndex -1 so it can receive focus programmatically."
+    ]
+  },
+  "AppShellNavTrigger": {
+    "purpose": "The button that opens and closes the AppShell navigation drawer on narrow screens.",
+    "use": [
+      "Place it inside AppShell, normally in the TopBar menuButton slot.",
+      "Use asChild to render it as an IconButton."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it outside an AppShell."
+      },
+      {
+        "rule": "Do not use it to open a general side panel.",
+        "instead": "Drawer"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Enter",
+        "action": "Toggles the navigation drawer."
+      },
+      {
+        "keys": "Space",
+        "action": "Toggles the navigation drawer."
+      }
+    ],
+    "accessibility": [
+      "It is a Radix Dialog trigger, so it carries aria-expanded and aria-controls for the drawer.",
+      "Give it an accessible name, especially when it shows only an icon."
+    ]
+  },
+  "NavList": {
+    "purpose": "Renders the primary navigation links with optional section labels, delegating link rendering to the consumer's router.",
+    "use": [
+      "Use it for the main navigation inside AppShell.",
+      "Use renderLink to render your router's link component with the props it receives.",
+      "Mark the current item with active."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it for in-page section switching.",
+        "instead": "Tabs"
+      },
+      {
+        "rule": "Do not use it for a list of actions.",
+        "instead": "DropdownMenu"
+      },
+      {
+        "rule": "Do not use it for a location trail.",
+        "instead": "Breadcrumb"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Tab",
+        "action": "Moves through the rendered links."
+      },
+      {
+        "keys": "Enter",
+        "action": "Follows the focused link."
+      }
+    ],
+    "accessibility": [
+      "aria-label is required and names the nav landmark.",
+      "The active item receives aria-current page; spread the provided props onto your link.",
+      "Item icons are aria-hidden, so each item needs a text label."
+    ]
+  },
+  "TopBar": {
+    "purpose": "Shows the page header with an eyebrow, a title, action slots and an optional menu button slot.",
+    "use": [
+      "Use it in the AppShell topBar slot.",
+      "Put the AppShellNavTrigger in menuButton and page-level actions in actions."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it for navigation links.",
+        "instead": "NavList"
+      },
+      {
+        "rule": "Do not use it as a section heading inside page content.",
+        "instead": "Panel"
+      }
+    ],
+    "keyboard": "static",
+    "accessibility": [
+      "Renders a header element.",
+      "A string title is also set as the title attribute for truncated text.",
+      "Controls passed into the slots keep their own keyboard behaviour."
+    ]
+  },
+  "Tabs": {
+    "purpose": "Switches between related panels of content in the same place, built on Radix Tabs.",
+    "use": [
+      "Use it for peer views of the same subject.",
+      "Keep the default manual activation when switching a panel is expensive.",
+      "Use forceMount on a panel whose state must survive switching."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it for site navigation between pages.",
+        "instead": "NavList"
+      },
+      {
+        "rule": "Do not use it to show and hide a single section.",
+        "instead": "Collapsible"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Tab",
+        "action": "Moves focus into the tab list and then to the active panel."
+      },
+      {
+        "keys": "Arrow Left / Arrow Right",
+        "action": "Moves focus between tabs, skipping disabled ones."
+      },
+      {
+        "keys": "Home / End",
+        "action": "Moves focus to the first or last tab."
+      },
+      {
+        "keys": "Enter / Space",
+        "action": "Activates the focused tab in manual mode."
+      }
+    ],
+    "accessibility": [
+      "Radix sets the tablist, tab and tabpanel roles, aria-selected and aria-controls.",
+      "Give Tabs.List an aria-label.",
+      "Activation is manual by default; with activationMode automatic, focusing a tab selects it."
+    ]
+  },
+  "Collapsible": {
+    "purpose": "Shows and hides one section of content behind a trigger, built on Radix Collapsible.",
+    "use": [
+      "Use it for secondary detail that most users do not need at first.",
+      "Control it with open and onOpenChange when the state matters elsewhere."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it to switch between several peer views.",
+        "instead": "Tabs"
+      },
+      {
+        "rule": "Do not hide content that is required to complete the task."
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Enter / Space",
+        "action": "Opens or closes the content."
+      }
+    ],
+    "accessibility": [
+      "Radix sets aria-expanded and aria-controls on the trigger.",
+      "Closed content is unmounted.",
+      "A disabled Collapsible ignores trigger activation."
+    ]
+  },
+  "Combobox": {
+    "purpose": "Lets the user type a query and pick one option from a filtered list, built on Downshift.",
+    "use": [
+      "Use it to pick one value from a long or remote list.",
+      "Keep query and value separate and pass resultsQuery so stale results stay hidden.",
+      "Set state to loading or error while fetching."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it when several values can be chosen.",
+        "instead": "MultiSelect"
+      },
+      {
+        "rule": "Do not use it for a short, fixed list.",
+        "instead": "Select"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Arrow Down / Arrow Up",
+        "action": "Opens the list and moves the highlighted option."
+      },
+      {
+        "keys": "Enter",
+        "action": "Selects the highlighted option; ignored while IME composition is active."
+      },
+      {
+        "keys": "Escape",
+        "action": "Closes the option list."
+      }
+    ],
+    "accessibility": [
+      "The label prop is required and is linked to the input by Downshift.",
+      "Downshift sets the combobox, listbox and option roles and the active option.",
+      "A status region announces loading, error and no-option states."
+    ]
+  },
+  "MultiSelect": {
+    "purpose": "Lets the user choose several options from a searchable checkbox group and shows the choices as removable chips.",
+    "use": [
+      "Use it when several values can apply at once, such as filters.",
+      "Pass stable option ids; value holds the chosen ids."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it when exactly one value is allowed.",
+        "instead": "Combobox"
+      },
+      {
+        "rule": "Do not use it for a single on or off choice.",
+        "instead": "Checkbox"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Tab",
+        "action": "Moves through the search field, chip remove buttons and checkboxes."
+      },
+      {
+        "keys": "Space",
+        "action": "Toggles the focused checkbox."
+      },
+      {
+        "keys": "Enter / Space",
+        "action": "On a chip remove button, removes that choice."
+      }
+    ],
+    "accessibility": [
+      "Renders a fieldset with the label prop as its legend.",
+      "Each option is a Radix Checkbox inside a label.",
+      "Disabling the component disables the whole fieldset."
+    ]
+  },
+  "FilterChip": {
+    "purpose": "Shows one applied filter value with a button to remove it.",
+    "use": [
+      "Use it to display active filters above results.",
+      "Group several chips in a FilterToolbar."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it for a static status label.",
+        "instead": "Badge"
+      },
+      {
+        "rule": "Do not use it as a general action button.",
+        "instead": "Button"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Enter / Space",
+        "action": "Activates the remove button."
+      }
+    ],
+    "accessibility": [
+      "removeLabel is required and names the remove button.",
+      "Keep removeLabel specific, such as naming the value being removed."
+    ]
+  },
+  "FilterToolbar": {
+    "purpose": "Lays out filter controls and chips in a single wrapping row.",
+    "use": [
+      "Use it to group FilterChip items and filter controls above a result set."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it for page-level actions.",
+        "instead": "TopBar"
+      }
+    ],
+    "keyboard": "static",
+    "accessibility": [
+      "It is a plain container with no role.",
+      "Controls inside keep their own keyboard behaviour."
+    ]
+  },
+  "DataTable": {
+    "purpose": "Displays loaded search results with externally controlled sorting, ID-based row selection, column visibility and load-more paging.",
+    "use": [
+      "Use it for result sets that need sorting, row preview or incremental loading.",
+      "Sort in the parent or on the server and pass the sort state in.",
+      "Use state to show loading, error and partial results honestly."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it for a small static table without these behaviours.",
+        "instead": "Table"
+      },
+      {
+        "rule": "Do not expect it to sort rows; it only reports the requested order."
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Tab",
+        "action": "Moves through sort buttons, row select buttons and the load more button."
+      },
+      {
+        "keys": "Enter / Space",
+        "action": "Activates the focused button."
+      }
+    ],
+    "accessibility": [
+      "label becomes the table caption; rowLabel names each row's select button.",
+      "Sorted columns get aria-sort, select buttons get aria-pressed and the root gets aria-busy while loading.",
+      "A status region reports how many rows are currently loaded."
+    ]
+  },
+  "WorkbenchLayout": {
+    "purpose": "Splits a results area from an optional inspector pane, with a slider to resize the inspector share.",
+    "use": [
+      "Use it to show results next to a DetailInspector.",
+      "Pass onWidthChange to offer the non-drag width slider."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it for the application frame.",
+        "instead": "AppShell"
+      },
+      {
+        "rule": "Do not use it for a temporary overlay panel.",
+        "instead": "Drawer"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Arrow keys",
+        "action": "On the width slider, adjust the inspector share."
+      },
+      {
+        "keys": "Home / End",
+        "action": "On the width slider, jump to the minimum or maximum share."
+      }
+    ],
+    "accessibility": [
+      "The width control is a native range input with a visible label.",
+      "The inspector share is clamped between 25 and 60 percent."
+    ]
+  },
+  "DetailInspector": {
+    "purpose": "Shows details of the selected item in a labelled region with a close button that returns focus to the selecting control.",
+    "use": [
+      "Use it inside the WorkbenchLayout inspector slot to preview a selected row.",
+      "Pass returnFocusRef pointing at the control that opened it."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it for a blocking task that needs a response.",
+        "instead": "Dialog"
+      },
+      {
+        "rule": "Do not use it as a standalone overlay.",
+        "instead": "Drawer"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Escape",
+        "action": "Closes the inspector and returns focus to the returnFocusRef element."
+      },
+      {
+        "keys": "Enter / Space",
+        "action": "On the close button, closes the inspector."
+      }
+    ],
+    "accessibility": [
+      "Renders a section named by label, with label as a level two heading.",
+      "Focus returns without scrolling when it closes."
+    ]
+  },
+  "PathList": {
+    "purpose": "Shows a nested path tree where folders expand and leaf items can be selected.",
+    "use": [
+      "Use it to browse a file or location hierarchy in a preview.",
+      "Mark items with state loading or error while their children resolve."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it to show where the current page sits.",
+        "instead": "Breadcrumb"
+      },
+      {
+        "rule": "Do not use it for site navigation.",
+        "instead": "NavList"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Tab",
+        "action": "Moves through folder summaries and leaf buttons."
+      },
+      {
+        "keys": "Enter / Space",
+        "action": "Expands or collapses a folder, or selects a leaf."
+      }
+    ],
+    "accessibility": [
+      "Folders use native details and summary elements.",
+      "Leaf buttons set aria-pressed for the selected item and are disabled without onPathSelect.",
+      "Loading and error states are announced through a status region."
+    ]
+  },
+  "Breadcrumb": {
+    "purpose": "Wraps a trail of links showing where the current location sits in a hierarchy.",
+    "use": [
+      "Use it above content to show and link the parent locations."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it as the primary navigation.",
+        "instead": "NavList"
+      },
+      {
+        "rule": "Do not use it to browse a whole tree.",
+        "instead": "PathList"
+      }
+    ],
+    "keyboard": "static",
+    "accessibility": [
+      "Renders a nav landmark with a default Korean aria-label; pass aria-label to rename it.",
+      "Links you place inside keep native link behaviour."
+    ]
+  },
+  "CopyButton": {
+    "purpose": "Copies a value to the clipboard and announces whether the copy succeeded or failed.",
+    "use": [
+      "Use it next to an identifier, path or snippet the user is likely to paste elsewhere."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it for a full code sample.",
+        "instead": "CodeBlock"
+      },
+      {
+        "rule": "Do not use it for actions other than copying.",
+        "instead": "Button"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Enter / Space",
+        "action": "Copies the value."
+      }
+    ],
+    "accessibility": [
+      "A status region announces success, failure or that the clipboard is unavailable.",
+      "A late result for an old value is discarded when value changes.",
+      "The default label is Korean; pass label to change it."
+    ]
+  },
+  "RelationGraph": {
+    "purpose": "Shows a read-only graph of nodes and directed edges with an equivalent keyboard list and table of direction, state and evidence.",
+    "use": [
+      "Use it to explore relations between items with their evidence.",
+      "Pass state to separate loading, empty, error and partial results.",
+      "Pass only data the viewer is allowed to see."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it to edit, delete or create relations."
+      },
+      {
+        "rule": "Do not read the layout as time order or dependency order."
+      },
+      {
+        "rule": "Do not use it for plain tabular relations without a graph.",
+        "instead": "Table"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Tab",
+        "action": "Moves through the find field, type filter, list link, view buttons and the node and edge buttons."
+      },
+      {
+        "keys": "Enter",
+        "action": "On the list link, moves focus to the equivalent node list and table."
+      },
+      {
+        "keys": "Enter / Space",
+        "action": "Activates the focused button to select a node or edge, zoom, pan or clear the selection."
+      }
+    ],
+    "accessibility": [
+      "The SVG canvas is aria-hidden; every node and edge is reachable through the list and table.",
+      "label names the region and the table caption.",
+      "The selection detail region is aria-live polite, and the status line uses role alert on error."
+    ]
+  },
+  "ProcessingStatus": {
+    "purpose": "Lists each processing stage with its own status, detail and an optional consumer-provided action.",
+    "use": [
+      "Use it to show receipt, storage, processing and indexing as separate stages.",
+      "Pass disabledReason when an action is not allowed."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not treat receipt as index completion or overall completion."
+      },
+      {
+        "rule": "Do not show a completion percentage or ETA without evidence.",
+        "instead": "ProgressRing"
+      },
+      {
+        "rule": "Do not expect it to retry or poll on its own."
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Tab",
+        "action": "Moves through stage action buttons."
+      },
+      {
+        "keys": "Enter / Space",
+        "action": "Runs the focused stage action."
+      }
+    ],
+    "accessibility": [
+      "Stages render as an ordered Timeline named by label.",
+      "Each status is shown as a text Badge, not by colour alone.",
+      "A blocked action is disabled and its reason is shown as visible text."
+    ]
+  }
+}

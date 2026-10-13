@@ -1,6 +1,6 @@
 # Conductor Design System 와이어프레임 사양서
 
-> 상태: review | 버전: v0.5 | 갱신일: 2026-10-12
+> 상태: review | 버전: v0.6 | 갱신일: 2026-10-13
 
 ## 1. 문서 위치와 책임
 
@@ -830,7 +830,7 @@ C-011 CardGrid, C-010 Card(대화형, `href="/components/:componentId"`), C-060 
 
 ## W-021 Component Detail
 
-경로: `/components/:componentId` · 우선순위: P0 · 관련 요구사항: FR-CMP-001 ~ FR-CMP-009, FR-CSS-004, FR-DOC-003, FR-DOC-006, FR-DX-002
+경로: `/components/:componentId` · 우선순위: P0 · 관련 요구사항: FR-CMP-001 ~ FR-CMP-009, FR-CSS-004, FR-DOC-003, FR-DOC-006, FR-DOC-008, FR-DX-002
 
 ### 화면 목적
 
@@ -911,8 +911,12 @@ C-011 CardGrid, C-010 Card(대화형, `href="/components/:componentId"`), C-060 
 │  Table (C-030)  ref 전달 │ className 병합 │ data-*/aria-*  │
 │                 네이티브 props 확장 (FR-CMP-001)           │
 ├────────────────────────────────────────────────────────────┤
-│ § 사용 규칙                                                │
-│  권장 예 / 금지 예 + 금지 사유  → 상세는 W-040             │
+│ § 사용 규칙 (CR-048)                                       │
+│  목적 한 문장                                              │
+│  Panel ✓ Use … │ Panel ✕ Avoid … (→ 대신 쓸 컴포넌트)      │
+│  Keyboard  Table: Kbd 키 │ 동작   (자체 조작 없음 표시)    │
+│  Accessibility  메모 목록                                  │
+│  [View as Markdown] → components/<Name>.md (FR-DOC-008)    │
 ├────────────────────────────────────────────────────────────┤
 │ § CSS 클래스                                               │
 │  CodeBlock (C-032)  cdt-btn cdt-btn--primary               │
@@ -930,7 +934,7 @@ C-011 CardGrid, C-010 Card(대화형, `href="/components/:componentId"`), C-060 
 | 코드 스니펫 | 프리뷰의 소스 코드와 복사 버튼 | FR-DOC-006 |
 | props | `@conductor-by-89soone/react` 타입 정의에서 생성한 표. 수동 작성 행 0건 | FR-DOC-003 AC-2, FR-DX-002 |
 | 공통 계약 | ref 전달, `className` 병합, `data-*`/`aria-*` 통과, 네이티브 props 확장 | FR-CMP-001 AC-1 ~ AC-4 |
-| 사용 규칙 | 권장 예와 금지 예, 금지 사유. 컴포넌트군별 상세 규칙은 W-040 | FR-DOC-003, FR-DOC-007 |
+| 사용 규칙 | 목적, 권장 사용, 금지 사용과 대신 쓸 컴포넌트(링크), 키보드 조작 표(자체 조작이 없으면 그 사실), 접근성 메모. ENT-DOC-002 한 데이터에서 렌더하며 누락은 빌드 실패다. 컴포넌트군별 상세 규칙은 W-040. Markdown 버전 링크를 함께 둔다 | FR-DOC-003 AC-6, FR-DOC-007, FR-DOC-008 AC-5 |
 | CSS 클래스 | 대응 `cdt-` 클래스와 React 없이 동일 스타일을 얻는 방법 | FR-CSS-004 AC-2, AC-3 |
 
 오버레이 컴포넌트(C-040, C-041, C-042, C-043)의 프리뷰는 트리거 버튼을 렌더하고, 트리거 조작으로 오버레이를 연다. 오버레이 동작(포커스 트랩, Escape, 포커스 복귀, 배경 스크롤 잠금)은 FLOW-004가 정의한다.

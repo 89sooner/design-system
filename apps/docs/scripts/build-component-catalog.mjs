@@ -1,4 +1,4 @@
-// Refs: WP-020 CR-042 FR-DOC-003 FR-DX-002 W-020
+// Refs: WP-020 CR-042 WP-033 CR-048 FR-DOC-003 FR-DX-002 W-020 W-021
 //
 // Emits `src/generated/component-meta.json`: one entry per public `@conductor-by-89soone/react`
 // component with its props (read from the built declarations), the catalog family it is filed
@@ -18,6 +18,8 @@ const declarations = readdirSync(declarationsDirectory)
   .join("\n");
 const stylesheet = readFileSync(`${root}/packages/css/dist/index.css`, "utf8");
 const catalogSource = readFileSync(fileURLToPath(new URL("../src/catalog.tsx", import.meta.url)), "utf8");
+/** ENT-DOC-002: the hand-written usage guidance, one entry per public component (FR-DOC-003 AC-6). */
+const guidanceSource = JSON.parse(readFileSync(fileURLToPath(new URL("../src/content/component-guidance.json", import.meta.url)), "utf8"));
 
 /**
  * Catalog families (W-020), in display order; members in display order within each family.
@@ -115,8 +117,38 @@ if (unclassed.length > 0) throw new Error(`error[DOC-CATALOG-CLASS]: no root cla
 const unknownClasses = declared.flatMap((name) => ROOT_CLASSES[name].split(" ").filter((className) => !stylesheet.includes(`.${className}`)).map((className) => `${name} → .${className}`));
 if (unknownClasses.length > 0) throw new Error(`error[DOC-CATALOG-CLASS]: root class not found in @conductor-by-89soone/css: ${unknownClasses.join(", ")}`);
 
+/**
+ * Every public component carries guidance, every entry names a public component, and an `avoid`
+ * rule may only point at another public component — a rename can never leave W-021 recommending
+ * something that no longer exists (CR-048, `DOC-GUIDANCE`).
+ */
+const isText = (value) => typeof value === "string" && value.trim() !== "";
+const guidanceProblems = (name, entry) => {
+  if (entry === undefined) return ["no entry"];
+  const problems = [];
+  if (!isText(entry.purpose)) problems.push("purpose must be a sentence");
+  const list = (field, max) => {
+    const value = entry[field];
+    if (!Array.isArray(value) || value.length === 0 || value.length > max) problems.push(`${field} must hold 1-${max} items`);
+    return Array.isArray(value) ? value : [];
+  };
+  if (!list("use", 3).every(isText)) problems.push("use items must be text");
+  for (const rule of list("avoid", 4)) {
+    if (!isText(rule?.rule)) problems.push("avoid.rule must be text");
+    if (rule?.instead !== undefined && (!declared.includes(rule.instead) || rule.instead === name)) problems.push(`avoid.instead "${rule.instead}" is not another public component`);
+  }
+  if (!list("accessibility", 3).every(isText)) problems.push("accessibility items must be text");
+  if (entry.keyboard !== "static" && !(Array.isArray(entry.keyboard) && entry.keyboard.length > 0 && entry.keyboard.every((row) => isText(row?.keys) && isText(row?.action)))) problems.push('keyboard must be "static" or a non-empty list of { keys, action }');
+  return problems;
+};
+const guidanceErrors = [
+  ...declared.flatMap((name) => guidanceProblems(name, guidanceSource[name]).map((problem) => `${name}: ${problem}`)),
+  ...Object.keys(guidanceSource).filter((name) => !declared.includes(name)).map((name) => `${name}: not a public export`),
+];
+if (guidanceErrors.length > 0) throw new Error(`error[DOC-GUIDANCE]: component guidance is incomplete (FR-DOC-003 AC-6):\n  ${guidanceErrors.join("\n  ")}\n  hint: edit apps/docs/src/content/component-guidance.json.`);
+
 const components = declared
-  .map((name) => ({ name, family: placement.get(name).family, className: ROOT_CLASSES[name], propsTypeName: aliases[name] ?? `${name}Props`, props: members.get(aliases[name] ?? `${name}Props`) ?? [] }))
+  .map((name) => ({ name, family: placement.get(name).family, className: ROOT_CLASSES[name], propsTypeName: aliases[name] ?? `${name}Props`, props: members.get(aliases[name] ?? `${name}Props`) ?? [], guidance: guidanceSource[name] }))
   .sort((one, other) => placement.get(one.name).order - placement.get(other.name).order);
 const missing = components.filter(({ name }) => !catalogSource.includes(`case "${name}"`)).map(({ name }) => name);
 if (missing.length > 0) throw new Error(`error[DOC-CATALOG]: preview missing for public component(s): ${missing.join(", ")}`);

@@ -1,6 +1,6 @@
 # Conductor Design System 패키지 공개 API 계약
 
-> 상태: review | 버전: v0.4 | 갱신일: 2026-09-13
+> 상태: review | 버전: v0.5 | 갱신일: 2026-10-13
 
 ## 0. 문서 재해석
 
@@ -40,6 +40,7 @@ Conductor Design System에는 HTTP API, 요청/응답 엔드포인트, 인증 �
 | API-CMP-008 | TS interface | 피드백군(`Banner`, `EmptyState`, `Meter`, `ProgressRing`, `Spinner`) | FR-CMP-008 |
 | API-CMP-009 | TS interface | 셸군(`AppShell`, `NavList`, `TopBar`) | FR-CMP-009 |
 | API-DOC-001 | 정적 라우트 계약 | 문서 사이트 W-001~W-050 | 라우트/데이터 출처 매핑 | FR-DOC-001~007 |
+| API-DOC-002 | 에이전트 판독용 산출물 계약 | AI 코딩 에이전트, 소비자 | 정적 Markdown·텍스트 파일 경로와 구조 | FR-DOC-008 |
 
 ## 4. API 상세 규격
 
@@ -450,6 +451,19 @@ export interface TopBarProps extends Omit<React.HTMLAttributes<HTMLElement>, "ch
 | `/accessibility` | W-050 | axe 허용 목록 파일 |
 
 라우트는 정적 파일로 빌드되며 서버 런타임을 요구하지 않는다(FR-DOC-001 AC-3). 상세 데이터 흐름은 `conductor_backend_architecture.md` 3.4절을 따른다.
+
+### API-DOC-002 에이전트 판독용 산출물 계약 (CR-048)
+
+라우터를 거치지 않는 정적 파일이다. 경로는 모두 `DOCS_BASE` 기준이다.
+
+| 경로 | 형식 | 내용 | 출처 |
+| --- | --- | --- | --- |
+| **DESIGN.md** | YAML 앞부분 + Markdown 본문 | `name`, `version`, `themes`, `colors.<theme>.<semantic key>`, `typography`, `spacing`, `radius`, `motion`, `breakpoints`; 본문은 원칙·테마 적용·색 역할과 대비 요약·모션·컴포넌트 색인·에이전트 규칙. 64KB 이하 | `tokens.json`, `contrast-report.json`, `ComponentMeta[]` |
+| `llms.txt` | llmstxt.org | `# Conductor Design System`, 요약 인용, `## Start here`, `## Components`(컴포넌트별 링크와 목적), `## Optional` | 위와 동일 |
+| **tokens.md** | Markdown 표 | 키, 계층, 다크 값, 라이트 값, `usage`, 설명 | `tokens.json` |
+| **components/<Name>.md** | Markdown | 목적, 컴포넌트군, import, 루트 클래스, props 표, Use/Avoid, Keyboard 표, Accessibility, W-021 링크 | `ComponentMeta`(ENT-CMP-001 + ENT-DOC-002) |
+
+생성 Markdown의 값은 화면과 같은 데이터에서 나오므로 두 표현이 어긋날 수 없다. 오류 코드는 `DOC-GUIDANCE`(지침 누락·잘못된 대체 컴포넌트), `DOC-AGENT`(입력 누락·크기 초과)다.
 
 ## 5. 오류 모델
 

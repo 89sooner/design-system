@@ -196,6 +196,29 @@
 .docs-props__flag { margin-inline-start: var(--cdt-space-2); vertical-align: middle; }
 .docs-props__note { margin: 0; color: var(--cdt-text-muted); }
 
+/* ---------- W-021 usage guidance (CR-048, FR-DOC-003 AC-6) ---------- */
+.docs-stage__note { margin: 0; color: var(--cdt-text-muted); font-size: var(--cdt-font-size-sm); }
+.docs-detail__markdown { display: inline-flex; align-items: center; gap: var(--cdt-space-1); justify-self: start; color: var(--cdt-text-secondary); font-size: var(--cdt-font-size-sm); font-weight: 600; }
+.docs-detail__markdown:hover, .docs-detail__markdown:focus-visible { color: var(--cdt-accent); }
+.docs-guidance { display: grid; gap: var(--cdt-space-4); }
+.docs-guidance__rules, .docs-guidance__access { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--cdt-space-4); }
+.docs-guidance__access { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); }
+.docs-rule { display: grid; align-content: start; gap: var(--cdt-space-3); border-color: var(--cdt-border-subtle); background: var(--cdt-surface-raised); }
+.docs-rule h3 { display: flex; align-items: center; gap: var(--cdt-space-2); margin: 0; font-size: var(--cdt-font-size-lg); line-height: var(--cdt-font-line-height-lg); }
+.docs-rule ul { display: grid; gap: var(--cdt-space-2); margin: 0; padding-inline-start: var(--cdt-space-5); color: var(--cdt-text-secondary); line-height: var(--cdt-font-line-height-md); }
+/* The verdict reads from the heading text and icon shape; colour only reinforces it (FR-A11Y-003). */
+.docs-rule__icon { display: inline-grid; place-items: center; width: var(--cdt-space-6); height: var(--cdt-space-6); border-radius: var(--cdt-radius-pill); background: var(--cdt-surface-timeline); color: var(--cdt-text-secondary); }
+.docs-rule--use { border-top: var(--cdt-border-width-rail) solid var(--cdt-status-success); }
+.docs-rule--use .docs-rule__icon { color: var(--cdt-status-success); }
+.docs-rule--avoid { border-top: var(--cdt-border-width-rail) solid var(--cdt-status-danger); }
+.docs-rule--avoid .docs-rule__icon { color: var(--cdt-status-danger); }
+.docs-rule__instead { color: var(--cdt-text-muted); white-space: nowrap; }
+.docs-rule__instead a { font-weight: 600; }
+.docs-rule .cdt-table { min-inline-size: 0; }
+.docs-keys { display: inline-flex; flex-wrap: wrap; align-items: center; gap: var(--cdt-space-1); }
+.docs-keys__alt, .docs-keys__chord { display: inline-flex; align-items: center; gap: var(--cdt-space-1); }
+.docs-keys__or { color: var(--cdt-text-muted); font-size: var(--cdt-font-size-xs); }
+
 /* ---------- Responsive ---------- */
 /* 1080 = breakpoint.lg — see base.css for why the literal is unavoidable in a media prelude. */
 @media (max-width: 1080px) {
@@ -209,7 +232,7 @@
   .docs-catalog__pills { padding-bottom: 0; }
   .docs-family__head { grid-template-columns: auto minmax(0, 1fr); }
   .docs-family__count { grid-column: 2; }
-  .docs-detail__usage { grid-template-columns: minmax(0, 1fr); }
+  .docs-detail__usage, .docs-guidance__rules, .docs-guidance__access { grid-template-columns: minmax(0, 1fr); }
   /* Two columns of wrapping code need no 800px scroll floor; the Type column stays on screen. */
   .docs-props .cdt-table { min-inline-size: 0; }
 }

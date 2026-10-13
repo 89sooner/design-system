@@ -1,6 +1,6 @@
 # Conductor Design System 작업 패키지
 
-> 상태: review | 버전: v0.9 | 갱신일: 2026-09-13
+> 상태: review | 버전: v0.10 | 갱신일: 2026-10-13
 
 ## 1. 목적
 
@@ -732,3 +732,27 @@ design-system/
 - 완료 기준(DoD): 해당 FR의 모든 AC를 코드/타입/문서/합성 브라우저 증거로 연결하고 실행·미실행을 구분한다.
 - 검증 방법: 단위/접근성/브라우저·tarball fixture·기존 루트 게이트
 - 기록: 구현 원장 WP-032, FR-CMP-012 매핑과 CR-041 증거
+
+## WP-033 컴포넌트 지침 (CR-048, DEV-054)
+
+- 릴리스: REL-004 (CR-048 문서 확장)
+- 관련 요구사항: FR-DOC-003 (AC-6)
+- 관련 화면: W-021
+- 선행 WP: WP-020
+- 구현 범위: ENT-DOC-002 지침 원본 47종, 카탈로그 생성기의 `DOC-GUIDANCE` 검사와 `ComponentMeta.guidance` 병합, W-021 사용 규칙 섹션(목적·Use/Avoid·Keyboard·Accessibility)
+- 제외: 컴포넌트·CSS 동작 변경, 지침 번역(문서 사이트 언어는 영어)
+- 완료 기준(DoD): 공개 컴포넌트 전수가 지침을 가지며 누락·잘못된 대체 컴포넌트가 빌드를 실패시킨다. 키보드 행이 설치된 Radix·네이티브·자체 핸들러 동작과 일치한다.
+- 검증 방법: 생성기 단위 시험, docs E2E, 접근성 검사
+- 기록: 구현 원장 WP-033, DEV-054
+
+## WP-034 에이전트 판독용 문서 (CR-048)
+
+- 릴리스: REL-004 (CR-048 문서 확장)
+- 관련 요구사항: FR-DOC-008
+- 관련 화면: W-021 (Markdown 링크)
+- 선행 WP: WP-033
+- 구현 범위: JOB-BUILD-004 ⑤ 단계, **DESIGN.md**·`llms.txt`·**tokens.md**·컴포넌트 Markdown 생성(API-DOC-002), 크기 상한
+- 제외: 외부 DESIGN.md CLI 검증, npm 패키지에 산출물 동봉, Figma 연동
+- 완료 기준(DoD): FR-DOC-008 AC-1~AC-5를 시험으로 증명한다.
+- 검증 방법: 렌더러 단위 시험, 빌드 산출물 검사, 외부 요청 0건(Lighthouse 스모크)
+- 기록: 구현 원장 WP-034, FR-DOC-008 매핑
