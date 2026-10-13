@@ -1,6 +1,6 @@
 # Conductor Design System PRD
 
-> 상태: review | 버전: v0.6 | 갱신일: 2026-10-13
+> 상태: review | 버전: v0.7 | 갱신일: 2026-10-13
 
 ## 1. 문서 개요
 
@@ -165,6 +165,7 @@ Conductor Design System(이하 Conductor)은 `agent-ai-platform`의 `packages/we
 | FR-CMP-007 | 폼 컴포넌트군을 제공한다 | Must | F-CMP-007 |
 | FR-CMP-008 | 피드백 컴포넌트군을 제공한다 | Must | F-CMP-008 |
 | FR-CMP-009 | 셸 컴포넌트군을 제공한다 | Should | F-CMP-009 |
+| FR-CMP-014 | Toast·DatePicker·CommandPalette·Pagination을 제공한다 (CR-054) | Should | F-CMP-014 |
 | FR-DOC-001 | 문서 사이트 셸을 제공한다 | Must | F-DOC-001 |
 | FR-DOC-002 | Foundations 페이지를 빌드 산출물에서 생성한다 | Must | F-DOC-002 |
 | FR-DOC-003 | 컴포넌트 카탈로그에 라이브 프리뷰를 제공한다 | Must | F-DOC-003 |

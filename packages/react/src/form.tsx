@@ -23,14 +23,15 @@ interface FieldContextValue {
   readonly required: boolean;
 }
 
-const FieldContext = createContext<FieldContextValue | null>(null);
+/** Module-internal: shared with `date-picker.tsx`, not re-exported from the package entry. */
+export const FieldContext = createContext<FieldContextValue | null>(null);
 
 function joinDescribedBy(...ids: Array<string | undefined>): string | undefined {
   const result = ids.filter((id): id is string => id !== undefined).join(" ");
   return result === "" ? undefined : result;
 }
 
-function useFieldControl(invalid: boolean | undefined, describedBy: string | undefined): FieldContextValue & { readonly describedBy?: string } {
+export function useFieldControl(invalid: boolean | undefined, describedBy: string | undefined): FieldContextValue & { readonly describedBy?: string } {
   const field = useContext(FieldContext);
   return {
     id: field?.id ?? "",

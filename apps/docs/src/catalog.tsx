@@ -7,6 +7,7 @@
 // W-020/W-021 styles ride with this lazy chunk so the landing never downloads them (CR-042, NFR-001).
 import "./styles/catalog.css";
 import * as Components from "@conductor-by-89soone/react";
+import { createPortal } from "react-dom";
 import {
   Activity,
   AppWindow,
@@ -191,6 +192,37 @@ function ShellTriggerPreview({ compact = false }: { readonly compact?: boolean }
   return <Components.AppShell navOpen={open} onNavOpenChange={setOpen} nav={<p>Synthetic navigation</p>} skipLinkLabel="Skip menu preview" topBar={<Components.AppShellNavTrigger>Toggle navigation</Components.AppShellNavTrigger>}><p role="status">Navigation {open ? "requested open" : "closed"}.{compact ? null : " Mobile drawer applies below the navigation breakpoint."}</p></Components.AppShell>;
 }
 
+function ToastPreview() {
+  const [open, setOpen] = useState(false);
+  return <Components.Toast.Provider swipeDirection="right"><Components.Button onClick={() => setOpen(true)}>Show notification</Components.Button>
+    <Components.Toast.Root open={open} onOpenChange={setOpen} tone="success" icon="✓">
+      <Components.Toast.Title>Release promoted</Components.Toast.Title>
+      <Components.Toast.Description>Version 2.4.0 is live for all users.</Components.Toast.Description>
+      <Components.Toast.Action altText="Undo the promotion from the releases page">Undo</Components.Toast.Action>
+      <Components.Toast.Close />
+    </Components.Toast.Root>
+    {/* The preview stage is transformed, which would trap the fixed viewport; render it at the page root. */}
+    {typeof document === "undefined" ? null : createPortal(<Components.Toast.Viewport />, document.body)}</Components.Toast.Provider>;
+}
+function DatePickerPreview() {
+  const [date, setDate] = useState<Date | undefined>();
+  return <Components.Field label="Release date" description="Weekends are unavailable."><Components.DatePicker value={date} onValueChange={setDate} disabledDays={{ dayOfWeek: [0, 6] }} /></Components.Field>;
+}
+const previewCommands: readonly Components.Command[] = [
+  { id: "deploy", label: "Deploy to production", group: "Releases", keywords: ["ship", "promote"], shortcut: ["⌘", "D"] },
+  { id: "rollback", label: "Roll back last release", group: "Releases" },
+  { id: "tokens", label: "Open token reference", group: "Navigate", keywords: ["colors"] },
+  { id: "theme", label: "Toggle theme", group: "Navigate", shortcut: ["⌘", "J"] },
+];
+function CommandPalettePreview() {
+  const [open, setOpen] = useState(false);
+  const [chosen, setChosen] = useState("");
+  return <><Components.Button onClick={() => setOpen(true)} iconEnd={<Components.Kbd>⌘K</Components.Kbd>}>Open command palette</Components.Button><Components.CommandPalette open={open} onOpenChange={setOpen} commands={previewCommands} onSelect={(id) => setChosen(id)} /><p role="status">{chosen === "" ? "" : `Ran: ${chosen}`}</p></>;
+}
+function PaginationPreview() {
+  const [page, setPage] = useState(4);
+  return <Components.Pagination page={page} pageCount={12} onPageChange={setPage} aria-label="Release history pages" />;
+}
 export function ComponentPreview({ compact = false, forceError = false, name }: { readonly compact?: boolean; readonly forceError?: boolean; readonly name: string }) {
   if (forceError) throw new Error(`Forced ${name} preview failure`);
   switch (name) {
@@ -239,6 +271,10 @@ export function ComponentPreview({ compact = false, forceError = false, name }: 
     case "Skeleton": return <Components.Skeleton label="Loading synthetic results" />;
     case "CopyButton": return <><code>sample:change:1</code><Components.CopyButton value="sample:change:1" label="Copy sample ID" /></>;
     case "ProcessingStatus": return <ProcessingPreview />;
+    case "Toast": return <ToastPreview />;
+    case "DatePicker": return <DatePickerPreview />;
+    case "CommandPalette": return <CommandPalettePreview />;
+    case "Pagination": return <PaginationPreview />;
     case "RelationGraph": return <Components.RelationGraph label="Synthetic relationships" nodes={[{ id: "sample:a", label: "Change A" }, { id: "sample:b", label: "Change B" }]} edges={[{ id: "sample:edge", source: "sample:a", target: "sample:b", type: "references", label: "references", evidence: "Synthetic reference example", ambiguous: true }]} stateMessage="Synthetic data; no production API connected." />;
     case "AppShellNavTrigger": return <ShellTriggerPreview compact={compact} />;
     default: throw new Error(`Unknown component preview: ${name}`);

@@ -1,0 +1,79 @@
+/*
+ * CR-054 FR-CMP-014: Toast, DatePicker, CommandPalette and Pagination.
+ * Behaviour is owned by Radix, react-day-picker and downshift; this file only paints their parts.
+ * Every value reads a `--cdt-` token. react-day-picker's own stylesheet is never imported.
+ */
+@layer cdt.component {
+  /* Toast — a raised card with a tone rail; colour is never the only signal (icon + title). */
+  .cdt-toast-viewport { position: fixed; inset-block-end: 0; inset-inline-end: 0; z-index: var(--cdt-z-popover); display: flex; flex-direction: column; gap: var(--cdt-space-2); inline-size: min(100vw, calc(var(--cdt-space-8) * 8)); max-inline-size: 100vw; margin: 0; padding: var(--cdt-space-4); list-style: none; outline: none; }
+  .cdt-toast { position: relative; display: flex; align-items: flex-start; gap: var(--cdt-space-3); padding: var(--cdt-space-4); border: var(--cdt-border-width-hairline) solid var(--cdt-border-control); border-inline-start-width: var(--cdt-border-width-rail); border-radius: var(--cdt-radius-md); background: var(--cdt-surface-raised); color: var(--cdt-text-primary); box-shadow: var(--cdt-elevation-overlay); }
+  .cdt-toast:focus-visible { outline: none; box-shadow: var(--cdt-focus-ring), var(--cdt-elevation-overlay); }
+  .cdt-toast--info { border-inline-start-color: var(--cdt-accent); }
+  .cdt-toast--success { border-inline-start-color: var(--cdt-status-success); }
+  .cdt-toast--warning { border-inline-start-color: var(--cdt-status-waiting); }
+  .cdt-toast--danger { border-inline-start-color: var(--cdt-status-danger); }
+  .cdt-toast__icon { display: inline-grid; flex: 0 0 auto; place-items: center; inline-size: var(--cdt-space-6); block-size: var(--cdt-space-6); border-radius: var(--cdt-radius-pill); background: var(--cdt-surface-tint-1); }
+  .cdt-toast--info .cdt-toast__icon { color: var(--cdt-accent); }
+  .cdt-toast--success .cdt-toast__icon { color: var(--cdt-status-success); }
+  .cdt-toast--warning .cdt-toast__icon { color: var(--cdt-status-waiting); }
+  .cdt-toast--danger .cdt-toast__icon { color: var(--cdt-status-danger); }
+  .cdt-toast__body { display: grid; flex: 1 1 auto; min-inline-size: 0; gap: var(--cdt-space-1); padding-inline-end: var(--cdt-space-7); line-height: var(--cdt-font-line-height-md); }
+  .cdt-toast__title { font-weight: 650; }
+  .cdt-toast__description { color: var(--cdt-text-secondary); }
+  .cdt-toast__action { justify-self: start; margin-block-start: var(--cdt-space-2); }
+  .cdt-toast__close { position: absolute; inset-block-start: var(--cdt-space-2); inset-inline-end: var(--cdt-space-2); }
+  .cdt-toast[data-state="open"] { animation: cdt-toast-enter var(--cdt-motion-spring); }
+  .cdt-toast[data-state="closed"] { animation: cdt-toast-exit var(--cdt-motion-exit) forwards; }
+  .cdt-toast[data-swipe="move"] { transform: translateX(var(--radix-toast-swipe-move-x)); }
+  .cdt-toast[data-swipe="cancel"] { transform: translateX(0); transition: transform var(--cdt-motion-fast); }
+  .cdt-toast[data-swipe="end"] { animation: cdt-toast-exit var(--cdt-motion-exit) forwards; }
+  @keyframes cdt-toast-enter { from { opacity: 0; transform: translateY(var(--cdt-space-3)); } to { opacity: 1; transform: none; } }
+  @keyframes cdt-toast-exit { from { opacity: 1; } to { opacity: 0; transform: translateX(var(--cdt-space-4)); } }
+
+  /* DatePicker — the trigger looks like a field; the calendar sits in the shared popover surface. */
+  .cdt-date-picker { display: inline-flex; align-items: center; justify-content: flex-start; inline-size: 100%; text-align: start; cursor: pointer; font: inherit; }
+  .cdt-date-picker--empty { color: var(--cdt-text-muted); }
+  .cdt-date-picker__popover { padding: var(--cdt-space-3); }
+  .cdt-date-picker__months { position: relative; display: flex; flex-wrap: wrap; gap: var(--cdt-space-4); }
+  .cdt-date-picker__month { display: grid; gap: var(--cdt-space-2); }
+  .cdt-date-picker__nav { position: absolute; inset-block-start: 0; inset-inline-end: 0; display: flex; gap: var(--cdt-space-1); }
+  .cdt-date-picker__button-previous, .cdt-date-picker__button-next { display: inline-grid; place-items: center; inline-size: var(--cdt-space-7); block-size: var(--cdt-space-7); padding: 0; border: 0; border-radius: var(--cdt-radius-sm); background: transparent; color: var(--cdt-text-secondary); cursor: pointer; }
+  .cdt-date-picker__button-previous:hover, .cdt-date-picker__button-next:hover { background: var(--cdt-state-hover); color: var(--cdt-text-primary); }
+  .cdt-date-picker__button-previous:disabled, .cdt-date-picker__button-next:disabled { color: var(--cdt-button-disabled-text); cursor: not-allowed; }
+  .cdt-date-picker__chevron { inline-size: var(--cdt-space-4); block-size: var(--cdt-space-4); fill: currentcolor; }
+  .cdt-date-picker__month-caption { display: flex; align-items: center; block-size: var(--cdt-space-7); padding-inline-start: var(--cdt-space-2); }
+  .cdt-date-picker__caption-label { font-weight: 650; }
+  .cdt-date-picker__month-grid { border-collapse: collapse; }
+  .cdt-date-picker__weekday { padding-block: var(--cdt-space-1); color: var(--cdt-text-muted); font-size: var(--cdt-font-size-sm); font-weight: 500; }
+  .cdt-date-picker__day { padding: 0; text-align: center; }
+  .cdt-date-picker__day-button { inline-size: var(--cdt-space-7); block-size: var(--cdt-space-7); padding: 0; border: 0; border-radius: var(--cdt-radius-sm); background: transparent; color: var(--cdt-text-primary); font: inherit; font-variant-numeric: tabular-nums; cursor: pointer; }
+  .cdt-date-picker__day-button:hover { background: var(--cdt-state-hover); }
+  .cdt-date-picker__day-button:focus-visible { outline: none; box-shadow: var(--cdt-focus-ring); }
+  .cdt-date-picker__today .cdt-date-picker__day-button { font-weight: 700; text-decoration: underline; text-underline-offset: 0.2em; }
+  .cdt-date-picker__selected .cdt-date-picker__day-button { background: var(--cdt-accent); color: var(--cdt-text-inverse); }
+  .cdt-date-picker__outside .cdt-date-picker__day-button { color: var(--cdt-text-muted); }
+  .cdt-date-picker__disabled .cdt-date-picker__day-button { color: var(--cdt-text-muted); text-decoration: line-through; cursor: not-allowed; }
+  .cdt-date-picker__hidden { visibility: hidden; }
+
+  /* CommandPalette — a dialog whose body is a search field over a grouped listbox. */
+  .cdt-command { display: grid; gap: var(--cdt-space-3); align-content: start; inset-block-start: 20vh; transform: translateX(-50%); max-block-size: 70vh; } /* cdt-allow-literal: palette sits in the upper third of the viewport */
+  .cdt-command[data-state="open"], .cdt-command[data-state="closed"] { animation: none; }
+  .cdt-command__title { margin: 0; color: var(--cdt-text-muted); font-size: var(--cdt-font-size-sm); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; } /* cdt-allow-literal: eyebrow tracking, no tracking token */
+  .cdt-command__input { inline-size: 100%; }
+  .cdt-command__list { display: grid; gap: var(--cdt-space-1); margin: 0; padding: 0; overflow: auto; list-style: none; }
+  .cdt-command__group { display: grid; gap: var(--cdt-space-1); }
+  .cdt-command__group-label { padding: var(--cdt-space-2) var(--cdt-space-3) 0; color: var(--cdt-text-muted); font-size: var(--cdt-font-size-sm); font-weight: 600; }
+  .cdt-command__group-list { display: grid; gap: var(--cdt-space-1); margin: 0; padding: 0; list-style: none; }
+  .cdt-command__item { display: flex; align-items: center; justify-content: space-between; gap: var(--cdt-space-3); padding: var(--cdt-space-2) var(--cdt-space-3); border-radius: var(--cdt-radius-sm); color: var(--cdt-text-primary); cursor: pointer; }
+  .cdt-command__item[data-highlighted] { background: var(--cdt-accent-soft); box-shadow: inset var(--cdt-border-width-emphasis) 0 0 var(--cdt-accent); }
+  .cdt-command__item[data-disabled] { color: var(--cdt-text-muted); cursor: not-allowed; }
+  .cdt-command__shortcut { display: inline-flex; gap: var(--cdt-space-1); }
+  .cdt-command__empty { margin: 0; padding: var(--cdt-space-4); color: var(--cdt-text-muted); text-align: center; }
+
+  /* Pagination — native buttons; the current page carries aria-current and a filled style. */
+  .cdt-pagination { display: flex; justify-content: center; }
+  .cdt-pagination__list { display: flex; flex-wrap: wrap; align-items: center; gap: var(--cdt-space-1); margin: 0; padding: 0; list-style: none; }
+  .cdt-pagination__page { min-inline-size: var(--cdt-space-7); font-variant-numeric: tabular-nums; justify-content: center; }
+  .cdt-pagination__page[aria-current="page"] { border-color: var(--cdt-accent); color: var(--cdt-text-primary); font-weight: 650; }
+  .cdt-pagination__ellipsis { display: inline-grid; place-items: center; min-inline-size: var(--cdt-space-6); color: var(--cdt-text-muted); }
+}

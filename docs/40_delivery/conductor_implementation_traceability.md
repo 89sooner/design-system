@@ -1,6 +1,6 @@
 # Conductor Design System 구현 추적 원장
 
-> 상태: review | 버전: v0.46 | 갱신일: 2026-10-13
+> 상태: review | 버전: v0.47 | 갱신일: 2026-10-13
 
 ## 1. 목적과 갱신 규칙
 
@@ -234,6 +234,7 @@ PR Search 소비처의 `DEV-380`이 트리거다: 화면 계약이 최대 20계�
 | FR-DOC-008 | `apps/docs/scripts/agent-docs.mjs`, `scripts/build-agent-docs.mjs`, `src/catalog.tsx`(Markdown 링크) | `apps/docs/src/agent-docs.test.ts` | WP-034 | 검증됨 (AC-1~AC-5. 생성 산출물 DESIGN.md·llms.txt·tokens.md·components/*.md, 64KB 상한 시험, 외부 도메인 링크 0건) |
 | FR-DOC-009 | `apps/docs/src/blocks.ts`, `src/block-examples.tsx`, `App.tsx`, `shell.tsx`, `styles/base.css` | `apps/docs/src/blocks.test.ts`, `apps/docs/e2e/blocks.spec.ts`, `apps/docs/e2e/workspaces.spec.ts` | WP-035 | 검증됨 (AC-1~AC-5. 빈 상태 4유형, 결합 필터·칩·결과 수·0건 복귀·`aria-sort`, 필드·요약 오류와 포커스·미저장 변경·삭제 확인, 4폭×2테마 axe serious 0·넘침 0) |
 | FR-DOC-010 | `packages/tokens/src/measure.ts`, `src/index.ts`, `apps/docs/src/theme-overrides.ts`, `src/theme-playground.tsx`, `App.tsx`, `shell.tsx` | `packages/tokens/src/measure.test.ts`, `apps/docs/src/theme-overrides.test.ts`, `apps/docs/e2e/playground.spec.ts`, `apps/docs/e2e/workspaces.spec.ts` | WP-036 | 검증됨 (AC-1~AC-5. 미리보기 한정 재정의와 별칭 전파, 기본 설정에서 9쌍이 보고서와 일치, 스니펫, 잘못된 입력 거부와 초기화, 4폭×2테마 axe serious 0·넘침 0) |
+| FR-CMP-014 | `packages/react/src/toast.tsx`, `date-picker.tsx`, `command.tsx`, `pagination.tsx`, `labels.ts`, `packages/css/src/controls.css`, `apps/docs/src/catalog.tsx`(미리보기) | `packages/react/src/testing/controls.test.tsx`, `a11y.browser.test.tsx`(시나리오), `hydration.browser.test.tsx`, `apps/docs/e2e/controls.spec.ts` | WP-037 | 검증됨 (AC-1~AC-5) |
 | FR-DOC-004 | `apps/docs/src/token-reference.tsx`, `scripts/build-contrast-report.mjs` | `apps/docs/e2e/tokens.spec.ts` | WP-021 | 검증됨 (AC-1~AC-4와 리포트 누락 폴백. 빌드 산출 `tokens.json`·`contrast-report.json`을 소비하며 화면에서 대비율을 재계산하지 않음) |
 | FR-DOC-005 | `apps/docs/index.html`, `src/theme.ts`, `src/App.tsx` | `apps/docs/e2e/shell.spec.ts` | WP-018 | 검증됨 (AC-1~AC-5와 localStorage 차단 폴백. 첫 페인트 스니펫이 React 전 루트 속성을 결정) |
 | FR-DOC-006 | `apps/docs/src/guides.tsx`, `src/catalog.tsx` | `apps/docs/e2e/guides.spec.ts` | WP-022 | 검증됨 (AC-1~AC-3. 성공 공지·2초 복귀, polite live region, Clipboard 미지원 시 disabled/선택 가능 코드) |
@@ -261,6 +262,7 @@ PR Search 소비처의 `DEV-380`이 트리거다: 화면 계약이 최대 20계�
 
 | DEV ID | 발견일 | 유형 | 내용 | 관련 ID | 처리 CR | 상태 |
 | --- | --- | --- | --- | --- | --- | --- |
+| DEV-055 | 2026-10-13 | 문서 결함 | **CR-052가 SRS 4.3 Out of Scope의 "런타임 토큰 편집기" 행을 고치지 않았다.** 그 행은 "문서 사이트의 테마 토글까지만 포함한다"고 적고 있었고, 테마 플레이그라운드(FR-DOC-010)와 어긋났다. 플레이그라운드는 미리보기 영역에만 재정의를 걸고 토큰 소스를 바꾸지 않으므로 제외 취지와는 맞는다. 행의 문구를 그 경계로 고쳤다. CR-054 cascade 중 SRS를 다시 읽다가 발견했다 | FR-DOC-010, SRS 4.3 | CR-054 | closed |
 | DEV-054 | 2026-10-13 | 구현 편차 (기존) | **W-021이 FR-DOC-003 요구사항의 "사용 규칙"을 렌더하지 않았다.** 요구사항 문장과 와이어프레임 W-021 섹션 정의(§ 사용 규칙: 권장 예/금지 예와 금지 사유)는 컴포넌트마다 사용 규칙을 요구했다. 그러나 AC-1~AC-5가 프리뷰·props·조합·테마·누락만 검사해서, 상세 화면에는 프리뷰·Import·CSS 클래스·Props만 있었다(원장도 FR-DOC-003을 AC-1~AC-5로 검증됨 처리). CR-048이 AC-6을 더하고 47종 지침과 빌드 검사로 해소했다 | FR-DOC-003 | CR-048 | closed |
 | DEV-053 | 2026-10-12 | 구현 결함 | **W-014 Playground의 `motion.bounce` 점이 재생 중 트랙 끝을 넘어 재생 버튼 위로 나갔다.** 점이 트랙 전체 폭을 이동했는데 `ease.overshoot`(y₁ 1.56)는 목표의 약 9.8%를 지나쳤다가 돌아온다. 0.6.0 배포 산출물(`104af7f`)을 같은 base 경로로 빌드해 프레임 단위로 재현했다. 이동 거리를 빈 트랙의 90%로 줄여 최고점까지 트랙 안에 두었다(측정: 최대 −8.7px, 즉 안쪽) | FR-DOC-002 AC-3 | CR-047 | closed |
 | DEV-052 | 2026-10-12 | 구현 편차 (기존) | **W-014가 와이어프레임의 "각 행에서 전환을 재생한다"를 구현하지 않았다.** `/foundations/motion`은 계산된 모션 값 타일과 상태 전환 예시만 보였고 토큰 행마다 재생할 수단이 없었다(`conductor_wireframe_spec.md` W-014 섹션 정의·`reduced_motion` 상태가 재생 버튼을 전제). CR-047의 Playground 패널이 이징을 가진 토큰마다 트랙과 행별 재생 버튼(+전체 재생)을 두어 해소했다 | FR-DOC-002 AC-3, FR-CSS-005 | CR-047 | closed |
@@ -372,6 +374,7 @@ OD-002(시각 회귀 이월)와 OD-004(셸 컴포넌트군 패키지 포함)는 
 | WP-034 | FR-DOC-008 | done | DESIGN.md·llms.txt·tokens.md·컴포넌트 Markdown 47쪽을 JOB-BUILD-004 ⑤에서 생성, 64KB 상한, W-021 Markdown 링크. |
 | WP-035 | FR-DOC-009 | done | W-063 빈 상태, W-064 필터 테이블, W-065 설정 폼. 규칙은 `blocks.ts` 순수 함수, 화면은 공개 export만 조합. CR-051. |
 | WP-036 | FR-DOC-010 | done | W-031 Theme Playground, tokens API-TOK-004(`contrastRatio`·OKLab 함수) 공개. CR-052. |
+| WP-037 | FR-CMP-014 | done | Toast·DatePicker·CommandPalette·Pagination(C-073~C-076), `controls.css`, 레지스트리·a11y·SSR 시험, 카탈로그 미리보기·지침. CR-054. |
 
 착수 문서 validator --report: exit 0, FR49/49, Phase7. 실제 소비자 코드는 읽기만 수행했으며 운영 연동·소비자 마이그레이션은 실행하지 않았다. 공개 기록에는 일반화된 계약과 합성 데이터만 남긴다.
 
@@ -538,3 +541,12 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | 문서 사이트 | W-030, W-040, W-060~W-065, 내비, 카탈로그 표본을 영어로 바꿨다. CJK 검사 표본만 남겼다. FR-DOC-001 AC-5 |
 | 검증 (로컬) | 게이트 12종(단위 727/727, a11y 238/238), docs E2E 65/65 |
 | CI · 종료 | PR #51 head `9a3a91a`에서 verify(node 20/22)·visual regression success. CR-053 closed(2026-10-13) |
+
+### CR-054 알림·날짜·명령·페이지 컴포넌트 (2026-10-13)
+
+| 범위 | 결과 |
+| --- | --- |
+| 패키지 | `Toast`, `DatePicker`, `CommandPalette`, `Pagination`과 `filterCommands`, `paginationRange`. 공개 컴포넌트 47종 → 51종 |
+| 의존성 | `@radix-ui/react-toast@1.2.23`, `react-day-picker@10.0.1`(정확한 버전). `pnpm audit --audit-level high` 결과 main과 같음 |
+| DEV | DEV-055(CR-052의 Out of Scope 문구 누락) closed |
+| 검증 (로컬) | 게이트 12종(단위 744/744, a11y 258/258), docs E2E 69/69 |

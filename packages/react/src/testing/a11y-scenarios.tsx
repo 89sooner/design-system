@@ -1,5 +1,6 @@
 // Refs: WP-024 FR-QA-003 FR-A11Y-002 FR-A11Y-005
 import { useRef, useState, type ReactElement } from "react";
+import { CommandPalette, DatePicker, Pagination, Toast } from "../index";
 import {
   AppShell, AppShellNavTrigger, Tabs, Popover, Collapsible, Combobox, MultiSelect, FilterChip, FilterToolbar, DataTable, WorkbenchLayout, DetailInspector, PathList, Breadcrumb, Skeleton, CopyButton, ProcessingStatus, RelationGraph,
   Badge,
@@ -99,6 +100,24 @@ function RelationFixture() { return <RelationGraph label="Synthetic relations" n
 function PopoverFixture({ open = false }: { readonly open?: boolean }) { return <Popover.Root defaultOpen={open}><Popover.Trigger {...keyboardTarget}>Show help</Popover.Trigger><Popover.Content aria-label="Help"><p>Filter instructions.</p><Popover.Close>Close</Popover.Close></Popover.Content></Popover.Root>; }
 function NewShellFixture() { return <AppShell nav={<a href="#menu-item">Menu item</a>} skipLinkLabel="Skip menu example" topBar={<AppShellNavTrigger>Open menu</AppShellNavTrigger>}>Example content</AppShell>; }
 
+// CR-054 FR-CMP-014 fixtures.
+function ToastFixture(): ReactElement {
+  const [open, setOpen] = useState(true);
+  return <Toast.Provider><Toast.Root open={open} onOpenChange={setOpen} tone="success" icon="✓" duration={60_000}><Toast.Title>Release promoted</Toast.Title><Toast.Description>Version 2.4.0 is live.</Toast.Description><Toast.Close /></Toast.Root><Toast.Viewport /><output data-outcome="">{open ? "open" : "closed"}</output></Toast.Provider>;
+}
+function DatePickerFixture({ open = false }: { readonly open?: boolean }): ReactElement {
+  const [date, setDate] = useState<Date | undefined>(new Date(2026, 0, 15));
+  return <Field label="Release date"><DatePicker {...keyboardTarget} value={date} onValueChange={setDate} defaultOpen={open} /></Field>;
+}
+function CommandFixture({ initiallyOpen = false }: { readonly initiallyOpen?: boolean }): ReactElement {
+  const [open, setOpen] = useState(initiallyOpen);
+  return <><Button {...keyboardTarget} onClick={() => setOpen(true)}>Open commands</Button><CommandPalette open={open} onOpenChange={setOpen} commands={[{ id: "deploy", label: "Deploy", group: "Releases" }, { id: "tokens", label: "Open tokens", group: "Navigate" }]} onSelect={() => undefined} /></>;
+}
+function PaginationFixture(): ReactElement {
+  const [page, setPage] = useState(1);
+  return <Pagination page={page} pageCount={8} onPageChange={setPage} />;
+}
+
 export const a11yScenarios: readonly A11yScenario[] = [
   { component: "Combobox", state: "default", keyboard: { kind: "steps", steps: [{ target: "[role=combobox]", keys: "{ArrowDown}{Enter}", check: "[data-choice]", expected: "one" }] }, render: () => <ComboFixture /> },
   { component: "Combobox", state: "disabled", render: () => <ComboFixture disabled /> },
@@ -115,6 +134,12 @@ export const a11yScenarios: readonly A11yScenario[] = [
   // The announced outcome depends on the browser's clipboard: "Copied", "Copy unavailable …" or "Copy failed …"; all begin with "Cop".
   { component: "CopyButton", state: "default", keyboard: { kind: "steps", steps: [{ target: "button", keys: "{Enter}", check: ".cdt-copy-feedback [role=status]", expected: "Cop" }] }, render: () => <CopyButton value="synthetic-id" /> },
   { component: "ProcessingStatus", state: "default", keyboard: { kind: "steps", steps: [{ target: "button", keys: "{Enter}", check: "[data-outcome]", expected: "retried" }] }, render: () => <ProcessingFixture /> },
+  { component: "Toast", state: "default", keyboard: { kind: "steps", steps: [{ target: ".cdt-toast__close", keys: "{Enter}", check: "[data-outcome]", expected: "closed" }] }, render: () => <ToastFixture /> },
+  { component: "DatePicker", state: "default", keyboard: { kind: "overlay", role: "dialog" }, render: () => <DatePickerFixture /> },
+  { component: "DatePicker", state: "open", axeSelector: '[role="dialog"]', render: () => <DatePickerFixture open /> },
+  { component: "CommandPalette", state: "default", keyboard: { kind: "overlay", role: "dialog" }, render: () => <CommandFixture /> },
+  { component: "CommandPalette", state: "open", axeSelector: '[role="dialog"]', render: () => <CommandFixture initiallyOpen /> },
+  { component: "Pagination", state: "default", keyboard: { kind: "steps", steps: [{ target: "[aria-label='Page 2']", keys: "{Enter}", check: "[aria-current=page]", expected: "2" }] }, render: () => <PaginationFixture /> },
   { component: "RelationGraph", state: "default", keyboard: { kind: "steps", steps: [{ target: "[aria-label='Graph view controls'] button", keys: "{Enter}", check: "output", expected: "150%" }] }, render: () => <RelationFixture /> },
   // Radix roving focus moves focus from an arrow key inside a `setTimeout` (react-roving-focus
   // defers the imperative focus out of the keydown handler). Sent as one burst, `{Enter}` could

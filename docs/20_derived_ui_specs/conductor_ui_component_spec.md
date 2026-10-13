@@ -1,6 +1,6 @@
 # Conductor Design System UI 컴포넌트 명세서
 
-> 상태: review | 버전: v0.9 | 갱신일: 2026-09-13
+> 상태: review | 버전: v0.10 | 갱신일: 2026-10-13
 
 ## 0. 문서 위치와 범위
 
@@ -21,6 +21,7 @@
 | 폼 | FR-CMP-007 | API-CMP-007 | C-050, C-051, C-052, C-053, C-054, C-055 |
 | 피드백 | FR-CMP-008 | API-CMP-008 | C-060, C-061, C-062, C-063, C-064 |
 | 셸 (OD-004 조건부) | FR-CMP-009 | API-CMP-009 | C-070, C-071, C-072 |
+| 알림·날짜·명령·페이지 (CR-054) | FR-CMP-014 | API-CMP-010 | C-073, C-074, C-075, C-076 |
 
 ## 1. 컴포넌트 설계 원칙
 
@@ -1269,3 +1270,14 @@ component 토큰은 semantic 토큰만 참조한다(FR-TOK-002 AC-3). 아래 표
 ## CR-041 확장 계약 (FR-CMP-010~013)
 
 기존 Button/Table/Badge/Banner/Timeline/Panel/Drawer를 우선 재사용한다. 신규 계약은 Tabs·Popover·Collapsible/Accordion, 검색 입력/필터 칩·DataTable·Workbench/Inspector·경로 탐색, 관계 그래프/목록, 운영 단계 표현이다. 각 공개 export의 타입·ref·이름·disabled/busy·이벤트 전달과 반복 ID를 검증한다. 실제 최종 API와 예제는 패키지 README와 API report를 함께 본다.
+
+## CR-054 컴포넌트 (FR-CMP-014)
+
+| ID | 컴포넌트 | 루트 클래스 | 동작 소유 | 주요 props |
+| --- | --- | --- | --- | --- |
+| C-073 | `Toast` (`Provider`, `Viewport`, `Root`, `Title`, `Description`, `Action`, `Close`) | `cdt-toast`, `cdt-toast-viewport` | Radix Toast | `Root`: `tone`, `icon`, Radix `open`·`onOpenChange`·`duration`; `Action`: `altText`(필수); `Close`: `labels` |
+| C-074 | `DatePicker` | `cdt-date-picker` (트리거), `cdt-date-picker__*` (달력 부분) | react-day-picker + Radix Popover | `value`, `onValueChange`, `disabledDays`, `startMonth`, `endMonth`, `locale`, `formatDate`, `invalid`, `size`, `defaultOpen`, `labels` |
+| C-075 | `CommandPalette` | `cdt-command` | Radix Dialog + downshift | `open`, `onOpenChange`, `commands`(`id`, `label`, `group`, `keywords`, `shortcut`, `disabled`), `onSelect`, `labels` |
+| C-076 | `Pagination` | `cdt-pagination` | 기본 버튼 | `page`, `pageCount`, `onPageChange`, `siblings`(기본 1), `size`, `labels` |
+
+공개 함수 `filterCommands(commands, query)`와 `paginationRange(page, pageCount, siblings)`는 화면 없이 시험할 수 있도록 함께 export한다. 스타일은 `@conductor-by-89soone/css`의 `controls.css`(cdt.component 층)에 있다.

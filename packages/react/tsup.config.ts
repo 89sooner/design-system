@@ -19,6 +19,10 @@ export default defineConfig({
     "src/workbench.tsx",
     "src/relation.tsx",
     "src/stylesheet-warning.ts",
+    "src/toast.tsx",
+    "src/date-picker.tsx",
+    "src/command.tsx",
+    "src/pagination.tsx",
   ],
   format: ["esm"],
   dts: true,
@@ -28,7 +32,7 @@ export default defineConfig({
   splitting: false,
   treeshake: false,
   async onSuccess() {
-    const clientEntries = new Set(["action", "data", "feedback", "form", "overlay", "shell", "status", "surface", "interaction", "workbench", "relation"]);
+    const clientEntries = new Set(["action", "data", "feedback", "form", "overlay", "shell", "status", "surface", "interaction", "workbench", "relation", "toast", "date-picker", "command", "pagination"]);
     for (const file of await readdir("dist")) {
       if (!file.endsWith(".js")) continue;
       const path = `dist/${file}`;
@@ -39,5 +43,5 @@ export default defineConfig({
     }
   },
   target: "es2022",
-  external: ["react", "react-dom", "lucide-react", "@radix-ui/react-dialog", "@radix-ui/react-dropdown-menu", "@radix-ui/react-tooltip"],
+  external: ["react", "react-dom", "lucide-react", "@radix-ui/react-dialog", "@radix-ui/react-dropdown-menu", "@radix-ui/react-tooltip", "@radix-ui/react-toast", "react-day-picker"],
 });

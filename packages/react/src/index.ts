@@ -46,3 +46,13 @@ export { RelationGraph, layoutRelationNodes } from "./relation";
 export type { RelationNode, RelationEdge, RelationSelection, RelationViewport, RelationGraphProps } from "./relation";
 // CR-053: the strings the CR-041 components render, overridable per instance through `labels`.
 export type { ComboboxLabels, CopyButtonLabels, DataTableLabels, DetailInspectorLabels, MultiSelectLabels, PathListLabels, ProcessingStatusLabels, RelationGraphLabels, WorkbenchLayoutLabels } from "./labels";
+// CR-054 FR-CMP-014: notifications, date entry, a command palette and page navigation.
+export { Toast } from "./toast";
+export type { ToastActionProps, ToastCloseProps, ToastRootProps, ToastTone, ToastViewportProps } from "./toast";
+export { DatePicker } from "./date-picker";
+export type { DatePickerProps } from "./date-picker";
+export { CommandPalette, filterCommands } from "./command";
+export type { Command, CommandPaletteProps } from "./command";
+export { Pagination, paginationRange } from "./pagination";
+export type { PaginationItem, PaginationProps } from "./pagination";
+export type { CommandPaletteLabels, DatePickerLabels, PaginationLabels, ToastLabels } from "./labels";
