@@ -1,6 +1,6 @@
 # Conductor Design System 작업 패키지
 
-> 상태: review | 버전: v0.11 | 갱신일: 2026-10-13
+> 상태: review | 버전: v0.12 | 갱신일: 2026-10-13
 
 ## 1. 목적
 
@@ -768,3 +768,15 @@ design-system/
 - 완료 기준(DoD): FR-DOC-009 AC-1~AC-5를 단위 시험과 E2E로 증명한다.
 - 검증 방법: `blocks.test.ts`, `e2e/blocks.spec.ts`, 기존 작업 공간 폭·테마·axe 행렬에 세 경로 추가
 - 기록: 구현 원장 WP-035, FR-DOC-009 매핑
+
+## WP-036 테마 플레이그라운드 (CR-052)
+
+- 릴리스: REL-004 (CR-052 문서 확장, tokens minor)
+- 관련 요구사항: FR-DOC-010
+- 관련 화면: W-031
+- 선행 WP: WP-035
+- 구현 범위: `packages/tokens/src/measure.ts`(`contrastRatio`)와 OKLab 함수 공개(API-TOK-004), API 리포트·changeset, `apps/docs/src/theme-overrides.ts`(파생·별칭 전파·스니펫·재측정 순수 함수), `theme-playground.tsx`, 라우트와 내비 항목
+- 제외: 토큰 소스·기본 팔레트 변경, 설정 저장·공유 URL, 포털 컴포넌트 미리보기, danger 등 다른 톤 편집
+- 완료 기준(DoD): FR-DOC-010 AC-1~AC-5를 시험으로 증명하고, `contrastRatio`가 선언된 모든 쌍에서 보고서와 일치한다.
+- 검증 방법: `measure.test.ts`, `theme-overrides.test.ts`, `e2e/playground.spec.ts`, 폭·테마·axe 행렬
+- 기록: 구현 원장 WP-036, FR-DOC-010 매핑

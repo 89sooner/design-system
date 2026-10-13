@@ -1,6 +1,6 @@
 # Conductor Design System 제품 IA 문서
 
-> 상태: review | 버전: v0.7 | 갱신일: 2026-10-13
+> 상태: review | 버전: v0.8 | 갱신일: 2026-10-13
 
 ## 1. 문서 범위와 상위 문서
 
@@ -40,7 +40,7 @@ Product Surface
    ├─ Overview        W-001, W-002
    ├─ Foundations     W-010, W-011, W-012, W-013, W-014
    ├─ Components      W-020, W-021
-   ├─ Tokens          W-030
+   ├─ Tokens          W-030, W-031
    ├─ Patterns        W-040
    └─ Accessibility   W-050
 ```
@@ -56,7 +56,7 @@ Conductor의 유일한 사용자 인터페이스는 문서 사이트다. 화면 
 | W-00# | 진입과 도입 | W-001, W-002 |
 | W-01# | Foundations (토큰 카테고리별 1화면) | W-010 ~ W-014 |
 | W-02# | Components (카탈로그와 상세) | W-020, W-021 |
-| W-03# | Tokens 참조 | W-030 |
+| W-03# | Tokens 참조 | W-030, W-031 (CR-052) |
 | W-04# | Patterns | W-040 |
 | W-05# | Accessibility | W-050 |
 
@@ -76,6 +76,7 @@ Conductor의 유일한 사용자 인터페이스는 문서 사이트다. 화면 
 ├─ /components                      W-020  Components Index
 │  └─ /components/:componentId      W-021  Component Detail (동적 · 공개 export 전수)
 ├─ /tokens/reference                W-030  Tokens Reference  (`/tokens`는 영구 리다이렉트)
+├─ /tokens/playground               W-031  Theme Playground  (CR-052)
 ├─ /guidelines                      W-040  Patterns           (`/patterns`는 영구 리다이렉트)
 └─ /accessibility                   W-050  Accessibility
 ```
@@ -141,7 +142,7 @@ FR-CMP-009는 우선순위 Should이며 OD-004가 열려 있다. OD-004가 (b) �
 | 1 | Overview | W-001, W-002 | Overview, Getting Started | FR-DOC-001 |
 | 2 | Foundations | W-010 ~ W-014 | Color, Typography, Spacing & Layout, Radius & Elevation, Motion | FR-DOC-002 (다섯 화면을 명시) |
 | 3 | Components | W-020 | Components | FR-DOC-003 |
-| 4 | Tokens | W-030 | Tokens | FR-DOC-004 |
+| 4 | Tokens | W-030, W-031 | Tokens, Theme Playground | FR-DOC-004, FR-DOC-010 (CR-052) |
 | 5 | Patterns | W-040 | Patterns | FR-DOC-007 |
 | 6 | Accessibility | W-050 | Accessibility | FR-A11Y-001 ~ FR-A11Y-005 |
 | 7 | Workspaces | W-060 ~ W-062 | 검색 워크벤치, 관계 탐색기, 수집 운영 상태 | FR-CMP-010 ~ FR-CMP-013 (CR-041 합성 예제). 학습 순서의 마지막에 둔다 — 조합 예제는 문서를 다 읽은 뒤 보는 것이지 첫 방문자의 진입점이 아니다 (CR-042) |
@@ -172,6 +173,7 @@ FR-CMP-009는 우선순위 Should이며 OD-004가 열려 있다. OD-004가 (b) �
 | W-020 | Components Index | `/components` | 공개 export 전수를 컴포넌트군별로 카탈로그화한다 | P0 | FR-CSS-004, FR-CMP-002 ~ FR-CMP-008, FR-DOC-003 |
 | W-021 | Component Detail | `/components/:componentId` | 컴포넌트 1종의 라이브 프리뷰, props 표, 사용 규칙, 코드 스니펫을 제공한다 | P0 | FR-CMP-001 ~ FR-CMP-009, FR-CSS-004, FR-DOC-003, FR-DOC-006, FR-DX-002 |
 | W-030 | Tokens Reference | `/tokens/reference` | 전 토큰의 키·두 테마 값·대비율·판정을 필터와 함께 조회한다 | P0 | FR-TOK-004, FR-TOK-008, FR-THM-001 ~ FR-THM-004, FR-DOC-004, FR-DOC-005, FR-A11Y-004, FR-QA-001 |
+| W-031 | Theme Playground | `/tokens/playground` | accent·반경 배율·밀도를 바꿔 미리보기 영역에만 적용하고, accent 대비 쌍을 다시 재며, 재정의 CSS를 복사한다 (CR-052) | P2 | FR-DOC-010, FR-THM-004 |
 | W-040 | Patterns | `/guidelines` | 상태색·심각도·밀도·오버레이 선택의 사용 규칙을 권장/금지 예로 제시한다 | P2 | FR-TOK-005, FR-CMP-004, FR-DOC-007, FR-A11Y-003 |
 | W-050 | Accessibility | `/accessibility` | WCAG 2.1 AA 기준선, 포커스 링, 키보드 경로, 대비 결과, 검사 명령을 제시한다 | P1 | FR-THM-004, FR-A11Y-001 ~ FR-A11Y-005, FR-QA-002, FR-QA-003, FR-QA-004 |
 

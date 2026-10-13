@@ -267,7 +267,13 @@ describe("primitive tokens stay private", () => {
       "SEVERITY_ICONS",
       "STATUS_ICONS",
       "breakpoints",
+      // CR-052 API-TOK-004: colour arithmetic. Functions of their arguments; they hold no token value.
+      "contrastRatio",
+      "fromOklab",
+      "mixOklab",
+      "toOklab",
       "tokens",
+      "toneValues",
     ]);
     // Not the bare string "ink": `--cdt-table-link-text` legitimately contains it.
     expect(JSON.stringify(entry.tokens)).not.toContain("--cdt-ink-");

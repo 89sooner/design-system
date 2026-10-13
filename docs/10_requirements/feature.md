@@ -1,6 +1,6 @@
 # Conductor Design System 기능 후보 문서
 
-> 상태: review | 버전: v0.5 | 갱신일: 2026-10-13
+> 상태: review | 버전: v0.6 | 갱신일: 2026-10-13
 
 ## 1. 목적
 
@@ -75,6 +75,7 @@
 | F-DOC-007 | 사용 규칙 페이지 | 오용을 피한다 | SRC-AAP 상태/심각도 규칙 | `/patterns/*` | 상태·심각도·밀도·오버레이 사용 규칙 | — | Type C | P1 | 승인 | FR-DOC-007 |
 | F-DOC-008 | 에이전트 판독용 문서 | AI 코딩 에이전트가 Conductor를 정확히 쓴다 | CR-048 / 디자인 업그레이드 리포트 1순위 | **/DESIGN.md**, `/llms.txt`, **/components/<Name>.md** | 토큰·컴포넌트·지침에서 생성한 Markdown 산출물 | 형식 사양 알파, 크기 상한 64KB | Type C | P1 | 승인 | FR-DOC-008 |
 | F-DOC-009 | 블록 예제 화면 | 자주 쓰는 화면 조각을 바로 옮겨 쓴다 | CR-051 / 디자인 업그레이드 리포트 6순위 | `/examples/empty-states`, `/examples/filter-table`, `/examples/settings-form` | 빈 상태 4유형, 필터 테이블, 설정 폼을 공개 컴포넌트로 조합 | 합성 데이터, 네트워크 요청 0건, 새 공개 API 없음 | Type C | P2 | 승인 | FR-DOC-009 |
+| F-DOC-010 | 테마 플레이그라운드 | 브랜드 accent를 대비 기준 안에서 고른다 | CR-052 / 디자인 업그레이드 리포트 3순위 (Radix Themes ThemePanel, Realtime Colors) | `/tokens/playground` | accent·반경·밀도 미리보기, 대비 쌍 즉시 재측정, CSS 재정의 복사 | 미리보기 영역에만 적용, 저장·전송 없음, 대비 계산은 tokens 공개 함수 | Type C | P2 | 승인 | FR-DOC-010 |
 
 ### 2.6 A11Y — 접근성
 

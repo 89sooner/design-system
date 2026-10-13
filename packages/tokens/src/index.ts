@@ -13,3 +13,7 @@ export type { Breakpoints } from "./breakpoints";
 export { SEVERITY_ICONS, STATUS_ICONS } from "./icons";
 export type { SeverityIconName, StatusIconName } from "./icons";
 export type { TokenDefinition, TokenGroup, TokenTier, TokenUsage } from "./schema";
+// CR-052: the build's own colour arithmetic, for measuring and deriving a theme at runtime.
+export { contrastRatio } from "./measure";
+export { fromOklab, mixOklab, toneValues, toOklab } from "./oklab";
+export type { OklabColor, ToneName } from "./oklab";

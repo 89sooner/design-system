@@ -18,6 +18,18 @@ export const breakpoints: {
 export const CDT_PREFIX: "cdt-";
 
 // @public
+export function contrastRatio(foreground: string, background: string): number;
+
+// @public
+export function fromOklab(input: OklabColor): string;
+
+// @public
+export function mixOklab(foreground: string, background: string, weight: number): string;
+
+// @public
+export type OklabColor = readonly [number, number, number];
+
+// @public
 export const PACKAGE_NAME: "@conductor-by-89soone/tokens";
 
 // @public
@@ -530,6 +542,15 @@ export type TokenTier = "primitive" | "semantic" | "component";
 
 // @public
 export type TokenUsage = "body" | "large" | "nonText" | "decorative";
+
+// @public
+export type ToneName = "accent" | "danger";
+
+// @public
+export function toneValues(tones: Readonly<Record<ToneName, string>>, surfaceRaised: string): Readonly<Record<string, string>>;
+
+// @public
+export function toOklab(hex: string): OklabColor;
 
 // (No @packageDocumentation comment for this package)
 

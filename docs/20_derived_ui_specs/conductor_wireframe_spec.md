@@ -1,6 +1,6 @@
 # Conductor Design System 와이어프레임 사양서
 
-> 상태: review | 버전: v0.8 | 갱신일: 2026-10-13
+> 상태: review | 버전: v0.9 | 갱신일: 2026-10-13
 
 ## 1. 문서 위치와 책임
 
@@ -1322,3 +1322,15 @@ W-040 가이드 화면은 유지하며 실제 조합은 독립 경로로 연결�
 | W-063 빈 상태 | 2열 격자(800px 이하 1열)에 `Panel` 4개. 각 패널은 제목, 사용 시점 규칙 한 문장, 예시 | `EmptyState`, `Button`(`blockedReason` + `aria-describedby`), `Banner`(danger) | 처음 사용 → "첫 프로젝트 만들기"로 목록 표시, 되돌리기 가능. 검색 결과 없음 → "검색 조건 지우기"로 전체 표시. 권한 없음 → 비활성 버튼과 보이는 사유. 불러오기 실패 → 재시도 기록만 남긴다 |
 | W-064 필터 테이블 | 조건 툴바(서비스 검색, 상태 `Select`) → 적용 조건 그룹(칩, "조건 모두 지우기") → 결과 수 → 표 또는 빈 상태 | `FilterToolbar`, `Field`, `TextField`, `Select`, `FilterChip`, `Table`(`aria-sort`), `StatusBadge`, `EmptyState` | 입력 즉시 거른다. 0건이면 표를 빼고 빈 상태를 보인다. 지우면 검색 입력으로 포커스 복귀. 소요 시간 열 머리 버튼이 정렬 방향을 바꾼다 |
 | W-065 설정 폼 | 오류 요약(제출 실패 시) → `Panel` 일반(이름·설명·지역) → `Panel` 알림(Switch·Checkbox) → 행동 줄(미저장 변경 수, 변경 취소, 저장) → 위험 구역 `Panel` | `Field`, `TextField`, `TextArea`, `Select`, `Switch`, `Checkbox`, `Banner`(danger), `Dialog`, `Button` | 제출 시 검증, 실패하면 요약에 포커스, 요약 링크가 필드로 포커스 이동. 성공하면 저장값 갱신과 상태 알림. 삭제는 `Dialog` 확인을 거친다 |
+
+## W-031 Theme Playground (CR-052, FR-DOC-010)
+
+| 항목 | 내용 |
+| --- | --- |
+| 화면 목적 | 브랜드 accent·반경·밀도를 바꿔 컴포넌트에서 미리 보고, 대비 기준을 지키는지 확인한 뒤 재정의 CSS를 가져간다 |
+| 진입 경로 | 사이드 내비 Reference › Theme Playground, `/tokens/playground` |
+| 레이아웃 | 머리(아이브로 REFERENCE, H1, 리드) → 편집 중인 테마 안내 `Banner` → 2열(1080px 이하 1열): 좌 Controls `Panel`, 우 미리보기 영역 → Accent contrast(상태 문단 + `Table`) → Override CSS(설명, `CodeBlock`, `CopyButton`) |
+| Controls | Accent `Field` + `TextField`(#rrggbb, 잘못되면 필드 오류), 색 선택기와 프리셋 4개(`aria-pressed`), Radius scale `Select`(Sharp 0×·Tight 0.5×·Default 1×·Round 1.5×), Compact controls `Switch`, 테마 초기화 `Button` |
+| 미리보기 | 루트 요소에 재정의 커스텀 프로퍼티를 인라인으로 둔다. `Button` 4종, `Field`+`TextField`, `Switch`, `Checkbox`, `Card` 안 `ProgressRing`·`Badge`. 포털을 쓰는 컴포넌트는 두지 않는다(포털은 재정의 범위 밖에 렌더된다) |
+| 상태 | 기본(재정의 없음, 스니펫은 "No overrides"), 변경됨(바뀐 비율 옆에 기존 값), 실패 있음(상태 문단이 실패 수를 알린다), 입력 오류 |
+| 정책 | 설정은 메모리에만 있고 테마별로 따로 유지된다. 저장·전송하지 않는다 |
