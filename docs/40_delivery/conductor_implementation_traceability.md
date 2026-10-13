@@ -1,6 +1,6 @@
 # Conductor Design System 구현 추적 원장
 
-> 상태: review | 버전: v0.41 | 갱신일: 2026-10-13
+> 상태: review | 버전: v0.42 | 갱신일: 2026-10-13
 
 ## 1. 목적과 갱신 규칙
 
@@ -482,3 +482,13 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | 검증 (로컬) | 게이트 12종 통과, docs E2E 56/56, docs 단위 시험 16/16, Lighthouse 외부 요청 0·CLS 0·LCP p75 2475ms(같은 시각 main 2456ms) |
 | DEV | DEV-054 closed |
 | CI · 종료 | PR #44 head `d89a8b6`에서 verify(node 20/22)·visual regression 모두 success. CR-048 closed(2026-10-13) |
+
+### CR-049 랜딩 코드 히어로와 원칙 bento (2026-10-13)
+
+우선순위 리포트 4순위를 구현했다. 문서 사이트만 바뀌었고 패키지·요구사항은 바뀌지 않았다.
+
+| 범위 | 결과 |
+| --- | --- |
+| 히어로 | 설치 한 줄을 코드 창으로 바꿨다(app.tsx 3줄 + 설치 명령, "Copy code"·"Copy command"). 구문 색은 `surface.raised` 위 대비 검사 통과 쌍(accent, status.success, text.muted, text.monoPayload)만 쓴다 |
+| 원칙 | 4타일을 6타일 bento로 바꿨다(3열, 1080px 이하 2열, 560px 이하 1열). 키보드 타일은 Radix가 실제로 처리하는 키를 Kbd로 보이고, 에이전트 타일은 DESIGN.md·llms.txt로 링크한다 |
+| 검증 (로컬) | 게이트 12종 통과, docs E2E 56/56, Lighthouse LCP p75 2452ms(같은 날 main 기준선 2456ms)·CLS 0·외부 요청 0. 두 테마와 1280·1024·390px에서 가로 넘침 0 |

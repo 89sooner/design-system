@@ -28,9 +28,21 @@
 .docs-hero__gradient { background: linear-gradient(120deg, var(--cdt-accent), color-mix(in srgb, var(--cdt-accent) 55%, var(--cdt-text-primary))); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .docs-hero__lead { max-width: 40rem; /* cdt-allow-literal: 읽기 폭 */ }
 .docs-hero__actions, .docs-cta__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--cdt-space-3); }
-.docs-hero__install { display: inline-flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--cdt-space-2); max-width: 100%; padding: var(--cdt-space-1) var(--cdt-space-1) var(--cdt-space-1) var(--cdt-space-4); border: var(--cdt-border-width-hairline) solid var(--cdt-border-default); border-radius: var(--cdt-radius-pill); background: var(--cdt-surface-raised); box-shadow: inset 0 1px 0 var(--cdt-border-subtle); /* cdt-allow-literal: 1px 상단 하이라이트는 유리 표면의 엣지다 */ }
-.docs-hero__install code { color: var(--cdt-text-mono-payload); font-family: var(--cdt-font-mono); font-size: var(--cdt-font-size-sm); overflow-wrap: anywhere; }
-.docs-hero__install .cdt-copy-feedback span[role="status"] { color: var(--cdt-text-muted); font-size: var(--cdt-font-size-xs); }
+/* Code-first hero (CR-049): a window onto the code a consumer writes, with the install line under it. */
+.docs-hero__code { display: grid; width: min(100%, 36rem); /* cdt-allow-literal: 코드 창 폭은 한 줄 import 길이로 정한다 */ overflow: hidden; border: var(--cdt-border-width-hairline) solid var(--cdt-border-default); border-radius: var(--cdt-radius-lg); background: var(--cdt-surface-raised); box-shadow: inset 0 1px 0 var(--cdt-border-subtle), var(--cdt-elevation-raised); /* cdt-allow-literal: 1px 상단 하이라이트 */ text-align: start; }
+.docs-hero__code-bar, .docs-hero__code-cmd { display: flex; align-items: center; gap: var(--cdt-space-3); padding: var(--cdt-space-1) var(--cdt-space-2) var(--cdt-space-1) var(--cdt-space-4); }
+.docs-hero__code-bar { border-bottom: var(--cdt-border-width-hairline) solid var(--cdt-border-subtle); }
+.docs-hero__code-cmd { border-top: var(--cdt-border-width-hairline) solid var(--cdt-border-subtle); background: var(--cdt-surface-timeline); }
+.docs-hero__code-dots { display: inline-flex; gap: var(--cdt-space-1); }
+.docs-hero__code-dots span { width: var(--cdt-space-2); height: var(--cdt-space-2); border-radius: var(--cdt-radius-pill); background: var(--cdt-border-strong); }
+.docs-hero__code-file { flex: 1 1 auto; color: var(--cdt-text-muted); font-family: var(--cdt-font-mono); font-size: var(--cdt-font-size-xs); }
+.docs-hero__code-body { margin: 0; padding: var(--cdt-space-4); overflow-x: auto; color: var(--cdt-text-mono-payload); font-family: var(--cdt-font-mono); font-size: var(--cdt-font-size-sm); line-height: var(--cdt-font-line-height-md); white-space: pre; }
+.docs-hero__code-cmd code { flex: 1 1 auto; min-width: 0; color: var(--cdt-text-mono-payload); font-family: var(--cdt-font-mono); font-size: var(--cdt-font-size-sm); overflow-wrap: anywhere; }
+.docs-hero__code-prompt { color: var(--cdt-text-muted); font-family: var(--cdt-font-mono); }
+.docs-hero__code .cdt-copy-feedback span[role="status"] { color: var(--cdt-text-muted); font-size: var(--cdt-font-size-xs); }
+.docs-code__keyword, .docs-code__attr { color: var(--cdt-accent); }
+.docs-code__string { color: var(--cdt-status-success); }
+.docs-code__punct { color: var(--cdt-text-muted); }
 
 /* ---------- Showcase ---------- */
 .docs-showcase { display: grid; gap: var(--cdt-space-3); }
@@ -92,11 +104,25 @@
 .docs-package:hover .docs-package__footer, .docs-package:focus-visible .docs-package__footer { text-decoration: underline; text-underline-offset: 0.2em; }
 
 /* ---------- Principles ---------- */
-.docs-principles__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--cdt-space-4); }
-.docs-principle { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--cdt-space-4); align-items: start; }
-.docs-principle__body { display: grid; gap: var(--cdt-space-2); }
-.docs-principle h3, .docs-step h3 { font-size: var(--cdt-font-size-lg); line-height: var(--cdt-font-line-height-lg); }
-.docs-principle code { padding: 0 var(--cdt-space-1); border-radius: var(--cdt-radius-xs); background: color-mix(in srgb, var(--cdt-accent) 10%, var(--cdt-surface-raised)); color: var(--cdt-text-mono-payload); font-family: var(--cdt-font-mono); font-size: var(--cdt-font-size-sm); overflow-wrap: anywhere; }
+/* ---------- Principles bento (CR-049) ---------- */
+/* Three columns; the token tile and the agents tile span two, the keyboard tile spans two rows. */
+.docs-bento { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--cdt-space-4); margin: 0; padding: 0; list-style: none; }
+.docs-bento__tile { display: grid; align-content: start; gap: var(--cdt-space-3); padding: var(--cdt-space-5); border: var(--cdt-border-width-hairline) solid var(--cdt-border-default); border-radius: var(--cdt-radius-lg); background: var(--cdt-surface-raised); box-shadow: inset 0 1px 0 var(--cdt-border-subtle); /* cdt-allow-literal: 1px 상단 하이라이트 */ }
+.docs-bento__tile p { margin: 0; color: var(--cdt-text-muted); }
+.docs-bento__tile--tokens, .docs-bento__tile--agents { grid-column: span 2; }
+.docs-bento__tile--keys { grid-row: span 2; }
+.docs-bento__swatches { display: flex; flex-wrap: wrap; gap: var(--cdt-space-2) var(--cdt-space-4); margin-top: var(--cdt-space-2); }
+.docs-bento__swatch { display: inline-flex; align-items: center; gap: var(--cdt-space-2); }
+.docs-bento__swatch code { color: var(--cdt-text-secondary); font-family: var(--cdt-font-mono); font-size: var(--cdt-font-size-xs); }
+.docs-bento__keys { display: grid; gap: var(--cdt-space-2); margin: var(--cdt-space-2) 0 0; }
+.docs-bento__keys div { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--cdt-space-2); padding-block: var(--cdt-space-2); border-top: var(--cdt-border-width-hairline) solid var(--cdt-border-subtle); }
+.docs-bento__keys dt { display: inline-flex; gap: var(--cdt-space-1); }
+.docs-bento__keys dd { margin: 0; color: var(--cdt-text-secondary); font-size: var(--cdt-font-size-sm); }
+.docs-bento__snippet { display: block; padding: var(--cdt-space-3); border-radius: var(--cdt-radius-md); background: var(--cdt-surface-timeline); color: var(--cdt-text-mono-payload); font-family: var(--cdt-font-mono); font-size: var(--cdt-font-size-xs); overflow-wrap: anywhere; }
+.docs-bento__links { display: flex; flex-wrap: wrap; gap: var(--cdt-space-4); }
+.docs-bento__links a { color: var(--cdt-accent); font-family: var(--cdt-font-mono); font-size: var(--cdt-font-size-sm); font-weight: 600; }
+.docs-bento__tile h3, .docs-step h3 { margin: 0; font-size: var(--cdt-font-size-lg); line-height: var(--cdt-font-line-height-lg); }
+.docs-bento__tile p code { padding: 0 var(--cdt-space-1); border-radius: var(--cdt-radius-xs); background: color-mix(in srgb, var(--cdt-accent) 10%, var(--cdt-surface-raised)); color: var(--cdt-text-mono-payload); font-family: var(--cdt-font-mono); font-size: var(--cdt-font-size-sm); overflow-wrap: anywhere; }
 
 /* ---------- Steps ---------- */
 .docs-steps__list { display: grid; margin: 0; padding: 0; border: var(--cdt-border-width-hairline) solid var(--cdt-border-default); border-radius: var(--cdt-radius-lg); background: var(--cdt-surface-raised); box-shadow: inset 0 1px 0 var(--cdt-border-subtle); /* cdt-allow-literal: 1px 상단 하이라이트 */ list-style: none; }
@@ -122,7 +148,8 @@
 }
 /* 800 = breakpoint.md */
 @media (max-width: 800px) {
-  .docs-principles__grid { grid-template-columns: minmax(0, 1fr); }
+  .docs-bento { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .docs-bento__tile--keys { grid-row: auto; }
   .docs-step { grid-template-columns: var(--cdt-space-7) minmax(0, 1fr); align-items: start; }
   .docs-step__code { grid-column: 2; }
   /* The public table reserves 800px below breakpoint.md and scrolls; three short columns fit the panel, so it must not. */
@@ -133,7 +160,8 @@
   .docs-landing { gap: var(--cdt-space-6); }
   .docs-hero { gap: var(--cdt-space-4); padding-block: var(--cdt-space-4) 0; }
   .docs-hero__actions, .docs-cta__actions { flex-direction: column; align-items: stretch; width: 100%; }
-  .docs-hero__install { width: 100%; justify-content: space-between; }
+  .docs-bento { grid-template-columns: minmax(0, 1fr); }
+  .docs-bento__tile--tokens, .docs-bento__tile--agents { grid-column: auto; }
   .docs-showcase__panel { gap: var(--cdt-space-4); padding: var(--cdt-space-4); border-radius: var(--cdt-radius-lg); }
   .docs-stats__grid { grid-template-columns: minmax(0, 1fr); }
   .docs-step { padding: var(--cdt-space-4); }
