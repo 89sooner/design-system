@@ -1,4 +1,4 @@
-// Refs: WP-020 CR-042 FR-DOC-003 FR-DX-002 FR-CSS-004 W-020 W-021
+// Refs: WP-020 CR-042 WP-033 WP-034 CR-048 FR-DOC-003 FR-DOC-008 FR-DX-002 FR-CSS-004 W-020 W-021
 //
 // W-020 (catalog) and W-021 (component detail). Every tile and the detail stage render the real
 // public component from `@conductor-by-89soone/react`; the metadata (family, root class, props)
@@ -15,7 +15,10 @@ import {
   BellRing,
   Boxes,
   Braces,
+  Check,
   Code2,
+  FileText,
+  Keyboard,
   LayoutPanelTop,
   MousePointerClick,
   PanelsTopLeft,
@@ -26,6 +29,7 @@ import {
   Tag,
   TextCursorInput,
   ToggleLeft,
+  Accessibility as AccessibilityIcon,
   Waypoints,
   X,
 } from "lucide-react";
@@ -43,8 +47,58 @@ export interface ComponentMeta {
   readonly className: string;
   readonly propsTypeName: string;
   readonly props: readonly { readonly name: string; readonly required: boolean; readonly type: string }[];
+  /** ENT-DOC-002: usage guidance; the generator fails the build for a component without one (FR-DOC-003 AC-6). */
+  readonly guidance: ComponentGuidance;
+}
+
+export interface ComponentGuidance {
+  readonly purpose: string;
+  readonly use: readonly string[];
+  readonly avoid: readonly { readonly rule: string; readonly instead?: string }[];
+  /** `"static"`: the component has no keyboard interaction of its own. */
+  readonly keyboard: readonly { readonly keys: string; readonly action: string }[] | "static";
+  readonly accessibility: readonly string[];
 }
 export const componentMeta = generated as readonly ComponentMeta[];
+
+/** "Shift + Tab / Escape" → alternatives of chords, each chord drawn as Kbd keys (W-021 Keyboard table). */
+function KeyCombo({ keys }: { readonly keys: string }) {
+  return <>{keys.split(" / ").map((alternative, index) => <span key={alternative} className="docs-keys__alt">
+    {index > 0 ? <span className="docs-keys__or">or</span> : null}
+    {alternative.split(" + ").map((key, keyIndex) => <span key={key} className="docs-keys__chord">{keyIndex > 0 ? <span aria-hidden="true">+</span> : null}<Components.Kbd>{key}</Components.Kbd></span>)}
+  </span>)}</>;
+}
+
+/** W-021 usage rules (FR-DOC-003 AC-6): purpose sits in the header; this renders do/don't, keyboard and accessibility. */
+function UsageGuidance({ component }: { readonly component: ComponentMeta }) {
+  const { guidance } = component;
+  return <section className="docs-guidance" aria-labelledby="guidance-title">
+    <div className="docs-props__head"><h2 id="guidance-title">Usage</h2></div>
+    <div className="docs-guidance__rules">
+      <Components.Panel as="section" className="docs-rule docs-rule--use" aria-labelledby="guidance-use-title">
+        <h3 id="guidance-use-title"><span className="docs-rule__icon" aria-hidden="true"><Check size={16} strokeWidth={2} /></span>Use</h3>
+        <ul>{guidance.use.map((line) => <li key={line}>{line}</li>)}</ul>
+      </Components.Panel>
+      <Components.Panel as="section" className="docs-rule docs-rule--avoid" aria-labelledby="guidance-avoid-title">
+        <h3 id="guidance-avoid-title"><span className="docs-rule__icon" aria-hidden="true"><X size={16} strokeWidth={2} /></span>Avoid</h3>
+        <ul>{guidance.avoid.map(({ rule, instead }) => <li key={rule}>{rule}{instead === undefined ? null : <> <span className="docs-rule__instead">Instead: <Link to={`/components/${instead}`}>{instead}</Link></span></>}</li>)}</ul>
+      </Components.Panel>
+    </div>
+    <div className="docs-guidance__access">
+      <Components.Panel as="section" className="docs-rule" aria-labelledby="guidance-keyboard-title">
+        <h3 id="guidance-keyboard-title"><span className="docs-rule__icon docs-rule__icon--neutral" aria-hidden="true"><Keyboard size={16} strokeWidth={1.75} /></span>Keyboard</h3>
+        {guidance.keyboard === "static" ? <p className="docs-props__note">No keyboard interaction of its own; focusable content inside it keeps its native behaviour.</p> : <Components.Table aria-label={`${component.name} keyboard interactions`}>
+          <Components.Table.Head><Components.Table.Row><Components.Table.HeaderCell>Keys</Components.Table.HeaderCell><Components.Table.HeaderCell>Action</Components.Table.HeaderCell></Components.Table.Row></Components.Table.Head>
+          <Components.Table.Body>{guidance.keyboard.map((row) => <Components.Table.Row key={row.keys + row.action}><Components.Table.Cell><span className="docs-keys"><KeyCombo keys={row.keys} /></span></Components.Table.Cell><Components.Table.Cell>{row.action}</Components.Table.Cell></Components.Table.Row>)}</Components.Table.Body>
+        </Components.Table>}
+      </Components.Panel>
+      <Components.Panel as="section" className="docs-rule" aria-labelledby="guidance-a11y-title">
+        <h3 id="guidance-a11y-title"><span className="docs-rule__icon docs-rule__icon--neutral" aria-hidden="true"><AccessibilityIcon size={16} strokeWidth={1.75} /></span>Accessibility</h3>
+        <ul>{guidance.accessibility.map((line) => <li key={line}>{line}</li>)}</ul>
+      </Components.Panel>
+    </div>
+  </section>;
+}
 
 export interface ComponentFamily {
   readonly name: string;
@@ -293,13 +347,17 @@ export function ComponentDetail({ name, forceCopyUnavailable = false, forcePrevi
         <h1 id="component-title">{component.name}</h1>
         <Components.Badge className="docs-pill" tone="accent" icon={<FamilyIcon size={12} strokeWidth={2} aria-hidden="true" />}>{component.family}</Components.Badge>
       </div>
-      <p className="docs-lead">Rendered live from the public package; the preview follows the current theme.</p>
+      <p className="docs-lead">{component.guidance.purpose}</p>
+      {/* FR-DOC-008 AC-5: a static file next to the site, so a plain anchor rather than a router Link. */}
+      <a className="docs-detail__markdown" href={`${import.meta.env.BASE_URL}components/${component.name}.md`}><FileText size={14} strokeWidth={1.75} aria-hidden="true" />View as Markdown</a>
     </header>
 
     <Components.Panel as="section" className="docs-stage" aria-labelledby="preview-title">
-      <div className="docs-stage__bar"><h2 id="preview-title">Live preview</h2></div>
+      <div className="docs-stage__bar"><h2 id="preview-title">Live preview</h2><p className="docs-stage__note">Rendered live from the public package; the preview follows the current theme.</p></div>
       <PreviewBoundary><div className="docs-preview"><ComponentPreview forceError={forcePreviewError} name={component.name} /></div></PreviewBoundary>
     </Components.Panel>
+
+    <UsageGuidance component={component} />
 
     <div className="docs-detail__usage">
       <Components.Panel as="section" className="docs-usage" aria-labelledby="import-title">

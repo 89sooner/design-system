@@ -1,6 +1,6 @@
 # Conductor Design System 구현 추적 원장
 
-> 상태: review | 버전: v0.40 | 갱신일: 2026-10-12
+> 상태: review | 버전: v0.41 | 갱신일: 2026-10-13
 
 ## 1. 목적과 갱신 규칙
 
@@ -230,7 +230,8 @@ PR Search 소비처의 `DEV-380`이 트리거다: 화면 계약이 최대 20계�
 | FR-CMP-009 | `packages/react/src/shell.tsx`, `packages/css/src/components.css`, `packages/tokens/src/components.ts` | `packages/react/src/testing/shell.test.tsx`, `packages/css/test/bundle.test.ts`, `apps/docs/e2e/shell.spec.ts` | WP-023 | 검증됨 (AC-1~AC-4. renderLink 위임·라우터 의존 0건·800px off-canvas의 scrim/Escape dismissal·skip-link focus 이동과 세 컴포넌트 공통 계약을 단위 및 실브라우저로 검증.) |
 | FR-DOC-001 | `apps/docs/src/main.tsx`, `App.tsx`, `entry-server.tsx`, `vite.config.ts`, `scripts/prerender.mjs`, `packages/react/src/shell.tsx`, `.github/workflows/deploy-docs.yml` | `apps/docs/e2e/shell.spec.ts`, `scripts/check-lighthouse.mjs` | WP-018, WP-023, WP-028 | 검증됨 (AC-1~AC-4. 모든 W-001~W-050 라우트가 공개 AppShell/NavList/TopBar 안에서 렌더되고 workspace 공개 진입점만 소비한다. AC-3·AC-4는 파일 서빙과 SPA 폴백만 있는 서버에서 셸 렌더와 외부 도메인 요청 0건을 프로덕션 산출물로 실측해 닫았다.) |
 | FR-DOC-002 | `apps/docs/src/foundations.ts`, `App.tsx`, `scripts/check-foundation-tokens.mjs` | `apps/docs/e2e/foundations.spec.ts` | WP-019 | 검증됨 (AC-1~AC-3. generated `tokens.json`을 직접 읽어 그룹별 표·스와치를 생성하고, 키·계층·현재 테마 값·용도를 렌더한다. 설명 누락은 `설명 없음`과 빌드 경고로 처리) |
-| FR-DOC-003 | `apps/docs/scripts/build-component-catalog.mjs`, `src/catalog.tsx`, `App.tsx` | `apps/docs/e2e/catalog.spec.ts` | WP-020, WP-023 | 검증됨 (AC-1~AC-5. 공개 30개가 실제 DOM 프리뷰와 상세 라우트를 가지며 `.d.ts`에서 props 표를 생성한다. 프리뷰 누락은 빌드 실패, 렌더 오류는 경계로 격리) |
+| FR-DOC-003 | `apps/docs/scripts/build-component-catalog.mjs`, `src/catalog.tsx`, `App.tsx` | `apps/docs/e2e/catalog.spec.ts` | WP-020, WP-023, WP-033 | 검증됨 (AC-1~AC-5. 공개 30개가 실제 DOM 프리뷰와 상세 라우트를 가지며 `.d.ts`에서 props 표를 생성한다. 프리뷰 누락은 빌드 실패, 렌더 오류는 경계로 격리. CR-048: AC-6 지침 47종과 `DOC-GUIDANCE` 검사, `src/content/component-guidance.json`) |
+| FR-DOC-008 | `apps/docs/scripts/agent-docs.mjs`, `scripts/build-agent-docs.mjs`, `src/catalog.tsx`(Markdown 링크) | `apps/docs/src/agent-docs.test.ts` | WP-034 | 검증됨 (AC-1~AC-5. 생성 산출물 DESIGN.md·llms.txt·tokens.md·components/*.md, 64KB 상한 시험, 외부 도메인 링크 0건) |
 | FR-DOC-004 | `apps/docs/src/token-reference.tsx`, `scripts/build-contrast-report.mjs` | `apps/docs/e2e/tokens.spec.ts` | WP-021 | 검증됨 (AC-1~AC-4와 리포트 누락 폴백. 빌드 산출 `tokens.json`·`contrast-report.json`을 소비하며 화면에서 대비율을 재계산하지 않음) |
 | FR-DOC-005 | `apps/docs/index.html`, `src/theme.ts`, `src/App.tsx` | `apps/docs/e2e/shell.spec.ts` | WP-018 | 검증됨 (AC-1~AC-5와 localStorage 차단 폴백. 첫 페인트 스니펫이 React 전 루트 속성을 결정) |
 | FR-DOC-006 | `apps/docs/src/guides.tsx`, `src/catalog.tsx` | `apps/docs/e2e/guides.spec.ts` | WP-022 | 검증됨 (AC-1~AC-3. 성공 공지·2초 복귀, polite live region, Clipboard 미지원 시 disabled/선택 가능 코드) |
@@ -258,6 +259,7 @@ PR Search 소비처의 `DEV-380`이 트리거다: 화면 계약이 최대 20계�
 
 | DEV ID | 발견일 | 유형 | 내용 | 관련 ID | 처리 CR | 상태 |
 | --- | --- | --- | --- | --- | --- | --- |
+| DEV-054 | 2026-10-13 | 구현 편차 (기존) | **W-021이 FR-DOC-003 요구사항의 "사용 규칙"을 렌더하지 않았다.** 요구사항 문장과 와이어프레임 W-021 섹션 정의(§ 사용 규칙: 권장 예/금지 예와 금지 사유)는 컴포넌트마다 사용 규칙을 요구했다. 그러나 AC-1~AC-5가 프리뷰·props·조합·테마·누락만 검사해서, 상세 화면에는 프리뷰·Import·CSS 클래스·Props만 있었다(원장도 FR-DOC-003을 AC-1~AC-5로 검증됨 처리). CR-048이 AC-6을 더하고 47종 지침과 빌드 검사로 해소했다 | FR-DOC-003 | CR-048 | closed |
 | DEV-053 | 2026-10-12 | 구현 결함 | **W-014 Playground의 `motion.bounce` 점이 재생 중 트랙 끝을 넘어 재생 버튼 위로 나갔다.** 점이 트랙 전체 폭을 이동했는데 `ease.overshoot`(y₁ 1.56)는 목표의 약 9.8%를 지나쳤다가 돌아온다. 0.6.0 배포 산출물(`104af7f`)을 같은 base 경로로 빌드해 프레임 단위로 재현했다. 이동 거리를 빈 트랙의 90%로 줄여 최고점까지 트랙 안에 두었다(측정: 최대 −8.7px, 즉 안쪽) | FR-DOC-002 AC-3 | CR-047 | closed |
 | DEV-052 | 2026-10-12 | 구현 편차 (기존) | **W-014가 와이어프레임의 "각 행에서 전환을 재생한다"를 구현하지 않았다.** `/foundations/motion`은 계산된 모션 값 타일과 상태 전환 예시만 보였고 토큰 행마다 재생할 수단이 없었다(`conductor_wireframe_spec.md` W-014 섹션 정의·`reduced_motion` 상태가 재생 버튼을 전제). CR-047의 Playground 패널이 이징을 가진 토큰마다 트랙과 행별 재생 버튼(+전체 재생)을 두어 해소했다 | FR-DOC-002 AC-3, FR-CSS-005 | CR-047 | closed |
 | DEV-051 | 2026-10-12 | 구현 결함 | **눌린 클릭형 카드가 다크 테마에서 윗변에 흰 선을 보였다.** DEV-050과 같은 원인으로 `.cdt-card--interactive:active`의 `inset 0 1px 0 var(--cdt-border-strong)`이 다크 팔레트에서 밝게 칠해졌다(실측 재현). CR-045와 같은 중립 검정 안쪽 그림자로 바꿨고 hover 강조 경계와 포커스 링은 그대로다. 회귀 테스트 `DEV-051` 추가 | FR-CMP-003, FR-A11Y-001 | CR-046 | closed |
@@ -364,6 +366,8 @@ OD-002(시각 회귀 이월)와 OD-004(셸 컴포넌트군 패키지 포함)는 
 | WP-030 | FR-CMP-010 | done | Combobox·checkbox 다중 선택·DataTable·Workbench/Inspector·경로 목록. IME, stable ID, 커서 이어 보기, 닫기 후 복귀와 URL 조건을 브라우저에서 검증. |
 | WP-031 | FR-CMP-011 | done | 결정적 SVG 관계 표현, 목록 대안, 방향·근거·불확실/해제 상태와 300-node 측정을 검증. |
 | WP-032 | FR-CMP-012 | done | 수신/저장/처리/색인 상태와 권한 기반 합성 행동, 세 화면 테마·폭·패키지 소비 회귀를 검증. |
+| WP-033 | FR-DOC-003 (AC-6) | done | 공개 47종 지침(ENT-DOC-002), `DOC-GUIDANCE` 빌드 검사, W-021 Usage 섹션. DEV-054 종료. |
+| WP-034 | FR-DOC-008 | done | DESIGN.md·llms.txt·tokens.md·컴포넌트 Markdown 47쪽을 JOB-BUILD-004 ⑤에서 생성, 64KB 상한, W-021 Markdown 링크. |
 
 착수 문서 validator --report: exit 0, FR49/49, Phase7. 실제 소비자 코드는 읽기만 수행했으며 운영 연동·소비자 마이그레이션은 실행하지 않았다. 공개 기록에는 일반화된 계약과 합성 데이터만 남긴다.
 
@@ -465,3 +469,15 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | 검증 (로컬) | build·typecheck·lint·lint:deps·lint:tokens(위반 0)·check:contrast·check:api·check:changesets·check:secrets·test·size·test:a11y 통과, docs E2E 56/56. Lighthouse LCP p75: main 2357ms, 스크롤 연동을 첫 스타일 패스에 두면 2451ms → 하이드레이션 뒤 활성화로 2338ms(CLS 0) |
 | 레퍼런스 | 작업 샌드박스의 egress 정책으로 레퍼런스 사이트를 열 수 없어 알려진 패턴(스프링 안착, 방향 인지 팝오버, 단계 진입, 스크롤 진행 상승, 포인터 스포트라이트, 원형 테마 리빌)을 재구성했다 |
 | CI · 종료 | PR #40 head `7ccaacc`에서 verify(node 20/22)·visual regression 모두 success. CR-047 closed(2026-10-12) |
+
+### CR-048 에이전트 판독용 문서와 컴포넌트 지침 (2026-10-13)
+
+우선순위 리포트의 1·2순위를 구현했다. 패키지 공개 계약은 바뀌지 않았다.
+
+| 범위 | 결과 |
+| --- | --- |
+| 지침 (WP-033) | 공개 47종의 목적·Use·Avoid(대체 컴포넌트)·Keyboard·Accessibility. 생성기가 누락·잘못된 대체 컴포넌트·빈 키보드 목록을 `DOC-GUIDANCE`로 막는다(결함 주입 3건 확인). 불확실 항목은 설치된 Radix 소스로 대조했다 |
+| 에이전트 문서 (WP-034) | JOB-BUILD-004 ⑤가 DESIGN.md(17KB, YAML 앞부분에 두 테마 시맨틱 색과 스케일), llms.txt, tokens.md, components/*.md 47쪽을 쓴다. 링크는 `DOCS_BASE` 기준이다 |
+| 화면 | W-021 헤더에 목적 문장과 "View as Markdown", Usage 섹션(Use/Avoid 2열, Keyboard 표 + Accessibility). 두 테마와 390px에서 가로 넘침 0 |
+| 검증 (로컬) | 게이트 12종 통과, docs E2E 56/56, docs 단위 시험 16/16, Lighthouse 외부 요청 0·CLS 0·LCP p75 2475ms(같은 시각 main 2456ms) |
+| DEV | DEV-054 closed |

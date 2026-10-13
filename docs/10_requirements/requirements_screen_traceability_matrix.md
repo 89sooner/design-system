@@ -1,6 +1,6 @@
 # 요구사항-화면 추적 매트릭스
 
-> 상태: review | 버전: v0.3 | 갱신일: 2026-09-13
+> 상태: review | 버전: v0.4 | 갱신일: 2026-10-13
 
 ## 1. 목적
 
@@ -94,6 +94,7 @@ UI가 없는 요구사항은 아래 표면 중 하나에 간접 노출된다.
 | FR-DOC-005 | Must | W-001, W-030 | — | FLOW-002 | 테마 토글 |
 | FR-DOC-006 | Should | W-021 | — | FLOW-006 | 코드 복사 |
 | FR-DOC-007 | Should | W-040 | — | FLOW-001 | 사용 규칙 |
+| FR-DOC-008 | Should | W-021 | — | FLOW-001 | 에이전트 판독용 문서 (산출물: DESIGN.md, llms.txt, components/*.md) |
 | FR-A11Y-001 | Must | W-050 | 전 화면 | — | 포커스 링 |
 | FR-A11Y-002 | Must | W-050 | 전 화면 | FLOW-004 | 키보드 도달 |
 | FR-A11Y-003 | Must | W-040, W-050 | SFC-PKG | — | 색상 비의존 |
@@ -133,7 +134,7 @@ NFR은 화면 하나에 귀속되지 않는다. 각 NFR이 어디서 측정되�
 | W-013 | Foundations · Radius & Elevation | FR-DOC-002 |
 | W-014 | Foundations · Motion | FR-CSS-005, FR-DOC-002 |
 | W-020 | Components Index | FR-CSS-004, FR-CMP-002, FR-CMP-003, FR-CMP-004, FR-CMP-005, FR-CMP-006, FR-CMP-007, FR-CMP-008, FR-DOC-003 |
-| W-021 | Component Detail | FR-CMP-001, FR-CMP-002, FR-CMP-003, FR-CMP-004, FR-CMP-005, FR-CMP-006, FR-CMP-007, FR-CMP-008, FR-CMP-009, FR-CSS-004, FR-DOC-003, FR-DOC-006, FR-DX-002 |
+| W-021 | Component Detail | FR-CMP-001, FR-CMP-002, FR-CMP-003, FR-CMP-004, FR-CMP-005, FR-CMP-006, FR-CMP-007, FR-CMP-008, FR-CMP-009, FR-CSS-004, FR-DOC-003, FR-DOC-006, FR-DX-002, FR-DOC-008 |
 | W-030 | Tokens Reference | FR-TOK-004, FR-TOK-008, FR-THM-001, FR-THM-002, FR-THM-003, FR-THM-004, FR-THM-005, FR-DOC-004, FR-DOC-005, FR-A11Y-004, FR-QA-001 |
 | W-040 | Patterns | FR-TOK-005, FR-CMP-004, FR-DOC-007, FR-A11Y-003 |
 | W-050 | Accessibility | FR-THM-004, FR-THM-005, FR-A11Y-001, FR-A11Y-002, FR-A11Y-003, FR-A11Y-004, FR-A11Y-005, FR-QA-002, FR-QA-003, FR-QA-004 |

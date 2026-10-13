@@ -1,6 +1,6 @@
 # Conductor Design System PRD
 
-> 상태: review | 버전: v0.3 | 갱신일: 2026-09-13
+> 상태: review | 버전: v0.4 | 갱신일: 2026-10-13
 
 ## 1. 문서 개요
 
@@ -59,7 +59,7 @@ Conductor Design System(이하 Conductor)은 `agent-ai-platform`의 `packages/we
 | 다크(기준) + 라이트 테마, 시스템 설정 연동 | FR-THM-001 ~ FR-THM-004 |
 | 캐스케이드 레이어 기반 프레임워크 비종속 스타일시트 | FR-CSS-001 ~ FR-CSS-005 |
 | React 프리미티브 컴포넌트 6개 군 (액션·표면·상태·데이터·오버레이·폼) + 피드백 + 셸 | FR-CMP-001 ~ FR-CMP-009 |
-| 문서 사이트 (Foundations, 컴포넌트 카탈로그, 토큰 참조, 테마 토글, 사용 규칙) | FR-DOC-001 ~ FR-DOC-007 |
+| 문서 사이트 (Foundations, 컴포넌트 카탈로그, 토큰 참조, 테마 토글, 사용 규칙, 에이전트 판독용 문서) | FR-DOC-001 ~ FR-DOC-008 |
 | WCAG 2.1 AA 기준선 (포커스·키보드·색상 비의존·대비·스크린리더) | FR-A11Y-001 ~ FR-A11Y-005 |
 | 모노레포 빌드, 타입 배포, 진입점 선언, SSR 안전성, 버저닝 | FR-DX-001 ~ FR-DX-005 |
 | 토큰 계약·단위·접근성·시각 회귀 검사 | FR-QA-001 ~ FR-QA-004 |
@@ -172,6 +172,7 @@ Conductor Design System(이하 Conductor)은 `agent-ai-platform`의 `packages/we
 | FR-DOC-005 | 테마 토글과 선택 유지를 제공한다 | Must | F-DOC-005 |
 | FR-DOC-006 | 코드 스니펫을 클립보드로 복사한다 | Should | F-DOC-006 |
 | FR-DOC-007 | 상태·심각도·밀도 사용 규칙 페이지를 제공한다 | Should | F-DOC-007 |
+| FR-DOC-008 | DESIGN.md·llms.txt·컴포넌트 Markdown을 같은 출처에서 생성한다 (CR-048) | Should | F-DOC-008 |
 | FR-A11Y-001 | 모든 대화형 요소에 동일 포커스 링을 적용한다 | Must | F-A11Y-001 |
 | FR-A11Y-002 | 키보드만으로 모든 대화형 요소에 도달한다 | Must | F-A11Y-002 |
 | FR-A11Y-003 | 색 외에 아이콘과 텍스트로 상태를 전달한다 | Must | F-A11Y-003 |

@@ -1,6 +1,6 @@
 # Conductor Design System 빌드 파이프라인 아키텍처
 
-> 상태: review | 버전: v0.3 | 갱신일: 2026-09-13
+> 상태: review | 버전: v0.4 | 갱신일: 2026-10-13
 
 ## 0. 문서 재해석
 
@@ -75,8 +75,8 @@ packages/docs/src/    ──[JOB-BUILD-004]──>  packages/docs/dist/  (정적
 | 책임 모듈 | `packages/docs/scripts/build.ts`(정적 사이트 생성기) |
 | 입력 | `@conductor-by-89soone/react`, `@conductor-by-89soone/css`(소비자로서 설치, FR-DOC-001 AC-1), `packages/tokens/dist/tokens.json`, `packages/docs/src/**/*.mdx`(사용 규칙·정적 페이지) |
 | 출력 | `dist/`(정적 HTML/JS/CSS 번들, 서버 런타임 없이 배포 가능) |
-| 처리 순서 | ① `@conductor-by-89soone/react`의 공개 진입점에서 export된 컴포넌트 목록과 `packages/docs/src/catalog/**`의 카탈로그 페이지 목록을 대조(FR-DOC-003 AC-5) → ② Foundations 페이지를 `tokens.json`에서 생성(FR-DOC-002) → ③ props 표를 `@conductor-by-89soone/react`의 `.d.ts`에서 추출해 생성(FR-DOC-003 AC-2) → ④ 정적 빌드 실행(외부 도메인 네트워크 요청 0건 검증 포함, FR-DOC-001 AC-4) |
-| 실패 처리 | ①에서 카탈로그 페이지가 없는 공개 컴포넌트가 발견되면 빌드가 실패하고 누락된 컴포넌트 이름을 출력한다(FR-DOC-003 AC-5). |
+| 처리 순서 | ① `@conductor-by-89soone/react`의 공개 진입점에서 export된 컴포넌트 목록과 `packages/docs/src/catalog/**`의 카탈로그 페이지 목록을 대조(FR-DOC-003 AC-5) → ② Foundations 페이지를 `tokens.json`에서 생성(FR-DOC-002) → ③ props 표를 `@conductor-by-89soone/react`의 `.d.ts`에서 추출해 생성(FR-DOC-003 AC-2) → ④ 정적 빌드 실행(외부 도메인 네트워크 요청 0건 검증 포함, FR-DOC-001 AC-4) → ⑤ 에이전트 판독용 문서 생성: 같은 `tokens.json`, `ComponentMeta`(지침 포함, ENT-DOC-002)에서 **DESIGN.md**, `llms.txt`, 컴포넌트·토큰 Markdown을 `dist/`에 쓴다(API-DOC-002, FR-DOC-008, CR-048) |
+| 실패 처리 | ①에서 카탈로그 페이지가 없는 공개 컴포넌트가 발견되면 빌드가 실패하고 누락된 컴포넌트 이름을 출력한다(FR-DOC-003 AC-5). 지침이 없거나 대체 컴포넌트가 공개 export가 아닌 컴포넌트도 같은 단계에서 실패한다(`DOC-GUIDANCE`, FR-DOC-003 AC-6). ⑤에서 입력이 비거나 **DESIGN.md**가 64KB를 넘으면 실패한다(`DOC-AGENT`, FR-DOC-008). |
 
 ## 4. 순서 강제 (FR-DX-001)
 

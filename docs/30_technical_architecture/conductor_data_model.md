@@ -1,6 +1,6 @@
 # Conductor Design System 토큰/메타데이터 스키마
 
-> 상태: review | 버전: v0.3 | 갱신일: 2026-09-13
+> 상태: review | 버전: v0.4 | 갱신일: 2026-10-13
 
 ## 0. 문서 재해석
 
@@ -20,6 +20,7 @@ Conductor Design System에는 데이터베이스가 없다(`srs_final.md` 11절)
 | ENT-THM-001 | ThemePalette | 한 테마의 semantic 키 → 최종 값 매핑 | `packages/tokens/src/`, `packages/tokens/dist/` | FR-THM-001, FR-THM-002 |
 | ENT-CMP-001 | ComponentMeta | 공개 컴포넌트 하나의 계약 메타데이터 | `packages/react/src/`, 빌드 시 추출 | FR-CMP-001~009, FR-DOC-003 |
 | ENT-DOC-001 | DocPage | 문서 사이트 라우트 하나의 메타데이터 | `packages/docs/src/` | FR-DOC-001~007 |
+| ENT-DOC-002 | ComponentGuidance | 컴포넌트 하나의 사용 지침(목적·권장·금지·키보드·접근성) | `apps/docs/src/content/component-guidance.json` | FR-DOC-003, FR-DOC-008 |
 
 ## 3. 엔티티 스키마
 
@@ -141,6 +142,24 @@ interface DocPage {
 ```
 
 **소유권.** `generated-tokens`, `generated-components` 페이지는 `packages/tokens/dist/tokens.json`과 `ComponentMeta` 목록에서 빌드 시 생성된다(FR-DOC-002 AC-2: 토큰 소스에 토큰을 추가하면 재빌드 후 자동으로 나타난다). `static-mdx` 페이지(사용 규칙, 설치 안내 등)는 `packages/docs/src/content/*.mdx`를 사람이 편집한다.
+
+### 3.7 ENT-DOC-002 ComponentGuidance (CR-048)
+
+```ts
+interface KeyboardRow { keys: string; action: string }
+
+interface ComponentGuidance {
+  purpose: string;                                        // 한 문장
+  use: string[];                                          // 1~3
+  avoid: { rule: string; instead?: string }[];            // 1~4, instead는 공개 컴포넌트명
+  keyboard: KeyboardRow[] | "static";                     // "static" = 자체 키보드 조작 없음
+  accessibility: string[];                                // 1~3
+}
+
+type ComponentGuidanceMap = Record<string /* 공개 컴포넌트명 */, ComponentGuidance>;
+```
+
+**소유권.** 사람이 편집하는 유일한 지침 원본이다. 카탈로그 생성기가 읽어 `ComponentMeta.guidance`로 합치고, W-021과 생성 Markdown(API-DOC-002)이 그 결과만 읽는다. **불변식.** 키 집합은 공개 컴포넌트 집합과 같다. `instead`는 공개 컴포넌트명이다. 위반은 `DOC-GUIDANCE`로 빌드 실패다. 키보드 행은 컴포넌트가 실제로 하는 동작(Radix 문서화 동작, 네이티브 요소 동작, 자체 핸들러)만 적는다.
 
 ## 4. 관계도
 

@@ -1,6 +1,6 @@
 # Conductor Design System CI 잡과 릴리스 파이프라인
 
-> 상태: review | 버전: v0.7 | 갱신일: 2026-09-13
+> 상태: review | 버전: v0.8 | 갱신일: 2026-10-13
 
 ## 0. 문서 재해석
 
@@ -56,8 +56,8 @@ Conductor Design System에는 큐, 워커 런타임, dead letter queue, 사용�
 | 항목 | 내용 |
 | --- | --- |
 | 입력 | `packages/docs/src/**` + JOB-BUILD-001~003 아티팩트(패키지로서 설치) |
-| 출력 | `packages/docs/dist/**`(정적 사이트) |
-| 실패 시 동작 | 종료 코드 1 반환. JOB-CI-003(활성화 시)은 실행되지 않음. JOB-REL-001은 차단됨 |
+| 출력 | `packages/docs/dist/**`(정적 사이트, CR-048부터 에이전트 판독용 산출물 API-DOC-002 포함) |
+| 실패 시 동작 | 종료 코드 1 반환. JOB-CI-003(활성화 시)은 실행되지 않음. JOB-REL-001은 차단됨. `DOC-GUIDANCE`·`DOC-AGENT`도 이 작업의 실패다 |
 | 아티팩트 | `packages/docs/dist/**` |
 
 ### 2.5 JOB-CI-001 대비 검사

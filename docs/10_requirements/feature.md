@@ -1,6 +1,6 @@
 # Conductor Design System 기능 후보 문서
 
-> 상태: review | 버전: v0.3 | 갱신일: 2026-07-17
+> 상태: review | 버전: v0.4 | 갱신일: 2026-10-13
 
 ## 1. 목적
 
@@ -73,6 +73,7 @@
 | F-DOC-005 | 테마 토글 | 두 테마를 나란히 확인한다 | SRC-USER 결정 | 문서 사이트 상단바 | `data-cdt-theme` 전환, 선택 유지 | localStorage 사용 시 SSR 안전성 확보 | Type C | P0 | 승인 | FR-DOC-005 |
 | F-DOC-006 | 코드 스니펫 복사 | 예제를 코드에 옮긴다 | SRC-AAP에 없음 (신규) | 프리뷰 하단 | 클립보드 복사와 복사 완료 알림 | 클립보드 API 미지원 시 선택 가능한 텍스트로 대체 | Type A | P1 | 승인 | FR-DOC-006 |
 | F-DOC-007 | 사용 규칙 페이지 | 오용을 피한다 | SRC-AAP 상태/심각도 규칙 | `/patterns/*` | 상태·심각도·밀도·오버레이 사용 규칙 | — | Type C | P1 | 승인 | FR-DOC-007 |
+| F-DOC-008 | 에이전트 판독용 문서 | AI 코딩 에이전트가 Conductor를 정확히 쓴다 | CR-048 / 디자인 업그레이드 리포트 1순위 | **/DESIGN.md**, `/llms.txt`, **/components/<Name>.md** | 토큰·컴포넌트·지침에서 생성한 Markdown 산출물 | 형식 사양 알파, 크기 상한 64KB | Type C | P1 | 승인 | FR-DOC-008 |
 
 ### 2.6 A11Y — 접근성
 
