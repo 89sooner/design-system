@@ -176,6 +176,20 @@ export const tokens: {
         readonly disabled: "var(--cdt-state-disabled)";
         readonly disabledPolicy: "var(--cdt-state-disabled-policy)";
     };
+    readonly tone: {
+        readonly accent: {
+            readonly background: "var(--cdt-tone-accent-background)";
+            readonly border: "var(--cdt-tone-accent-border)";
+            readonly backgroundHover: "var(--cdt-tone-accent-background-hover)";
+            readonly borderHover: "var(--cdt-tone-accent-border-hover)";
+        };
+        readonly danger: {
+            readonly background: "var(--cdt-tone-danger-background)";
+            readonly border: "var(--cdt-tone-danger-border)";
+            readonly backgroundHover: "var(--cdt-tone-danger-background-hover)";
+            readonly borderHover: "var(--cdt-tone-danger-border-hover)";
+        };
+    };
     readonly dataviz: {
         readonly series: {
             readonly "1": "var(--cdt-dataviz-series-1)";

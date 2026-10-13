@@ -67,7 +67,8 @@
 | CR-046 | 2026-10-12 | correction | CR-045 후속 (사용자 지시 2026-10-12: 카드도 같은 방식으로 고친다) | **눌린 클릭형 카드(`.cdt-card--interactive:active`)의 안쪽 그림자를 두 테마에서 어두운 값으로 고친다. 요구사항은 바뀌지 않는다.** 버튼과 같은 원인(`inset 0 1px 0 var(--cdt-border-strong)`이 다크 팔레트에서 밝은 윗선)이며, CR-045와 같은 중립 검정 안쪽 그림자로 바꾼다. hover 강조 경계(FR-CMP-003 AC-2)와 포커스 링은 그대로다 | FR-CMP-003, FR-A11Y-001, DEV-051 | `packages/css/src/components.css`, `packages/css/test/bundle.test.ts`, Changeset(css patch), `conductor_implementation_traceability.md` | closed |
 | CR-047 | 2026-10-12 | design | 사용자 요청 (2026-10-12): Supahero·dark.design·Mac App Supply·Layers·Loadmore·Beautiful UI·BeUI·Rare UI·Transitions·shadcn/ui·Realtime Colors·Coolors·Paletton·Khroma·Color Hunt·Stanley·oh-my-design·Lazyweb를 참고해 디자인 모션을 대폭 업데이트 | **모션 어휘를 넓히고 컴포넌트·문서 사이트 모션을 그 어휘로 다시 짠다. 요구사항은 바뀌지 않는다.** 이징 primitive 3건(`ease.exit`·`ease.emphasized`·`ease.spring`)과 모션 토큰 5건(`motion.instant`·`motion.exit`·`motion.slow`·`motion.spring`·`motion.stagger`)을 additive로 더하고 `overlay.exit`를 `motion.exit`로 옮긴다. 진입은 스프링·강조 감속, 퇴장은 가속 곡선으로 나누고, 팝오버가 Radix `data-side` 방향에서 미끄러져 나오며, Popover·Tabs·Collapsible·체크 표시에 모션을 더한다. 문서 사이트는 원형 테마 리빌, 스크롤 연동 상승(transform 전용), 포인터 스포트라이트, 토큰 스태거, W-014 Playground(DEV-052 해소)를 얻는다. 감소 모드에서는 전부 0이다(FR-CSS-005). 레퍼런스 사이트는 샌드박스 egress 정책으로 열 수 없어 알려진 패턴을 재구성했다 | FR-CSS-005, FR-CMP-006, FR-CMP-007, FR-CMP-008, FR-DOC-001, FR-DOC-002, FR-DOC-005, NFR-001, W-001, W-014, DEV-052 | `conductor_design_system_tokens.md`, `conductor_wireframe_spec.md`, `conductor_implementation_traceability.md`, 토큰 API 리포트, Changeset(tokens minor, css minor) | closed |
 | CR-048 | 2026-10-13 | scope + design | 사용자 지시 (2026-10-13): 디자인 업그레이드 우선순위 리포트의 추천대로 1번(에이전트 판독용 문서)과 2번(컴포넌트 문서 틀 통일)을 진행 | **문서 사이트에 에이전트 판독용 산출물을 더하고(새 FR-DOC-008), 컴포넌트 화면의 "사용 규칙"을 검증 가능하게 만든다(FR-DOC-003 AC-6).** 산출물 루트에 DESIGN.md·llms.txt·tokens.md와 공개 컴포넌트 47종의 Markdown을 같은 데이터에서 생성한다. W-021은 목적·Use/Avoid(대체 컴포넌트 링크)·Keyboard 표·Accessibility와 Markdown 링크를 보인다. 지침 원본(ENT-DOC-002)은 47종 전수이고 누락·잘못된 대체 컴포넌트는 빌드 실패다. FR-DOC-003의 "사용 규칙"이 구현되지 않았던 편차는 DEV-054로 등록하고 종료한다. 패키지 공개 계약 변경 없음 | FR-DOC-003, FR-DOC-008, W-021, DEV-054 | `srs_final.md` v1.8, `prd.md`, `feature.md`, `glossary.md`, `requirements_screen_traceability_matrix.md`, `conductor_product_ia.md`, `conductor_wireframe_spec.md`, 아키텍처 문서 4종, `conductor_work_packages.md`, `conductor_implementation_traceability.md` | closed |
-| CR-049 | 2026-10-13 | design | 사용자 지시 (2026-10-13): 우선순위 리포트 4순위(랜딩 bento 그리드 + Kbd 단축키 칩 + 코드 중심 히어로)를 진행 | **W-001 랜딩의 히어로와 원칙 섹션을 다시 짠다. 요구사항은 바뀌지 않는다.** 히어로의 설치 한 줄을 코드 창(app.tsx 3줄 + 설치 명령, 각각 복사)으로 바꾸고, 원칙 4타일을 6타일 bento로 확장한다(키보드 타일은 Radix 동작을 Kbd 표로, 에이전트 타일은 DESIGN.md·llms.txt 링크). 구문 색은 대비 검사를 통과한 토큰 쌍만 쓴다 | W-001, FR-DOC-001, FR-DOC-006, NFR-001 | `conductor_wireframe_spec.md`, `conductor_implementation_traceability.md` | open |
+| CR-049 | 2026-10-13 | design | 사용자 지시 (2026-10-13): 우선순위 리포트 4순위(랜딩 bento 그리드 + Kbd 단축키 칩 + 코드 중심 히어로)를 진행 | **W-001 랜딩의 히어로와 원칙 섹션을 다시 짠다. 요구사항은 바뀌지 않는다.** 히어로의 설치 한 줄을 코드 창(app.tsx 3줄 + 설치 명령, 각각 복사)으로 바꾸고, 원칙 4타일을 6타일 bento로 확장한다(키보드 타일은 Radix 동작을 Kbd 표로, 에이전트 타일은 DESIGN.md·llms.txt 링크). 구문 색은 대비 검사를 통과한 토큰 쌍만 쓴다 | W-001, FR-DOC-001, FR-DOC-006, NFR-001 | `conductor_wireframe_spec.md`, `conductor_implementation_traceability.md` | closed |
+| CR-050 | 2026-10-13 | design | 사용자 지시 (2026-10-13): 우선순위 리포트 5순위(OKLCH로 상태색 파생)를 진행하고 0.6.1을 릴리스 | **secondary tone 버튼의 상태색 8종을 렌더 시점 sRGB `color-mix()`에서 빌드 시점 OKLab 토큰으로 바꾼다. 요구사항은 바뀌지 않는다.** 시맨틱 토큰 `tone.accent.*`·`tone.danger.*`(테마당 8종, additive)를 `oklab.ts`가 같은 비율로 계산해 hex로 내보낸다. 브라우저 지원 문제가 사라지고 채움 4종이 대비 쌍 CP-118~CP-121로 측정된다. OKLCH 대신 그 직교 좌표형인 OKLab에서 섞는 이유는 토큰 명세 5.11.1에 적었다 | FR-THM-004, FR-TOK-001, FR-CMP-002 | `conductor_design_system_tokens.md`, `conductor_implementation_traceability.md`, 토큰 API 리포트, Changeset(tokens·css patch) | open |
 
 유형: `scope`(범위 변경), `design`(설계 변경), `implementation`(구현 편차 DEV-### 처리), `correction`(문서 오류 수정)
 
@@ -555,3 +556,24 @@ CR-041 구현 cascade와 로컬 검증은 2026-09-14에 종료했다. 사용자�
 | 지침 검수 | 초안은 컴포넌트군을 둘로 나눠 작성했고, 키보드 행 가운데 불확실하다고 표시된 항목은 설치된 Radix 소스와 대조했다. Tooltip은 Provider가 필수이고 트리거 클릭으로 닫힌다. Switch는 Enter를 막지 않으므로 Enter와 Space 모두 토글한다. Checkbox는 Enter를 `preventDefault`한다. `blockedReason` 버튼은 네이티브 `disabled`다. 키 이름 표기는 통일했다(Escape, Arrow Down, Shift + Tab) |
 | 검증 (2026-10-13, 로컬) | build·typecheck·lint·lint:deps·lint:tokens(위반 0)·check:contrast·check:api·check:changesets·check:secrets·test·size·test:a11y 통과, docs E2E 56/56, Lighthouse 외부 요청 0건·CLS 0·LCP p75 2475ms(같은 시각 main 기준선 2456ms, 측정 편차 범위. 랜딩 번들 JS gzip +72B, CSS +16B). 결함 주입: 지침 삭제·대체 컴포넌트 오기·빈 키보드 목록이 각각 `DOC-GUIDANCE`로 빌드 실패. 브라우저: W-021 두 테마·390px 가로 넘침 0, 대체 컴포넌트 링크 이동, Markdown 파일이 `text/markdown`으로 제공됨. 산출물 크기 DESIGN.md 17KB(상한 64KB), llms.txt 7KB. 문서 검증기(`validate_srs_prd_env.py`)는 이 환경에 설치되어 있지 않아 실행하지 못했다 |
 | CI · 종료 | PR #44 head `d89a8b6`에서 verify(node 20/22)·visual regression 모두 success. DEV-054 closed, CR-048 closed(2026-10-13) |
+
+## CR-049 랜딩 코드 히어로와 원칙 bento (2026-10-13)
+
+| 항목 | 기록 |
+| --- | --- |
+| 유형 / 상태 | design / closed |
+| 변경 근거 | 사용자 지시(2026-10-13)로 우선순위 리포트 4순위를 진행 |
+| 범위 판정 | 요구사항 변경 없음. W-001의 히어로 설치 한 줄을 코드 창으로, 원칙 4타일을 6타일 bento로 바꾼 문서 사이트 작업이다 |
+| 검증 | 게이트 12종, docs E2E 56/56, Lighthouse LCP p75 2452ms(main 2456ms)·CLS 0, 두 테마·1280·1024·390px 가로 넘침 0 |
+| CI · 종료 | PR #45 head `ce3ede0`에서 verify(node 20/22)·visual regression success, 병합 `509ad50`. CR-049 closed(2026-10-13) |
+
+## CR-050 톤 틴트의 빌드 시점 OKLab 파생 (2026-10-13)
+
+| 항목 | 기록 |
+| --- | --- |
+| 유형 / 상태 | design / open |
+| 변경 근거 | 사용자 지시(2026-10-13)로 우선순위 리포트 5순위(OKLCH로 상태색 파생)와 0.6.1 릴리스를 진행 |
+| 범위 판정 | 요구사항 변경 없음. 새 시맨틱 토큰 추가와 CSS 소비 교체는 API 계약 6절의 비파괴 변경이라 patch다 |
+| 설계 | 렌더 시점 `color-mix(in oklch)` 대신 빌드 시점 혼합을 택했다. 산출물이 hex라 브라우저 지원 확인이 필요 없고, 대비 검사가 결과를 측정할 수 있다. 섞는 공간은 OKLab이다. 바탕이 거의 무채색이라 극좌표 OKLCH로 섞으면 색상이 끌려가기 때문이다(토큰 명세 5.11.1) |
+| 구현 | `packages/tokens/src/oklab.ts`(sRGB↔OKLab, `mixOklab`, `toneValues`), 다크·라이트 팔레트의 `tone.*` 8종, 대비 쌍 CP-118~CP-121, `components.css` secondary tone 규칙 4개 교체, 시험(`oklab.test.ts` 5건, CSS 회귀 2건, 쌍 수·키 집합 갱신) |
+| 검증 (2026-10-13, 로컬) | check:contrast 240/240 통과(새 쌍 13.67:1 이상), 게이트 12종, docs E2E 56/56. 이전 sRGB 혼합과의 색 차이는 기본 상태 채널당 최대 4.9/255 |

@@ -1,6 +1,6 @@
 # Conductor Design System 토큰 명세
 
-> 상태: review | 버전: v0.12 | 갱신일: 2026-10-12
+> 상태: review | 버전: v0.13 | 갱신일: 2026-10-13
 
 ## 0. 문서 성격과 범위 경계
 
@@ -456,6 +456,26 @@ FR-TOK-007 AC-4는 제목이 `font.size.xl` 이상과 `clamp()` 기반 반응형
 대비 측정 기준: 포커스 링이 덮는 픽셀의 focus 전후 색을 비교한다. focus 전 그 픽셀의 색은 링이 놓인 표면이다. alpha 0.80은 표면에 따라 합성색이 달라지므로 표면별로 따로 계산한다.
 
 `state.disabled`와 `state.disabledPolicy`는 배경 채움이며, 그 위 텍스트 쌍으로 검사된다(8절 CP-040, CP-041).
+
+### 5.11.1 톤 틴트 (`tone.*`, CR-050)
+
+secondary tone 버튼의 채움과 경계다. 렌더 시점의 `color-mix(in srgb, …)`를 대신해 빌드 시점에 OKLab에서 섞어(`packages/tokens/src/oklab.ts`) 테마별 hex로 내보낸다. 섞는 비율은 바꾸기 전의 sRGB 혼합과 같고, 기준 색은 해당 테마의 `accent.DEFAULT`·`status.danger`, 바탕은 `surface.raised`다.
+
+| 토큰 | 비율 | 다크 | 라이트 | `usage` |
+| --- | --- | --- | --- | --- |
+| `tone.accent.background` | 4% | `#172131` | `#f3f6fc` | decorative |
+| `tone.accent.border` | 14% | `#1f2944` | `#e0e6fa` | decorative |
+| `tone.accent.backgroundHover` | 12% | `#1d2840` | `#e4e9fa` | decorative |
+| `tone.accent.borderHover` | 45% | `#394682` | `#a7b5ef` | decorative |
+| `tone.danger.background` | 4% | `#1d202c` | `#fbf4f4` | decorative |
+| `tone.danger.border` | 14% | `#312630` | `#f9e0dd` | decorative |
+| `tone.danger.backgroundHover` | 12% | `#2d252f` | `#f9e4e2` | decorative |
+| `tone.danger.borderHover` | 45% | `#72363a` | `#eea39a` | decorative |
+
+- **OKLab을 고른 이유.** OKLab은 OKLCH의 직교 좌표 표현이라 명도가 지각적으로 고르게 변한다. 극좌표 OKLCH로 섞으면 바탕이 거의 무채색이어서 의미 없는 바탕 색상(hue) 쪽으로 틴트의 색상이 끌려간다. 예컨대 빨강을 푸른 회색 바탕 쪽으로 섞으면 보라로 기운다. 직교 좌표로 섞으면 톤의 색상은 유지되고 채도만 고르게 줄어든다.
+- **브라우저 지원.** 산출물은 평범한 hex라 `oklch()`·상대 색 문법·`color-mix()`를 지원하지 않는 브라우저에서도 같은 색을 그린다.
+- **이전 sRGB 혼합과의 차이.** 기본 상태(4%·14%)는 채널당 최대 4.9/255, hover(45%)는 최대 10.9/255다(라이트 danger 경계).
+- **대비 검사.** 채움 4종은 대비 검사의 배경 인자가 되어 `text.primary`와의 쌍(CP-118~CP-121)으로 측정한다. 경계 4종은 라벨이 컨트롤을 식별하므로 WCAG 1.4.11상 경계 대비 의무가 없어 `decorative`다.
 
 ### 5.12 z-index (FR-TOK-008)
 
@@ -1005,7 +1025,7 @@ FR-THM-004 AC-1은 검사 대상 쌍이 `packages/tokens/src/contrast-pairs.ts`�
 
 ### 8.2 선언된 쌍과 측정 결과
 
-선언된 쌍 116개 × 2개 테마 = 232건. 모든 수치는 계산된 값이다. CP-042는 CR-035가 `status.neutralEnd`를 `nonText`로 되돌리며 되살린 의무이고, CP-043~CP-117은 CR-036이 더한 dataviz 쌍이다.
+선언된 쌍 120개 × 2개 테마 = 240건. 모든 수치는 계산된 값이다. CP-042는 CR-035가 `status.neutralEnd`를 `nonText`로 되돌리며 되살린 의무이고, CP-043~CP-117은 CR-036이 더한 dataviz 쌍, CP-118~CP-121은 CR-050이 더한 톤 틴트 쌍이다.
 
 CP-025는 CR-006으로 선언 목록에서 제거되었다. **ID는 재사용하지 않는다** — 번호를 당기면 이전 리포트·테스트 이름·커밋 메시지의 CP 참조가 다른 쌍을 가리키게 된다. 제거된 자리는 표에 흔적으로 남긴다.
 
@@ -1060,6 +1080,8 @@ CP-043 ~ CP-117: dataviz 25키 × 3표면(`surface.base`·`surface.canvas`·`sur
 | --- | --- | --- | --- |
 | `dataviz.series.1`~`20` | CP-043 ~ CP-102 | 6.27 ~ 7.34 | 3.32 ~ 3.87 |
 | `dataviz.sequential.1`~`5` | CP-103 ~ CP-117 | 3.39 ~ 12.58 | 3.28 ~ 10.25 |
+
+CP-118 ~ CP-121: `text.primary` 위 `tone.accent.background`·`tone.accent.backgroundHover`·`tone.danger.background`·`tone.danger.backgroundHover`(5.11.1절, body 4.5:1). 다크 13.67 ~ 15.09, 라이트 15.39 ~ 17.34.
 
 라이트 `severity.*` 4쌍(CP-029 ~ CP-032)의 측정값이 다크와 동일하다. 라이트 `badge.severity.text`가 `{text.inverse}`(`#f4f7fb`)이고 다크 `badge.severity.text`가 `{text.primary}`(`#f4f7fb`)로 값이 같으며, 심각도 채움 4색이 두 테마에서 같은 값이기 때문이다. 우연이 아니라 5.8절과 6.2절의 정의가 만나는 지점이다.
 
@@ -1148,7 +1170,7 @@ FR-THM-005가 강제한 두 교정이 9건의 미달을 제거했다. `focusRing
 | 상태·미터·심각도 나머지 | 0건 | 0건 | `body` 분류로 전부 통과 |
 | **합계** | **0건** | **0건** | |
 
-선언된 116개 쌍 × 2개 테마 = 232건이 전부 통과한다. `pnpm check:contrast`는 다크와 라이트 모두에서 종료 코드 0을 반환하며, M-3(미달 0건)과 FR-A11Y-004 AC-1이 충족된다.
+선언된 120개 쌍 × 2개 테마 = 240건이 전부 통과한다. `pnpm check:contrast`는 다크와 라이트 모두에서 종료 코드 0을 반환하며, M-3(미달 0건)과 FR-A11Y-004 AC-1이 충족된다.
 
 대가는 사라지지 않고 위치를 옮겼다. `status.neutralEnd`의 다크 시인성 저하(최대 2.60:1)는 대비 검사가 아니라 **알려진 제약**으로 관리된다(`conductor_implementation_traceability.md` §5). 검사를 통과했다는 사실이 그 점이 잘 보인다는 뜻은 아니다.
 ---

@@ -157,6 +157,8 @@ describe("dark palette against the source tokens.css", () => {
         "motion.spin",
         // CR-047: motion vocabulary beyond the source's three bindings.
         ...["instant", "exit", "slow", "spring", "stagger"].map((name) => `motion.${name}`),
+        // CR-050: OKLab tone tints derived at build time.
+        ...["accent", "danger"].flatMap((tone) => ["background", "border", "backgroundHover", "borderHover"].map((state) => `tone.${tone}.${state}`)),
       ].sort(),
     );
   });
