@@ -103,13 +103,14 @@ test("FR-CMP-012 receipt is not index completion; action permission and feedback
 });
 
 for (const [width, theme] of [[360, "dark"], [360, "light"], [768, "dark"], [768, "light"], [1280, "dark"], [1280, "light"], [1536, "dark"], [1536, "light"]] as const) {
-  test(`FR-QA-003 synthetic workspaces ${width} ${theme}`, async ({ page }) => {
+  test(`FR-QA-003 FR-DOC-009 synthetic workspaces and blocks ${width} ${theme}`, async ({ page }) => {
     mkdirSync(evidence, { recursive: true });
     await page.setViewportSize({ width, height: 1000 });
-    for (const route of ["workbench", "relations", "operations"]) {
+    // CR-051 W-063~W-065 block examples share the same viewport, theme and axe matrix.
+    for (const route of ["workbench", "relations", "operations", "empty-states", "filter-table", "settings-form"]) {
       await page.goto(`/#/examples/${route}`);
       await page.evaluate(value => { document.documentElement.dataset.cdtTheme = value; }, theme);
-      await expect(page.getByRole("heading", { name: ({ workbench: "검색 워크벤치", relations: "관계 탐색기", operations: "수집 운영 상태" } as Record<string, string>)[route]!, exact: true })).toBeVisible();
+      await expect(page.getByRole("heading", { name: ({ workbench: "검색 워크벤치", relations: "관계 탐색기", operations: "수집 운영 상태", "empty-states": "빈 상태", "filter-table": "필터 테이블", "settings-form": "설정 폼" } as Record<string, string>)[route]!, exact: true })).toBeVisible();
       if (route === "relations") await expect(page.locator(".cdt-relation__canvas")).toBeVisible();
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
       // Contrast is judged on the settled frame (DEV-047): the docs route fades in (CR-042) and the theme flip

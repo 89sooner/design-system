@@ -1,6 +1,6 @@
 # Conductor Design System 와이어프레임 사양서
 
-> 상태: review | 버전: v0.7 | 갱신일: 2026-10-13
+> 상태: review | 버전: v0.8 | 갱신일: 2026-10-13
 
 ## 1. 문서 위치와 책임
 
@@ -1312,3 +1312,13 @@ C-030 Table, C-033 Kbd, C-020 Badge, C-010 Card, C-011 CardGrid, C-060 Banner, C
 | W-062 | 수집 운영 상태 | `/examples/operations` | FR-CMP-012, FR-CMP-013 |
 
 W-040 가이드 화면은 유지하며 실제 조합은 독립 경로로 연결한다. 이는 화면을 URL로 직접 재현하기 위한 구현 선택이다.
+
+## CR-051 블록 예제 (FR-DOC-009)
+
+세 화면은 같은 머리를 쓴다: 브레드크럼(Conductor / 블록 예제), `BLOCK / 0n` 아이브로, H1, 리드 문장, 합성 데이터 안내 `Banner`(info). 본문은 공개 컴포넌트만 조합하고, 화면 고유 레이아웃은 `docs-block-*`·`docs-settings-form*` 클래스가 토큰 값으로만 잡는다. 결과 알림은 화면 하단 `role="status"` 문단 하나로 모은다.
+
+| 화면 | 레이아웃 | 사용 컴포넌트 | 상태와 이벤트 |
+| --- | --- | --- | --- |
+| W-063 빈 상태 | 2열 격자(800px 이하 1열)에 `Panel` 4개. 각 패널은 제목, 사용 시점 규칙 한 문장, 예시 | `EmptyState`, `Button`(`blockedReason` + `aria-describedby`), `Banner`(danger) | 처음 사용 → "첫 프로젝트 만들기"로 목록 표시, 되돌리기 가능. 검색 결과 없음 → "검색 조건 지우기"로 전체 표시. 권한 없음 → 비활성 버튼과 보이는 사유. 불러오기 실패 → 재시도 기록만 남긴다 |
+| W-064 필터 테이블 | 조건 툴바(서비스 검색, 상태 `Select`) → 적용 조건 그룹(칩, "조건 모두 지우기") → 결과 수 → 표 또는 빈 상태 | `FilterToolbar`, `Field`, `TextField`, `Select`, `FilterChip`, `Table`(`aria-sort`), `StatusBadge`, `EmptyState` | 입력 즉시 거른다. 0건이면 표를 빼고 빈 상태를 보인다. 지우면 검색 입력으로 포커스 복귀. 소요 시간 열 머리 버튼이 정렬 방향을 바꾼다 |
+| W-065 설정 폼 | 오류 요약(제출 실패 시) → `Panel` 일반(이름·설명·지역) → `Panel` 알림(Switch·Checkbox) → 행동 줄(미저장 변경 수, 변경 취소, 저장) → 위험 구역 `Panel` | `Field`, `TextField`, `TextArea`, `Select`, `Switch`, `Checkbox`, `Banner`(danger), `Dialog`, `Button` | 제출 시 검증, 실패하면 요약에 포커스, 요약 링크가 필드로 포커스 이동. 성공하면 저장값 갱신과 상태 알림. 삭제는 `Dialog` 확인을 거친다 |

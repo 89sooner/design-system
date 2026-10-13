@@ -66,3 +66,25 @@
 @layer cdt.component { .docs-workbench-example .cdt-data-table .cdt-table__scroll { max-block-size: calc(var(--cdt-space-8) * 18); } }
 
 @layer cdt.component { .docs-workbench-example, .docs-relation-example, .docs-operations-example { gap: var(--cdt-space-4); } }
+
+/* CR-051 FR-DOC-009 block examples W-063~W-065: composition only, every value a token. */
+@layer cdt.component {
+  .docs-block-example { gap: var(--cdt-space-4); }
+  .docs-block-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--cdt-space-4); }
+  .docs-block-case, .docs-settings-form > .cdt-panel, .docs-settings-form__danger { display: grid; gap: var(--cdt-space-3); align-content: start; }
+  .docs-block-case h2, .docs-settings-form h2, .docs-settings-form__danger h2 { margin: 0; font-size: var(--cdt-font-size-lg); }
+  .docs-block-case > p, .docs-settings-form__danger > p { margin: 0; }
+  .docs-settings-form__danger { justify-items: start; }
+  .docs-block-list { margin: 0; padding-inline-start: var(--cdt-space-5); }
+  .docs-inline-link, .docs-settings-form__summary a { text-decoration: underline; text-underline-offset: 0.2em; }
+  .docs-sort-button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; border-radius: var(--cdt-radius-sm); }
+  .docs-settings-form { display: grid; gap: var(--cdt-space-4); }
+  .docs-settings-form__summary { border-radius: var(--cdt-radius-md); }
+  .docs-settings-form__summary:focus-visible { outline: none; box-shadow: var(--cdt-focus-ring); }
+  .docs-settings-form__summary ul { margin: 0; padding-inline-start: var(--cdt-space-5); }
+  .docs-settings-form__summary a { color: inherit; }
+  .docs-settings-form__actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: var(--cdt-space-3); }
+  .docs-settings-form__actions > p { margin: 0 auto 0 0; }
+  .docs-settings-form__dialog-actions { display: flex; justify-content: flex-end; gap: var(--cdt-space-2); margin-block-start: var(--cdt-space-4); }
+  @media (max-width: 800px) { .docs-block-grid { grid-template-columns: minmax(0, 1fr); } }
+}
