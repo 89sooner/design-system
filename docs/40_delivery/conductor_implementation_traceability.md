@@ -481,3 +481,4 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | 화면 | W-021 헤더에 목적 문장과 "View as Markdown", Usage 섹션(Use/Avoid 2열, Keyboard 표 + Accessibility). 두 테마와 390px에서 가로 넘침 0 |
 | 검증 (로컬) | 게이트 12종 통과, docs E2E 56/56, docs 단위 시험 16/16, Lighthouse 외부 요청 0·CLS 0·LCP p75 2475ms(같은 시각 main 2456ms) |
 | DEV | DEV-054 closed |
+| CI · 종료 | PR #44 head `d89a8b6`에서 verify(node 20/22)·visual regression 모두 success. CR-048 closed(2026-10-13) |
