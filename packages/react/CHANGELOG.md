@@ -1,5 +1,13 @@
 # @conductor-by-89soone/react
 
+## 0.6.1
+
+### Patch Changes
+
+- Updated dependencies [cce0505]
+  - @conductor-by-89soone/tokens@0.6.1
+  - @conductor-by-89soone/css@0.6.1
+
 ## 0.6.0
 
 ### Patch Changes
