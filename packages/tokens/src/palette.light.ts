@@ -12,10 +12,11 @@
  * Refs: WP-010 FR-THM-002 FR-QA-001
  */
 import { TokenBuildError } from "./build/errors";
+import { toneValues } from "./oklab";
 import { darkPalette } from "./palette.dark";
 import type { TokenDefinition } from "./schema";
 
-const values: Readonly<Record<string, string>> = {
+const baseValues: Readonly<Record<string, string>> = {
   "surface.base": "#e8ecf2",
   "surface.canvas": "#eef1f6",
   "surface.subtle": "#f3f6f9",
@@ -92,6 +93,15 @@ const values: Readonly<Record<string, string>> = {
  * instead of exempting it — the exemption has to be declared on the token, not inferred from
  * which list it appears in.
  */
+/** CR-050: the light tone tints, mixed from the light accent, danger and raised surface. */
+const values: Readonly<Record<string, string>> = {
+  ...baseValues,
+  ...toneValues(
+    { accent: baseValues["accent.DEFAULT"] as string, danger: baseValues["status.danger"] as string },
+    baseValues["surface.raised"] as string,
+  ),
+};
+
 export const lightAdditions: readonly TokenDefinition[] = [];
 
 /**

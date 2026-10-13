@@ -53,15 +53,19 @@
     color: var(--cdt-badge-fill-text);
   }
 
+  /*
+   * Tone tints are build-time OKLab tokens (CR-050), not render-time `color-mix()`: perceptually
+   * even, independent of browser colour-space support, and measured by checkContrast (CP-118~121).
+   */
   .cdt-btn--secondary.cdt-btn--tone-accent {
-    border-color: color-mix(in srgb, var(--cdt-accent) 14%, var(--cdt-surface-raised));
-    background: color-mix(in srgb, var(--cdt-accent) 4%, var(--cdt-surface-raised));
+    border-color: var(--cdt-tone-accent-border);
+    background: var(--cdt-tone-accent-background);
     color: var(--cdt-text-primary);
   }
 
   .cdt-btn--secondary.cdt-btn--tone-danger {
-    border-color: color-mix(in srgb, var(--cdt-status-danger) 14%, var(--cdt-surface-raised));
-    background: color-mix(in srgb, var(--cdt-status-danger) 4%, var(--cdt-surface-raised));
+    border-color: var(--cdt-tone-danger-border);
+    background: var(--cdt-tone-danger-background);
     color: var(--cdt-text-primary);
   }
 
@@ -135,14 +139,14 @@
   }
 
   .cdt-btn--secondary.cdt-btn--tone-accent:not(:disabled):hover {
-    border-color: color-mix(in srgb, var(--cdt-accent) 45%, var(--cdt-surface-raised));
-    background: color-mix(in srgb, var(--cdt-accent) 12%, var(--cdt-surface-raised));
+    border-color: var(--cdt-tone-accent-border-hover);
+    background: var(--cdt-tone-accent-background-hover);
     color: var(--cdt-text-primary);
   }
 
   .cdt-btn--secondary.cdt-btn--tone-danger:not(:disabled):hover {
-    border-color: color-mix(in srgb, var(--cdt-status-danger) 45%, var(--cdt-surface-raised));
-    background: color-mix(in srgb, var(--cdt-status-danger) 12%, var(--cdt-surface-raised));
+    border-color: var(--cdt-tone-danger-border-hover);
+    background: var(--cdt-tone-danger-background-hover);
   }
 
   .cdt-btn--ghost:not(:disabled):hover {

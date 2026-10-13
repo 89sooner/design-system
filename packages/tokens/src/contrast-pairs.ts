@@ -243,6 +243,17 @@ const datavizPairs: ContrastPair[] = [
   pair("CP-117", "dataviz.sequential.5", "surface.raised", "nonText"),
 ];
 
+/**
+ * CR-050: the secondary tone-button label on each derived tone fill. These fills used to be a
+ * render-time `color-mix()` the check could not see; build-time OKLab tokens make them measurable.
+ */
+const tonePairs: ContrastPair[] = [
+  pair("CP-118", "text.primary", "tone.accent.background", "body"),
+  pair("CP-119", "text.primary", "tone.accent.backgroundHover", "body"),
+  pair("CP-120", "text.primary", "tone.danger.background", "body"),
+  pair("CP-121", "text.primary", "tone.danger.backgroundHover", "body"),
+];
+
 export const contrastPairs: readonly ContrastPair[] = [
   ...textOnSurface,
   ...accentPairs,
@@ -253,6 +264,7 @@ export const contrastPairs: readonly ContrastPair[] = [
   ...badgePairs,
   ...disabledPairs,
   ...datavizPairs,
+  ...tonePairs,
 ];
 
 /** A combination that must never render. `FP-###`, permanent like a `CP-###`. */

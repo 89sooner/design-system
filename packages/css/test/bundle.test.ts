@@ -653,6 +653,20 @@ describe("FR-CMP-006 surface entrance motion", () => {
   });
 });
 
+describe("CR-050 tone tints are build-time OKLab tokens", () => {
+  test.each(bundles)("%s: secondary tone buttons read the tone tokens and mix nothing at render time", (_name, css) => {
+    for (const tone of ["accent", "danger"]) {
+      const rest = ruleFor(css, "cdt.component", new RegExp(`^\\.cdt-btn--secondary\\.cdt-btn--tone-${tone}$`));
+      expect(rest?.decls["background"]).toBe(`var(--cdt-tone-${tone}-background)`);
+      expect(rest?.decls["border-color"]).toBe(`var(--cdt-tone-${tone}-border)`);
+      const hover = ruleFor(css, "cdt.component", new RegExp(`^\\.cdt-btn--secondary\\.cdt-btn--tone-${tone}:not\\(:disabled\\):hover$`));
+      expect(hover?.decls["background"]).toBe(`var(--cdt-tone-${tone}-background-hover)`);
+      expect(hover?.decls["border-color"]).toBe(`var(--cdt-tone-${tone}-border-hover)`);
+    }
+    expect(css).not.toMatch(/color-mix\(in srgb, ?var\(--cdt-(?:accent|status-danger)\) \d+%, ?var\(--cdt-surface-raised\)\)/);
+  });
+});
+
 describe("CR-047 motion vocabulary", () => {
   const SPRING_READERS = /var\(--cdt-motion-spring\)/;
 

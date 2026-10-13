@@ -15,6 +15,7 @@
  *
  * Refs: WP-002 FR-THM-001 FR-THM-005 FR-TOK-005
  */
+import { toneValues, TONE_WEIGHTS } from "./oklab";
 import type { TokenDefinition, TokenUsage } from "./schema";
 
 interface DarkTokenInput {
@@ -588,6 +589,37 @@ const dataviz: TokenDefinition[] = [
   }),
 ];
 
+/**
+ * Tone tints for secondary tone buttons (CR-050): the tone mixed over `surface.raised` in OKLab at
+ * build time (`oklab.ts`), so the stylesheet no longer mixes colours at render time and the
+ * backgrounds can be measured. All `decorative`: backgrounds are contrast *arguments* (`text.primary`
+ * on each background is CP-118~CP-121), and the borders reinforce a button whose label already
+ * identifies it (WCAG 1.4.11 needs no boundary for a control identified by its text).
+ */
+const TONE_STATE_DESCRIPTIONS: Readonly<Record<keyof typeof TONE_WEIGHTS, string>> = {
+  background: "rest fill",
+  border: "rest edge",
+  backgroundHover: "hover fill",
+  borderHover: "hover edge",
+};
+
+function valueOf(tokens: readonly TokenDefinition[], key: string): string {
+  const value = tokens.find((token) => token.key === key)?.value;
+  if (typeof value !== "string") throw new Error(`palette.dark: tone base "${key}" has no literal colour value`);
+  return value;
+}
+
+const toneBases = { accent: valueOf(accent, "accent.DEFAULT"), danger: valueOf(status, "status.danger") } as const;
+const tone: TokenDefinition[] = Object.entries(toneValues(toneBases, valueOf(surface, "surface.raised"))).map(([key, value]) => {
+  const [, toneName, state] = key.split(".") as [string, "accent" | "danger", keyof typeof TONE_WEIGHTS];
+  return darkToken({
+    key,
+    usage: "decorative",
+    value,
+    description: `Secondary ${toneName}-tone button ${TONE_STATE_DESCRIPTIONS[state]}: ${Math.round(TONE_WEIGHTS[state] * 100)}% of \`${toneName === "accent" ? "accent" : "status.danger"}\` over \`surface.raised\`, mixed in OKLab at build time (CR-050).`,
+  });
+});
+
 export const darkPalette: readonly TokenDefinition[] = [
   ...surface,
   ...text,
@@ -599,5 +631,6 @@ export const darkPalette: readonly TokenDefinition[] = [
   ...fontFamily,
   ...elevation,
   ...interaction,
+  ...tone,
   ...dataviz,
 ];
