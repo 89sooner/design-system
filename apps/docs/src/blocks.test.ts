@@ -28,8 +28,8 @@ describe("FR-DOC-009 AC-2: filter table rules", () => {
     expect(isFiltered(emptyFilter)).toBe(false);
     expect(isFiltered({ query: " ", status: "all" })).toBe(false);
     expect(isFiltered({ query: "", status: "danger" })).toBe(true);
-    expect(resultSummary(3, 3)).toBe("전체 3건");
-    expect(resultSummary(1, 3)).toBe("3건 중 1건 표시");
+    expect(resultSummary(3, 3)).toBe("Showing all 3");
+    expect(resultSummary(1, 3)).toBe("Showing 1 of 3");
   });
 });
 

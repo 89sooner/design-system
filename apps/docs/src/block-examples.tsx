@@ -14,7 +14,7 @@ const iconProps = { size: 14, strokeWidth: 2 } as const;
 
 /** Lucide components for the statuses these examples use, keyed by the `STATUS_ICONS` name. */
 const statusIcons: Readonly<Partial<Record<Status, LucideIcon>>> = { success: CheckCircle2, running: Loader, waiting: PauseCircle, danger: XCircle };
-const statusLabels: Readonly<Partial<Record<Status, string>>> = { success: "성공", running: "진행 중", waiting: "승인 대기", danger: "실패" };
+const statusLabels: Readonly<Partial<Record<Status, string>>> = { success: "Succeeded", running: "Running", waiting: "Awaiting approval", danger: "Failed" };
 
 function StatusCell({ status }: { readonly status: Status }) {
   const Icon = statusIcons[status]!;
@@ -23,7 +23,7 @@ function StatusCell({ status }: { readonly status: Status }) {
 
 function BlockHeader({ index, id, title, lead }: { readonly index: string; readonly id: string; readonly title: string; readonly lead: string }) {
   return <>
-    <Breadcrumb><Link to="/">Conductor</Link><span aria-hidden="true">/</span><span>블록 예제</span></Breadcrumb>
+    <Breadcrumb><Link to="/">Conductor</Link><span aria-hidden="true">/</span><span>Blocks</span></Breadcrumb>
     <div><p className="docs-eyebrow">BLOCK / {index}</p><h1 id={id}>{title}</h1><p className="docs-lead">{lead}</p></div>
   </>;
 }
@@ -40,31 +40,34 @@ function EmptyCase({ title, rule, children }: { readonly title: string; readonly
 }
 
 /** A disabled button's `title` is not reliably announced or visible, so the reason is also text the button points to. */
-const EXPORT_BLOCKED = "감사 로그 열람 권한이 필요합니다.";
+const EXPORT_BLOCKED = "You need permission to view audit logs.";
+
+/** "1 change" · "2 changes" — 영어 카운트 문구의 단수/복수를 맞춘다. */
+const plural = (count: number, one: string, many = `${one}s`) => `${count} ${count === 1 ? one : many}`;
 
 export function EmptyStatesExample() {
   const [projects, setProjects] = useState<readonly string[]>([]);
   const [query, setQuery] = useState("billing");
   const [feedback, setFeedback] = useState("");
   return <section className="cdt-page docs-block-example" aria-labelledby="empty-title">
-    <BlockHeader index="01" id="empty-title" title="빈 상태" lead="비어 있는 이유와 다음 행동을 함께 보여줍니다." />
-    <Banner tone="info">합성 데이터 · 운영 API 미연동. 버튼은 이 화면 안의 상태만 바꿉니다.</Banner>
+    <BlockHeader index="01" id="empty-title" title="Empty states" lead="Show why something is empty and what to do next." />
+    <Banner tone="info">Synthetic data · not connected to a live API. Buttons only change state on this page.</Banner>
     <div className="docs-block-grid">
-      <EmptyCase title="처음 사용" rule="아직 만든 것이 없을 때. 무엇을 만들 수 있는지와 첫 행동 하나를 제시합니다.">
+      <EmptyCase title="First use" rule="Nothing has been created yet. Say what can be made and offer one first action.">
         {projects.length === 0
-          ? <EmptyState icon={<FolderPlus size={20} strokeWidth={1.75} />} title="프로젝트가 아직 없습니다" description="프로젝트를 만들면 배포와 알림을 한곳에서 관리합니다." action={<Button variant="primary" onClick={() => { setProjects(["atlas-web"]); setFeedback("합성 프로젝트 atlas-web 생성"); }}>첫 프로젝트 만들기</Button>} />
-          : <><ul className="docs-block-list">{projects.map(name => <li key={name} className="cdt-mono">{name}</li>)}</ul><Button variant="ghost" onClick={() => { setProjects([]); setFeedback("처음 사용 상태로 되돌림"); }}>처음 상태로 되돌리기</Button></>}
+          ? <EmptyState icon={<FolderPlus size={20} strokeWidth={1.75} />} title="No projects yet" description="Create a project to manage deployments and alerts in one place." action={<Button variant="primary" onClick={() => { setProjects(["atlas-web"]); setFeedback("Created synthetic project atlas-web"); }}>Create your first project</Button>} />
+          : <><ul className="docs-block-list">{projects.map(name => <li key={name} className="cdt-mono">{name}</li>)}</ul><Button variant="ghost" onClick={() => { setProjects([]); setFeedback("Reset to first use"); }}>Back to first use</Button></>}
       </EmptyCase>
-      <EmptyCase title="검색 결과 없음" rule="데이터는 있지만 조건에 맞는 것이 없을 때. 적용한 조건을 보여주고 해제 방법을 제시합니다.">
+      <EmptyCase title="No search results" rule="Data exists but nothing matches. Show the applied filters and how to clear them.">
         {query === ""
-          ? <><p>조건 없이 전체 12건을 표시합니다.</p><Button variant="ghost" onClick={() => setQuery("billing")}>조건 다시 적용</Button></>
-          : <EmptyState icon={<SearchX size={20} strokeWidth={1.75} />} title={`"${query}"와 일치하는 서비스가 없습니다`} description="전체 12건 중 0건입니다. 철자를 확인하거나 조건을 지우세요." action={<Button onClick={() => { setQuery(""); setFeedback("검색 조건 해제 · 전체 12건"); }}>검색 조건 지우기</Button>} />}
+          ? <><p>Showing all 12 with no filters.</p><Button variant="ghost" onClick={() => setQuery("billing")}>Reapply filter</Button></>
+          : <EmptyState icon={<SearchX size={20} strokeWidth={1.75} />} title={`No services match "${query}"`} description="0 of 12 shown. Check the spelling or clear the filter." action={<Button onClick={() => { setQuery(""); setFeedback("Search filter cleared · showing all 12"); }}>Clear search filter</Button>} />}
       </EmptyCase>
-      <EmptyCase title="권한 없음" rule="볼 수 없는 것을 0건으로 표시하지 않습니다. 이유와 요청할 곳을 알리고, 할 수 없는 행동에는 차단 사유를 붙입니다.">
-        <EmptyState icon={<Lock size={20} strokeWidth={1.75} />} title="이 프로젝트의 감사 로그를 볼 권한이 없습니다" description="조직 관리자에게 감사 로그 열람 권한을 요청하세요. 로그는 삭제되지 않았습니다." action={<><Button blockedReason={EXPORT_BLOCKED} aria-describedby="empty-export-reason">로그 내보내기</Button><p id="empty-export-reason" className="cdt-muted">{EXPORT_BLOCKED}</p></>} />
+      <EmptyCase title="No permission" rule="Don't show what can't be seen as zero results. Say why and where to ask, and give blocked actions a reason.">
+        <EmptyState icon={<Lock size={20} strokeWidth={1.75} />} title="You can't view this project's audit logs" description="Ask an organization admin for audit log access. The logs have not been deleted." action={<><Button blockedReason={EXPORT_BLOCKED} aria-describedby="empty-export-reason">Export logs</Button><p id="empty-export-reason" className="cdt-muted">{EXPORT_BLOCKED}</p></>} />
       </EmptyCase>
-      <EmptyCase title="불러오기 실패" rule="오류를 빈 목록으로 바꾸지 않습니다. 실패 사실과 다시 시도할 방법을 알립니다.">
-        <Banner tone="danger" title="배포 목록을 불러오지 못했습니다" action={<Button onClick={() => setFeedback("합성 재조회 요청 1건 기록 · 네트워크 요청 없음")}>다시 시도</Button>}>마지막으로 확인한 목록을 최신이라고 표시하지 않습니다.</Banner>
+      <EmptyCase title="Load failed" rule="Don't turn an error into an empty list. Say it failed and how to retry.">
+        <Banner tone="danger" title="Couldn't load deployments" action={<Button onClick={() => setFeedback("Logged 1 synthetic retry · no network request")}>Retry</Button>}>The last list loaded is not shown as up to date.</Banner>
       </EmptyCase>
     </div>
     <p role="status">{feedback}</p>
@@ -91,31 +94,31 @@ export function FilterTableExample() {
   const rows = sortBySeconds(filterDeployments(deployments, filter), direction);
   const clear = () => { setFilter(emptyFilter); searchRef.current?.focus(); };
   return <section className="cdt-page docs-block-example" aria-labelledby="filter-title">
-    <BlockHeader index="02" id="filter-title" title="필터 테이블" lead="조건을 좁히고, 적용한 조건을 보이게 두고, 한 번에 지웁니다." />
-    <Banner tone="info"><span>합성 배포 12건 · 운영 API 미연동. 큰 결과 집합과 선택·미리보기는 <Link className="docs-inline-link" to="/examples/workbench">검색 워크벤치</Link>의 DataTable을 쓰세요.</span></Banner>
+    <BlockHeader index="02" id="filter-title" title="Filter table" lead="Narrow with filters, keep the applied filters visible, and clear them in one step." />
+    <Banner tone="info"><span>12 synthetic deployments · not connected to a live API. For large result sets with selection and preview, use the DataTable in the <Link className="docs-inline-link" to="/examples/workbench">Search workbench</Link>.</span></Banner>
     <FilterToolbar>
-      <Field label="서비스 검색"><TextField ref={searchRef} type="search" value={filter.query} placeholder="서비스 이름" onChange={event => setFilter({ ...filter, query: event.target.value })} /></Field>
-      <Field label="상태">
+      <Field label="Search services"><TextField ref={searchRef} type="search" value={filter.query} placeholder="Service name" onChange={event => setFilter({ ...filter, query: event.target.value })} /></Field>
+      <Field label="Status">
         <Select.Root value={filter.status} onValueChange={value => setFilter({ ...filter, status: value as DeploymentFilter["status"] })}>
           <Select.Trigger><Select.Value /></Select.Trigger>
-          <Select.Content>{statusChoices.map(value => <Select.Item key={value} value={value}>{value === "all" ? "전체 상태" : statusLabels[value]}</Select.Item>)}</Select.Content>
+          <Select.Content>{statusChoices.map(value => <Select.Item key={value} value={value}>{value === "all" ? "All statuses" : statusLabels[value]}</Select.Item>)}</Select.Content>
         </Select.Root>
       </Field>
     </FilterToolbar>
-    {isFiltered(filter) && <FilterToolbar role="group" aria-label="적용한 조건">
-      {filter.query.trim() !== "" && <FilterChip removeLabel="검색 조건 제거" onRemove={() => setFilter({ ...filter, query: "" })}>검색: {filter.query.trim()}</FilterChip>}
-      {filter.status !== "all" && <FilterChip removeLabel="상태 조건 제거" onRemove={() => setFilter({ ...filter, status: "all" })}>상태: {statusLabels[filter.status]}</FilterChip>}
-      <Button variant="ghost" size="sm" onClick={clear}>조건 모두 지우기</Button>
+    {isFiltered(filter) && <FilterToolbar role="group" aria-label="Applied filters">
+      {filter.query.trim() !== "" && <FilterChip removeLabel="Remove search filter" onRemove={() => setFilter({ ...filter, query: "" })}>Search: {filter.query.trim()}</FilterChip>}
+      {filter.status !== "all" && <FilterChip removeLabel="Remove status filter" onRemove={() => setFilter({ ...filter, status: "all" })}>Status: {statusLabels[filter.status]}</FilterChip>}
+      <Button variant="ghost" size="sm" onClick={clear}>Clear all filters</Button>
     </FilterToolbar>}
     <p role="status" className="cdt-muted">{resultSummary(rows.length, deployments.length)}</p>
     {rows.length === 0
-      ? <EmptyState icon={<SearchX size={20} strokeWidth={1.75} />} title="조건에 맞는 배포가 없습니다" description={`전체 ${deployments.length}건 중 0건입니다. 조건을 지우면 전체 목록으로 돌아갑니다.`} action={<Button onClick={clear}>조건 모두 지우기</Button>} />
-      : <Table caption="합성 배포 목록">
+      ? <EmptyState icon={<SearchX size={20} strokeWidth={1.75} />} title="No deployments match these filters" description={`0 of ${deployments.length} shown. Clear the filters to return to the full list.`} action={<Button onClick={clear}>Clear all filters</Button>} />
+      : <Table caption="Synthetic deployments">
         <Table.Head><Table.Row>
-          <Table.HeaderCell>서비스</Table.HeaderCell>
-          <Table.HeaderCell>환경</Table.HeaderCell>
-          <Table.HeaderCell>상태</Table.HeaderCell>
-          <Table.HeaderCell aria-sort={direction}><button type="button" className="docs-sort-button" onClick={() => setDirection(toggleDirection)}>소요 시간</button></Table.HeaderCell>
+          <Table.HeaderCell>Service</Table.HeaderCell>
+          <Table.HeaderCell>Environment</Table.HeaderCell>
+          <Table.HeaderCell>Status</Table.HeaderCell>
+          <Table.HeaderCell aria-sort={direction}><button type="button" className="docs-sort-button" onClick={() => setDirection(toggleDirection)}>Duration</button></Table.HeaderCell>
         </Table.Row></Table.Head>
         <Table.Body>{rows.map(row => <Table.Row key={row.id}>
           <Table.Cell><strong className="cdt-mono">{row.service}</strong></Table.Cell>
@@ -130,9 +133,9 @@ export function FilterTableExample() {
 /* ---------- W-065 settings form ---------- */
 
 const initialSettings: Settings = { name: "atlas-web", description: "", region: "seoul", emailAlerts: true, weeklyDigest: false };
-const regionLabels: Readonly<Record<Settings["region"], string>> = { seoul: "서울 (ap-northeast-2)", tokyo: "도쿄 (ap-northeast-1)", virginia: "버지니아 (us-east-1)" };
+const regionLabels: Readonly<Record<Settings["region"], string>> = { seoul: "Seoul (ap-northeast-2)", tokyo: "Tokyo (ap-northeast-1)", virginia: "Virginia (us-east-1)" };
 const fieldIds: Readonly<Partial<Record<keyof Settings, string>>> = { name: "settings-name", description: "settings-description" };
-const fieldLabels: Readonly<Partial<Record<keyof Settings, string>>> = { name: "프로젝트 이름", description: "설명" };
+const fieldLabels: Readonly<Partial<Record<keyof Settings, string>>> = { name: "Project name", description: "Description" };
 
 export function SettingsFormExample() {
   const [saved, setSaved] = useState<Settings>(initialSettings);
@@ -148,19 +151,19 @@ export function SettingsFormExample() {
     setErrors(next);
     if (Object.keys(next).length > 0) { setFeedback(""); requestAnimationFrame(() => summaryRef.current?.focus()); return; }
     setSaved(draft);
-    setFeedback(`합성 저장 완료 · 변경 ${changed.length}건 · 네트워크 요청 없음`);
+    setFeedback(`Synthetic save complete · ${plural(changed.length, "change")} · no network request`);
   };
   const errorEntries = Object.entries(errors) as [keyof Settings, string][];
   return <section className="cdt-page docs-block-example" aria-labelledby="settings-title">
-    <BlockHeader index="03" id="settings-title" title="설정 폼" lead="오류는 필드 옆과 요약에 함께, 저장하지 않은 변경은 눈에 보이게." />
-    <Banner tone="info">합성 설정 · 운영 API 미연동. 저장과 삭제는 이 화면의 상태만 바꿉니다.</Banner>
+    <BlockHeader index="03" id="settings-title" title="Settings form" lead="Errors appear beside the field and in a summary; unsaved changes stay visible." />
+    <Banner tone="info">Synthetic settings · not connected to a live API. Save and delete only change state on this page.</Banner>
     <form className="docs-settings-form" noValidate onSubmit={submit}>
-      {errorEntries.length > 0 && <div ref={summaryRef} tabIndex={-1} className="docs-settings-form__summary"><Banner tone="danger" title={`저장하지 못했습니다 · 오류 ${errorEntries.length}건`}><ul>{errorEntries.map(([key, message]) => <li key={key}><a href={`#${fieldIds[key]}`} onClick={event => { event.preventDefault(); document.getElementById(fieldIds[key]!)?.focus(); }}>{fieldLabels[key]}: {message}</a></li>)}</ul></Banner></div>}
+      {errorEntries.length > 0 && <div ref={summaryRef} tabIndex={-1} className="docs-settings-form__summary"><Banner tone="danger" title={`Couldn't save · ${plural(errorEntries.length, "error")}`}><ul>{errorEntries.map(([key, message]) => <li key={key}><a href={`#${fieldIds[key]}`} onClick={event => { event.preventDefault(); document.getElementById(fieldIds[key]!)?.focus(); }}>{fieldLabels[key]}: {message}</a></li>)}</ul></Banner></div>}
       <Panel as="section" aria-labelledby="settings-general">
-        <h2 id="settings-general">일반</h2>
-        <Field id="settings-name" label="프로젝트 이름" required description={`URL과 알림에 쓰입니다. ${NAME_MAX}자 이하.`} error={errors.name}><TextField value={draft.name} onChange={event => update("name", event.target.value)} /></Field>
-        <Field id="settings-description" label="설명" description={`${draft.description.length}/${DESCRIPTION_MAX}자`} error={errors.description}><TextArea value={draft.description} onChange={event => update("description", event.target.value)} /></Field>
-        <Field label="배포 지역" description="지역을 바꾸면 다음 배포부터 적용됩니다.">
+        <h2 id="settings-general">General</h2>
+        <Field id="settings-name" label="Project name" required description={`Used in URLs and alerts. Up to ${NAME_MAX} characters.`} error={errors.name}><TextField value={draft.name} onChange={event => update("name", event.target.value)} /></Field>
+        <Field id="settings-description" label="Description" description={`${draft.description.length}/${DESCRIPTION_MAX} characters`} error={errors.description}><TextArea value={draft.description} onChange={event => update("description", event.target.value)} /></Field>
+        <Field label="Deployment region" description="A new region applies from the next deployment.">
           <Select.Root value={draft.region} onValueChange={value => update("region", value as Settings["region"])}>
             <Select.Trigger><Select.Value /></Select.Trigger>
             <Select.Content>{(Object.keys(regionLabels) as Settings["region"][]).map(region => <Select.Item key={region} value={region}>{regionLabels[region]}</Select.Item>)}</Select.Content>
@@ -168,27 +171,27 @@ export function SettingsFormExample() {
         </Field>
       </Panel>
       <Panel as="section" aria-labelledby="settings-alerts">
-        <h2 id="settings-alerts">알림</h2>
-        <Field label="배포 실패 이메일 알림" description="실패한 배포마다 프로젝트 관리자에게 보냅니다."><Switch checked={draft.emailAlerts} onCheckedChange={value => update("emailAlerts", value)} /></Field>
-        <Field label="주간 요약 받기"><Checkbox checked={draft.weeklyDigest} onCheckedChange={value => update("weeklyDigest", value === true)} /></Field>
+        <h2 id="settings-alerts">Alerts</h2>
+        <Field label="Email alerts for failed deployments" description="Sent to project admins for every failed deployment."><Switch checked={draft.emailAlerts} onCheckedChange={value => update("emailAlerts", value)} /></Field>
+        <Field label="Get a weekly digest"><Checkbox checked={draft.weeklyDigest} onCheckedChange={value => update("weeklyDigest", value === true)} /></Field>
       </Panel>
       <div className="docs-settings-form__actions">
-        <p className="cdt-muted" aria-live="polite">{changed.length === 0 ? "저장하지 않은 변경 없음" : `저장하지 않은 변경 ${changed.length}건`}</p>
-        <Button type="button" variant="ghost" disabled={changed.length === 0} onClick={() => { setDraft(saved); setErrors({}); setFeedback("저장한 값으로 되돌림"); }}>변경 취소</Button>
-        <Button type="submit" variant="primary">저장</Button>
+        <p className="cdt-muted" aria-live="polite">{changed.length === 0 ? "No unsaved changes" : plural(changed.length, "unsaved change")}</p>
+        <Button type="button" variant="ghost" disabled={changed.length === 0} onClick={() => { setDraft(saved); setErrors({}); setFeedback("Reverted to saved values"); }}>Discard changes</Button>
+        <Button type="submit" variant="primary">Save</Button>
       </div>
     </form>
     <Panel as="section" aria-labelledby="settings-danger" className="docs-settings-form__danger">
-      <h2 id="settings-danger">위험 구역</h2>
-      <p className="cdt-muted">프로젝트를 삭제하면 배포 이력과 알림 설정이 함께 사라집니다. 되돌릴 수 없는 행동은 확인 대화상자를 거칩니다.</p>
+      <h2 id="settings-danger">Danger zone</h2>
+      <p className="cdt-muted">Deleting a project also removes its deployment history and alert settings. Actions that can't be undone go through a confirmation dialog.</p>
       <Dialog.Root>
-        <Dialog.Trigger asChild><Button tone="danger">프로젝트 삭제</Button></Dialog.Trigger>
+        <Dialog.Trigger asChild><Button tone="danger">Delete project</Button></Dialog.Trigger>
         <Dialog.Content size="sm">
-          <Dialog.Title>{saved.name} 프로젝트를 삭제할까요?</Dialog.Title>
-          <Dialog.Description>배포 이력과 알림 설정이 함께 삭제되며 되돌릴 수 없습니다.</Dialog.Description>
+          <Dialog.Title>Delete project {saved.name}?</Dialog.Title>
+          <Dialog.Description>Its deployment history and alert settings are deleted too. This can't be undone.</Dialog.Description>
           <div className="docs-settings-form__dialog-actions">
-            <Dialog.Close asChild><Button variant="ghost">취소</Button></Dialog.Close>
-            <Dialog.Close asChild><Button variant="primary" tone="danger" onClick={() => setFeedback("합성 삭제 요청 1건 기록 · 네트워크 요청 없음")}>삭제</Button></Dialog.Close>
+            <Dialog.Close asChild><Button variant="ghost">Cancel</Button></Dialog.Close>
+            <Dialog.Close asChild><Button variant="primary" tone="danger" onClick={() => setFeedback("Logged 1 synthetic delete request · no network request")}>Delete</Button></Dialog.Close>
           </div>
         </Dialog.Content>
       </Dialog.Root>

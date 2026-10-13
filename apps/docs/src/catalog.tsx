@@ -165,7 +165,7 @@ function SearchControlPreview({ kind }: { readonly kind: string }) {
   return <Components.FilterToolbar>{chip ? <Components.FilterChip removeLabel="Remove client category" onRemove={() => setChip(false)}>Client changes</Components.FilterChip> : <Components.Button onClick={() => setChip(true)}>Restore filter</Components.Button>}<span role="status">{chip ? "One filter applied" : "No filters applied"}</span></Components.FilterToolbar>;
 }
 function WorkbenchPreview() {
-  const rows = [{ id: "sample:a", title: "검색 조건 보존" }, { id: "sample:b", title: "Preserve investigation context" }];
+  const rows = [{ id: "sample:a", title: "Keep search filters" }, { id: "sample:b", title: "Preserve investigation context" }];
   const [selected, setSelected] = useState<string | null>(null);
   const [width, setWidth] = useState(40);
   const trigger = useRef<HTMLButtonElement | null>(null);

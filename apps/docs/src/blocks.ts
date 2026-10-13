@@ -48,7 +48,7 @@ export const isFiltered = (filter: DeploymentFilter): boolean =>
   filter.query.trim() !== "" || filter.status !== "all";
 
 export const resultSummary = (shown: number, total: number): string =>
-  shown === total ? `전체 ${total}건` : `${total}건 중 ${shown}건 표시`;
+  shown === total ? `Showing all ${total}` : `Showing ${shown} of ${total}`;
 
 /* ---------- W-065 settings form ---------- */
 
@@ -68,8 +68,8 @@ export const DESCRIPTION_MAX = 160;
 export function validateSettings(settings: Settings): SettingsErrors {
   const name = settings.name.trim();
   return {
-    ...(name === "" ? { name: "프로젝트 이름을 입력하세요." } : name.length > NAME_MAX ? { name: `프로젝트 이름은 ${NAME_MAX}자 이하로 입력하세요.` } : {}),
-    ...(settings.description.length > DESCRIPTION_MAX ? { description: `설명은 ${DESCRIPTION_MAX}자 이하로 입력하세요.` } : {}),
+    ...(name === "" ? { name: "Enter a project name." } : name.length > NAME_MAX ? { name: `Use ${NAME_MAX} characters or fewer.` } : {}),
+    ...(settings.description.length > DESCRIPTION_MAX ? { description: `Use ${DESCRIPTION_MAX} characters or fewer.` } : {}),
   };
 }
 

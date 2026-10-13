@@ -616,3 +616,7 @@ CR-041 구현 cascade와 로컬 검증은 2026-09-14에 종료했다. 사용자�
 | 변경 근거 | 사용자가 2026-10-13에 경쟁력 평가 리포트의 1·2·4번 진행을 지시하고, 1번의 방식으로 "영어 + 패키지 문구 prop화"를 골랐다 |
 | 범위 판정 | 사이트 언어와 컴포넌트 문구 재정의를 정한 FR이 없었다. 새 FR 대신 FR-DOC-001 AC-5와 FR-CMP-013 AC-5를 더한다(SRS §21, v1.11). `labels` prop 추가는 비파괴지만 기본 문구가 바뀌므로 react는 minor, 토큰 설명만 바뀌는 tokens는 patch다 |
 | 설계 | 문구 기본값과 타입은 `labels.ts` 한곳에 둔다. 컴포넌트는 `{ ...DEFAULT, ...labels }`로 병합하므로 일부만 넘겨도 된다. 개수·이름을 끼워 넣는 문구는 함수로 받아 어순이 다른 언어도 표현할 수 있다. 기본값 상수는 공개하지 않고 타입만 공개해 API 면을 좁혔다 |
+| 구현 | `packages/react/src/labels.ts`(타입·영어 기본값), `workbench.tsx`·`relation.tsx`의 문구 전부를 `labels`로 교체, `tsup.config.ts` 진입점에 `labels.ts` 추가, `index.ts` 타입 export, `testing/labels.test.tsx`(4건), 기존 시험의 문구 단언을 영어 기본값으로 갱신, `etc/react.api.md`; `packages/tokens/src/scales.ts` 설명 3건; 문서 사이트 W-030·W-040·W-060~W-065와 내비·카탈로그 표본 문구 영어화, e2e 단언 갱신 |
+| 남긴 한국어 | CJK 줄바꿈·IME 검사용 표본만 남겼다: W-060~W-062의 `long` 상태 문구, W-060 첫 표본 제목의 "검색 조건"(e2e가 실제 한국어로 IME 조합 검색을 검사한다). 각 위치에 목적을 적은 주석이 있다 |
+| 로컬 검증 중 수정 | `labels.ts`가 tsup 진입점에 없어 `dist/labels.js`가 생기지 않았고 docs 빌드가 실패했다(진입점 추가). 실제 브라우저에서는 클립보드가 동작해 a11y 시나리오의 기대 문구가 달라졌다. 세 결과 문구가 모두 `Cop`으로 시작하도록 "Copy unavailable …"로 다듬고 단언을 맞췄다 |
+| 검증 (2026-10-13, 로컬) | 게이트 12종 통과(단위 시험 727/727, a11y 238/238, check:api는 추가만), docs E2E 65/65 |

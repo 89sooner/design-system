@@ -28,9 +28,9 @@ function contrastFor(token: FoundationToken, report: ContrastReport | null): rea
 }
 
 function Ratio({ token, report }: { readonly token: FoundationToken; readonly report: ContrastReport | null }) {
-  if (report === null) return <>측정되지 않음</>;
+  if (report === null) return <>Not measured</>;
   const results = contrastFor(token, report);
-  if (results.length === 0) return token.usage === "decorative" ? <>장식 전용</> : <>대상 아님</>;
+  if (results.length === 0) return token.usage === "decorative" ? <>Decorative only</> : <>Not checked</>;
   return (
     <span className="docs-results">
       {results.map((result) => (
@@ -78,7 +78,7 @@ export function TokenReference({ forceMissingReport = false }: { readonly forceM
         <p className="docs-lead">Semantic and component values are shown for both themes. Contrast is read from the build report, so every verdict here is the one the release gate measured.</p>
       </div>
 
-      {report === null ? <Banner tone="warning">대비 검사 결과 파일이 없습니다. 대비율 열은 측정되지 않음으로 표시됩니다.</Banner> : null}
+      {report === null ? <Banner tone="warning">No contrast report found. The contrast ratio column shows Not measured.</Banner> : null}
 
       <ul className="docs-stat-grid">
         <li className="docs-stat">

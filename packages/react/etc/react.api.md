@@ -174,6 +174,16 @@ export const Collapsible: {
 export const Combobox: react.ForwardRefExoticComponent<ComboboxProps & react.RefAttributes<HTMLDivElement>>;
 
 // @public (undocumented)
+export interface ComboboxLabels {
+    // (undocumented)
+    readonly empty: string;
+    // (undocumented)
+    readonly error: string;
+    // (undocumented)
+    readonly loading: string;
+}
+
+// @public (undocumented)
 export interface ComboboxProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange"> {
     // (undocumented)
     readonly disabled?: boolean;
@@ -181,6 +191,7 @@ export interface ComboboxProps extends Omit<HTMLAttributes<HTMLDivElement>, "onC
     readonly inputRef?: Ref<HTMLInputElement>;
     // (undocumented)
     readonly label: string;
+    readonly labels?: Partial<ComboboxLabels>;
     // (undocumented)
     readonly onQueryChange: (query: string) => void;
     // (undocumented)
@@ -203,9 +214,21 @@ export const CONSUMED_PACKAGES: readonly ["@conductor-by-89soone/tokens", "@cond
 export const CopyButton: react.ForwardRefExoticComponent<CopyButtonProps & react.RefAttributes<HTMLSpanElement>>;
 
 // @public (undocumented)
+export interface CopyButtonLabels {
+    // (undocumented)
+    readonly copied: string;
+    // (undocumented)
+    readonly failed: string;
+    // (undocumented)
+    readonly unavailable: string;
+}
+
+// @public (undocumented)
 export interface CopyButtonProps extends Omit<HTMLAttributes<HTMLSpanElement>, "children"> {
     // (undocumented)
     readonly label?: string;
+    // (undocumented)
+    readonly labels?: Partial<CopyButtonLabels>;
     // (undocumented)
     readonly value: string;
 }
@@ -241,6 +264,30 @@ export const DataTable: <Row>(props: DataTableProps<Row> & {
 }) => ReactNode;
 
 // @public (undocumented)
+export interface DataTableLabels {
+    // (undocumented)
+    readonly empty: string;
+    // (undocumented)
+    readonly error: string;
+    // (undocumented)
+    readonly failed: string;
+    // (undocumented)
+    readonly loaded: (count: number) => string;
+    // (undocumented)
+    readonly loading: string;
+    // (undocumented)
+    readonly loadMore: string;
+    // (undocumented)
+    readonly partial: string;
+    // (undocumented)
+    readonly preview: (row: string) => string;
+    // (undocumented)
+    readonly previewColumn: string;
+    // (undocumented)
+    readonly select: string;
+}
+
+// @public (undocumented)
 export interface DataTableProps<Row> extends Omit<HTMLAttributes<HTMLDivElement>, "onSelect"> {
     // (undocumented)
     readonly columns: readonly DataColumn<Row>[];
@@ -250,6 +297,8 @@ export interface DataTableProps<Row> extends Omit<HTMLAttributes<HTMLDivElement>
     readonly hasMore?: boolean;
     // (undocumented)
     readonly label: string;
+    // (undocumented)
+    readonly labels?: Partial<DataTableLabels>;
     // (undocumented)
     readonly loadingMore?: boolean;
     // (undocumented)
@@ -279,9 +328,17 @@ export interface DataTableProps<Row> extends Omit<HTMLAttributes<HTMLDivElement>
 export const DetailInspector: react.ForwardRefExoticComponent<DetailInspectorProps & react.RefAttributes<HTMLElement>>;
 
 // @public (undocumented)
+export interface DetailInspectorLabels {
+    // (undocumented)
+    readonly close: string;
+}
+
+// @public (undocumented)
 export interface DetailInspectorProps extends HTMLAttributes<HTMLElement> {
     // (undocumented)
     readonly label: string;
+    // (undocumented)
+    readonly labels?: Partial<DetailInspectorLabels>;
     // (undocumented)
     readonly onClose: () => void;
     // (undocumented)
@@ -453,11 +510,23 @@ export interface MeterProps extends Omit<HTMLAttributes<HTMLDivElement>, "childr
 export const MultiSelect: react.ForwardRefExoticComponent<MultiSelectProps & react.RefAttributes<HTMLFieldSetElement>>;
 
 // @public (undocumented)
+export interface MultiSelectLabels {
+    // (undocumented)
+    readonly remove: (option: string) => string;
+    // (undocumented)
+    readonly search: string;
+    // (undocumented)
+    readonly searchFor: (label: string) => string;
+}
+
+// @public (undocumented)
 export interface MultiSelectProps extends HTMLAttributes<HTMLFieldSetElement> {
     // (undocumented)
     readonly disabled?: boolean;
     // (undocumented)
     readonly label: string;
+    // (undocumented)
+    readonly labels?: Partial<MultiSelectLabels>;
     // (undocumented)
     readonly onValueChange: (ids: readonly string[]) => void;
     // (undocumented)
@@ -535,9 +604,19 @@ export interface PathItem {
 export const PathList: react.ForwardRefExoticComponent<PathListProps & react.RefAttributes<HTMLUListElement>>;
 
 // @public (undocumented)
+export interface PathListLabels {
+    // (undocumented)
+    readonly error: string;
+    // (undocumented)
+    readonly loading: string;
+}
+
+// @public (undocumented)
 export interface PathListProps extends HTMLAttributes<HTMLUListElement> {
     // (undocumented)
     readonly items: readonly PathItem[];
+    // (undocumented)
+    readonly labels?: Partial<PathListLabels>;
     // (undocumented)
     readonly onPathSelect?: (id: string) => void;
     // (undocumented)
@@ -587,9 +666,25 @@ export interface ProcessingStage {
 export const ProcessingStatus: react.ForwardRefExoticComponent<ProcessingStatusProps & react.RefAttributes<HTMLDivElement>>;
 
 // @public (undocumented)
+export interface ProcessingStatusLabels {
+    // (undocumented)
+    readonly complete: string;
+    // (undocumented)
+    readonly delayed: string;
+    // (undocumented)
+    readonly failed: string;
+    // (undocumented)
+    readonly pending: string;
+    // (undocumented)
+    readonly unknown: string;
+}
+
+// @public (undocumented)
 export interface ProcessingStatusProps extends HTMLAttributes<HTMLDivElement> {
     // (undocumented)
     readonly label: string;
+    // (undocumented)
+    readonly labels?: Partial<ProcessingStatusLabels>;
     // (undocumented)
     readonly stages: readonly ProcessingStage[];
 }
@@ -638,11 +733,124 @@ export interface RelationEdge {
 export const RelationGraph: react.ForwardRefExoticComponent<RelationGraphProps & react.RefAttributes<HTMLDivElement>>;
 
 // @public (undocumented)
+export interface RelationGraphLabels {
+    // (undocumented)
+    readonly allTypes: string;
+    // (undocumented)
+    readonly alternativeList: string;
+    // (undocumented)
+    readonly ambiguous: string;
+    // (undocumented)
+    readonly clearSelection: string;
+    // (undocumented)
+    readonly confidence: string;
+    // (undocumented)
+    readonly confidenceEvidenceColumn: string;
+    // (undocumented)
+    readonly confirmed: string;
+    // (undocumented)
+    readonly detail: string;
+    // (undocumented)
+    readonly directionColumn: string;
+    // (undocumented)
+    readonly edgeTable: (label: string) => string;
+    // (undocumented)
+    readonly empty: string;
+    // (undocumented)
+    readonly endpointMissing: string;
+    // (undocumented)
+    readonly error: string;
+    // (undocumented)
+    readonly evidence: string;
+    // (undocumented)
+    readonly evidenceMissing: string;
+    // (undocumented)
+    readonly findNode: string;
+    // (undocumented)
+    readonly findPlaceholder: string;
+    // (undocumented)
+    readonly fit: string;
+    // (undocumented)
+    readonly hiddenByFilter: string;
+    // (undocumented)
+    readonly legend: string;
+    // (undocumented)
+    readonly loading: string;
+    // (undocumented)
+    readonly missingEndpoint: string;
+    // (undocumented)
+    readonly neighborsHighlighted: string;
+    // (undocumented)
+    readonly nodeList: (count: number) => string;
+    // (undocumented)
+    readonly noDescription: string;
+    // (undocumented)
+    readonly nodeUnavailable: string;
+    // (undocumented)
+    readonly noEvidence: string;
+    // (undocumented)
+    readonly noMatches: string;
+    // (undocumented)
+    readonly noneForFilter: string;
+    // (undocumented)
+    readonly panDown: string;
+    // (undocumented)
+    readonly panLeft: string;
+    // (undocumented)
+    readonly panRight: string;
+    // (undocumented)
+    readonly panUp: string;
+    // (undocumented)
+    readonly partial: string;
+    // (undocumented)
+    readonly relationType: string;
+    // (undocumented)
+    readonly retracted: string;
+    // (undocumented)
+    readonly retry: string;
+    // (undocumented)
+    readonly selectColumn: string;
+    // (undocumented)
+    readonly selectEdge: (id: string) => string;
+    // (undocumented)
+    readonly selectionHint: string;
+    // (undocumented)
+    readonly selectionMissing: string;
+    // (undocumented)
+    readonly showEvidence: string;
+    // (undocumented)
+    readonly skipToList: string;
+    // (undocumented)
+    readonly state: string;
+    // (undocumented)
+    readonly summary: (nodes: number, edges: number) => string;
+    // (undocumented)
+    readonly type: string;
+    // (undocumented)
+    readonly typeStateColumn: string;
+    // (undocumented)
+    readonly unavailableContent: string;
+    // (undocumented)
+    readonly unknownConfidence: string;
+    // (undocumented)
+    readonly unresolved: string;
+    // (undocumented)
+    readonly viewControls: string;
+    // (undocumented)
+    readonly zoomIn: string;
+    // (undocumented)
+    readonly zoomLevel: string;
+    // (undocumented)
+    readonly zoomOut: string;
+}
+
+// @public (undocumented)
 export interface RelationGraphProps extends Omit<HTMLAttributes<HTMLDivElement>, "children" | "onSelect"> {
     // (undocumented)
     readonly edges: readonly RelationEdge[];
     // (undocumented)
     readonly label: string;
+    readonly labels?: Partial<RelationGraphLabels>;
     // (undocumented)
     readonly nodes: readonly RelationNode[];
     // (undocumented)
@@ -907,9 +1115,17 @@ export interface TopBarProps extends Omit<HTMLAttributes<HTMLElement>, "children
 export const WorkbenchLayout: react.ForwardRefExoticComponent<WorkbenchLayoutProps & react.RefAttributes<HTMLDivElement>>;
 
 // @public (undocumented)
+export interface WorkbenchLayoutLabels {
+    // (undocumented)
+    readonly resize: string;
+}
+
+// @public (undocumented)
 export interface WorkbenchLayoutProps extends HTMLAttributes<HTMLDivElement> {
     // (undocumented)
     readonly inspector?: ReactNode;
+    // (undocumented)
+    readonly labels?: Partial<WorkbenchLayoutLabels>;
     // (undocumented)
     readonly onWidthChange?: (width: number) => void;
     // (undocumented)

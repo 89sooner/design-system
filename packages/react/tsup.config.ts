@@ -4,6 +4,7 @@ import { readFile, writeFile, readdir } from "node:fs/promises";
 export default defineConfig({
   entry: [
     "src/index.ts",
+    "src/labels.ts",
     "src/action.tsx",
     "src/cx.ts",
     "src/data.tsx",

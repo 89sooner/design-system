@@ -20,8 +20,8 @@ export function CopyCode({ code, forceUnavailable = false }: { readonly code: st
   const available = !forceUnavailable && typeof navigator !== "undefined" && navigator.clipboard?.writeText !== undefined;
   useEffect(() => { if (state !== "copied") return undefined; const timer = window.setTimeout(() => setState("idle"), 2000); return () => window.clearTimeout(timer); }, [state]);
   const copy = async () => { if (!available) { setState("unavailable"); return; } try { await navigator.clipboard.writeText(code); setState("copied"); } catch { setState("failed"); } };
-  const label = state === "copied" ? "복사됨" : state === "failed" ? "복사할 수 없음" : state === "unavailable" ? "복사할 수 없음" : "Copy code";
-  return <div className="docs-code-example"><CodeBlock language="tsx" code={code} /><Button size="sm" disabled={!available} onClick={() => void copy()}>{label}</Button><span className="cdt-sr-only" aria-live="polite">{state === "copied" ? "복사됨" : ""}</span></div>;
+  const label = state === "copied" ? "Copied" : state === "failed" ? "Can't copy" : state === "unavailable" ? "Can't copy" : "Copy code";
+  return <div className="docs-code-example"><CodeBlock language="tsx" code={code} /><Button size="sm" disabled={!available} onClick={() => void copy()}>{label}</Button><span className="cdt-sr-only" aria-live="polite">{state === "copied" ? "Copied" : ""}</span></div>;
 }
 
 function RulePair({ id, title, intro, recommended, prohibited, reason }: { readonly id: string; readonly title: string; readonly intro: string; readonly recommended: ReactNode; readonly prohibited: ReactNode; readonly reason: string }) {

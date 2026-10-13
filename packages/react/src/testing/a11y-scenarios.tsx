@@ -112,7 +112,8 @@ export const a11yScenarios: readonly A11yScenario[] = [
   { component: "PathList", state: "default", keyboard: { kind: "steps", steps: [{ target: "summary", keys: "{Enter}", check: "details", attribute: "open", expected: "" }] }, render: () => <PathFixture /> },
   { component: "Breadcrumb", state: "default", keyboard: { kind: "focus" }, render: () => <Breadcrumb><a {...keyboardTarget} href="#parent">Parent</a><span aria-current="page">Child</span></Breadcrumb> },
   { component: "Skeleton", state: "default", keyboard: { kind: "static" }, render: () => <Skeleton label="Loading results" /> },
-  { component: "CopyButton", state: "default", keyboard: { kind: "steps", steps: [{ target: "button", keys: "{Enter}", check: ".cdt-copy-feedback [role=status]", expected: "copy" }] }, render: () => <CopyButton value="synthetic-id" /> },
+  // The announced outcome depends on the browser's clipboard: "Copied", "Copy unavailable …" or "Copy failed …"; all begin with "Cop".
+  { component: "CopyButton", state: "default", keyboard: { kind: "steps", steps: [{ target: "button", keys: "{Enter}", check: ".cdt-copy-feedback [role=status]", expected: "Cop" }] }, render: () => <CopyButton value="synthetic-id" /> },
   { component: "ProcessingStatus", state: "default", keyboard: { kind: "steps", steps: [{ target: "button", keys: "{Enter}", check: "[data-outcome]", expected: "retried" }] }, render: () => <ProcessingFixture /> },
   { component: "RelationGraph", state: "default", keyboard: { kind: "steps", steps: [{ target: "[aria-label='Graph view controls'] button", keys: "{Enter}", check: "output", expected: "150%" }] }, render: () => <RelationFixture /> },
   // Radix roving focus moves focus from an arrow key inside a `setTimeout` (react-roving-focus

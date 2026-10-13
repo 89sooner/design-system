@@ -54,7 +54,7 @@ export interface PathListLabels { readonly loading: string; readonly error: stri
 export const DEFAULT_PATH_LIST_LABELS: PathListLabels = { loading: "Loading path", error: "Couldn't load path" };
 
 export interface CopyButtonLabels { readonly copied: string; readonly unavailable: string; readonly failed: string }
-export const DEFAULT_COPY_BUTTON_LABELS: CopyButtonLabels = { copied: "Copied", unavailable: "Can't copy · select the text to copy it", failed: "Copy failed · select the text to copy it" };
+export const DEFAULT_COPY_BUTTON_LABELS: CopyButtonLabels = { copied: "Copied", unavailable: "Copy unavailable · select the text to copy it", failed: "Copy failed · select the text to copy it" };
 
 export interface ProcessingStatusLabels { readonly complete: string; readonly pending: string; readonly delayed: string; readonly failed: string; readonly unknown: string }
 export const DEFAULT_PROCESSING_STATUS_LABELS: ProcessingStatusLabels = { complete: "Confirmed", pending: "Pending", delayed: "Delayed", failed: "Failed", unknown: "Unknown" };

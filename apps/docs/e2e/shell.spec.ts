@@ -136,7 +136,7 @@ test("DEV-026: each screen has one URL; the legacy paths redirect and keep their
   await expect(page).toHaveURL(/#\/guidelines$/);
   await page.goto(docsPath("/tokens?metrics-unavailable"));
   await expect(page).toHaveURL(/#\/tokens\/reference\?metrics-unavailable$/);
-  await expect(page.getByRole("table", { name: "Token reference" })).toContainText("측정되지 않음");
+  await expect(page.getByRole("table", { name: "Token reference" })).toContainText("Not measured");
 });
 
 test("FR-DOC-001: navigating moves focus to the main region so the keyboard path restarts there", async ({ page }) => {

@@ -43,8 +43,8 @@ test("FR-DOC-006 AC-1, AC-2: code copy announces success then restores the label
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   await page.goto(docsPath("/components/Button"));
   await page.getByRole("button", { name: "Copy code" }).click();
-  await expect(page.getByRole("button", { name: "복사됨" })).toBeVisible();
-  await expect(page.getByText("복사됨").last()).toHaveAttribute("aria-live", "polite");
+  await expect(page.getByRole("button", { name: "Copied" })).toBeVisible();
+  await expect(page.getByText("Copied").last()).toHaveAttribute("aria-live", "polite");
   await page.waitForTimeout(2100);
   await expect(page.getByRole("button", { name: "Copy code" })).toBeVisible();
 });
@@ -64,6 +64,6 @@ test("FR-DOC-006 exception / QA-197: rejected clipboard writes use the inline fa
   });
   await page.goto(docsPath("/components/Button"));
   await page.getByRole("button", { name: "Copy code" }).click();
-  await expect(page.getByRole("button", { name: "복사할 수 없음" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Can't copy" })).toBeVisible();
   await expect(page.getByRole("alert")).toHaveCount(0);
 });
