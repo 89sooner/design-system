@@ -1,6 +1,6 @@
 # 요구사항-화면 추적 매트릭스
 
-> 상태: review | 버전: v0.6 | 갱신일: 2026-10-13
+> 상태: review | 버전: v0.7 | 갱신일: 2026-10-13
 
 ## 1. 목적
 
@@ -163,9 +163,9 @@ NFR은 화면 하나에 귀속되지 않는다. 각 NFR이 어디서 측정되�
 
 | 화면 ID | 화면명 | 경로 | 요구사항 |
 | --- | --- | --- | --- |
-| W-060 | 검색 워크벤치 | `/examples/workbench` | FR-CMP-010, FR-CMP-013 |
-| W-061 | 관계 탐색기 | `/examples/relations` | FR-CMP-011, FR-CMP-013 |
-| W-062 | 수집 운영 상태 | `/examples/operations` | FR-CMP-012, FR-CMP-013 |
+| W-060 | Search workbench | `/examples/workbench` | FR-CMP-010, FR-CMP-013 |
+| W-061 | Relation explorer | `/examples/relations` | FR-CMP-011, FR-CMP-013 |
+| W-062 | Ingestion status | `/examples/operations` | FR-CMP-012, FR-CMP-013 |
 
 W-040 가이드 화면은 유지하며 실제 조합은 독립 경로로 연결한다. 이는 화면을 URL로 직접 재현하기 위한 구현 선택이다.
 
@@ -173,9 +173,9 @@ W-040 가이드 화면은 유지하며 실제 조합은 독립 경로로 연결�
 
 | 화면 ID | 화면명 | 경로 | 요구사항 | 구현 단위 | 검증 |
 | --- | --- | --- | --- | --- | --- |
-| W-063 | 빈 상태 | `/examples/empty-states` | FR-DOC-009 (AC-1, AC-5) | WP-035 | 4유형의 이유·다음 행동, 차단 사유 연결 |
-| W-064 | 필터 테이블 | `/examples/filter-table` | FR-DOC-009 (AC-2, AC-5), FR-CMP-005 | WP-035 | 결합 필터·칩·결과 수 알림·0건 복귀·정렬 노출 |
-| W-065 | 설정 폼 | `/examples/settings-form` | FR-DOC-009 (AC-3 ~ AC-5), FR-CMP-007 | WP-035 | 필드·요약 오류와 포커스, 미저장 변경, 삭제 확인 |
+| W-063 | Empty states | `/examples/empty-states` | FR-DOC-009 (AC-1, AC-5) | WP-035 | 4유형의 이유·다음 행동, 차단 사유 연결 |
+| W-064 | Filter table | `/examples/filter-table` | FR-DOC-009 (AC-2, AC-5), FR-CMP-005 | WP-035 | 결합 필터·칩·결과 수 알림·0건 복귀·정렬 노출 |
+| W-065 | Settings form | `/examples/settings-form` | FR-DOC-009 (AC-3 ~ AC-5), FR-CMP-007 | WP-035 | 필드·요약 오류와 포커스, 미저장 변경, 삭제 확인 |
 
 ## CR-052 테마 플레이그라운드 추적
 

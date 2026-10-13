@@ -98,9 +98,9 @@ const radius: TokenDefinition[] = [
  * a banner's status colour or marks the active navigation item.
  */
 const borderWidth: TokenDefinition[] = [
-  aliased("border.width.hairline", "stroke.1", "기본 1px 엣지."),
-  aliased("border.width.emphasis", "stroke.2", "표 헤더 규칙, 마커 링."),
-  aliased("border.width.rail", "stroke.3", "배너 상태 레일, 내비 활성 인디케이터."),
+  aliased("border.width.hairline", "stroke.1", "Default 1px edge."),
+  aliased("border.width.emphasis", "stroke.2", "Table header rule, marker ring."),
+  aliased("border.width.rail", "stroke.3", "Banner status rail, active navigation indicator."),
 ];
 
 /** FR-TOK-008 AC-1. Six layers; AC-3 forbids two layers sharing a value. */

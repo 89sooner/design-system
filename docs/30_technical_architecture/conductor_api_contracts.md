@@ -1,6 +1,6 @@
 # Conductor Design System 패키지 공개 API 계약
 
-> 상태: review | 버전: v0.6 | 갱신일: 2026-10-13
+> 상태: review | 버전: v0.7 | 갱신일: 2026-10-13
 
 ## 0. 문서 재해석
 
@@ -519,3 +519,26 @@ error[<CODE>]: <한 줄 요약>
 ## CR-041 확장 영향 (FR-CMP-010~013)
 
 API-PKG-003에 FR-CMP-010~013의 additive 표현 API를 추가한다. 검색 AST·서버 정렬·인가·URL/커서·관계 판정은 소비자 API다. Graph node/edge ID와 source/target을 소비자가 제공하고 라벨·근거는 텍스트로 렌더한다. 모든 export의 실제 서명은 생성 API report와 일치해야 한다.
+
+## CR-053 문구 재정의 계약 (FR-CMP-013 AC-5)
+
+CR-041 컴포넌트는 스스로 렌더하는 문구를 `labels` prop으로 받는다. 기본값은 `packages/react/src/labels.ts`의 영어 문구다.
+
+```ts
+<DataTable labels={{ empty: "검색 결과 없음", loaded: (count) => `현재 로드된 ${count}개` }} … />
+<RelationGraph labels={{ zoomIn: "확대", summary: (nodes, edges) => `${nodes}개 노드 · ${edges}개 관계` }} … />
+```
+
+| 컴포넌트 | 타입 | 함수 키 |
+| --- | --- | --- |
+| `Combobox` | `ComboboxLabels` | — |
+| `MultiSelect` | `MultiSelectLabels` | `searchFor(label)`, `remove(option)` |
+| `DataTable` | `DataTableLabels` | `preview(row)`, `loaded(count)` |
+| `WorkbenchLayout` | `WorkbenchLayoutLabels` | — |
+| `DetailInspector` | `DetailInspectorLabels` | — |
+| `PathList` | `PathListLabels` | — (하위 목록에 그대로 전달) |
+| `CopyButton` | `CopyButtonLabels` | — (`label` prop은 버튼 이름으로 유지, 기본값 `Copy`) |
+| `ProcessingStatus` | `ProcessingStatusLabels` | — |
+| `RelationGraph` | `RelationGraphLabels` | `summary(nodes, edges)`, `nodeList(count)`, `edgeTable(label)`, `selectEdge(id)` |
+
+prop 추가는 비파괴 변경이다. 기본 문구가 한국어에서 영어로 바뀌는 것은 화면 문구를 단언하던 소비자에게 보이는 변화이므로 minor로 올리고 CHANGELOG에 이전 문구를 되살리는 방법을 적는다(6절).

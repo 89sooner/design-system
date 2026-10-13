@@ -44,3 +44,5 @@ export { AppShellNavTrigger } from "./shell";
 
 export { RelationGraph, layoutRelationNodes } from "./relation";
 export type { RelationNode, RelationEdge, RelationSelection, RelationViewport, RelationGraphProps } from "./relation";
+// CR-053: the strings the CR-041 components render, overridable per instance through `labels`.
+export type { ComboboxLabels, CopyButtonLabels, DataTableLabels, DetailInspectorLabels, MultiSelectLabels, PathListLabels, ProcessingStatusLabels, RelationGraphLabels, WorkbenchLayoutLabels } from "./labels";

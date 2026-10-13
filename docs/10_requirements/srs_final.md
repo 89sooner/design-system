@@ -1,6 +1,6 @@
 # Conductor Design System 최종 요구사항 정의서
 
-> 상태: baseline | 버전: v1.10 | 갱신일: 2026-10-13
+> 상태: baseline | 버전: v1.11 | 갱신일: 2026-10-13
 
 ## 1. 문서 개요
 
@@ -38,7 +38,7 @@ Conductor는 `agent-ai-platform/packages/web`의 시각 언어를 3개 npm 패�
 2. 다크(기준) 및 라이트 테마, 시스템 설정 연동, 테마별 대비 검증, 소스 계승 토큰의 접근성 교정 — FR-THM-001 ~ FR-THM-005
 3. 캐스케이드 레이어 기반 프레임워크 비종속 스타일시트 — FR-CSS-001 ~ FR-CSS-005
 4. React 프리미티브 컴포넌트 — 기존 FR-CMP-001 ~ FR-CMP-009 및 CR-041 확장 FR-CMP-010 ~ FR-CMP-013 (§17, review)
-5. 정적 문서 사이트 — FR-DOC-001 ~ FR-DOC-007 및 CR-048 확장 FR-DOC-008 (§18), CR-051 확장 FR-DOC-009 (§19), CR-052 확장 FR-DOC-010 (§20)
+5. 정적 문서 사이트 — FR-DOC-001 ~ FR-DOC-007 및 CR-048 확장 FR-DOC-008 (§18), CR-051 확장 FR-DOC-009 (§19), CR-052 확장 FR-DOC-010 (§20), CR-053 보강 FR-DOC-001 AC-5·FR-CMP-013 AC-5 (§21)
 6. WCAG 2.1 AA 접근성 기준선 — FR-A11Y-001 ~ FR-A11Y-005
 7. 모노레포 빌드, 타입 배포, 진입점 선언, SSR 안전성, 버저닝 — FR-DX-001 ~ FR-DX-005
 8. 토큰 계약·단위·접근성·시각 회귀 검사 — FR-QA-001 ~ FR-QA-004
@@ -1100,3 +1100,12 @@ v1.9 baseline 이력을 유지한다. 사용자가 2026-10-13에 우선순위 �
 | 관련 화면 | W-031 |
 | 관련 API/데이터 | API-TOK-004, API-TOK-002(`tokens.json`), API-TOK-003(`contrast-report.json`) / ENT-TOK-001 |
 | 예외/실패 처리 | 플레이그라운드는 소비자 테마를 만들어 주는 도구가 아니라 미리보기다. 토큰 소스와 기본 팔레트는 바뀌지 않으며, 파생 규칙(accent.strong은 원본의 OKLab 차이 유지, 틴트는 빌드와 같은 OKLab 가중치)은 화면에 명시한다. 측정할 수 없는 값은 `contrastRatio`가 예외로 거부하며 통과로 처리하지 않는다. |
+
+## 21. CR-053 보강 (baseline)
+
+v1.10 baseline 이력을 유지한다. 사용자가 2026-10-13에 경쟁력 평가 리포트(**artifacts/2026-10-13-competitive-assessment.md**)의 1번(문서 언어 통일)을 "영어 + 패키지 문구 prop화"로 진행하라고 선택했다. 새 FR은 만들지 않고 두 FR에 수용 기준을 더한다.
+
+| FR | 추가 수용 기준 |
+| --- | --- |
+| FR-DOC-001 | AC-5: 문서 사이트가 화면에 렌더하는 문구(내비, 제목, 본문, 컨트롤, 상태 알림)는 영어다. 코드 주석과 거버넌스 문서는 대상이 아니다. CJK 줄바꿈·IME 동작을 검사하는 예제 데이터에 한해 한국어 조각을 둘 수 있으며, 코드 주석으로 그 목적을 밝힌다. |
+| FR-CMP-013 | AC-5: CR-041 컴포넌트(`Combobox`, `MultiSelect`, `DataTable`, `WorkbenchLayout`, `DetailInspector`, `PathList`, `CopyButton`, `ProcessingStatus`, `RelationGraph`)가 스스로 렌더하는 모든 문구는 `labels?: Partial<…Labels>` prop으로 인스턴스마다 바꿀 수 있다. 기본값은 영어이며, 개수나 이름을 끼워 넣는 문구는 함수다. `…Labels` 타입은 공개 export다. 부분 지정은 기본값 위에 병합된다. `Breadcrumb`의 기본 `aria-label`은 `Breadcrumb`이다. |

@@ -43,7 +43,7 @@ describe("FR-CMP-010 search contracts", () => {
   });
   test("multiselect is checkbox group, removals preserve stable IDs", () => {
     const change = vi.fn(); render(<MultiSelect label="States" options={[{ id: "open", label: "Open" }, { id: "closed", label: "Closed", disabled: true }]} value={["open"]} onValueChange={change} />);
-    expect(screen.queryByRole("combobox")).toBeNull(); fireEvent.click(screen.getByRole("button", { name: "Open 제거" })); expect(change).toHaveBeenCalledWith([]);
+    expect(screen.queryByRole("combobox")).toBeNull(); fireEvent.click(screen.getByRole("button", { name: "Remove Open" })); expect(change).toHaveBeenCalledWith([]);
     fireEvent.click(screen.getByRole("checkbox", { name: "Closed" })); expect(change).toHaveBeenCalledTimes(1);
   });
   test("table calls external sort without sorting data; selection is explicit and ID based", () => {
@@ -54,14 +54,14 @@ describe("FR-CMP-010 search contracts", () => {
     fireEvent.click(screen.getByRole("button", { name: /Title/ })); expect(sort).toHaveBeenCalledWith({ column: "label", direction: "ascending" });
     expect(screen.getAllByRole("link").map(link => link.textContent)).toEqual(["Zulu", "Alpha"]);
     fireEvent.click(screen.getByRole("link", { name: "Alpha" })); expect(select).not.toHaveBeenCalled();
-    fireEvent.click(screen.getByRole("button", { name: "Alpha 미리보기" })); expect(select.mock.calls[0]?.[0]).toBe("a");
+    fireEvent.click(screen.getByRole("button", { name: "Preview Alpha" })); expect(select.mock.calls[0]?.[0]).toBe("a");
   });
   test("empty/loading/error rows and cursor action remain honest", () => {
     const load = vi.fn(); const props = { label: "Results", rows: [] as string[], rowId: (row: string) => row, rowLabel: (row: string) => row, columns: [{ id: "name", header: "Name", cell: (row: string) => row }] };
-    const { rerender } = render(<DataTable {...props} />); expect(screen.getByText("검색 결과 없음")).toBeTruthy();
-    rerender(<DataTable {...props} state="loading" />); expect(screen.getByText("결과 불러오는 중")).toBeTruthy();
+    const { rerender } = render(<DataTable {...props} />); expect(screen.getByText("No results")).toBeTruthy();
+    rerender(<DataTable {...props} state="loading" />); expect(screen.getByText("Loading results")).toBeTruthy();
     rerender(<DataTable {...props} state="error" message="Failed" />); expect(screen.getByText("Failed")).toBeTruthy();
-    rerender(<DataTable {...props} rows={["one"]} hasMore onLoadMore={load} />); fireEvent.click(screen.getByRole("button", { name: "이어 보기" })); expect(load).toHaveBeenCalledOnce(); expect(screen.queryByText(/페이지/)).toBeNull();
+    rerender(<DataTable {...props} rows={["one"]} hasMore onLoadMore={load} />); fireEvent.click(screen.getByRole("button", { name: "Load more" })); expect(load).toHaveBeenCalledOnce(); expect(screen.queryByText(/\bpages?\b/i)).toBeNull();
   });
   test("inspector Escape returns focus without scrolling and path disclosures select leaves", () => {
     const close = vi.fn(); const path = vi.fn(); const trigger = createRef<HTMLButtonElement>();
@@ -77,6 +77,6 @@ describe("FR-CMP-010 search contracts", () => {
   });
   test("operational permission denied action never calls consumer and index remains unknown", () => {
     const retry = vi.fn(); render(<ProcessingStatus label="Pipeline" stages={[{ id: "receive", label: "Received", status: "complete", detail: "Received only" }, { id: "index", label: "Index", status: "unknown", detail: "Not confirmed", action: { label: "Retry", onAction: retry, disabledReason: "No permission" } }]} />);
-    fireEvent.click(screen.getByRole("button", { name: "Retry" })); expect(retry).not.toHaveBeenCalled(); expect(screen.getByText("미확인")).toBeTruthy(); expect(screen.getByText("No permission")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Retry" })); expect(retry).not.toHaveBeenCalled(); expect(screen.getByText("Unknown")).toBeTruthy(); expect(screen.getByText("No permission")).toBeTruthy();
   });
 });
