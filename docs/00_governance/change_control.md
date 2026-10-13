@@ -70,6 +70,7 @@
 | CR-049 | 2026-10-13 | design | 사용자 지시 (2026-10-13): 우선순위 리포트 4순위(랜딩 bento 그리드 + Kbd 단축키 칩 + 코드 중심 히어로)를 진행 | **W-001 랜딩의 히어로와 원칙 섹션을 다시 짠다. 요구사항은 바뀌지 않는다.** 히어로의 설치 한 줄을 코드 창(app.tsx 3줄 + 설치 명령, 각각 복사)으로 바꾸고, 원칙 4타일을 6타일 bento로 확장한다(키보드 타일은 Radix 동작을 Kbd 표로, 에이전트 타일은 DESIGN.md·llms.txt 링크). 구문 색은 대비 검사를 통과한 토큰 쌍만 쓴다 | W-001, FR-DOC-001, FR-DOC-006, NFR-001 | `conductor_wireframe_spec.md`, `conductor_implementation_traceability.md` | closed |
 | CR-050 | 2026-10-13 | design | 사용자 지시 (2026-10-13): 우선순위 리포트 5순위(OKLCH로 상태색 파생)를 진행하고 0.6.1을 릴리스 | **secondary tone 버튼의 상태색 8종을 렌더 시점 sRGB `color-mix()`에서 빌드 시점 OKLab 토큰으로 바꾼다. 요구사항은 바뀌지 않는다.** 시맨틱 토큰 `tone.accent.*`·`tone.danger.*`(테마당 8종, additive)를 `oklab.ts`가 같은 비율로 계산해 hex로 내보낸다. 브라우저 지원 문제가 사라지고 채움 4종이 대비 쌍 CP-118~CP-121로 측정된다. OKLCH 대신 그 직교 좌표형인 OKLab에서 섞는 이유는 토큰 명세 5.11.1에 적었다 | FR-THM-004, FR-TOK-001, FR-CMP-002 | `conductor_design_system_tokens.md`, `conductor_implementation_traceability.md`, 토큰 API 리포트, Changeset(tokens·css patch) | closed |
 | CR-051 | 2026-10-13 | scope + design | 사용자 지시 (2026-10-13): 우선순위 리포트 6순위(블록 단위 패턴)를 예시 화면 W-063~W-065로 진행하고, 새 FR 추가를 승인 | **문서 사이트에 블록 예제 화면 3개(빈 상태, 필터 테이블, 설정 폼)를 더한다.** 새 FR-DOC-009(Should)를 SRS §19에 추가한다. 패키지 공개 API와 컴포넌트·CSS 동작은 바뀌지 않으며 화면은 공개 export만 조합한다 | FR-DOC-009, W-063, W-064, W-065, WP-035 | `srs_final.md`, `prd.md`, `feature.md`, `glossary.md`, `requirements_screen_traceability_matrix.md`, `conductor_product_ia.md`, `conductor_wireframe_spec.md`, `conductor_work_packages.md`, `conductor_implementation_traceability.md` | closed |
+| CR-052 | 2026-10-13 | scope + design | 사용자 지시 (2026-10-13): 우선순위 리포트 3순위(테마 패널)를 tokens 패키지에 대비 함수를 공개하는 범위로 진행하고, 새 FR 추가를 승인 | **문서 사이트에 테마 플레이그라운드(W-031)를 더하고, `@conductor-by-89soone/tokens`가 빌드의 색 연산(`contrastRatio`, OKLab 함수)을 공개한다(API-TOK-004, minor).** 새 FR-DOC-010(Should)을 SRS §20에 추가한다. 토큰 값과 컴포넌트·CSS 동작은 바뀌지 않는다 | FR-DOC-010, W-031, API-TOK-004, WP-036 | `srs_final.md`, `prd.md`, `feature.md`, `glossary.md`, `requirements_screen_traceability_matrix.md`, `conductor_product_ia.md`, `conductor_wireframe_spec.md`, `conductor_api_contracts.md`, `conductor_work_packages.md`, `conductor_implementation_traceability.md`, 토큰 API 리포트, Changeset(tokens minor) | closed |
 
 유형: `scope`(범위 변경), `design`(설계 변경), `implementation`(구현 편차 DEV-### 처리), `correction`(문서 오류 수정)
 
@@ -592,3 +593,16 @@ CR-041 구현 cascade와 로컬 검증은 2026-09-14에 종료했다. 사용자�
 | 로컬 검증 중 수정 | axe `link-in-text-block`(W-064 안내 문단 안 링크에 밑줄 없음)을 E2E 행렬이 잡아 밑줄을 추가했다. 위험 구역 버튼이 패널 폭으로 늘어나던 배치를 고쳤다 |
 | 검증 (2026-10-13, 로컬) | 게이트 12종 통과(단위 시험 710/710), docs E2E 60/60(블록 4건, 폭·테마·axe 행렬 8건 포함). Lighthouse 외부 요청 0건·CLS 0. 로컬 LCP p75는 2534ms로 예산 2500ms를 넘었지만 같은 시각 main도 2566ms라 이 샌드박스의 측정 변동이다(셸 증가분은 내비 항목 3개). 배포 게이트는 Deploy Docs CI에서 판정한다 |
 | CI · 종료 | PR #48 head `8d37794`에서 verify(node 20/22)·visual regression success. CR-051 closed(2026-10-13). 패키지 변경이 없어 릴리스 대상이 아니다 |
+
+## CR-052 테마 플레이그라운드와 색 연산 공개 (2026-10-13)
+
+| 항목 | 기록 |
+| --- | --- |
+| 유형 / 상태 | scope + design / closed |
+| 변경 근거 | 사용자가 2026-10-13에 3순위(테마 패널)의 범위로 "패키지에 대비 함수 공개"를 골랐고, SRS 확장 승인에 동의했다 |
+| 범위 판정 | 문서 사이트 화면과 패키지 공개 API 추가가 함께 들어간다. 새 FR-DOC-010(Should)을 SRS §20에 더하고 v1.10으로 올린다. API-TOK-004는 추가만 있는 변경이라 API 계약 6절에 따라 minor다(0.7.0). linked 그룹이라 css·react도 같은 버전으로 오른다 |
+| 설계 | 런타임 측정이 빌드 보고서와 어긋나면 화면을 믿을 수 없으므로, 대비 계산은 새로 짜지 않고 `conductor-check-contrast`의 파싱·합성 함수를 그대로 공개했다. 컴포넌트 토큰은 해석된 값으로 내보내지므로(`--cdt-button-radius: 12px`) 시맨틱 변수만 바꾸면 버튼에 닿지 않는다. 화면은 `tokens.json`의 `alias` 사슬을 따라 영향받는 모든 변수를 재정의한다. `accent.strong`은 원본 쌍의 OKLab 차이를 유지해 파생하므로 기본 입력에서 원본 값이 그대로 나온다. 재정의는 미리보기 루트에만 두고 포털 컴포넌트는 미리보기에 넣지 않았다 |
+| 구현 | `packages/tokens/src/measure.ts`, `index.ts` export, `oklab.ts`(`OklabColor` 공개, `ToneName` 문서화), `measure.test.ts`(6건, 선언된 240개 검사 전부와 일치 확인), `etc/tokens.api.md`, `.changeset/runtime-contrast-oklab.md`; `apps/docs/src/theme-overrides.ts`, `theme-overrides.test.ts`(7건), `theme-playground.tsx`, `App.tsx`, `shell.tsx`, `styles/base.css`, `e2e/playground.spec.ts`(5건), `e2e/workspaces.spec.ts` 행렬에 경로 추가 |
+| 로컬 검증 중 수정 | 순수 모듈 이름이 화면과 같아(`theme-playground.ts`/`.tsx`) 동적 import가 순수 모듈로 해석됐다. `theme-overrides.ts`로 바꿨다. 안내 배너의 굵은 글자가 줄을 나누던 배치를 고쳤다. 게이트가 잡은 세 건도 고쳤다: lint:tokens(docs 시험 고정값·프리셋 색·rem 폭 → 파일·줄 허용 주석과 간격 토큰), 공개 export 목록 시험(새 함수 4개 추가, 원시 토큰 미노출 단언은 유지), `.d.ts`의 `any` 단어(주석 표현 수정) |
+| 검증 (2026-10-13, 로컬) | 게이트 12종 통과(단위 시험 723/723, check:api는 추가만), docs E2E 65/65(플레이그라운드 5건, 폭·테마·axe 행렬 8건 포함). Lighthouse 외부 요청 0건·CLS 0, 로컬 LCP p75 2549ms(샌드박스 변동. CR-051 병합 뒤 main의 Deploy Docs CI는 같은 예산으로 통과했다) |
+| CI · 종료 | PR #49 head `ca6f161`에서 verify(node 20/22)·visual regression success. CR-052 closed(2026-10-13). tokens minor changeset이 다음 버전 PR에서 0.7.0을 만든다 |

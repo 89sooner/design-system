@@ -1,6 +1,6 @@
 # Conductor Design System 패키지 공개 API 계약
 
-> 상태: review | 버전: v0.5 | 갱신일: 2026-10-13
+> 상태: review | 버전: v0.6 | 갱신일: 2026-10-13
 
 ## 0. 문서 재해석
 
@@ -29,6 +29,7 @@ Conductor Design System에는 HTTP API, 요청/응답 엔드포인트, 인증 �
 | API-TOK-001 | CLI | `buildTokens`(bin: `conductor-build-tokens`) | 토큰 소스 → 산출물 빌드 | FR-TOK-003, JOB-BUILD-001 |
 | API-TOK-002 | JS export | `tokens`, `breakpoints` | 타입 부여된 토큰/브레이크포인트 값 | FR-TOK-006, FR-TOK-009 |
 | API-TOK-003 | CLI | `checkContrast`(bin: `conductor-check-contrast`) | 테마별 대비 검사 | FR-THM-004, FR-A11Y-004, JOB-CI-001 |
+| API-TOK-004 | JS export | `contrastRatio`, `toOklab`, `fromOklab`, `mixOklab`, `toneValues` | 빌드와 같은 색 연산의 런타임 사용 (CR-052) | FR-DOC-010, FR-THM-004 |
 | API-THM-001 | DOM 속성 계약 | `data-cdt-theme` | 테마 결정 우선순위 | FR-THM-001~003 |
 | API-CMP-001 | TS interface | 공통 컴포넌트 계약 | ref/className/data-*/aria-*/네이티브 props 확장 | FR-CMP-001 |
 | API-CMP-002 | TS interface | 액션군(`Button`, `IconButton`) | FR-CMP-002 |
@@ -212,6 +213,23 @@ theme=light pair=text.body/surface.base   ratio=15.01  threshold=4.50(body)     
 
 - 종료 코드: `0` 전건 통과 · `1` 미달 1건 이상.
 - 산출물: `dist/contrast-report.json`(`conductor_data_model.md` 5절), 문서 사이트 토큰 참조 페이지(FR-DOC-004)가 소비한다.
+
+### API-TOK-004 색 연산 TypeScript export (CR-052)
+
+```ts
+export function contrastRatio(foreground: string, background: string): number;
+export type OklabColor = readonly [number, number, number];
+export function toOklab(hex: string): OklabColor;
+export function fromOklab(input: OklabColor): string;
+export function mixOklab(foreground: string, background: string, weight: number): string;
+export type ToneName = "accent" | "danger";
+export function toneValues(tones: Readonly<Record<ToneName, string>>, surfaceRaised: string): Readonly<Record<string, string>>;
+```
+
+- `contrastRatio`는 `conductor-check-contrast`와 같은 파싱·합성·비율 계산을 쓴다. 값 하나에 색이 정확히 하나여야 하며(box-shadow 안의 색 포함), 반투명 전경은 배경 위에 합성한다. 배경이 반투명이거나 색을 읽을 수 없으면 예외를 던진다. 같은 입력에서 `contrast-report.json`의 `ratio`와 소수 넷째 자리까지 같다.
+- `mixOklab`의 `weight`는 전경의 비율이며 [0, 1] 밖이면 예외다. 입력은 `#rrggbb`만 받는다.
+- `toneValues`는 빌드가 `tone.<tone>.<state>`를 만드는 함수 그대로다.
+- 추가만 있는 변경이라 minor다(6절).
 
 ### API-THM-001 `data-cdt-theme` 속성 계약
 
@@ -447,6 +465,7 @@ export interface TopBarProps extends Omit<React.HTMLAttributes<HTMLElement>, "ch
 | `/components` | W-020 | `ComponentMeta[]` |
 | `/components/:name` | W-021 | `ComponentMeta`, 컴포넌트 `.d.ts` |
 | `/tokens/reference` | W-030 | `tokens.json`, `contrast-report.json` |
+| `/tokens/playground` | W-031 | `tokens.json`(`alias` 포함), `contrast-report.json`, API-TOK-004 (CR-052) |
 | `/guidelines` | W-040 | 정적 MDX |
 | `/accessibility` | W-050 | axe 허용 목록 파일 |
 

@@ -1,6 +1,6 @@
 # 요구사항-화면 추적 매트릭스
 
-> 상태: review | 버전: v0.5 | 갱신일: 2026-10-13
+> 상태: review | 버전: v0.6 | 갱신일: 2026-10-13
 
 ## 1. 목적
 
@@ -96,6 +96,7 @@ UI가 없는 요구사항은 아래 표면 중 하나에 간접 노출된다.
 | FR-DOC-007 | Should | W-040 | — | FLOW-001 | 사용 규칙 |
 | FR-DOC-008 | Should | W-021 | — | FLOW-001 | 에이전트 판독용 문서 (산출물: DESIGN.md, llms.txt, components/*.md) |
 | FR-DOC-009 | Should | W-063, W-064, W-065 | SFC-PKG | FLOW-001 | 블록 예제 (CR-051) |
+| FR-DOC-010 | Should | W-031 | SFC-PKG | FLOW-003 | 테마 플레이그라운드 (CR-052, API-TOK-004) |
 | FR-A11Y-001 | Must | W-050 | 전 화면 | — | 포커스 링 |
 | FR-A11Y-002 | Must | W-050 | 전 화면 | FLOW-004 | 키보드 도달 |
 | FR-A11Y-003 | Must | W-040, W-050 | SFC-PKG | — | 색상 비의존 |
@@ -175,3 +176,9 @@ W-040 가이드 화면은 유지하며 실제 조합은 독립 경로로 연결�
 | W-063 | 빈 상태 | `/examples/empty-states` | FR-DOC-009 (AC-1, AC-5) | WP-035 | 4유형의 이유·다음 행동, 차단 사유 연결 |
 | W-064 | 필터 테이블 | `/examples/filter-table` | FR-DOC-009 (AC-2, AC-5), FR-CMP-005 | WP-035 | 결합 필터·칩·결과 수 알림·0건 복귀·정렬 노출 |
 | W-065 | 설정 폼 | `/examples/settings-form` | FR-DOC-009 (AC-3 ~ AC-5), FR-CMP-007 | WP-035 | 필드·요약 오류와 포커스, 미저장 변경, 삭제 확인 |
+
+## CR-052 테마 플레이그라운드 추적
+
+| 화면 ID | 화면명 | 경로 | 요구사항 | 구현 단위 | 검증 |
+| --- | --- | --- | --- | --- | --- |
+| W-031 | Theme Playground | `/tokens/playground` | FR-DOC-010, FR-THM-004 | WP-036 | 미리보기 한정 재정의·별칭 전파, 대비 재측정이 보고서와 일치, 스니펫, 잘못된 입력 거부 |
