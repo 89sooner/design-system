@@ -71,7 +71,7 @@
 | CR-050 | 2026-10-13 | design | 사용자 지시 (2026-10-13): 우선순위 리포트 5순위(OKLCH로 상태색 파생)를 진행하고 0.6.1을 릴리스 | **secondary tone 버튼의 상태색 8종을 렌더 시점 sRGB `color-mix()`에서 빌드 시점 OKLab 토큰으로 바꾼다. 요구사항은 바뀌지 않는다.** 시맨틱 토큰 `tone.accent.*`·`tone.danger.*`(테마당 8종, additive)를 `oklab.ts`가 같은 비율로 계산해 hex로 내보낸다. 브라우저 지원 문제가 사라지고 채움 4종이 대비 쌍 CP-118~CP-121로 측정된다. OKLCH 대신 그 직교 좌표형인 OKLab에서 섞는 이유는 토큰 명세 5.11.1에 적었다 | FR-THM-004, FR-TOK-001, FR-CMP-002 | `conductor_design_system_tokens.md`, `conductor_implementation_traceability.md`, 토큰 API 리포트, Changeset(tokens·css patch) | closed |
 | CR-051 | 2026-10-13 | scope + design | 사용자 지시 (2026-10-13): 우선순위 리포트 6순위(블록 단위 패턴)를 예시 화면 W-063~W-065로 진행하고, 새 FR 추가를 승인 | **문서 사이트에 블록 예제 화면 3개(빈 상태, 필터 테이블, 설정 폼)를 더한다.** 새 FR-DOC-009(Should)를 SRS §19에 추가한다. 패키지 공개 API와 컴포넌트·CSS 동작은 바뀌지 않으며 화면은 공개 export만 조합한다 | FR-DOC-009, W-063, W-064, W-065, WP-035 | `srs_final.md`, `prd.md`, `feature.md`, `glossary.md`, `requirements_screen_traceability_matrix.md`, `conductor_product_ia.md`, `conductor_wireframe_spec.md`, `conductor_work_packages.md`, `conductor_implementation_traceability.md` | closed |
 | CR-052 | 2026-10-13 | scope + design | 사용자 지시 (2026-10-13): 우선순위 리포트 3순위(테마 패널)를 tokens 패키지에 대비 함수를 공개하는 범위로 진행하고, 새 FR 추가를 승인 | **문서 사이트에 테마 플레이그라운드(W-031)를 더하고, `@conductor-by-89soone/tokens`가 빌드의 색 연산(`contrastRatio`, OKLab 함수)을 공개한다(API-TOK-004, minor).** 새 FR-DOC-010(Should)을 SRS §20에 추가한다. 토큰 값과 컴포넌트·CSS 동작은 바뀌지 않는다 | FR-DOC-010, W-031, API-TOK-004, WP-036 | `srs_final.md`, `prd.md`, `feature.md`, `glossary.md`, `requirements_screen_traceability_matrix.md`, `conductor_product_ia.md`, `conductor_wireframe_spec.md`, `conductor_api_contracts.md`, `conductor_work_packages.md`, `conductor_implementation_traceability.md`, 토큰 API 리포트, Changeset(tokens minor) | closed |
-| CR-053 | 2026-10-13 | scope + design | 사용자 지시 (2026-10-13): 경쟁력 평가 리포트 1번(문서 언어 통일)을 영어로, 패키지 고정 문구는 prop으로 바꿔 진행 | **문서 사이트 화면 문구를 영어로 통일하고, react 패키지 CR-041 컴포넌트의 고정 한국어 문구를 `labels` prop(영어 기본값)으로 바꾼다.** FR-DOC-001 AC-5와 FR-CMP-013 AC-5를 SRS §21에 더한다. 토큰 설명 3건을 영어로 고친다 | FR-DOC-001, FR-CMP-013, W-060 ~ W-065, W-030 | `srs_final.md`, `requirements_screen_traceability_matrix.md`, `conductor_product_ia.md`, `conductor_wireframe_spec.md`, `conductor_api_contracts.md`, `conductor_implementation_traceability.md`, react API 리포트, Changeset(react minor, tokens patch) | open |
+| CR-053 | 2026-10-13 | scope + design | 사용자 지시 (2026-10-13): 경쟁력 평가 리포트 1번(문서 언어 통일)을 영어로, 패키지 고정 문구는 prop으로 바꿔 진행 | **문서 사이트 화면 문구를 영어로 통일하고, react 패키지 CR-041 컴포넌트의 고정 한국어 문구를 `labels` prop(영어 기본값)으로 바꾼다.** FR-DOC-001 AC-5와 FR-CMP-013 AC-5를 SRS §21에 더한다. 토큰 설명 3건을 영어로 고친다 | FR-DOC-001, FR-CMP-013, W-060 ~ W-065, W-030 | `srs_final.md`, `requirements_screen_traceability_matrix.md`, `conductor_product_ia.md`, `conductor_wireframe_spec.md`, `conductor_api_contracts.md`, `conductor_implementation_traceability.md`, react API 리포트, Changeset(react minor, tokens patch) | closed |
 
 유형: `scope`(범위 변경), `design`(설계 변경), `implementation`(구현 편차 DEV-### 처리), `correction`(문서 오류 수정)
 
@@ -612,7 +612,7 @@ CR-041 구현 cascade와 로컬 검증은 2026-09-14에 종료했다. 사용자�
 
 | 항목 | 기록 |
 | --- | --- |
-| 유형 / 상태 | scope + design / open |
+| 유형 / 상태 | scope + design / closed |
 | 변경 근거 | 사용자가 2026-10-13에 경쟁력 평가 리포트의 1·2·4번 진행을 지시하고, 1번의 방식으로 "영어 + 패키지 문구 prop화"를 골랐다 |
 | 범위 판정 | 사이트 언어와 컴포넌트 문구 재정의를 정한 FR이 없었다. 새 FR 대신 FR-DOC-001 AC-5와 FR-CMP-013 AC-5를 더한다(SRS §21, v1.11). `labels` prop 추가는 비파괴지만 기본 문구가 바뀌므로 react는 minor, 토큰 설명만 바뀌는 tokens는 patch다 |
 | 설계 | 문구 기본값과 타입은 `labels.ts` 한곳에 둔다. 컴포넌트는 `{ ...DEFAULT, ...labels }`로 병합하므로 일부만 넘겨도 된다. 개수·이름을 끼워 넣는 문구는 함수로 받아 어순이 다른 언어도 표현할 수 있다. 기본값 상수는 공개하지 않고 타입만 공개해 API 면을 좁혔다 |
@@ -620,3 +620,4 @@ CR-041 구현 cascade와 로컬 검증은 2026-09-14에 종료했다. 사용자�
 | 남긴 한국어 | CJK 줄바꿈·IME 검사용 표본만 남겼다: W-060~W-062의 `long` 상태 문구, W-060 첫 표본 제목의 "검색 조건"(e2e가 실제 한국어로 IME 조합 검색을 검사한다). 각 위치에 목적을 적은 주석이 있다 |
 | 로컬 검증 중 수정 | `labels.ts`가 tsup 진입점에 없어 `dist/labels.js`가 생기지 않았고 docs 빌드가 실패했다(진입점 추가). 실제 브라우저에서는 클립보드가 동작해 a11y 시나리오의 기대 문구가 달라졌다. 세 결과 문구가 모두 `Cop`으로 시작하도록 "Copy unavailable …"로 다듬고 단언을 맞췄다 |
 | 검증 (2026-10-13, 로컬) | 게이트 12종 통과(단위 시험 727/727, a11y 238/238, check:api는 추가만), docs E2E 65/65 |
+| CI · 종료 | PR #51 head `9a3a91a`에서 verify(node 20/22)·visual regression success. CR-053 closed(2026-10-13) |

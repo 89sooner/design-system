@@ -537,3 +537,4 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | 패키지 | CR-041 컴포넌트 9종이 `labels?: Partial<…Labels>`를 받는다. 기본값은 영어이고, `…Labels` 타입 9종을 공개한다. FR-CMP-013 AC-5 |
 | 문서 사이트 | W-030, W-040, W-060~W-065, 내비, 카탈로그 표본을 영어로 바꿨다. CJK 검사 표본만 남겼다. FR-DOC-001 AC-5 |
 | 검증 (로컬) | 게이트 12종(단위 727/727, a11y 238/238), docs E2E 65/65 |
+| CI · 종료 | PR #51 head `9a3a91a`에서 verify(node 20/22)·visual regression success. CR-053 closed(2026-10-13) |
