@@ -591,4 +591,4 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | 패키지 | tokens: `overlay.drawerZ` → `{z.popover}`. css: 생성 변수 값만 바뀐다. react: Radix 고정 버전 6개를 2026-07-24 배포 묶음으로 정렬(내부 모듈 중복 0) |
 | 시험 | `stacking-contract.ts`, component.css 단독과 전체 번들 브라우저 시험. 수정 전 "Drawer open" 위반 1건, 수정 후 0건 |
 | 검증 (로컬) | 게이트 12종(단위 744/744, a11y 266/266) |
-
+| 검증 (CI) | PR #59 head `7e986b7`: verify(node 20·22), visual regression 통과. CR-058 closed |
