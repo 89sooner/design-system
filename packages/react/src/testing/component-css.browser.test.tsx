@@ -1,4 +1,4 @@
-// Refs: CR-056 DEV-057 FR-A11Y-001 FR-CSS-002
+// Refs: CR-056 DEV-057 CR-057 FR-A11Y-001 FR-CSS-002
 //
 // `@conductor-by-89soone/css/component.css` leaves out cdt.reset for consumers that bring their
 // own global reset. The focus ring must not depend on that reset: every keyboard stop that is a
@@ -8,6 +8,7 @@ import { cleanup, render } from "@testing-library/react";
 import { afterEach, expect, test } from "vitest";
 import "@conductor-by-89soone/css/component.css";
 import { a11yScenarios } from "./a11y-scenarios";
+import { cursorViolations } from "./cursor-contract";
 
 afterEach(() => cleanup());
 
@@ -46,4 +47,15 @@ test("FR-A11Y-001 AC-1: component.css alone draws the focus ring on every keyboa
     cleanup();
   }
   expect(missing).toEqual([]);
+});
+
+test("CR-057: with component.css alone, controls show the pointer and interface labels the arrow", () => {
+  document.documentElement.dataset.cdtTheme = "dark";
+  const violations: string[] = [];
+  for (const scenario of a11yScenarios) {
+    render(scenario.render());
+    violations.push(...cursorViolations(document.body, `${scenario.component} ${scenario.state}`));
+    cleanup();
+  }
+  expect(violations).toEqual([]);
 });

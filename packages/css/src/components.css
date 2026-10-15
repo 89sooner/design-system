@@ -15,6 +15,54 @@
     box-shadow: var(--cdt-focus-ring);
   }
 
+  /*
+   * Cursors (CR-057). cdt.reset gives every button the pointer, but component.css leaves that
+   * layer out, so on that entry point Conductor buttons, switches, checkboxes and select
+   * triggers showed the arrow. This restates the reset for Conductor buttons and buttons inside
+   * Conductor elements, at the same zero specificity: the disabled (not-allowed) and busy
+   * (progress) rules below still win.
+   */
+  :where(button[class*="cdt-"], [class*="cdt-"] button) {
+    cursor: pointer;
+  }
+
+  /*
+   * Interface labels are not text to edit. With cursor `auto`, Chromium shows the I-beam over any
+   * selectable text, so badges, chips, key caps, meter readouts and section labels looked like
+   * input fields (measured on a real pointer). They get the arrow; user-select is untouched, so
+   * their text can still be copied. Body copy (table cells, code, descriptions, card and panel
+   * content) keeps the I-beam: selecting it is the expected gesture. StatusBadge carries
+   * .cdt-badge, and the spinner label's rule lives in cdt.base (DEV-029), so neither is named here.
+   */
+  :where(
+    .cdt-badge,
+    .cdt-severity-tag,
+    .cdt-filter-chip,
+    .cdt-kbd,
+    .cdt-meter__value,
+    .cdt-progress-ring__label,
+    .cdt-nav-list__section-label,
+    .cdt-topbar__eyebrow,
+    .cdt-topbar__title,
+    .cdt-timeline__step,
+    .cdt-tabs__list,
+    .cdt-date-picker__caption-label
+  ) {
+    cursor: default;
+  }
+
+  /* Inside a link or control the label takes that control's cursor (a badge in a nav link stays a pointer). */
+  :where(a[href], button, summary, label, [role="button"], [role="link"], [role="tab"], [role="menuitem"], [role="option"]) :where(
+    .cdt-badge,
+    .cdt-severity-tag,
+    .cdt-kbd,
+    .cdt-meter__value,
+    .cdt-progress-ring__label,
+    .cdt-timeline__step
+  ) {
+    cursor: inherit;
+  }
+
   .cdt-btn {
     position: relative;
     display: inline-flex;

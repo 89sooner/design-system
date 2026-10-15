@@ -12,6 +12,7 @@ import { Dialog, DropdownMenu } from "../overlay";
 import { Checkbox, Switch, TextField } from "../form";
 import { Card } from "../surface";
 import { a11yScenarios, AppShellKeyboardFixture, keyboardScenarios } from "./a11y-scenarios";
+import { cursorViolations } from "./cursor-contract";
 import { publicComponents } from "./public-components";
 
 declare const __CONDUCTOR_A11Y_FIXTURE__: string;
@@ -210,6 +211,17 @@ function RoutedShellFixture({ overlay }: { readonly overlay: "menu" | "dialog" }
     : <Dialog.Root open={dialogOpen} onOpenChange={setDialogOpen}><Dialog.Trigger data-overlay-trigger="">Account</Dialog.Trigger><Dialog.Content aria-describedby={undefined}><Dialog.Title>Account</Dialog.Title><button type="button" onClick={go}>Settings</button></Dialog.Content></Dialog.Root>;
   return <AppShell nav={null} skipLinkLabel="Skip" topBar={topBar} routeKey={route} mainId="routed-main"><p>{route}</p></AppShell>;
 }
+
+test("CR-057: in the full stylesheet, controls show the pointer and interface labels the arrow", () => {
+  setTheme("dark");
+  const violations: string[] = [];
+  for (const scenario of a11yScenarios) {
+    render(scenario.render());
+    violations.push(...cursorViolations(document.body, `${scenario.component} ${scenario.state}`));
+    cleanup();
+  }
+  expect(violations).toEqual([]);
+});
 
 describe("DEV-058 a route change from inside an overlay leaves focus on the new screen", () => {
   test("FR-A11Y-002: choosing a menu item that navigates moves focus to main, not back to the trigger", async () => {
