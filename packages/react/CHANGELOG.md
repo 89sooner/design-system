@@ -1,5 +1,12 @@
 # @conductor-by-89soone/react
 
+## 0.8.4
+
+### Patch Changes
+
+- Updated dependencies [da8e920]
+  - @conductor-by-89soone/css@0.8.4
+
 ## 0.8.3
 
 ### Patch Changes
