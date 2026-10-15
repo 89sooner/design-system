@@ -77,6 +77,7 @@
 | CR-056 | 2026-10-14 | defect fix | 사용자 지시 (2026-10-14): DEV-057 → DEV-058 순서로 진행 | **CR-055 파일럿이 찾은 포커스 결함 둘을 패키지에서 고친다.** ① `component.css`가 reset 없이도 포커스 링을 그린다. ② `AppShell` 안 오버레이에서 라우트를 바꾸면 포커스가 main에 남는다. 새 shall은 없다. FR-A11Y-001 AC-1과 FR-A11Y-002의 기존 수용 기준을 `component.css` 진입점과 오버레이 경로에서도 지키게 한다. react·css patch | FR-A11Y-001, FR-A11Y-002, FR-CSS-002, FR-CMP-009, C-070, C-071, DEV-057, DEV-058 | `packages/css/src/components.css`, `packages/react/src/route-focus.ts`·`shell.tsx`·`overlay.tsx`·`interaction.tsx`, 시험, `conductor_implementation_traceability.md`, Changeset(react·css patch) | closed |
 | CR-057 | 2026-10-15 | defect fix + design rule | 사용자 보고·지시 (2026-10-15): "컴포넌트 내부 텍스트에서 커서가 입력 가능한 것처럼 변경된다" → 확인·조사 후 제안대로 구현하고 0.8.2까지 릴리스 | **컨트롤은 손가락, 인터페이스 레이블은 화살표, 본문은 I자로 커서 규칙을 정한다.** 결함 두 가지를 고친다. ① 레이블에 커서 지정이 없어 I자로 보였다. ② `component.css`에서는 reset에만 있던 버튼 `pointer`가 빠졌다. 새 shall은 없다. 컴포넌트 명세 §1.5에 규칙을 추가한다. css patch | FR-CSS-002, FR-CMP-002, FR-CMP-004, FR-CMP-008, FR-CMP-009 | `packages/css/src/components.css`·`base.css`, `packages/react/src/testing/cursor-contract.ts`와 브라우저 시험 2건, `conductor_ui_component_spec.md`(v0.11 §1.5), `conductor_implementation_traceability.md`, Changeset(css patch) | closed |
 | CR-058 | 2026-10-15 | defect fix + dependency hygiene | agent-ai-platform 파일럿(DS-PILOT-05) 보고, 사용자 지시 (2026-10-15): "0.8.3 릴리스도 진행해" | **Drawer 패널을 자기 가림막 위로 올리고, Radix 프리미티브 버전을 한 배포 묶음에 맞춘다.** ① `overlay.drawerZ`가 `z.drawer`(30)라 가림막 `z.overlay`(40) 아래에 그려졌다. ② Radix 고정 버전이 서로 다른 배포 묶음에 걸쳐 있어 내부 모듈이 소비자 번들에 여러 벌 들어갔다. 새 shall은 없다. tokens·css·react patch | FR-CMP-006, FR-TOK-008, NFR-002 | `packages/tokens/src/components.ts`, `packages/react/package.json`·`pnpm-lock.yaml`, `packages/react/src/testing/stacking-contract.ts`와 브라우저 시험 2건, `conductor_design_system_tokens.md`(v0.14), `conductor_security_privacy_architecture.md`, `conductor_implementation_traceability.md`, Changeset(tokens·css·react patch) | closed |
+| CR-059 | 2026-10-15 | defect fix | 사용자 지시 (2026-10-15): "체크박스가 너무 크다 … 보통의 컴포넌트 사이즈로 맞춰라. switch 컴포넌트도 겉 테두리가 이상하다" | **Checkbox와 Switch를 C-054·C-055 결정대로 시각 크기(20×20 상자, 42×24 트랙)로 그리고, 40px 히트 영역은 투명 `::after`로 둔다.** 포커스 링이 트랙·상자 모양을 따른다. 오류 경계가 기본 경계에 덮이던 순서도 바로잡는다. 새 shall은 없다. css patch | FR-CMP-007, FR-A11Y-002 | `packages/css/src/components.css`, `packages/css/test/bundle.test.ts`, `conductor_ui_component_spec.md`(v0.12), `conductor_implementation_traceability.md`(DEV-059), Changeset(css patch) | open |
 
 유형: `scope`(범위 변경), `design`(설계 변경), `implementation`(구현 편차 DEV-### 처리), `correction`(문서 오류 수정)
 
@@ -694,3 +695,15 @@ CR-041 구현 cascade와 로컬 검증은 2026-09-14에 종료했다. 사용자�
 | 시험 | `stacking-contract.ts`는 a11y 시나리오 전체를 렌더한다. 유한 애니메이션을 끝낸 뒤, 열린 오버레이 표면(dialog·drawer·popover·menu·tooltip·select 내용)마다 중심점의 최상단 요소가 그 표면 안인지 본다. component.css 단독과 전체 번들에서 각각 돌린다. 수정 전에는 두 시험이 "Drawer open: .cdt-drawer is covered by div.cdt-overlay"로 실패했고, 수정 후 0건이다 |
 | 검증 (2026-10-15, 로컬) | 게이트 12종 통과. 단위 744/744, a11y 266/266(skip 1), size(Button 1.33KiB, css 12.82KiB), check:api 변화 없음 |
 | CI · 종료 | PR #59 head `7e986b7`에서 verify(node 20·22)·visual regression 통과. select 2.3.7 등 Radix 정렬 뒤에도 시각 회귀 차이가 없다. CR-058을 종료한다. 릴리스는 0.8.3(tokens·css·react). agent-ai-platform의 Drawer 임시 처리는 0.8.3으로 올릴 때 걷어낸다 |
+
+## CR-059 Checkbox·Switch 시각 크기와 포커스 링 (2026-10-15)
+
+| 항목 | 기록 |
+| --- | --- |
+| 유형 / 상태 | defect fix / open |
+| 변경 근거 | 사용자가 2026-10-15에 체크박스가 다른 컴포넌트에 비해 너무 크고, Switch의 겉 테두리가 이상하다고 보고했다 |
+| 원인 | ① C-055는 "20×20 상자 + 40px 투명 히트 영역"으로 결정했는데, `.cdt-checkbox`가 `inline-size`와 `min-block-size`를 모두 `input.minHeight`(40px)로 받아 40×40 상자 자체를 그렸다(DEV-059). ② C-054는 24px 트랙을 40px 투명 히트 영역 안에 두었는데, 버튼 상자가 42×40이고 트랙은 `::before`였다. 그래서 `:focus-visible`의 `focusRing` 그림자가 트랙이 아니라 42×40 pill(거의 원)에 그려져 트랙 바깥에 큰 고리가 떴다. ③ `.cdt-switch--invalid`·`.cdt-checkbox--invalid` 경계 규칙이 기본 경계 선언보다 앞에 있어 오류 경계가 보이지 않았다 |
+| 범위 판정 | 새 shall이 없다. FR-CMP-007 AC-5의 40px(좁은 화면 42px)는 C-054·C-055 결정대로 히트 영역 높이로 충족한다. 포커스 링은 여전히 포커스 받은 요소의 `box-shadow`라 FR-A11Y-002·QA-004 시험 계약이 그대로다. 공개 API·토큰 변화가 없어 css patch다 |
+| 수정 | 버튼 상자 = 시각 크기: Checkbox 20×20(`radius.xs`, 체크 글리프 `font.size.xs`), Switch 42×24 트랙(`radius.pill`). 히트 영역은 `::after`(절대 위치, 세로 중앙, `min-block-size: var(--cdt-input-min-height)`, 좁은 화면 `-compact`). 트랙의 무거운 내부 그림자와 상자 위 하이라이트 선은 뺐다. 오류 경계 규칙을 기본 선언 뒤로 옮겼다 |
+| 시험 | `bundle.test.ts`에 "FR-CMP-007 AC-5 / CR-059" 추가: 상자 20×20, 트랙 42×24, `::after` 히트 영역이 `input.minHeight`. 기존 AC-5 좁은 화면 시험은 `::after` 규칙으로 판정한다 |
+

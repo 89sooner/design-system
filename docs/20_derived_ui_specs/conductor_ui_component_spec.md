@@ -1,6 +1,6 @@
 # Conductor Design System UI 컴포넌트 명세서
 
-> 상태: review | 버전: v0.11 | 갱신일: 2026-10-15
+> 상태: review | 버전: v0.12 | 갱신일: 2026-10-15
 
 ## 0. 문서 위치와 범위
 
@@ -839,6 +839,7 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
   - `app.css:1322-1324` — `.SwitchThumb[data-state='checked'] { transform: translateX(20px) }`.
   - **결정**: `border-radius: 9999px`는 `--cdt-radius-pill` 토큰을 요구한다(C-020과 동일).
   - **결정**: 트랙 높이 24px는 최소 터치 대상 40px에 미달한다. FR-CMP-007 AC-5를 만족하도록 `.cdt-switch`에 `min-height: 40px`의 투명 히트 영역을 부여하고, 시각 트랙은 그 안에 중앙 정렬한다. 소스는 히트 영역을 정의하지 않는다.
+  - **결정 (CR-059)**: 버튼 상자가 곧 42×24 트랙이다. 히트 영역은 투명 `::after`가 세로로 넓혀 40px(좁은 화면 42px)를 채운다. 그래서 `focusRing`이 트랙 모양을 그대로 따른다.
 
 | 이름 | 타입 | 기본값 | 필수 | 설명 |
 | --- | --- | --- | --- | --- |
@@ -865,7 +866,7 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
   - `app.css:1269-1280` — `.SwitchRoot`의 경계·내부 그림자·전환 시간.
   - `app.css:1281-1284` — 선택 상태의 강조색 채움 및 경계.
   - `app.css:1263-1267` — `.SelectItem[data-highlighted]`가 사용하는 강조색 위 흰 전경 조합.
-  - **결정**: 20×20 정사각, `--cdt-radius-xs` 반경, 미선택 시 `border.default` 경계 + 투명 배경, 선택 시 `accent` 채움 + 흰 체크 표시. `Switch`와 동일하게 `min-height: 40px` 투명 히트 영역을 부여한다.
+  - **결정**: 20×20 정사각, `--cdt-radius-xs` 반경, 미선택 시 `border.default` 경계 + 투명 배경, 선택 시 `accent` 채움 + 흰 체크 표시. `Switch`와 동일하게 `min-height: 40px` 투명 히트 영역을 부여한다. 버튼 상자가 곧 20×20 상자이고 히트 영역은 투명 `::after`다(CR-059). 체크 글리프는 `font.size.xs`.
 
 | 이름 | 타입 | 기본값 | 필수 | 설명 |
 | --- | --- | --- | --- | --- |

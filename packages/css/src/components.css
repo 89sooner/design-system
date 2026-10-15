@@ -970,53 +970,49 @@
   .cdt-select__item[data-disabled] { color: var(--cdt-text-muted); cursor: not-allowed; }
   .cdt-select__indicator { display: inline-flex; color: var(--cdt-accent); }
 
+  /*
+   * Switch와 Checkbox는 보이는 크기(트랙 42×24, 상자 20×20)가 곧 버튼 상자다. 그래서 포커스 링이
+   * 트랙과 상자 모양을 그대로 따른다. 40px 히트 영역(FR-CMP-007 AC-5)은 투명 `::after`가 세로로
+   * 넓혀 채운다. 의사 요소의 클릭은 버튼으로 간다 (CR-059).
+   */
   .cdt-switch,
   .cdt-checkbox {
+    position: relative;
     display: inline-flex;
     flex: 0 0 auto;
     align-items: center;
     justify-content: center;
-    min-block-size: var(--cdt-input-min-height);
     border: var(--cdt-border-width-hairline) solid var(--cdt-input-border);
     background: var(--cdt-input-background);
-    box-shadow: inset 0 1px 0 var(--cdt-border-subtle); /* cdt-allow-literal: toggle surface highlight */
     transition: background var(--cdt-motion-fast), border-color var(--cdt-motion-fast), box-shadow var(--cdt-motion-fast);
   }
 
-  .cdt-switch {
-    position: relative;
-    inline-size: 42px; /* cdt-allow-literal: source switch hit target width */
-    border: 0;
-    border-radius: var(--cdt-radius-pill);
-    background: transparent;
-    box-shadow: none;
-  }
-
-  .cdt-switch::before {
+  .cdt-switch::after,
+  .cdt-checkbox::after {
     position: absolute;
     inset-block-start: 50%;
     inset-inline: 0;
-    block-size: 24px; /* cdt-allow-literal: source visual switch track height inside the 40px hit target */
-    border: var(--cdt-border-width-hairline) solid var(--cdt-input-border);
-    border-radius: var(--cdt-radius-pill);
-    background: var(--cdt-input-background);
-    box-shadow: inset 0 1px 2px var(--cdt-surface-overlay); /* cdt-allow-literal: recessed toggle track */
+    min-block-size: var(--cdt-input-min-height);
     content: "";
     transform: translateY(-50%);
-    transition: background var(--cdt-motion-fast), border-color var(--cdt-motion-fast);
   }
 
-  .cdt-switch[data-state="checked"]::before {
-    border-color: var(--cdt-input-border-focus);
-    background: var(--cdt-accent);
+  .cdt-switch {
+    inline-size: 42px; /* cdt-allow-literal: source switch track width */
+    block-size: 24px; /* cdt-allow-literal: source switch track height */
+    border-radius: var(--cdt-radius-pill);
   }
 
+  .cdt-switch[data-state="checked"],
   .cdt-checkbox[data-state="checked"],
   .cdt-checkbox[data-state="indeterminate"] { border-color: var(--cdt-input-border-focus); background: var(--cdt-accent); }
 
+  /* 기본 경계 선언보다 뒤에 와야 오류 경계가 이긴다. */
+  .cdt-switch--invalid,
+  .cdt-checkbox--invalid { border-color: var(--cdt-input-border-invalid); }
+
   .cdt-switch__thumb {
     position: relative;
-    z-index: var(--cdt-z-raised);
     inline-size: 18px; /* cdt-allow-literal: source switch thumb diameter */
     block-size: 18px; /* cdt-allow-literal: source switch thumb diameter */
     border-radius: var(--cdt-radius-pill);
@@ -1032,14 +1028,13 @@
     background: var(--cdt-text-inverse);
   }
 
-  .cdt-switch--invalid::before {
-    border-color: var(--cdt-input-border-invalid);
-  }
-
   .cdt-checkbox {
-    inline-size: var(--cdt-input-min-height);
+    inline-size: 20px; /* cdt-allow-literal: C-055 checkbox box size */
+    block-size: 20px; /* cdt-allow-literal: C-055 checkbox box size */
     border-radius: var(--cdt-radius-xs);
     color: var(--cdt-text-inverse);
+    font-size: var(--cdt-font-size-xs);
+    line-height: 1;
   }
 
   .cdt-checkbox__indicator { display: inline-flex; }
@@ -1054,9 +1049,10 @@
   @media (max-width: {breakpoint.sm}) {
     .cdt-input,
     .cdt-textarea,
-    .cdt-select__trigger,
-    .cdt-switch,
-    .cdt-checkbox { min-block-size: var(--cdt-input-min-height-compact); }
+    .cdt-select__trigger { min-block-size: var(--cdt-input-min-height-compact); }
+
+    .cdt-switch::after,
+    .cdt-checkbox::after { min-block-size: var(--cdt-input-min-height-compact); }
   }
 
   .cdt-banner { display: flex; align-items: flex-start; gap: var(--cdt-space-3); padding: var(--cdt-space-4); border: var(--cdt-border-width-hairline) solid var(--cdt-border-default); border-inline-start-width: var(--cdt-border-width-rail); border-radius: var(--cdt-radius-md); box-shadow: var(--cdt-elevation-raised); animation: cdt-banner-enter var(--cdt-motion-spring); }

@@ -262,6 +262,7 @@ PR Search 소비처의 `DEV-380`이 트리거다: 화면 계약이 최대 20계�
 
 | DEV ID | 발견일 | 유형 | 내용 | 관련 ID | 처리 CR | 상태 |
 | --- | --- | --- | --- | --- | --- | --- |
+| DEV-059 | 2026-10-15 | 구현 편차 | **`Checkbox`가 C-055의 20×20 상자 대신 40×40 상자를 그렸고, `Switch`의 포커스 링이 24px 트랙이 아니라 42×40 히트 상자에 그려졌다.** 사용자 보고로 발견. 두 컨트롤의 버튼 상자를 시각 크기로 바꾸고 40px 히트 영역을 투명 `::after`로 옮겼다 | FR-CMP-007, FR-A11Y-002, C-054, C-055 | CR-059 | open |
 | DEV-058 | 2026-10-13 | 소비자 검증 편차 | **`AppShell` 안의 `DropdownMenu` 항목이 라우트를 바꾸면 포커스가 새 화면의 main에 남지 않는다.** agent-ai-platform 파일럿(CR-055)에서 드러났다. 메뉴가 열린 동안 Radix 포커스 범위가 AppShell의 main 포커스(routeKey 변경)를 되돌리고, 닫힐 때 트리거로 보낸다. 트리거 복귀만 막으면 body로 빠진다. 소비자는 `DropdownMenu.Content`의 `onCloseAutoFocus`에서 기본 동작을 막고 main에 직접 포커스를 준다(파일럿 `packages/web/src/shell/AppShell.tsx`, 시험 `test/integration/shell.test.tsx`). 패키지 쪽 해법(라우트 변경 시 열린 메뉴의 복귀 대상을 main으로 바꾸는 계약)은 후속 CR 후보다 | FR-CMP-006, FR-CMP-009, FR-A11Y-002, C-070 | CR-055, CR-056 | closed |
 | DEV-057 | 2026-10-13 | 소비자 검증 편차 | **`component.css`만 쓰는 소비자에서는 NavList 항목의 포커스 링을 패키지가 그리지 않는다.** `component.css`는 reset을 뺀 진입점인데, NavList 항목은 reset의 전역 `:focus-visible` 링에 기대고 자기 규칙이 없다. 파일럿은 기존 전역 링 규칙(`--focus-ring` = `--cdt-focus-ring` 별칭)을 남겨 해결했다. 함께 확인한 것: 소비자의 레이어 밖 전역 규칙(`a { color }`)은 `@layer cdt.*`를 언제나 이긴다(ADR-005의 설계대로다). 파일럿은 `a:not([class*="cdt-"])`로 좁혔다. 후속 CR 후보는 두 가지다. ① NavList 항목에 컴포넌트 레이어의 링을 둔다. ② 시작 안내(W-010)에 레이어 밖 규칙과의 관계를 적는다 | FR-CSS-001, FR-A11Y-001, FR-CMP-009, ADR-005, C-071 | CR-055, CR-056 | closed |
 | DEV-056 | 2026-10-13 | 검증 편차 | **CR-054 PR CI의 visual regression이 실패했고, 그 기준 이미지를 고정 컨테이너 밖에서 다시 만들었다.** 실패 원인은 둘이었다. ① `visual.spec.ts`가 카탈로그 타일 수를 47로 고정해 두었다. 이제 `component-meta.json`의 길이에서 읽는다. ② 타일 4개가 늘어 `AllComponents-grayscale-dark` 전체 화면 기준 이미지가 달라졌다. 이 샌드박스에는 여전히 Docker 데몬이 없어, DEV-045와 같은 방법(Chromium 1194 + Inter를 뺀 fontconfig)으로 **이 이미지 한 장만** 갱신했다. 같은 조건에서 나머지 26장은 갱신 없이 1% 안에서 일치했다. PR CI(head `684370d`)의 visual regression 잡이 통과했다 | FR-QA-004, FR-A11Y-003 AC-4, DEV-045 | CR-054 | closed |
@@ -592,3 +593,10 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | 시험 | `stacking-contract.ts`, component.css 단독과 전체 번들 브라우저 시험. 수정 전 "Drawer open" 위반 1건, 수정 후 0건 |
 | 검증 (로컬) | 게이트 12종(단위 744/744, a11y 266/266) |
 | 검증 (CI) | PR #59 head `7e986b7`: verify(node 20·22), visual regression 통과. CR-058 closed |
+
+### CR-059 Checkbox·Switch 시각 크기와 포커스 링 (2026-10-15)
+
+| 범위 | 결과 |
+| --- | --- |
+| 패키지 | css: `.cdt-checkbox` 20×20·`.cdt-switch` 42×24를 버튼 상자로, 히트 영역 `::after`(40px, 좁은 화면 42px), 오류 경계 순서 수정. react·tokens 변화 없음 |
+| 시험 | `bundle.test.ts` "FR-CMP-007 AC-5 / CR-059". Chromium 캡처로 전후 비교: 상자 40×42→20×20, 스위치 버튼 42×42→42×24, 포커스 링이 트랙을 따름 |
