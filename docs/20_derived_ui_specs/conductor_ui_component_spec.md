@@ -1,6 +1,6 @@
 # Conductor Design System UI 컴포넌트 명세서
 
-> 상태: review | 버전: v0.10 | 갱신일: 2026-10-13
+> 상태: review | 버전: v0.11 | 갱신일: 2026-10-15
 
 ## 0. 문서 위치와 범위
 
@@ -60,6 +60,15 @@
 3. 컴포넌트 클래스는 자식 구조 셀렉터(`>`, `+`, `:nth-child`)에 의존하지 않는다(FR-CSS-004 AC-4). Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다.
 4. `!important`를 사용하지 않는다(FR-CSS-001 AC-2). 소스 `app.css:954-957`의 `.dropdown-item:hover { ... !important }` 패턴은 계승하지 않는다. `DropdownMenu.Item`은 Radix가 부여하는 `[data-highlighted]` 속성 셀렉터로 하이라이트를 표현한다(`app.css:1263-1267`의 `.SelectItem[data-highlighted]` 패턴과 동일).
 5. React 없이 CSS 클래스만으로 동일한 계산된 스타일을 얻을 수 있어야 한다(FR-CSS-004 AC-3).
+
+#### CR-057 커서 규칙
+
+텍스트 위 커서가 그 텍스트의 역할을 알려 준다. Chromium은 `cursor: auto`인 선택 가능한 텍스트 위에서 I자 커서를 보여 주므로, 지정하지 않은 레이블은 입력란처럼 보인다(실제 포인터로 측정).
+
+1. 활성 상태의 컨트롤(버튼, 링크, 탭, 메뉴 항목, 옵션, 체크박스, 스위치, 콤보박스 트리거)은 `pointer`다. 비활성은 `not-allowed`, 진행 중인 Button은 `progress`다. 이 규칙은 `cdt.reset` 없이 `component.css`만 쓸 때도 성립한다.
+2. 인터페이스 레이블은 `default`(화살표)다. Badge·StatusBadge·SeverityTag, FilterChip, Kbd, Meter 값, ProgressRing·Spinner 레이블, NavList 섹션 레이블, TopBar eyebrow·제목, 비대화형 Timeline 단계, Tabs 목록, DatePicker 캡션이 해당한다. 컨트롤 안에 있으면 그 컨트롤의 커서를 따른다.
+3. `user-select`는 바꾸지 않는다. 상태 값과 식별자는 복사할 수 있어야 한다.
+4. 본문 성격의 텍스트는 I자를 유지한다. 표 셀, 코드, 대화상자·배너·빈 상태의 설명, 카드·패널 본문, 탭 내용, 필드 설명이 해당한다. 선택이 기대되는 동작이기 때문이다.
 
 #### CR-018 시각 정제 규칙
 

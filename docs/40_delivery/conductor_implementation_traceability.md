@@ -574,3 +574,12 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | DEV | DEV-057, DEV-058 closed |
 | 검증 (CI) | PR #55 head `51d33ea`: verify(node 20·22), visual regression 통과 |
 | 검증 (로컬) | 게이트 12종(단위 744/744, a11y 262/262) |
+
+### CR-057 커서 규칙 (2026-10-15)
+
+| 범위 | 결과 |
+| --- | --- |
+| 패키지 | css: 컴포넌트 레이어의 커서 규칙 셋(컨트롤 `pointer`, 인터페이스 레이블 `default`, 컨트롤 안에서는 상속), `cdt-spinner__label`의 `default`(base). react: 시험만 추가 |
+| 시험 | `cursor-contract.ts`, component.css 단독과 전체 번들 브라우저 시험. 수정 전 위반 69건, 수정 후 0건 |
+| 검증 (로컬) | 게이트 12종(단위 744/744, a11y 264/264). 실제 X 포인터 캡처로 전후 비교 |
+| 검증 (CI) | PR #57 head `02d2bbe`: verify(node 20·22), visual regression 통과. CR-057 closed |

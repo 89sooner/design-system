@@ -75,6 +75,7 @@
 | CR-054 | 2026-10-13 | scope + design | 사용자 지시 (2026-10-13): 경쟁력 평가 리포트 2번(Toast·DatePicker·Command palette·Pagination), DatePicker는 react-day-picker 의존 | **`@conductor-by-89soone/react`에 C-073~C-076 네 컴포넌트를 더하고 `@conductor-by-89soone/css`에 스타일을 더한다.** 새 FR-CMP-014(Should)를 SRS §22에 추가하고, 토스트·페이지네이션을 제외하던 FR-CMP-008·FR-CMP-005의 예외 문구를 고친다. DEV-055(CR-052가 놓친 Out of Scope 문구)도 함께 고친다 | FR-CMP-014, FR-CMP-008, FR-CMP-005, FR-DOC-010, C-073 ~ C-076, WP-037, DEV-055 | `srs_final.md`, `prd.md`, `feature.md`, `requirements_screen_traceability_matrix.md`, `conductor_ui_component_spec.md`, `conductor_api_contracts.md`, `conductor_security_privacy_architecture.md`, `conductor_work_packages.md`, `conductor_implementation_traceability.md`, `CLAUDE.md`(C-ID 범위), react API 리포트, Changeset(react·css minor) | closed |
 | CR-055 | 2026-10-13 | scope wording + 소비자 검증 | 사용자 지시 (2026-10-13): 경쟁력 평가 리포트 4번, "파일럿: 토큰·CSS·셸 교체" | **출처 제품 agent-ai-platform이 Conductor 0.7.0을 채택하는 파일럿을 그 저장소에서 수행한다.** Conductor 패키지 코드는 바꾸지 않는다. SRS 4.3과 PRD NG-4의 "저장소 마이그레이션" 제외 문구를 소비 저장소의 결정이라는 경계로 고치고, 파일럿에서 드러난 한계를 DEV-057·DEV-058로 기록한다 | SRS 4.3, NG-4, DEV-057, DEV-058, C-070, C-071 | `srs_final.md`(v1.13 §23), `prd.md`, `conductor_implementation_traceability.md` | closed |
 | CR-056 | 2026-10-14 | defect fix | 사용자 지시 (2026-10-14): DEV-057 → DEV-058 순서로 진행 | **CR-055 파일럿이 찾은 포커스 결함 둘을 패키지에서 고친다.** ① `component.css`가 reset 없이도 포커스 링을 그린다. ② `AppShell` 안 오버레이에서 라우트를 바꾸면 포커스가 main에 남는다. 새 shall은 없다. FR-A11Y-001 AC-1과 FR-A11Y-002의 기존 수용 기준을 `component.css` 진입점과 오버레이 경로에서도 지키게 한다. react·css patch | FR-A11Y-001, FR-A11Y-002, FR-CSS-002, FR-CMP-009, C-070, C-071, DEV-057, DEV-058 | `packages/css/src/components.css`, `packages/react/src/route-focus.ts`·`shell.tsx`·`overlay.tsx`·`interaction.tsx`, 시험, `conductor_implementation_traceability.md`, Changeset(react·css patch) | closed |
+| CR-057 | 2026-10-15 | defect fix + design rule | 사용자 보고·지시 (2026-10-15): "컴포넌트 내부 텍스트에서 커서가 입력 가능한 것처럼 변경된다" → 확인·조사 후 제안대로 구현하고 0.8.2까지 릴리스 | **컨트롤은 손가락, 인터페이스 레이블은 화살표, 본문은 I자로 커서 규칙을 정한다.** 결함 두 가지를 고친다. ① 레이블에 커서 지정이 없어 I자로 보였다. ② `component.css`에서는 reset에만 있던 버튼 `pointer`가 빠졌다. 새 shall은 없다. 컴포넌트 명세 §1.5에 규칙을 추가한다. css patch | FR-CSS-002, FR-CMP-002, FR-CMP-004, FR-CMP-008, FR-CMP-009 | `packages/css/src/components.css`·`base.css`, `packages/react/src/testing/cursor-contract.ts`와 브라우저 시험 2건, `conductor_ui_component_spec.md`(v0.11 §1.5), `conductor_implementation_traceability.md`, Changeset(css patch) | closed |
 
 유형: `scope`(범위 변경), `design`(설계 변경), `implementation`(구현 편차 DEV-### 처리), `correction`(문서 오류 수정)
 
@@ -665,3 +666,17 @@ CR-041 구현 cascade와 로컬 검증은 2026-09-14에 종료했다. 사용자�
 | 시험 | `component-css.browser.test.tsx`(1건, a11y 설정에 등록). `a11y.browser.test.tsx` DEV-058 3건: 메뉴 항목 이동, 라우트 변경 없는 Escape 복귀, Dialog 안 이동. 수정 없이 돌리면 메뉴·Dialog 2건이 실패한다 |
 | 검증 (2026-10-14, 로컬) | 게이트 12종 통과. 단위 744/744, a11y 262/262(skip 1), size(Button 1.33KiB, css 12.66KiB), check:api 변화 없음 |
 | CI · 종료 | PR #55 head `51d33ea`에서 verify(node 20·22)·visual regression 통과. DEV-057·DEV-058을 닫고 CR-056을 종료한다. agent-ai-platform의 임시 처리(main 링 끄기, 메뉴 닫힘 포커스)는 이 수정이 담긴 릴리스로 올릴 때 걷어낸다 |
+
+## CR-057 커서 규칙 (2026-10-15)
+
+| 항목 | 기록 |
+| --- | --- |
+| 유형 / 상태 | defect fix + design rule / closed |
+| 변경 근거 | 사용자가 2026-10-15에 "컴포넌트 내부에 텍스트가 있으면 커서가 입력 가능한 것처럼 바뀐다"고 보고하고 확인·조사를 지시했다. 조사 결과를 본 뒤 제안대로 구현하고 0.8.2까지 릴리스하라고 지시했다 |
+| 측정 방법 | 브라우저에는 커서 모양을 읽는 API가 없다. 그래서 Xvfb 위에 Chromium을 화면 모드로 띄웠다. `XWarpPointer`로 실제 X 포인터를 각 컴포넌트 텍스트 위로 옮기고, `ffmpeg -f x11grab -draw_mouse 1`로 커서까지 함께 캡처했다. 문서 사이트 카탈로그의 텍스트 노드 전체에 대해 계산된 `cursor`·`user-select`도 조사했다 |
+| 발견 | ① 전체 번들에서도 인터페이스 레이블(Badge, FilterChip, Kbd, NavList 섹션 레이블, Meter 값 등)은 `cursor: auto`였고, 실제로 I자 커서가 보였다. 컨트롤(버튼, 탭, 메뉴 항목, 옵션)은 `pointer`였다. ② `component.css`만 불러온 페이지에서는 `.cdt-btn`이 화살표였다. `button { cursor: pointer }`가 `cdt.reset`에만 있었기 때문이다. agent-ai-platform은 자체 전역 규칙이 있어 이 결함이 가려져 있었다 |
+| 범위 판정 | 새 shall이 없다. FR-CSS-002 예외(`component.css`)가 reset 없이도 같은 컴포넌트 시각을 주어야 한다는 기존 요구와, FR-CMP-002 AC-4(비활성 `not-allowed`)의 연장선이다. 공개 API 변화가 없어 css patch다. 규칙은 파생 명세(컴포넌트 명세 §1.5)에 적는다 |
+| 수정 | 컴포넌트 레이어에 명시성 0(`:where`) 규칙 셋을 둔다. ① `button[class*="cdt-"]`와 cdt 요소 안의 `button`은 `pointer`다(reset과 같은 관계라 비활성·진행 규칙이 이긴다). ② 인터페이스 레이블은 `default`다. ③ 링크·컨트롤 안에서는 그 커서를 상속한다. Spinner 레이블은 규칙이 `cdt.base`에 있어야 하므로(DEV-029) 그곳에 둔다. StatusBadge는 식별용 클래스라 `.cdt-badge`로 덮인다. `user-select`는 바꾸지 않는다 |
+| 시험 | `cursor-contract.ts`는 a11y 시나리오 전체(열린 상태 포함)를 렌더해 두 가지를 검사한다. 활성 컨트롤의 텍스트 위 커서가 `pointer`인지, 인터페이스 레이블이 `default`인지다. `component-css.browser.test.tsx`(component.css 단독)와 `a11y.browser.test.tsx`(전체 번들)에서 각각 돌린다. 수정 전에는 두 시험이 위반 69건으로 실패했다(component.css의 `.cdt-btn` 33건, Select 트리거, Dialog·Drawer 닫기, Badge 10건, FilterChip, Timeline 단계 등). 수정 후 0건이다. 기존 계약 시험 두 건(Spinner 레이블의 레이어, IDENTITY_CLASSES)이 첫 구현을 잡아 위 형태로 바로잡았다 |
+| 검증 (2026-10-15, 로컬) | 게이트 12종 통과. 단위 744/744, a11y 264/264(skip 1), size(Button 1.33KiB, css 12.82KiB). 실제 커서 재캡처: 레이블은 I자에서 화살표로, component.css 버튼은 화살표에서 손가락으로 바뀌었다. 표 셀은 I자를 유지한다 |
+| CI · 종료 | PR #57 head `02d2bbe`에서 verify(node 20·22)·visual regression 통과. CR-057을 종료한다. 릴리스는 css 0.8.2 |
