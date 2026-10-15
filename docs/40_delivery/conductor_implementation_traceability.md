@@ -565,3 +565,11 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | DEV | DEV-057(component.css 소비자의 NavList 포커스 링), DEV-058(메뉴 이동 뒤 포커스) open |
 | 검증 (소비 저장소, 로컬) | lint, dep:check, web typecheck, web 시험 124/124(신규 3), build 통과. sca는 변경 전과 같다. Chromium 1440px·390px 화면 확인 |
 | CI · 종료 | agent-ai-platform#3 head `e43bf3f`에서 8종 통과(그 저장소의 sca·test 선행 실패 2건을 같은 PR에서 해소). PR #54 head `bd0637d` 통과. CR-055 closed(2026-10-13). DEV-057·DEV-058 open |
+
+### CR-056 포커스 결함 수정 (2026-10-14)
+
+| 범위 | 결과 |
+| --- | --- |
+| 패키지 | css: 컴포넌트 레이어의 범용 포커스 링, 표 스크롤 영역 링. react: `route-focus.ts`(모듈 내부), AppShell 라우트 포커스 기록, 오버레이 Content 4종의 닫힘 포커스 |
+| DEV | DEV-057, DEV-058 수정. CI 통과 후 closed |
+| 검증 (로컬) | 게이트 12종(단위 744/744, a11y 262/262) |
