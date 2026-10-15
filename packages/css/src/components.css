@@ -1,6 +1,20 @@
 /* FR 범위: FR-CSS-004, FR-CMP-002, FR-CMP-003, FR-CMP-005, FR-CMP-006, FR-CMP-007, FR-CMP-009 */
 
 @layer cdt.component {
+  /*
+   * The focus ring for every Conductor element and anything rendered inside one. cdt.reset draws
+   * the same ring globally, but component.css leaves that layer out, and without this rule a
+   * consumer on that entry point saw the browser's own outline on nav items, the skip link,
+   * scroll regions, code blocks, timeline steps and the summaries and links the package renders
+   * (DEV-057). `:where()` keeps it at the reset's zero specificity, so any later component rule
+   * that sets box-shadow still wins, exactly as it did over the reset; the shadow-bearing
+   * controls restate the full ring below.
+   */
+  :where([class*="cdt-"], [class*="cdt-"] *):focus-visible {
+    outline: none;
+    box-shadow: var(--cdt-focus-ring);
+  }
+
   .cdt-btn {
     position: relative;
     display: inline-flex;
@@ -1049,9 +1063,14 @@
    * 링이 사라졌다(실측). 같은 형태로 명시성을 맞추면 소스 순서가 정하고,
    * 이 규칙이 모든 hover 규칙보다 뒤에 있어 링이 살아남는다. 비활성 버튼은
    * 포커스를 받지 않으므로 동작이 줄지 않는다 (DEV-034).
+   *
+   * 표의 가로 스크롤 영역은 키보드로 스크롤할 수 있게 포커스를 받는데, 자기 inset 하이라이트가
+   * 링을 덮어 전체 번들에서도 링이 보이지 않았다. CR-056이 component.css 단독 시험으로 찾았다
+   * (DEV-057).
    */
   .cdt-btn:not(:disabled):focus-visible,
   .cdt-card--interactive:focus-visible,
+  .cdt-table__scroll:focus-visible,
   .cdt-input:focus-visible,
   .cdt-textarea:focus-visible,
   .cdt-select__trigger:focus-visible,

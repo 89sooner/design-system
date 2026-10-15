@@ -8,6 +8,7 @@ import {
   type ReactNode,
 } from "react";
 import { cx } from "./cx";
+import { useRouteCloseAutoFocus } from "./route-focus";
 
 export type DialogContentProps = ComponentPropsWithoutRef<
   typeof RadixDialog.Content
@@ -16,12 +17,14 @@ export type DialogContentProps = ComponentPropsWithoutRef<
 };
 
 const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(
-  function DialogContent({ children, className, size = "md", ...props }, ref) {
+  function DialogContent({ children, className, size = "md", onCloseAutoFocus, ...props }, ref) {
+    const closeAutoFocus = useRouteCloseAutoFocus(onCloseAutoFocus);
     return (
       <RadixDialog.Portal>
         <RadixDialog.Overlay className="cdt-overlay" />
         <RadixDialog.Content
           {...props}
+          onCloseAutoFocus={closeAutoFocus}
           ref={ref}
           className={cx(
             "cdt-dialog",
@@ -102,14 +105,16 @@ export type DrawerContentProps = ComponentPropsWithoutRef<
 
 const DrawerContent = forwardRef<HTMLDivElement, DrawerContentProps>(
   function DrawerContent(
-    { children, className, side = "right", ...props },
+    { children, className, side = "right", onCloseAutoFocus, ...props },
     ref,
   ) {
+    const closeAutoFocus = useRouteCloseAutoFocus(onCloseAutoFocus);
     return (
       <RadixDialog.Portal>
         <RadixDialog.Overlay className="cdt-overlay" />
         <RadixDialog.Content
           {...props}
+          onCloseAutoFocus={closeAutoFocus}
           ref={ref}
           className={cx("cdt-drawer", `cdt-drawer--${side}`, className)}
         >
@@ -210,11 +215,13 @@ export type DropdownMenuItemProps = ComponentPropsWithoutRef<
 const DropdownMenuContent = forwardRef<
   HTMLDivElement,
   ComponentPropsWithoutRef<typeof RadixDropdownMenu.Content>
->(function DropdownMenuContent({ className, ...props }, ref) {
+>(function DropdownMenuContent({ className, onCloseAutoFocus, ...props }, ref) {
+  const closeAutoFocus = useRouteCloseAutoFocus(onCloseAutoFocus);
   return (
     <RadixDropdownMenu.Portal>
       <RadixDropdownMenu.Content
         {...props}
+        onCloseAutoFocus={closeAutoFocus}
         ref={ref}
         className={cx("cdt-menu", className)}
       />

@@ -5,7 +5,10 @@ import axe, { type Result } from "axe-core";
 import { afterAll, afterEach, describe, expect, test } from "vitest";
 import allowListSource from "../../../../axe-allowlist.json";
 import "@conductor-by-89soone/css";
+import { useState } from "react";
 import { Button } from "../action";
+import { AppShell } from "../shell";
+import { Dialog, DropdownMenu } from "../overlay";
 import { Checkbox, Switch, TextField } from "../form";
 import { Card } from "../surface";
 import { a11yScenarios, AppShellKeyboardFixture, keyboardScenarios } from "./a11y-scenarios";
@@ -193,6 +196,57 @@ test("FR-A11Y-002 AC-2: AppShell mobile navigation releases focus after Escape",
   await userEvent.tab();
   expect(document.activeElement).not.toBe(document.body);
   expect(document.querySelector('[role="dialog"]')?.contains(document.activeElement)).not.toBe(true);
+});
+
+function RoutedShellFixture({ overlay }: { readonly overlay: "menu" | "dialog" }) {
+  const [route, setRoute] = useState("home");
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const go = () => {
+    setDialogOpen(false);
+    setRoute("settings");
+  };
+  const topBar = overlay === "menu"
+    ? <DropdownMenu.Root><DropdownMenu.Trigger data-overlay-trigger="">Account</DropdownMenu.Trigger><DropdownMenu.Content><DropdownMenu.Item onSelect={go}>Settings</DropdownMenu.Item></DropdownMenu.Content></DropdownMenu.Root>
+    : <Dialog.Root open={dialogOpen} onOpenChange={setDialogOpen}><Dialog.Trigger data-overlay-trigger="">Account</Dialog.Trigger><Dialog.Content aria-describedby={undefined}><Dialog.Title>Account</Dialog.Title><button type="button" onClick={go}>Settings</button></Dialog.Content></Dialog.Root>;
+  return <AppShell nav={null} skipLinkLabel="Skip" topBar={topBar} routeKey={route} mainId="routed-main"><p>{route}</p></AppShell>;
+}
+
+describe("DEV-058 a route change from inside an overlay leaves focus on the new screen", () => {
+  test("FR-A11Y-002: choosing a menu item that navigates moves focus to main, not back to the trigger", async () => {
+    setTheme("dark");
+    const { container } = render(<RoutedShellFixture overlay="menu" />);
+    container.querySelector<HTMLButtonElement>("[data-overlay-trigger]")?.focus();
+    await userEvent.keyboard("{Enter}");
+    await waitFor(() => expect(document.querySelector('[role="menuitem"]')).not.toBeNull());
+    await userEvent.keyboard("{Enter}");
+    await waitFor(() => expect(document.querySelector('[role="menu"]')).toBeNull());
+    await waitFor(() => expect(document.activeElement?.id).toBe("routed-main"));
+    expect(container.querySelector("main")?.textContent).toBe("settings");
+  });
+
+  test("FR-A11Y-002: closing the menu without a route change still returns focus to its trigger", async () => {
+    setTheme("dark");
+    const { container } = render(<RoutedShellFixture overlay="menu" />);
+    const trigger = container.querySelector<HTMLButtonElement>("[data-overlay-trigger]");
+    trigger?.focus();
+    await userEvent.keyboard("{Enter}");
+    await waitFor(() => expect(document.querySelector('[role="menuitem"]')).not.toBeNull());
+    await userEvent.keyboard("{Escape}");
+    await waitFor(() => expect(document.querySelector('[role="menu"]')).toBeNull());
+    expect(document.activeElement).toBe(trigger);
+  });
+
+  test("FR-A11Y-002: a dialog action that navigates moves focus to main", async () => {
+    setTheme("dark");
+    const { container } = render(<RoutedShellFixture overlay="dialog" />);
+    container.querySelector<HTMLButtonElement>("[data-overlay-trigger]")?.focus();
+    await userEvent.keyboard("{Enter}");
+    await waitFor(() => expect(document.querySelector('[role="dialog"] button')).not.toBeNull());
+    document.querySelector<HTMLButtonElement>('[role="dialog"] button')?.focus();
+    await userEvent.keyboard("{Enter}");
+    await waitFor(() => expect(document.querySelector('[role="dialog"]')).toBeNull());
+    await waitFor(() => expect(document.activeElement?.id).toBe("routed-main"));
+  });
 });
 
 for (const theme of themes) {

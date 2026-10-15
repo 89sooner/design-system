@@ -8,6 +8,7 @@ import {
   useRef,
   useId,
   useEffect,
+  useMemo,
   useState,
   type ComponentPropsWithoutRef,
   type HTMLAttributes,
@@ -15,6 +16,7 @@ import {
 } from "react";
 import { breakpoints } from "@conductor-by-89soone/tokens";
 import { cx } from "./cx";
+import { RouteFocusContext, type RouteFocus } from "./route-focus";
 
 export interface AppShellProps extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
   readonly nav: ReactNode;
@@ -63,12 +65,39 @@ export const AppShell = forwardRef<HTMLDivElement, AppShellProps>(function AppSh
   };
   const changeOpenRef = useRef(changeOpen);
   changeOpenRef.current = changeOpen;
+  // Set on every route change (DEV-058). An overlay open across the change either holds focus
+  // while main takes it (a menu's focus scope pulls it back) or closes in the same render and
+  // restores focus to its trigger a task later (Radix defers that restore), so main's focus
+  // cannot be checked here. The package's overlay contents take this when they close and send
+  // focus to main instead of the trigger; the next key or pointer press means the person has
+  // moved on, so it is dropped then.
+  const routeFocusOwed = useRef(false);
+  const routeFocus = useMemo<RouteFocus>(() => ({
+    take: () => {
+      if (!routeFocusOwed.current) return null;
+      routeFocusOwed.current = false;
+      return mainRef.current;
+    },
+  }), []);
   useEffect(() => {
     if (previousRoute.current === routeKey) return;
     previousRoute.current = routeKey;
     routeChanged.current = true;
     changeOpenRef.current(false);
-    mainRef.current?.focus({ preventScroll: true });
+    const main = mainRef.current;
+    main?.focus({ preventScroll: true });
+    if (main === null) return;
+    routeFocusOwed.current = true;
+    const drop = () => {
+      routeFocusOwed.current = false;
+    };
+    const doc = main.ownerDocument;
+    doc.addEventListener("keydown", drop, { capture: true, once: true });
+    doc.addEventListener("pointerdown", drop, { capture: true, once: true });
+    return () => {
+      doc.removeEventListener("keydown", drop, { capture: true });
+      doc.removeEventListener("pointerdown", drop, { capture: true });
+    };
   }, [routeKey]);
   useEffect(() => {
     if (typeof window.matchMedia !== "function") return;
@@ -85,6 +114,7 @@ export const AppShell = forwardRef<HTMLDivElement, AppShellProps>(function AppSh
   }, []);
 
   return (
+    <RouteFocusContext.Provider value={routeFocus}>
     <RadixDialog.Root modal={false} open={open} onOpenChange={changeOpen}>
       <div {...props} ref={ref} className={cx("cdt-app-shell", className)}>
         <a
@@ -129,7 +159,10 @@ export const AppShell = forwardRef<HTMLDivElement, AppShellProps>(function AppSh
           }}
           onCloseAutoFocus={(event) => {
             event.preventDefault();
-            if (routeChanged.current) mainRef.current?.focus({ preventScroll: true });
+            if (routeChanged.current) {
+              routeFocusOwed.current = false;
+              mainRef.current?.focus({ preventScroll: true });
+            }
             else if (!outsideInteraction.current && returnFocus.current?.isConnected) returnFocus.current.focus({ preventScroll: true });
           }}>
 
@@ -138,6 +171,7 @@ export const AppShell = forwardRef<HTMLDivElement, AppShellProps>(function AppSh
         </RadixDialog.Content>
       </RadixDialog.Portal>
     </RadixDialog.Root>
+    </RouteFocusContext.Provider>
   );
 });
 AppShell.displayName = "AppShell";
