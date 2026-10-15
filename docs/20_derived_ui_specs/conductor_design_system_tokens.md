@@ -1,6 +1,6 @@
 # Conductor Design System 토큰 명세
 
-> 상태: review | 버전: v0.13 | 갱신일: 2026-10-13
+> 상태: review | 버전: v0.14 | 갱신일: 2026-10-15
 
 ## 0. 문서 성격과 범위 경계
 
@@ -486,7 +486,7 @@ secondary tone 버튼의 채움과 경계다. 렌더 시점의 `color-mix(in srg
 | `z.base` | `0` | 기본 흐름 |
 | `z.raised` | `10` | 포커스 링이 부모의 `overflow: hidden`에 잘릴 때 상승(FR-A11Y-001 예외 처리) |
 | `z.sticky` | `20` | `cdt-app-shell`의 상단바 |
-| `z.drawer` | `30` | 사이드 내비, `Drawer` 패널 |
+| `z.drawer` | `30` | 사이드 내비(`page.navZ`). 가림막을 쓰는 `Drawer` 패널은 `z.popover`다(CR-058) |
 | `z.overlay` | `40` | `Dialog`·`Drawer`의 배경 가림막 (FR-CMP-006 AC-4) |
 | `z.popover` | `50` | `Tooltip`, `DropdownMenu`, `Select` 내용, `skip-link` (FR-CMP-006 AC-4) |
 
@@ -938,7 +938,7 @@ CR-018 이전 구현은 상태 semantic 색을 배경 전체에 적용하고 `te
 | `overlay.radius` | `{radius.lg}` | | FR-CSS-004 |
 | `overlay.shadow` | `{elevation.overlay}` | | FR-CMP-006 |
 | `overlay.contentZ` | `{z.popover}` | | FR-CMP-006 AC-4 |
-| `overlay.drawerZ` | `{z.drawer}` | | FR-CMP-006 AC-4 |
+| `overlay.drawerZ` | `{z.popover}` | | FR-CMP-006 AC-4 · CR-058: 패널은 자기 가림막(`z.overlay`) 위에 있어야 한다 |
 | `overlay.drawerBackground` | `{surface.raised}` | | FR-CMP-006 |
 | `overlay.drawerWidth` | `500px` | | FR-CMP-006 |
 | `overlay.enter` | `{motion.standard}` | | FR-CSS-005 |

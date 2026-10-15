@@ -1,4 +1,4 @@
-// Refs: CR-056 DEV-057 CR-057 FR-A11Y-001 FR-CSS-002
+// Refs: CR-056 DEV-057 CR-057 CR-058 FR-A11Y-001 FR-CSS-002
 //
 // `@conductor-by-89soone/css/component.css` leaves out cdt.reset for consumers that bring their
 // own global reset. The focus ring must not depend on that reset: every keyboard stop that is a
@@ -9,6 +9,7 @@ import { afterEach, expect, test } from "vitest";
 import "@conductor-by-89soone/css/component.css";
 import { a11yScenarios } from "./a11y-scenarios";
 import { cursorViolations } from "./cursor-contract";
+import { stackingViolations } from "./stacking-contract";
 
 afterEach(() => cleanup());
 
@@ -55,6 +56,17 @@ test("CR-057: with component.css alone, controls show the pointer and interface 
   for (const scenario of a11yScenarios) {
     render(scenario.render());
     violations.push(...cursorViolations(document.body, `${scenario.component} ${scenario.state}`));
+    cleanup();
+  }
+  expect(violations).toEqual([]);
+});
+
+test("CR-058: with component.css alone, every open overlay surface sits above its scrim", () => {
+  document.documentElement.dataset.cdtTheme = "dark";
+  const violations: string[] = [];
+  for (const scenario of a11yScenarios) {
+    render(scenario.render());
+    violations.push(...stackingViolations(document, `${scenario.component} ${scenario.state}`));
     cleanup();
   }
   expect(violations).toEqual([]);
