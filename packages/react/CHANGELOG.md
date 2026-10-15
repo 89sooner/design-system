@@ -1,5 +1,17 @@
 # @conductor-by-89soone/react
 
+## 0.8.3
+
+### Patch Changes
+
+- 7e986b7: Draw `Drawer` above its own scrim: `overlay.drawerZ` now resolves to `z.popover`, the layer `Dialog` already used, instead of `z.drawer`, which sat under the `z.overlay` scrim. Align the Radix primitive pins on one release train (2026-07-24) so consumer bundles carry a single copy of Radix's shared internals.
+
+  Refs: CR-058 FR-CMP-006 FR-TOK-008
+
+- Updated dependencies [7e986b7]
+  - @conductor-by-89soone/tokens@0.8.3
+  - @conductor-by-89soone/css@0.8.3
+
 ## 0.8.2
 
 ### Patch Changes
