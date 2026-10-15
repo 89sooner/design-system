@@ -459,6 +459,16 @@ describe("FR-CMP-007 form styles", () => {
     expect(compact?.decls["min-block-size"]).toBe("var(--cdt-input-min-height-compact)");
   });
 
+  test("FR-CMP-007 AC-5 / CR-059: Switch and Checkbox draw at their visual size and widen the hit area with ::after", () => {
+    const checkbox = components.find((rule) => rule.selector === ".cdt-checkbox");
+    const sw = components.find((rule) => rule.selector === ".cdt-switch");
+    const hit = components.find((rule) => /^\.cdt-switch:{1,2}after,\.cdt-checkbox:{1,2}after$/.test(rule.selector));
+    expect([checkbox?.decls["inline-size"], checkbox?.decls["block-size"]]).toEqual(["20px", "20px"]); // cdt-allow-literal: CR-059 asserts the C-055 box size
+    expect([sw?.decls["inline-size"], sw?.decls["block-size"]]).toEqual(["42px", "24px"]); // cdt-allow-literal: CR-059 asserts the C-054 track size
+    expect(hit?.decls["min-block-size"]).toBe("var(--cdt-input-min-height)");
+    expect(hit?.decls["position"]).toBe("absolute");
+  });
+
   test("FR-CSS-004 AC-4: Radix form state styling uses data attributes", () => {
     const checked = components.find((rule) => rule.selector.includes(".cdt-switch[data-state=checked]"));
     const highlighted = components.find((rule) => rule.selector === ".cdt-select__item[data-highlighted]");
