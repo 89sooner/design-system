@@ -6,6 +6,7 @@ import * as RadixPopover from "@radix-ui/react-popover";
 import * as RadixCollapsible from "@radix-ui/react-collapsible";
 import { createContext, useContext, useState, forwardRef, type ComponentPropsWithoutRef } from "react";
 import { cx } from "./cx";
+import { useRouteCloseAutoFocus } from "./route-focus";
 
 const TabValue = createContext<string | undefined>(undefined);
 export type TabsRootProps = ComponentPropsWithoutRef<typeof RadixTabs.Root>;
@@ -34,8 +35,9 @@ export type PopoverContentProps = ComponentPropsWithoutRef<typeof RadixPopover.C
   /** Keep a locally scoped theme by portalling into its container. Defaults to document.body. */
   readonly container?: ComponentPropsWithoutRef<typeof RadixPopover.Portal>["container"];
 };
-const PopoverContent = forwardRef<HTMLDivElement, PopoverContentProps>(function PopoverContent({ className, container, ...props }, ref) {
-  return <RadixPopover.Portal container={container}><RadixPopover.Content {...props} ref={ref} className={cx("cdt-popover", className)} /></RadixPopover.Portal>;
+const PopoverContent = forwardRef<HTMLDivElement, PopoverContentProps>(function PopoverContent({ className, container, onCloseAutoFocus, ...props }, ref) {
+  const closeAutoFocus = useRouteCloseAutoFocus(onCloseAutoFocus);
+  return <RadixPopover.Portal container={container}><RadixPopover.Content {...props} onCloseAutoFocus={closeAutoFocus} ref={ref} className={cx("cdt-popover", className)} /></RadixPopover.Portal>;
 });
 export const Popover = { Root: RadixPopover.Root, Trigger: RadixPopover.Trigger, Anchor: RadixPopover.Anchor, Content: PopoverContent, Close: RadixPopover.Close, Arrow: RadixPopover.Arrow } as const;
 

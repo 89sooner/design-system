@@ -23,6 +23,7 @@ export default defineConfig({
     "src/date-picker.tsx",
     "src/command.tsx",
     "src/pagination.tsx",
+    "src/route-focus.ts",
   ],
   format: ["esm"],
   dts: true,
@@ -32,7 +33,7 @@ export default defineConfig({
   splitting: false,
   treeshake: false,
   async onSuccess() {
-    const clientEntries = new Set(["action", "data", "feedback", "form", "overlay", "shell", "status", "surface", "interaction", "workbench", "relation", "toast", "date-picker", "command", "pagination"]);
+    const clientEntries = new Set(["action", "data", "feedback", "form", "overlay", "shell", "status", "surface", "interaction", "workbench", "relation", "toast", "date-picker", "command", "pagination", "route-focus"]);
     for (const file of await readdir("dist")) {
       if (!file.endsWith(".js")) continue;
       const path = `dist/${file}`;
