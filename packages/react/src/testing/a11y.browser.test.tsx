@@ -13,6 +13,7 @@ import { Checkbox, Switch, TextField } from "../form";
 import { Card } from "../surface";
 import { a11yScenarios, AppShellKeyboardFixture, keyboardScenarios } from "./a11y-scenarios";
 import { cursorViolations } from "./cursor-contract";
+import { stackingViolations } from "./stacking-contract";
 import { publicComponents } from "./public-components";
 
 declare const __CONDUCTOR_A11Y_FIXTURE__: string;
@@ -218,6 +219,17 @@ test("CR-057: in the full stylesheet, controls show the pointer and interface la
   for (const scenario of a11yScenarios) {
     render(scenario.render());
     violations.push(...cursorViolations(document.body, `${scenario.component} ${scenario.state}`));
+    cleanup();
+  }
+  expect(violations).toEqual([]);
+});
+
+test("CR-058: in the full stylesheet, every open overlay surface sits above its scrim", () => {
+  setTheme("dark");
+  const violations: string[] = [];
+  for (const scenario of a11yScenarios) {
+    render(scenario.render());
+    violations.push(...stackingViolations(document, `${scenario.component} ${scenario.state}`));
     cleanup();
   }
   expect(violations).toEqual([]);

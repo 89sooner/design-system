@@ -249,7 +249,7 @@ const overlay: TokenDefinition[] = [
   component("overlay.radius", ref("radius.lg"), "Overlay panel radius."),
   component("overlay.shadow", ref("elevation.overlay"), "Overlay panel shadow."),
   component("overlay.contentZ", ref("z.popover"), "Tooltip, menu and select content layer."),
-  component("overlay.drawerZ", ref("z.drawer"), "Drawer panel layer."),
+  component("overlay.drawerZ", ref("z.popover"), "Drawer panel layer: above its scrim, like Dialog."),
   component("overlay.drawerBackground", ref("surface.raised"), "Drawer panel fill."),
   component("overlay.drawerWidth", value("500px"), "Drawer panel width."),
   component("overlay.enter", ref("motion.standard"), "Overlay entrance."),
