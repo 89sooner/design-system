@@ -138,7 +138,8 @@ for (const theme of ["dark", "light"] as const) {
           // to hand focus to the item Radix picks on entry, and until then every item sits at tabindex=-1. The root is
           // listed whatever its tabindex, so a group Tab cannot enter still fails, and only Radix's registered items are
           // left out — any other control inside the group stays listed. The items are walked with the arrow keys below.
-          const rovingRoot = "[data-orientation]:is([role='tablist'], [role='toolbar'], [role='radiogroup'], [role='menubar'])";
+          // A ToggleGroup root (CR-060) carries no data-orientation, so a root is also recognised by its Radix items.
+          const rovingRoot = ":is([role='tablist'], [role='toolbar'], [role='radiogroup'], [role='menubar']):is([data-orientation], :has(> [data-radix-collection-item]))";
           const rovingItem = "[data-radix-collection-item]";
           const focusable = Array.from(main.querySelectorAll<HTMLElement>(`${selector}, ${rovingRoot}`)).filter((element) => {
             const style = getComputedStyle(element);
@@ -146,6 +147,8 @@ for (const theme of ["dark", "light"] as const) {
             // still reports client rects but is not in the Tab sequence.
             if (style.display === "none" || style.visibility === "hidden" || element.getClientRects().length === 0 || !element.checkVisibility() || element.closest("[aria-hidden='true']") !== null) return false;
             if (element.matches(rovingItem) && element.parentElement?.closest(rovingRoot) != null) return false;
+            // tabindex=-1 takes a control out of the Tab sequence on purpose (NumberInput's steppers, CR-060).
+            if (!element.matches(rovingRoot) && element.getAttribute("tabindex") === "-1") return false;
             // Radix drops the root's tab stop when every item is disabled; such a group has nothing to reach.
             if (element.matches(rovingRoot)) return element.querySelector(`${rovingItem}:not([disabled]):not([data-disabled])`) !== null;
             return true;

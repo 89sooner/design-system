@@ -1,6 +1,6 @@
 # Conductor Design System 패키지 공개 API 계약
 
-> 상태: review | 버전: v0.8 | 갱신일: 2026-10-13
+> 상태: review | 버전: v0.9 | 갱신일: 2026-10-18
 
 ## 0. 문서 재해석
 
@@ -41,6 +41,7 @@ Conductor Design System에는 HTTP API, 요청/응답 엔드포인트, 인증 �
 | API-CMP-008 | TS interface | 피드백군(`Banner`, `EmptyState`, `Meter`, `ProgressRing`, `Spinner`) | FR-CMP-008 |
 | API-CMP-009 | TS interface | 셸군(`AppShell`, `NavList`, `TopBar`) | FR-CMP-009 |
 | API-CMP-010 | TS interface | 알림·날짜·명령·페이지(`Toast`, `DatePicker`, `CommandPalette`, `Pagination`, `filterCommands`, `paginationRange`) | FR-CMP-014 (CR-054) |
+| API-CMP-011 | TS interface | 확인·선택·식별·숫자 입력(`AlertDialog`, `RadioGroup`, `ToggleGroup`, `Avatar`, `NumberInput`, `avatarInitials`) | FR-CMP-015 (CR-060) |
 | API-DOC-001 | 정적 라우트 계약 | 문서 사이트 W-001~W-050 | 라우트/데이터 출처 매핑 | FR-DOC-001~007 |
 | API-DOC-002 | 에이전트 판독용 산출물 계약 | AI 코딩 에이전트, 소비자 | 정적 Markdown·텍스트 파일 경로와 구조 | FR-DOC-008 |
 
@@ -557,3 +558,18 @@ export function paginationRange(page: number, pageCount: number, siblings?: numb
 ```
 
 새 export만 있는 비파괴 변경이라 react·css 모두 minor다. 새 런타임 의존성은 `@radix-ui/react-toast@1.2.23`, `react-day-picker@10.0.1`(정확한 버전)이다.
+
+## CR-060 API-CMP-011 (FR-CMP-015)
+
+```ts
+export const AlertDialog: { Root; Trigger; Content; Title; Description; Footer; Cancel; Action };
+export const RadioGroup: { Root: ForwardRef<HTMLDivElement, RadioGroupRootProps>; Item: ForwardRef<HTMLButtonElement, RadioGroupItemProps> };
+export const ToggleGroup: { Root: ForwardRef<HTMLDivElement, ToggleGroupProps>; Item: ForwardRef<HTMLButtonElement, ToggleGroupItemProps> };
+export const Avatar: ForwardRef<HTMLSpanElement, AvatarProps>;
+export function avatarInitials(name: string): string;
+export const NumberInput: ForwardRef<HTMLInputElement, NumberInputProps>;
+export interface NumberInputLabels { readonly increment: string; readonly decrement: string }
+```
+
+새 export만 있는 비파괴 변경이라 react·css 모두 minor다. `Field` 라벨에 `id`가 더해지는 것도 추가 속성이다. 새 런타임 의존성은 `@radix-ui/react-alert-dialog@1.1.23`, `@radix-ui/react-radio-group@1.4.7`, `@radix-ui/react-toggle-group@1.1.19`, `@radix-ui/react-avatar@1.2.6`(정확한 버전, 2026-07-24 묶음)이다.
+

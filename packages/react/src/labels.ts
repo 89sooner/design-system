@@ -205,3 +205,11 @@ export interface PaginationLabels {
   readonly page: (page: number) => string;
 }
 export const DEFAULT_PAGINATION_LABELS: PaginationLabels = { nav: "Pagination", previous: "Previous", next: "Next", page: (page) => `Page ${page}` };
+
+/* CR-060 components (FR-CMP-015). Same rule: English defaults, overridable per instance. */
+
+export interface NumberInputLabels {
+  readonly increment: string;
+  readonly decrement: string;
+}
+export const DEFAULT_NUMBER_INPUT_LABELS: NumberInputLabels = { increment: "Increase", decrement: "Decrease" };

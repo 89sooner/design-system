@@ -56,3 +56,13 @@ export type { Command, CommandPaletteProps } from "./command";
 export { Pagination, paginationRange } from "./pagination";
 export type { PaginationItem, PaginationProps } from "./pagination";
 export type { CommandPaletteLabels, DatePickerLabels, PaginationLabels, ToastLabels } from "./labels";
+// CR-060 FR-CMP-015: confirmation, single choice, segmented toggles, avatars and number entry.
+export { AlertDialog } from "./alert-dialog";
+export type { AlertDialogActionProps, AlertDialogContentProps } from "./alert-dialog";
+export { RadioGroup, ToggleGroup } from "./selection";
+export type { RadioGroupItemProps, RadioGroupRootProps, ToggleGroupItemProps, ToggleGroupProps } from "./selection";
+export { Avatar, avatarInitials } from "./avatar";
+export type { AvatarProps } from "./avatar";
+export { NumberInput } from "./number-input";
+export type { NumberInputProps } from "./number-input";
+export type { NumberInputLabels } from "./labels";
