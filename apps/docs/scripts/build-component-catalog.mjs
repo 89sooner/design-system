@@ -38,6 +38,7 @@ const FAMILIES = [
   ["Search workbench", ["Combobox", "MultiSelect", "FilterChip", "FilterToolbar", "DataTable", "WorkbenchLayout", "DetailInspector", "PathList", "Breadcrumb", "CopyButton"]],
   ["Relations", ["RelationGraph"]],
   ["Operations", ["ProcessingStatus"]],
+  ["Agent", ["Conversation", "Message", "PromptInput", "Reasoning", "Tool", "Confirmation", "Sources", "InlineCitation", "Suggestions", "Suggestion", "Shimmer"]],
 ];
 
 /**
@@ -103,6 +104,17 @@ const ROOT_CLASSES = {
   CopyButton: "cdt-copy-feedback",
   RelationGraph: "cdt-relation",
   ProcessingStatus: "cdt-processing-status",
+  Conversation: "cdt-conversation",
+  Message: "cdt-message",
+  PromptInput: "cdt-prompt-input",
+  Reasoning: "cdt-reasoning",
+  Tool: "cdt-tool",
+  Confirmation: "cdt-confirmation",
+  Sources: "cdt-sources",
+  InlineCitation: "cdt-inline-citation",
+  Suggestions: "cdt-suggestions",
+  Suggestion: "cdt-suggestion",
+  Shimmer: "cdt-shimmer",
 };
 
 const ignored = new Set(["CONSUMED_PACKAGES", "PACKAGE_NAME"]);

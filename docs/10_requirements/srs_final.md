@@ -1,6 +1,6 @@
 # Conductor Design System 최종 요구사항 정의서
 
-> 상태: baseline | 버전: v1.14 | 갱신일: 2026-10-18
+> 상태: baseline | 버전: v1.15 | 갱신일: 2026-10-18
 
 ## 1. 문서 개요
 
@@ -38,7 +38,7 @@ Conductor는 `agent-ai-platform/packages/web`의 시각 언어를 3개 npm 패�
 2. 다크(기준) 및 라이트 테마, 시스템 설정 연동, 테마별 대비 검증, 소스 계승 토큰의 접근성 교정 — FR-THM-001 ~ FR-THM-005
 3. 캐스케이드 레이어 기반 프레임워크 비종속 스타일시트 — FR-CSS-001 ~ FR-CSS-005
 4. React 프리미티브 컴포넌트 — 기존 FR-CMP-001 ~ FR-CMP-009 및 CR-041 확장 FR-CMP-010 ~ FR-CMP-013 (§17, review)
-5. 정적 문서 사이트 — FR-DOC-001 ~ FR-DOC-007 및 CR-048 확장 FR-DOC-008 (§18), CR-051 확장 FR-DOC-009 (§19), CR-052 확장 FR-DOC-010 (§20), CR-053 보강 FR-DOC-001 AC-5·FR-CMP-013 AC-5 (§21), CR-054 확장 FR-CMP-014 (§22), CR-060 확장 FR-CMP-015 (§24)
+5. 정적 문서 사이트 — FR-DOC-001 ~ FR-DOC-007 및 CR-048 확장 FR-DOC-008 (§18), CR-051 확장 FR-DOC-009 (§19), CR-052 확장 FR-DOC-010 (§20), CR-053 보강 FR-DOC-001 AC-5·FR-CMP-013 AC-5 (§21), CR-054 확장 FR-CMP-014 (§22), CR-060 확장 FR-CMP-015 (§24), CR-061 확장 FR-CMP-016 (§25)
 6. WCAG 2.1 AA 접근성 기준선 — FR-A11Y-001 ~ FR-A11Y-005
 7. 모노레포 빌드, 타입 배포, 진입점 선언, SSR 안전성, 버저닝 — FR-DX-001 ~ FR-DX-005
 8. 토큰 계약·단위·접근성·시각 회귀 검사 — FR-QA-001 ~ FR-QA-004
@@ -961,7 +961,7 @@ OD-001(2026-07-10 종결)이 확정한 정책이다. 소스 팔레트를 실측�
 ## 13. 우선순위와 릴리스 전략
 
 - **Must**: FR-TOK-001 ~ FR-TOK-007, FR-THM-001 ~ FR-THM-005, FR-CSS-001 ~ FR-CSS-005, FR-CMP-001 ~ FR-CMP-008, FR-DOC-001 ~ FR-DOC-005, FR-A11Y-001 ~ FR-A11Y-005, FR-DX-001 ~ FR-DX-004, FR-QA-001 ~ FR-QA-003
-- **Should**: FR-TOK-008, FR-TOK-009, FR-CMP-009, FR-DOC-006, FR-DOC-007, FR-DOC-008, FR-DOC-009, FR-DOC-010, FR-CMP-014, FR-CMP-015, FR-DX-005
+- **Should**: FR-TOK-008, FR-TOK-009, FR-CMP-009, FR-DOC-006, FR-DOC-007, FR-DOC-008, FR-DOC-009, FR-DOC-010, FR-CMP-014, FR-CMP-015, FR-CMP-016, FR-DX-005
 - **Deferred (REL-004)**: FR-QA-004 — OD-002에 따라 v1 릴리스 게이트에서 제외
 - **Could**: 없음
 - **Won't (이번 범위)**: 4.3 Out of Scope 표 전체
@@ -1149,3 +1149,21 @@ v1.13 baseline 이력을 유지한다. 사용자가 2026-10-18에 최신 디자�
 | 관련 화면 | W-020, W-021 |
 | 관련 API/데이터 | API-CMP-011 / ENT-CMP-001 |
 | 예외/실패 처리 | 날짜·시간 숫자 입력, 로케일별 숫자 서식(천 단위 구분 등), 아바타 그룹 겹침 표시, 체크박스·라디오 카드형 변형은 이 FR 범위가 아니다. 새 런타임 의존성(`@radix-ui/react-alert-dialog@1.1.23`, `@radix-ui/react-radio-group@1.4.7`, `@radix-ui/react-toggle-group@1.1.19`, `@radix-ui/react-avatar@1.2.6`)은 기존 프리미티브와 같은 2026-07-24 배포 묶음으로 정확히 고정한다(보안 아키텍처 3.1, CR-058). |
+
+## 25. CR-061 확장 요구 (baseline)
+
+v1.14 baseline 이력을 유지한다. 사용자가 2026-10-18에 Vercel AI Elements 도입을 지시했고, 질의 응답으로 Conductor 방식 재구현·핵심 에이전트 UI 1차분·SDK 비종속 props를 골랐다. 파일럿 앱(agent-ai-platform)은 대화형 실행 화면을 직접 만들어 쓰고 있다.
+
+#### FR-CMP-016 에이전트 대화 컴포넌트
+
+| 항목 | 내용 |
+| --- | --- |
+| 상태 | approved |
+| 우선순위 | Should |
+| 출처 | CR-061 / 2026-10-18 사용자 실행 지시 |
+| 요구사항 | 시스템은 항상 `Conversation`, `Message`, `PromptInput`, `Reasoning`, `Tool`, `Confirmation`, `Sources`, `InlineCitation`, `Suggestions`, `Suggestion`, `Shimmer`을 `@conductor-by-89soone/react` 공개 export로 제공하고, 특정 AI SDK의 메시지 형식에 묶이지 않는 props만 받으며, 펼침·팝오버 동작은 Radix 프리미티브에, 입력은 브라우저 기본 컨트롤에 위임하여야 한다. |
+| 수용 기준 | AC-1 (Conversation, C-082; Message, C-083): Conversation은 `role="log"`이고 이름(기본 `Conversation`)과 `tabIndex=0`을 가져 키보드로 스크롤할 수 있다. 읽는 위치가 바닥 근처일 때만 새 내용을 따라 내려가고, 위로 읽는 중에는 바닥으로 가는 버튼을 보인다. Message는 `from`(`user`·`assistant`·`system`)에 따른 변형 클래스를 갖고, 보낸 사람 이름(`name` 또는 기본 문구)으로 이름 붙은 `group`이다. AC-2: `status="streaming"`이면 `aria-busy="true"`이고 이름에 `Responding`이 붙으며, 장식용 커서는 보조 기술에서 숨긴다. `status="error"`이면 `role="alert"` 문구를 낸다. AC-3 (PromptInput, C-084): 기본 `<form>`과 이름 붙은 `<textarea>`다. Enter는 전송하고 Shift+Enter는 줄을 더하며, IME 조합을 확정하는 Enter는 전송하지 않는다. `submitOn="mod-enter"`면 ⌘/Ctrl+Enter만 전송한다. 공백뿐인 내용은 전송하지 않고 전송 버튼은 비활성이다. `status`가 `submitted`·`streaming`이면 전송 버튼이 `onStop`을 부르는 Stop 버튼으로 바뀌고 Enter로 전송되지 않는다. 입력 높이는 `maxRows`(기본 8)까지 늘어난다. AC-4 (Reasoning, C-085): Radix Collapsible이다. `streaming`이 시작되면 열리고 끝나면 한 번 닫히며, 트리거는 진행 중 `Shimmer`로 `Thinking…`, 끝나면 `duration`으로 `Thought for N seconds`를 보인다. AC-5 (Tool, C-086): Radix Collapsible이다. 트리거에 도구 이름과 상태(`pending`·`running`·`awaiting-approval`·`completed`·`error`) 텍스트 배지를 보여 색만으로 구별하지 않는다. `input`은 JSON 코드 블록, 데이터 `output`은 코드 블록, 노드 `output`은 그대로 그리며, 각 블록은 `<도구 이름> Parameters`/`Result`로 이름 붙은 영역이다. `errorText`는 오류 절에 보인다. AC-6 (Confirmation, C-087): `title`로 이름 붙은 영역이다. `state="pending"`이면 Approve(primary)·Reject(danger) 버튼을 보이고, `busy`이거나 처리기가 없으면 비활성이다. 결정 뒤에는 버튼 대신 Approved/Rejected 텍스트 배지를 보인다. 실행 승인은 소비자 서버가 강제하며 이 컴포넌트는 결정만 모은다. AC-7 (Sources, C-088; InlineCitation, C-089): Sources는 Radix Collapsible로 `Used N sources` 요약 아래 외부 링크 목록(`target="_blank"`, `rel="noopener noreferrer"`)을 펼치고, 목록이 비면 아무것도 그리지 않는다. InlineCitation은 `Source N: 제목`으로 이름 붙은 버튼이며 Radix Popover로 제목 링크·설명·주소를 보인다. AC-8 (Suggestions, C-090; Suggestion, C-091; Shimmer, C-092): Suggestions는 이름 붙은 `group`, Suggestion은 기본 버튼이며 선택하면 `onSelect(suggestion)`을 부른다. Shimmer는 텍스트 위 그라데이션이고 축소 모션에서 멈춘다. AC-9: 모든 문구는 `labels`로 바꿀 수 있고(CR-053), 11종 모두 포커스 링 토큰, 커서 계약(CR-057), axe serious 이상 0건을 지킨다. |
+| 검증 방법 | test |
+| 관련 화면 | W-020, W-021 |
+| 관련 API/데이터 | API-CMP-012 / ENT-CMP-001 |
+| 예외/실패 처리 | 코드 하이라이트(shiki), 수식(katex), 다이어그램(mermaid), 워크플로 캔버스(xyflow), 애니메이션 런타임(rive), 마크다운 스트리밍 렌더러, 파일 첨부·음성 입력, AI SDK 메시지 형식 어댑터는 이 FR 범위가 아니다. 새 런타임 의존성은 없다. |

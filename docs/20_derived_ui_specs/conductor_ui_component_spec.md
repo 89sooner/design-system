@@ -1,6 +1,6 @@
 # Conductor Design System UI 컴포넌트 명세서
 
-> 상태: review | 버전: v0.13 | 갱신일: 2026-10-18
+> 상태: review | 버전: v0.14 | 갱신일: 2026-10-18
 
 ## 0. 문서 위치와 범위
 
@@ -23,6 +23,7 @@
 | 셸 (OD-004 조건부) | FR-CMP-009 | API-CMP-009 | C-070, C-071, C-072 |
 | 알림·날짜·명령·페이지 (CR-054) | FR-CMP-014 | API-CMP-010 | C-073, C-074, C-075, C-076 |
 | 확인·선택·식별·숫자 입력 (CR-060) | FR-CMP-015 | API-CMP-011 | C-077, C-078, C-079, C-080, C-081 |
+| 에이전트 대화 (CR-061) | FR-CMP-016 | API-CMP-012 | C-082, C-083, C-084, C-085, C-086, C-087, C-088, C-089, C-090, C-091, C-092 |
 
 ## 1. 컴포넌트 설계 원칙
 
@@ -1309,3 +1310,26 @@ component 토큰은 semantic 토큰만 참조한다(FR-TOK-002 AC-3). 아래 표
 
 공개 함수 `avatarInitials(name)`는 화면 없이 시험할 수 있도록 함께 export한다. 스타일은 `@conductor-by-89soone/css`의 `controls.css`(cdt.component 층)에 있다.
 
+## CR-061 컴포넌트 (FR-CMP-016)
+
+| ID | 컴포넌트 | 루트 클래스 | 동작 소유 | 주요 props |
+| --- | --- | --- | --- | --- |
+| C-082 | `Conversation` | `cdt-conversation`, `cdt-conversation__viewport` | `role="log"` 영역, MutationObserver 바닥 고정 | `children`(Message 목록), `labels` |
+| C-083 | `Message` | `cdt-message`, `cdt-message--user`·`--assistant`·`--system`, `cdt-message--error` | 정적 `group` | `from`(필수), `name`, `avatar`, `status`(`complete`·`streaming`·`error`), `actions`, `labels` |
+| C-084 | `PromptInput` | `cdt-prompt-input`, `cdt-prompt-input__textarea` | 기본 `<form>`·`<textarea>` | `value`·`onValueChange`·`onSubmit`(필수), `status`(`ready`·`submitted`·`streaming`·`error`), `onStop`, `submitOn`(`enter`·`mod-enter`), `toolbar`, `maxRows`, `placeholder`, `disabled`, `textareaRef`, `labels` |
+| C-085 | `Reasoning` | `cdt-reasoning`, `cdt-reasoning__trigger` | Radix Collapsible | `streaming`, `duration`(초), `open`·`defaultOpen`·`onOpenChange`, `labels` |
+| C-086 | `Tool` | `cdt-tool`, `cdt-tool--<status>`, `cdt-tool__trigger` | Radix Collapsible | `name`·`status`(필수), `input`, `output`, `errorText`, `children`, `labels` |
+| C-087 | `Confirmation` | `cdt-confirmation`, `cdt-confirmation--<state>` | 정적 영역 + `Button` | `title`·`state`(필수), `description`, `onApprove`, `onReject`, `busy`, `labels` |
+| C-088 | `Sources` | `cdt-sources`, `cdt-sources__trigger` | Radix Collapsible | `sources`(필수, `{{ href, title, description? }}`), `labels` |
+| C-089 | `InlineCitation` | `cdt-inline-citation`, `cdt-popover cdt-inline-citation__card` | Radix Popover | `index`·`source`(필수), `labels` |
+| C-090 | `Suggestions` | `cdt-suggestions` | 정적 `group` | `children`(Suggestion), `labels` |
+| C-091 | `Suggestion` | `cdt-suggestion` | 기본 `<button>` | `suggestion`·`onSelect`(필수), `children`(표시 문구 대체) |
+| C-092 | `Shimmer` | `cdt-shimmer` | 정적 `<span>` | `children` |
+
+- **결정**: AI Elements의 구성 요소 단위와 이름을 따르되 마크업·스타일은 새로 만든다. Tailwind 클래스, shadcn 레지스트리, `ai` 패키지의 `UIMessage` 형식을 받지 않는다. 소비자는 자기 메시지 모델을 `from`·`status`·`input`/`output` 같은 평범한 props로 옮긴다.
+- **결정**: Tool 상태는 텍스트 배지와 왼쪽 레일 색으로 표시한다. 색만으로 구별하지 않는다(FR-A11Y-002). 상태별 배지 톤: pending neutral, running info, awaiting-approval warning, completed success, error danger.
+- **결정**: PromptInput은 textarea 자체가 테두리 필드이고 자기 포커스 링을 그린다(포커스 링 계약: 포커스된 요소에 링). 툴바와 전송 버튼은 필드 아래 줄에 있다.
+- **결정**: Confirmation은 승인 게이트가 아니다. 승인 강제는 소비자 서버의 실행 경로가 맡고, 컴포넌트는 결정을 모아 콜백으로 넘긴다.
+- **결정**: Reasoning은 스트리밍이 끝날 때 한 번만 자동으로 닫는다. 그 뒤 사용자가 다시 열면 열린 채로 둔다.
+
+스타일은 `@conductor-by-89soone/css`의 `agent.css`(cdt.component 층)에 있다.

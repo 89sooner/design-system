@@ -1,6 +1,6 @@
 # Conductor Design System 기능 후보 문서
 
-> 상태: review | 버전: v0.8 | 갱신일: 2026-10-18
+> 상태: review | 버전: v0.9 | 갱신일: 2026-10-18
 
 ## 1. 목적
 
@@ -63,6 +63,7 @@
 | F-CMP-011 | 통계 타일 | 수치 하나를 라벨과 함께 읽는다 | SRC-AAP `StatCard`(IncidentDashboardPage.tsx:21-30)와 `Meta`(ArtifactPage.tsx)가 같은 패턴을 각각 중복 정의 | `StatTile` | 12px 보조 라벨 + 22px 굵은 값, 임계 색상 `tone` 옵션 | 소스에서 공유되지 않고 페이지마다 재정의된 패턴이다. 통합 가치는 있으나 v1 필수 아님 | Type C | P2 | 보류 | — |
 | F-CMP-014 | 알림·날짜·명령·페이지 컴포넌트 | 흔한 화면 요구를 직접 만들지 않는다 | CR-054 / 경쟁력 평가 리포트 2번 | `Toast`, `DatePicker`, `CommandPalette`, `Pagination` | 일시 알림, 단일 날짜 선택, 명령 검색, 페이지 이동 | 동작은 Radix·react-day-picker·downshift에 위임 | Type C | P1 | 승인 | FR-CMP-014 |
 | F-CMP-015 | 확인·선택·식별·숫자 입력 컴포넌트 | 흔한 폼·확인 요구를 직접 만들지 않는다 | CR-060 / 2026-10 최신 디자인 시스템 대비 점검 1번 묶음, 파일럿 앱 직접 구현(radio 3곳, number 3곳, aria-pressed 토글 3곳, 이니셜 2곳) | `AlertDialog`, `RadioGroup`, `ToggleGroup`, `Avatar`, `NumberInput` | 되돌릴 수 없는 작업 확인, 단일 선택, 보기 전환, 사람·팀 표시, 범위 있는 숫자 | 동작은 Radix와 브라우저 기본 컨트롤에 위임 | Type C | P1 | 승인 | FR-CMP-015 |
+| F-CMP-016 | 에이전트 대화 컴포넌트 | 에이전트 채팅·실행 화면을 직접 만들지 않는다 | CR-061 / Vercel AI Elements(2026-10-14) 구성 요소 단위, 파일럿 앱 대화형 실행 화면 | `Conversation`, `Message`, `PromptInput`, `Reasoning`, `Tool`, `Confirmation`, `Sources`, `InlineCitation`, `Suggestions`, `Suggestion`, `Shimmer` | 대화 기록, 입력·중단, 추론·도구 호출 표시, 승인 결정, 출처 인용, 제안 프롬프트 | SDK 비종속 props, 동작은 Radix와 브라우저 기본 컨트롤에 위임 | Type C | P1 | 승인 | FR-CMP-016 |
 
 ### 2.5 DOC — 문서 사이트
 

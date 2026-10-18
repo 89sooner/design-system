@@ -1738,5 +1738,318 @@
       "The stepper buttons are named Increase and Decrease and can be relabelled with labels.",
       "Invalid values use Field's error message and a red border, not colour alone."
     ]
+  },
+  "Conversation": {
+    "purpose": "A scrolling transcript of agent and user messages that stays pinned to the newest message while the reader is at the bottom.",
+    "use": [
+      "Wrap the Message list of one chat or run so new turns scroll into view on their own.",
+      "Give it a bounded height through className so the transcript scrolls inside the page."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it for a list of runs or records that the user filters and sorts.",
+        "instead": "DataTable"
+      },
+      {
+        "rule": "Do not use it for a step-by-step execution history without chat turns.",
+        "instead": "Timeline"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Tab",
+        "action": "Focuses the transcript so it can be scrolled."
+      },
+      {
+        "keys": "Arrow Up / Arrow Down / Page Up / Page Down",
+        "action": "Scrolls the transcript."
+      },
+      {
+        "keys": "Enter / Space on Scroll to latest message",
+        "action": "Jumps back to the newest message."
+      }
+    ],
+    "accessibility": [
+      "The transcript is a role=log region named Conversation, so screen readers announce appended messages politely.",
+      "A Scroll to latest message button appears only when the reader has scrolled away from the bottom."
+    ]
+  },
+  "Message": {
+    "purpose": "One turn in a conversation, from the user, the assistant or the system, with an optional avatar, actions, streaming caret and error state.",
+    "use": [
+      "Set from to the sender and name to the agent's display name.",
+      "Set status to streaming while text arrives and error when the turn failed.",
+      "Put copy, retry or feedback buttons in actions."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it for a notice that is not part of the conversation.",
+        "instead": "Banner"
+      }
+    ],
+    "keyboard": "static",
+    "accessibility": [
+      "Each message is a group named by its sender; while streaming the name adds Responding and the group is aria-busy.",
+      "The streaming caret is decorative and hidden from assistive technology.",
+      "An error turn raises role=alert with text, not colour alone."
+    ]
+  },
+  "PromptInput": {
+    "purpose": "The composer for an agent chat: an auto-growing text area with a send button that becomes Stop while the agent responds.",
+    "use": [
+      "Control it with value and onValueChange, and clear the value in onSubmit.",
+      "Pass onStop and status so the user can interrupt a streaming response.",
+      "Put model or attachment controls in toolbar."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it for a form field that is not sent to an agent.",
+        "instead": "TextArea"
+      },
+      {
+        "rule": "Do not use it as a search box over loaded results.",
+        "instead": "Combobox"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Enter",
+        "action": "Sends the message; with submitOn mod-enter, Cmd/Ctrl + Enter sends instead."
+      },
+      {
+        "keys": "Shift + Enter",
+        "action": "Adds a new line."
+      },
+      {
+        "keys": "Tab",
+        "action": "Moves to the toolbar and the send or Stop button."
+      }
+    ],
+    "accessibility": [
+      "The text area is named Message and the button Send or Stop; both can be relabelled with labels.",
+      "Enter that confirms an IME composition never sends, so Korean and Japanese input are safe.",
+      "Blank text never sends and the Send button is disabled until there is text."
+    ]
+  },
+  "Reasoning": {
+    "purpose": "A collapsible block for the model's reasoning that opens while the model thinks and closes when it finishes.",
+    "use": [
+      "Set streaming while reasoning tokens arrive and duration once they stop.",
+      "Keep the reasoning text secondary to the answer that follows it."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it for a tool call with parameters and a result.",
+        "instead": "Tool"
+      },
+      {
+        "rule": "Do not use it for general disclosure content.",
+        "instead": "Collapsible"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Enter / Space",
+        "action": "Opens or closes the reasoning."
+      }
+    ],
+    "accessibility": [
+      "The trigger reads Thinking while streaming and Thought for N seconds afterwards.",
+      "Radix sets aria-expanded and aria-controls on the trigger."
+    ]
+  },
+  "Tool": {
+    "purpose": "A collapsible record of one tool call: its name, status, JSON parameters, result and error.",
+    "use": [
+      "Map each tool call in an agent turn to one Tool with its live status.",
+      "Pass input as data so it renders as formatted JSON, and output as data or as a node."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it to ask the user for approval; pair it with the approval card.",
+        "instead": "Confirmation"
+      },
+      {
+        "rule": "Do not use it for the model's free-text reasoning.",
+        "instead": "Reasoning"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Enter / Space",
+        "action": "Opens or closes the call details."
+      }
+    ],
+    "accessibility": [
+      "The status is a text badge (Pending, Running, Awaiting approval, Completed, Error), not colour alone.",
+      "Parameters and Result are named code regions such as github.search_issues Parameters."
+    ]
+  },
+  "Confirmation": {
+    "purpose": "An approval card for an agent action that waits for the user to approve or reject, then shows the decision.",
+    "use": [
+      "Use it for a write or destructive tool call that must not run without consent.",
+      "Set busy while the decision is being recorded."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it for a destructive action the user started themselves.",
+        "instead": "AlertDialog"
+      },
+      {
+        "rule": "Do not use it for a passive notice with no decision.",
+        "instead": "Banner"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Tab",
+        "action": "Moves between Approve and Reject."
+      },
+      {
+        "keys": "Enter / Space",
+        "action": "Approves or rejects."
+      }
+    ],
+    "accessibility": [
+      "The card is a region named by its title.",
+      "After a decision the buttons are replaced by an Approved or Rejected badge with text.",
+      "The approval itself is enforced by the server; this card only collects the decision."
+    ]
+  },
+  "Sources": {
+    "purpose": "A collapsed list of the sources an answer used, summarised as Used N sources.",
+    "use": [
+      "Place it after the assistant message the sources support.",
+      "Pass href, title and an optional description for each source."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it for a single citation inside a sentence.",
+        "instead": "InlineCitation"
+      },
+      {
+        "rule": "Do not use it for in-app navigation links.",
+        "instead": "NavList"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Enter / Space",
+        "action": "Opens or closes the source list."
+      },
+      {
+        "keys": "Tab",
+        "action": "Moves through the source links."
+      }
+    ],
+    "accessibility": [
+      "Links open in a new tab with rel=noopener noreferrer.",
+      "It renders nothing when the list is empty."
+    ]
+  },
+  "InlineCitation": {
+    "purpose": "A numbered citation inside answer text that opens a popover with the source title, description and link.",
+    "use": [
+      "Place it right after the claim it supports, numbered to match Sources."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it for a full list of sources.",
+        "instead": "Sources"
+      },
+      {
+        "rule": "Do not use it for a short hint about a control.",
+        "instead": "Tooltip"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Enter / Space",
+        "action": "Opens the source popover."
+      },
+      {
+        "keys": "Escape",
+        "action": "Closes the popover and returns focus to the citation."
+      }
+    ],
+    "accessibility": [
+      "The citation button is named Source N: title.",
+      "The popover is a Radix dialog that keeps focus inside while open."
+    ]
+  },
+  "Suggestions": {
+    "purpose": "A row of suggested prompts the user can send with one click.",
+    "use": [
+      "Show it on an empty conversation or after an answer to offer next steps.",
+      "Keep each suggestion short enough to read at a glance."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it for filters over loaded results.",
+        "instead": "FilterChip"
+      },
+      {
+        "rule": "Do not use it for switching views.",
+        "instead": "ToggleGroup"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Tab",
+        "action": "Moves between suggestions."
+      },
+      {
+        "keys": "Enter / Space",
+        "action": "Sends the focused suggestion."
+      }
+    ],
+    "accessibility": [
+      "The row is a group named Suggestions.",
+      "Each suggestion is a native button whose text is its name."
+    ]
+  },
+  "Suggestion": {
+    "purpose": "One suggested prompt button inside Suggestions; selecting it passes its full text to onSelect.",
+    "use": [
+      "Pass the full prompt as suggestion and a shorter label as children when needed."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it for a general action that is not a prompt.",
+        "instead": "Button"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Enter / Space",
+        "action": "Sends the suggestion."
+      }
+    ],
+    "accessibility": [
+      "It is a native button named by its visible text.",
+      "A disabled suggestion keeps its text and is skipped by Tab."
+    ]
+  },
+  "Shimmer": {
+    "purpose": "A text shimmer that marks an in-progress status line such as Thinking.",
+    "use": [
+      "Wrap a short status label while the agent works."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it as a placeholder for content that is still loading.",
+        "instead": "Skeleton"
+      },
+      {
+        "rule": "Do not use it for a standalone loading indicator.",
+        "instead": "Spinner"
+      }
+    ],
+    "keyboard": "static",
+    "accessibility": [
+      "The text stays readable; the shimmer is a gradient over the same words.",
+      "The animation stops under prefers-reduced-motion."
+    ]
   }
 }

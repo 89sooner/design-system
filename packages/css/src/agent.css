@@ -1,0 +1,98 @@
+/*
+ * CR-061 FR-CMP-016: agent and chat interface parts (Conversation, Message, PromptInput, Reasoning,
+ * Tool, Confirmation, Sources, InlineCitation, Suggestions, Shimmer). Disclosures and popovers are
+ * Radix; this file only paints them. Every value reads a `--cdt-` token.
+ */
+@layer cdt.component {
+  /* Shimmer — a highlight sweeping across text. Reduced motion zeroes the spin token, so it stands still. */
+  .cdt-shimmer {
+    background: linear-gradient(90deg, var(--cdt-text-muted) 0%, var(--cdt-text-primary) 50%, var(--cdt-text-muted) 100%) 0 0 / 200% 100%;
+    color: transparent;
+    background-clip: text;
+    animation: cdt-shimmer var(--cdt-motion-spin) infinite;
+  }
+  @keyframes cdt-shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+
+  /* Conversation — the scrolling log; the "latest" button floats over its bottom edge. */
+  .cdt-conversation { position: relative; display: flex; flex-direction: column; min-block-size: 0; }
+  .cdt-conversation__viewport { display: flex; flex: 1 1 auto; flex-direction: column; gap: var(--cdt-space-4); min-block-size: 0; padding: var(--cdt-space-4); overflow-y: auto; border-radius: var(--cdt-radius-md); overscroll-behavior: contain; }
+  .cdt-conversation__viewport:focus-visible { outline: none; box-shadow: var(--cdt-focus-ring); }
+  .cdt-conversation__latest { position: absolute; inset-block-end: var(--cdt-space-3); inset-inline-start: 50%; box-shadow: var(--cdt-elevation-raised); transform: translateX(-50%); }
+
+  /* Message — the person's turns sit on the accent tint at the end; the agent's read as plain text. */
+  .cdt-message { display: flex; align-items: flex-start; gap: var(--cdt-space-3); max-inline-size: 100%; }
+  .cdt-message--user { flex-direction: row-reverse; margin-inline-start: auto; max-inline-size: min(100%, 80ch); }
+  .cdt-message__avatar { flex: 0 0 auto; }
+  .cdt-message__body { display: grid; gap: var(--cdt-space-1); min-inline-size: 0; }
+  .cdt-message__author { color: var(--cdt-text-muted); font-size: var(--cdt-font-size-xs); font-weight: 600; cursor: default; }
+  .cdt-message--user .cdt-message__author { text-align: end; }
+  .cdt-message__content { color: var(--cdt-text-primary); line-height: var(--cdt-font-line-height-md); overflow-wrap: anywhere; white-space: pre-wrap; }
+  .cdt-message--user .cdt-message__content { padding: var(--cdt-space-2) var(--cdt-space-3); border-radius: var(--cdt-radius-md); background: var(--cdt-accent-soft); }
+  .cdt-message--system .cdt-message__content { color: var(--cdt-text-secondary); font-size: var(--cdt-font-size-sm); }
+  .cdt-message--error .cdt-message__content { color: var(--cdt-text-secondary); }
+  .cdt-message__caret { display: inline-block; inline-size: var(--cdt-space-2); block-size: 1em; margin-inline-start: var(--cdt-space-1); vertical-align: text-bottom; border-radius: var(--cdt-radius-xs); background: var(--cdt-accent); animation: cdt-caret var(--cdt-motion-spin) infinite; }
+  @keyframes cdt-caret { 50% { opacity: 0; } }
+  .cdt-message__error { margin: 0; color: var(--cdt-input-error-text); font-size: var(--cdt-font-size-sm); }
+  .cdt-message__actions { display: flex; flex-wrap: wrap; gap: var(--cdt-space-1); }
+
+  /* PromptInput — the textarea is the field (border, ring); tools and the send button sit beneath it. */
+  .cdt-prompt-input { display: grid; gap: var(--cdt-space-2); }
+  .cdt-prompt-input__textarea { inline-size: 100%; min-block-size: var(--cdt-input-min-height); padding: var(--cdt-input-padding-block) var(--cdt-input-padding-inline); border: var(--cdt-border-width-hairline) solid var(--cdt-input-border); border-radius: var(--cdt-radius-md); background: var(--cdt-input-background); color: var(--cdt-input-text); font: inherit; line-height: var(--cdt-font-line-height-md); resize: none; transition: border-color var(--cdt-motion-fast), background var(--cdt-motion-fast); }
+  .cdt-prompt-input__textarea::placeholder { color: var(--cdt-input-placeholder); }
+  .cdt-prompt-input__textarea:hover:not(:disabled) { border-color: var(--cdt-input-border-hover); }
+  .cdt-prompt-input__textarea:focus-visible { border-color: var(--cdt-input-border-focus); outline: none; background: var(--cdt-input-background-focus); box-shadow: var(--cdt-focus-ring); transition: none; }
+  .cdt-prompt-input--disabled .cdt-prompt-input__textarea { background: var(--cdt-state-disabled); color: var(--cdt-text-muted); cursor: not-allowed; }
+  .cdt-prompt-input__footer { display: flex; align-items: center; justify-content: space-between; gap: var(--cdt-space-2); }
+  .cdt-prompt-input__toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--cdt-space-1); min-inline-size: 0; }
+
+  /* Reasoning, Tool and Sources — collapsible rows; the chevron turns when open. */
+  .cdt-reasoning, .cdt-sources { min-inline-size: 0; max-inline-size: 100%; }
+  .cdt-reasoning__trigger, .cdt-tool__trigger, .cdt-sources__trigger { display: inline-flex; align-items: center; gap: var(--cdt-space-2); min-block-size: var(--cdt-button-min-height); padding: var(--cdt-space-1) var(--cdt-space-2); border: 0; border-radius: var(--cdt-radius-sm); background: transparent; color: var(--cdt-text-secondary); font: inherit; font-size: var(--cdt-font-size-sm); cursor: pointer; transition: background var(--cdt-motion-fast), color var(--cdt-motion-fast); }
+  .cdt-reasoning__trigger:hover, .cdt-tool__trigger:hover, .cdt-sources__trigger:hover { background: var(--cdt-state-hover); color: var(--cdt-text-primary); }
+  .cdt-reasoning__trigger:focus-visible, .cdt-tool__trigger:focus-visible, .cdt-sources__trigger:focus-visible { outline: none; box-shadow: var(--cdt-focus-ring); transition: none; }
+  .cdt-reasoning__chevron, .cdt-tool__chevron, .cdt-sources__chevron { display: inline-block; font-size: var(--cdt-font-size-xs); transition: transform var(--cdt-motion-fast); }
+  .cdt-reasoning__trigger[data-state="open"] .cdt-reasoning__chevron, .cdt-tool__trigger[data-state="open"] .cdt-tool__chevron, .cdt-sources__trigger[data-state="open"] .cdt-sources__chevron { transform: rotate(180deg); }
+  .cdt-reasoning__content { margin-block-start: var(--cdt-space-1); padding-inline-start: var(--cdt-space-3); border-inline-start: var(--cdt-border-width-emphasis) solid var(--cdt-border-default); color: var(--cdt-text-secondary); font-size: var(--cdt-font-size-sm); line-height: var(--cdt-font-line-height-md); white-space: pre-wrap; }
+
+  .cdt-tool { border: var(--cdt-border-width-hairline) solid var(--cdt-border-default); border-inline-start-width: var(--cdt-border-width-rail); border-radius: var(--cdt-radius-md); background: var(--cdt-surface-raised); }
+  .cdt-tool--pending { border-inline-start-color: var(--cdt-border-strong); }
+  .cdt-tool--running { border-inline-start-color: var(--cdt-accent); }
+  .cdt-tool--awaiting-approval { border-inline-start-color: var(--cdt-status-waiting); }
+  .cdt-tool--completed { border-inline-start-color: var(--cdt-status-success); }
+  .cdt-tool--error { border-inline-start-color: var(--cdt-status-danger); }
+  .cdt-tool__trigger { display: flex; inline-size: 100%; padding: var(--cdt-space-2) var(--cdt-space-3); border-radius: var(--cdt-radius-md); text-align: start; }
+  .cdt-tool__name { flex: 1 1 auto; overflow: hidden; color: var(--cdt-text-primary); font-family: var(--cdt-font-mono); text-overflow: ellipsis; white-space: nowrap; }
+  .cdt-tool__content { display: grid; gap: var(--cdt-space-3); padding: 0 var(--cdt-space-3) var(--cdt-space-3); }
+  .cdt-tool__section { display: grid; gap: var(--cdt-space-1); }
+  .cdt-tool__heading { margin: 0; color: var(--cdt-text-muted); font-size: var(--cdt-font-size-xs); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+  .cdt-tool__error { color: var(--cdt-input-error-text); font-size: var(--cdt-font-size-sm); }
+
+  .cdt-sources__content { padding: var(--cdt-space-1) var(--cdt-space-2); }
+  .cdt-sources__list { display: grid; gap: var(--cdt-space-1); margin: 0; padding-inline-start: var(--cdt-space-5); color: var(--cdt-text-muted); font-size: var(--cdt-font-size-sm); }
+  .cdt-sources__link { color: var(--cdt-accent); text-underline-offset: 0.2em; }
+
+  /* Confirmation — an approval request in the flow of the conversation, on the waiting rail. */
+  .cdt-confirmation { display: grid; gap: var(--cdt-space-2); padding: var(--cdt-space-3) var(--cdt-space-4); border: var(--cdt-border-width-hairline) solid var(--cdt-border-default); border-inline-start-width: var(--cdt-border-width-rail); border-inline-start-color: var(--cdt-status-waiting); border-radius: var(--cdt-radius-md); background: var(--cdt-surface-raised); }
+  .cdt-confirmation--approved { border-inline-start-color: var(--cdt-status-success); }
+  .cdt-confirmation--rejected { border-inline-start-color: var(--cdt-status-danger); }
+  .cdt-confirmation__title { margin: 0; color: var(--cdt-text-primary); font-size: var(--cdt-font-size-md); font-weight: 650; }
+  .cdt-confirmation__description { margin: 0; color: var(--cdt-text-secondary); line-height: var(--cdt-font-line-height-md); }
+  .cdt-confirmation__actions { display: flex; flex-wrap: wrap; gap: var(--cdt-space-2); margin-block-start: var(--cdt-space-1); }
+  .cdt-confirmation__outcome { justify-self: start; }
+
+  /* InlineCitation — a small numbered marker that reads as part of the sentence. */
+  .cdt-inline-citation { display: inline-grid; place-items: center; min-inline-size: var(--cdt-space-5); block-size: var(--cdt-space-5); margin-inline: var(--cdt-space-1); padding: 0 var(--cdt-space-1); border: var(--cdt-border-width-hairline) solid var(--cdt-border-default); border-radius: var(--cdt-radius-pill); background: var(--cdt-surface-tint-1); color: var(--cdt-text-secondary); font: inherit; font-size: var(--cdt-font-size-2xs); font-variant-numeric: tabular-nums; line-height: 1; vertical-align: text-top; cursor: pointer; }
+  .cdt-inline-citation:hover { border-color: var(--cdt-accent); color: var(--cdt-text-primary); }
+  .cdt-inline-citation:focus-visible { outline: none; box-shadow: var(--cdt-focus-ring); }
+  .cdt-inline-citation__card { display: grid; gap: var(--cdt-space-1); max-inline-size: min(90vw, calc(var(--cdt-space-8) * 7)); }
+  .cdt-inline-citation__title { color: var(--cdt-text-primary); font-weight: 600; }
+  .cdt-inline-citation__description { margin: 0; color: var(--cdt-text-secondary); font-size: var(--cdt-font-size-sm); }
+  .cdt-inline-citation__href { overflow: hidden; color: var(--cdt-text-muted); font-size: var(--cdt-font-size-xs); text-overflow: ellipsis; white-space: nowrap; cursor: default; }
+
+  /* Suggestions — pill buttons that wrap; each sends its text. */
+  .cdt-suggestions { display: flex; flex-wrap: wrap; gap: var(--cdt-space-2); }
+  .cdt-suggestion { min-block-size: var(--cdt-button-min-height); padding: var(--cdt-space-1) var(--cdt-space-3); border: var(--cdt-border-width-hairline) solid var(--cdt-border-default); border-radius: var(--cdt-radius-pill); background: var(--cdt-surface-raised); color: var(--cdt-text-primary); font: inherit; font-size: var(--cdt-font-size-sm); cursor: pointer; transition: background var(--cdt-motion-fast), border-color var(--cdt-motion-fast); }
+  .cdt-suggestion:hover:not(:disabled) { border-color: var(--cdt-accent); background: var(--cdt-accent-soft); }
+  .cdt-suggestion:focus-visible { outline: none; box-shadow: var(--cdt-focus-ring); transition: none; }
+  .cdt-suggestion:disabled { color: var(--cdt-button-disabled-text); cursor: not-allowed; }
+}
