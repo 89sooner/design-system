@@ -49,6 +49,10 @@ const BUNDLES = [
   // FR-CSS-002's exception: the same stylesheet minus cdt.reset, for consumers
   // whose own global reset would collide. Refs: FR-DX-003 AC-4
   { out: "component.css", sources: ["tokens.css", "base.css", "layout.css", "components.css", "interaction.css", "workbench.css", "relation.css", "controls.css", "utility.css"] },
+  // CR-061: the agent interface layer is opt-in. Apps that render Conversation, Message and the
+  // other agent parts import it after index.css (or component.css); everyone else does not pay
+  // for it on their critical path. It reads the tokens the main stylesheet declares.
+  { out: "agent.css", sources: ["agent.css"] },
 ];
 
 const targets = browserslistToTargets(

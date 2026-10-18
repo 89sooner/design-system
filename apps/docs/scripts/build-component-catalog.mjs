@@ -16,7 +16,7 @@ const declarations = readdirSync(declarationsDirectory)
   .filter((name) => name.endsWith(".d.ts"))
   .map((name) => readFileSync(`${declarationsDirectory}/${name}`, "utf8"))
   .join("\n");
-const stylesheet = readFileSync(`${root}/packages/css/dist/index.css`, "utf8");
+const stylesheet = `${readFileSync(`${root}/packages/css/dist/index.css`, "utf8")}\n${readFileSync(`${root}/packages/css/dist/agent.css`, "utf8")}`;
 const catalogSource = readFileSync(fileURLToPath(new URL("../src/catalog.tsx", import.meta.url)), "utf8");
 /** ENT-DOC-002: the hand-written usage guidance, one entry per public component (FR-DOC-003 AC-6). */
 const guidanceSource = JSON.parse(readFileSync(fileURLToPath(new URL("../src/content/component-guidance.json", import.meta.url)), "utf8"));
@@ -38,6 +38,7 @@ const FAMILIES = [
   ["Search workbench", ["Combobox", "MultiSelect", "FilterChip", "FilterToolbar", "DataTable", "WorkbenchLayout", "DetailInspector", "PathList", "Breadcrumb", "CopyButton"]],
   ["Relations", ["RelationGraph"]],
   ["Operations", ["ProcessingStatus"]],
+  ["Agent", ["Conversation", "Message", "PromptInput", "Reasoning", "Tool", "Confirmation", "Sources", "InlineCitation", "Suggestions", "Suggestion", "Shimmer"]],
 ];
 
 /**
@@ -103,6 +104,17 @@ const ROOT_CLASSES = {
   CopyButton: "cdt-copy-feedback",
   RelationGraph: "cdt-relation",
   ProcessingStatus: "cdt-processing-status",
+  Conversation: "cdt-conversation",
+  Message: "cdt-message",
+  PromptInput: "cdt-prompt-input",
+  Reasoning: "cdt-reasoning",
+  Tool: "cdt-tool",
+  Confirmation: "cdt-confirmation",
+  Sources: "cdt-sources",
+  InlineCitation: "cdt-inline-citation",
+  Suggestions: "cdt-suggestions",
+  Suggestion: "cdt-suggestion",
+  Shimmer: "cdt-shimmer",
 };
 
 const ignored = new Set(["CONSUMED_PACKAGES", "PACKAGE_NAME"]);

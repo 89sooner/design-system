@@ -27,6 +27,7 @@ export default defineConfig({
     "src/selection.tsx",
     "src/avatar.tsx",
     "src/number-input.tsx",
+    "src/agent.tsx",
     "src/route-focus.ts",
   ],
   format: ["esm"],

@@ -1,6 +1,6 @@
 # Conductor Design System 작업 패키지
 
-> 상태: review | 버전: v0.14 | 갱신일: 2026-10-18
+> 상태: review | 버전: v0.15 | 갱신일: 2026-10-18
 
 ## 1. 목적
 
@@ -805,3 +805,14 @@ design-system/
 - 검증 방법: `testing/selection.test.tsx`, a11y·component-css 브라우저 시험(axe·키보드·포커스 링·커서·쌓임)
 - 기록: 구현 원장 WP-038, FR-CMP-015 매핑
 
+## WP-039 에이전트 대화 컴포넌트 (CR-061)
+
+- 릴리스: REL-004 (CR-061, react·css minor)
+- 관련 요구사항: FR-CMP-016
+- 관련 화면: W-020, W-021
+- 선행 WP: WP-038
+- 구현 범위: `agent.tsx`(11종), `labels.ts` 추가 타입 9종, `agent.css`(선택 진입점 `@conductor-by-89soone/css/agent.css`), 공개 레지스트리·a11y 시나리오·SSR, 카탈로그 Agent family 미리보기와 지침 11종
+- 제외: 코드 하이라이트·수식·다이어그램·캔버스·애니메이션 런타임, 마크다운 스트리밍 렌더러, 첨부·음성 입력, AI SDK 어댑터, 파일럿 앱 교체(별도 소비자 작업)
+- 완료 기준(DoD): FR-CMP-016 AC-1~AC-10을 단위·브라우저 시험으로 증명한다.
+- 검증 방법: `testing/agent.test.tsx`, a11y·component-css 브라우저 시험(axe·키보드·포커스 링·커서)
+- 기록: 구현 원장 WP-039, FR-CMP-016 매핑

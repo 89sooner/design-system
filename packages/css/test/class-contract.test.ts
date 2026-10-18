@@ -132,7 +132,8 @@ function reactClassUsage(): ReactUsage {
 }
 
 const usage = reactClassUsage();
-const styled = new Set([...readBuilt("../dist/index.css").matchAll(CLASS_SELECTOR)].map((match) => match[1] as string));
+// The agent parts style from the opt-in agent.css (CR-061); every other class from index.css.
+const styled = new Set([...`${readBuilt("../dist/index.css")}\n${readBuilt("../dist/agent.css")}`.matchAll(CLASS_SELECTOR)].map((match) => match[1] as string));
 
 const startsWithAPrefix = (className: string): boolean =>
   usage.prefixes.some((prefix) => className.startsWith(prefix) && className !== prefix);
@@ -147,7 +148,7 @@ describe("cdt- class contract between the stylesheet and the React primitives", 
   test("FR-CSS-004: every class a component emits has a rule in the shipped stylesheet", () => {
     const dead = [...usage.whole]
       .filter(([className]) => !styled.has(className) && IDENTITY_CLASSES[className] === undefined)
-      .map(([className, file]) => `${className} (emitted by ${file}, no rule in dist/index.css)`);
+      .map(([className, file]) => `${className} (emitted by ${file}, no rule in dist/index.css or dist/agent.css)`);
     expect(dead).toEqual([]);
   });
 

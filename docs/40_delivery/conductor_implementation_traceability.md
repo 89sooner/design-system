@@ -1,6 +1,6 @@
 # Conductor Design System 구현 추적 원장
 
-> 상태: review | 버전: v0.48 | 갱신일: 2026-10-18
+> 상태: review | 버전: v0.49 | 갱신일: 2026-10-18
 
 ## 1. 목적과 갱신 규칙
 
@@ -236,6 +236,7 @@ PR Search 소비처의 `DEV-380`이 트리거다: 화면 계약이 최대 20계�
 | FR-DOC-010 | `packages/tokens/src/measure.ts`, `src/index.ts`, `apps/docs/src/theme-overrides.ts`, `src/theme-playground.tsx`, `App.tsx`, `shell.tsx` | `packages/tokens/src/measure.test.ts`, `apps/docs/src/theme-overrides.test.ts`, `apps/docs/e2e/playground.spec.ts`, `apps/docs/e2e/workspaces.spec.ts` | WP-036 | 검증됨 (AC-1~AC-5. 미리보기 한정 재정의와 별칭 전파, 기본 설정에서 9쌍이 보고서와 일치, 스니펫, 잘못된 입력 거부와 초기화, 4폭×2테마 axe serious 0·넘침 0) |
 | FR-CMP-014 | `packages/react/src/toast.tsx`, `date-picker.tsx`, `command.tsx`, `pagination.tsx`, `labels.ts`, `packages/css/src/controls.css`, `apps/docs/src/catalog.tsx`(미리보기) | `packages/react/src/testing/controls.test.tsx`, `a11y.browser.test.tsx`(시나리오), `hydration.browser.test.tsx`, `apps/docs/e2e/controls.spec.ts` | WP-037 | 검증됨 (AC-1~AC-5) |
 | FR-CMP-015 | `packages/react/src/alert-dialog.tsx`, `selection.tsx`, `avatar.tsx`, `number-input.tsx`, `labels.ts`, `form.tsx`(Field 라벨 id), `packages/css/src/controls.css`, `apps/docs/src/catalog.tsx`(미리보기) | `packages/react/src/testing/selection.test.tsx`, `a11y.browser.test.tsx`(시나리오), `component-css.browser.test.tsx` | WP-038 | 검증됨 (AC-1~AC-6) |
+| FR-CMP-016 | `packages/react/src/agent.tsx`, `labels.ts`, `packages/css/src/agent.css`, `apps/docs/src/catalog.tsx`(미리보기) | `packages/react/src/testing/agent.test.tsx`, `a11y.browser.test.tsx`(시나리오), `component-css.browser.test.tsx` | WP-039 | 검증됨 (AC-1~AC-10) |
 | FR-DOC-004 | `apps/docs/src/token-reference.tsx`, `scripts/build-contrast-report.mjs` | `apps/docs/e2e/tokens.spec.ts` | WP-021 | 검증됨 (AC-1~AC-4와 리포트 누락 폴백. 빌드 산출 `tokens.json`·`contrast-report.json`을 소비하며 화면에서 대비율을 재계산하지 않음) |
 | FR-DOC-005 | `apps/docs/index.html`, `src/theme.ts`, `src/App.tsx` | `apps/docs/e2e/shell.spec.ts` | WP-018 | 검증됨 (AC-1~AC-5와 localStorage 차단 폴백. 첫 페인트 스니펫이 React 전 루트 속성을 결정) |
 | FR-DOC-006 | `apps/docs/src/guides.tsx`, `src/catalog.tsx` | `apps/docs/e2e/guides.spec.ts` | WP-022 | 검증됨 (AC-1~AC-3. 성공 공지·2초 복귀, polite live region, Clipboard 미지원 시 disabled/선택 가능 코드) |
@@ -381,6 +382,7 @@ OD-002(시각 회귀 이월)와 OD-004(셸 컴포넌트군 패키지 포함)는 
 | WP-036 | FR-DOC-010 | done | W-031 Theme Playground, tokens API-TOK-004(`contrastRatio`·OKLab 함수) 공개. CR-052. |
 | WP-037 | FR-CMP-014 | done | Toast·DatePicker·CommandPalette·Pagination(C-073~C-076), `controls.css`, 레지스트리·a11y·SSR 시험, 카탈로그 미리보기·지침. CR-054. |
 | WP-038 | FR-CMP-015 | done | AlertDialog·RadioGroup·ToggleGroup·Avatar·NumberInput(C-077~C-081), `controls.css`, 레지스트리·a11y·SSR 시험, 카탈로그 미리보기·지침. CR-060. |
+| WP-039 | FR-CMP-016 | done | 에이전트 대화 컴포넌트 11종(C-082~C-092), `agent.css`, 레지스트리·a11y·SSR 시험, 카탈로그 미리보기·지침. CR-061. |
 
 착수 문서 validator --report: exit 0, FR49/49, Phase7. 실제 소비자 코드는 읽기만 수행했으며 운영 연동·소비자 마이그레이션은 실행하지 않았다. 공개 기록에는 일반화된 계약과 합성 데이터만 남긴다.
 
@@ -612,3 +614,10 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | 시험 | `selection.test.tsx` 23건(공통 계약 3종 포함), a11y 시나리오 9건(열린 AlertDialog axe, RadioGroup·ToggleGroup·NumberInput 키보드 경로, 오류·비활성 상태). 브라우저 시험 294/294(skip 1)로 axe·포커스 링·커서·쌓임 계약 통과 |
 | 검증 (CI) | PR #64 head `93cbd63`: verify(node 20·22), visual regression 통과. CR-060 closed |
 
+### CR-061 에이전트 대화 컴포넌트 (2026-10-18)
+
+| 범위 | 결과 |
+| --- | --- |
+| 패키지 | react: `Conversation`(C-082), `Message`(C-083), `PromptInput`(C-084), `Reasoning`(C-085), `Tool`(C-086), `Confirmation`(C-087), `Sources`(C-088), `InlineCitation`(C-089), `Suggestions`(C-090), `Suggestion`(C-091), `Shimmer`(C-092)와 Labels 타입 9종. 새 의존성 없음. css: 선택 진입점 `./agent.css`(dist/agent.css, 2.0KB gzip). `index.css`·`component.css`는 늘지 않는다 |
+| 시험 | `agent.test.tsx` 30건(공통 계약 4종 포함), a11y 시나리오 14건(열린 Tool·InlineCitation axe, 컴포넌트별 키보드 경로, 스트리밍·오류·결정 상태). 브라우저 시험 344건(skip 1)으로 axe·포커스 링·커서·쌓임 계약 통과 |
+| 검증 (CI) | head `fed36d2`에서 Lighthouse LCP p75 2528ms > 2500ms로 실패해 agent.css를 선택 진입점으로 분리했다. head `448bb7d`: verify(node 20·22, LCP p75 2441ms), visual regression 통과. CR-061 closed |

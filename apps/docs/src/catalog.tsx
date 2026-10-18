@@ -6,6 +6,8 @@
 // without a preview `case` below. Only public components and public `cdt-*` classes are composed.
 // W-020/W-021 styles ride with this lazy chunk so the landing never downloads them (CR-042, NFR-001).
 import "./styles/catalog.css";
+// CR-061: the agent parts style from the opt-in stylesheet; only the catalog renders them.
+import "@conductor-by-89soone/css/agent.css";
 import * as Components from "@conductor-by-89soone/react";
 import { createPortal } from "react-dom";
 import {
@@ -14,6 +16,7 @@ import {
   ArrowLeft,
   ArrowUpRight,
   BellRing,
+  Bot,
   Boxes,
   Braces,
   Check,
@@ -136,6 +139,7 @@ const FAMILY_INFO: Readonly<Record<string, FamilyInfo>> = {
   "Search workbench": { icon: SearchCode, note: "Comboboxes, filters, the data table, the inspector layout and the small parts behind the search workbench." },
   Relations: { icon: Waypoints, note: "A relation graph that renders nodes and edges with their evidence and ambiguity surfaced." },
   Operations: { icon: Activity, note: "Pipeline stages with a status, a detail line and an operator action per stage." },
+  Agent: { icon: Bot, note: "Chat transcript, messages, the prompt composer, reasoning and tool-call records, approvals, sources and suggested prompts for agent interfaces." },
 };
 const UNFILED_FAMILY: FamilyInfo = { icon: Boxes, note: "Public components without a family note yet." };
 const familyInfo = (family: string): FamilyInfo => FAMILY_INFO[family] ?? UNFILED_FAMILY;
@@ -243,6 +247,24 @@ function NumberInputPreview() {
   const [value, setValue] = useState("25");
   return <Components.Field label="Max steps per run" description="Between 1 and 100."><Components.NumberInput min={1} max={100} value={value} onChange={(event) => setValue(event.currentTarget.value)} suffix="steps" /></Components.Field>;
 }
+// CR-061 FR-CMP-016 previews: synthetic agent turns, no model or network.
+const AGENT_SOURCES = [{ href: "https://example.com/runbook", title: "Incident runbook", description: "Steps for paging the on-call engineer." }, { href: "https://example.com/postmortem", title: "Postmortem template" }];
+function ConversationPreview({ compact = false }: { readonly compact?: boolean }) {
+  return <Components.Conversation className="docs-agent-conversation"><Components.Message from="user">Why did last night's deploy roll back?</Components.Message><Components.Message from="assistant" name="Conductor">The canary breached its error budget after 4 minutes, so the rollout stopped automatically.</Components.Message>{compact ? null : <Components.Message from="assistant" name="Conductor" status="streaming">Checking which request paths failed</Components.Message>}</Components.Conversation>;
+}
+function PromptInputPreview() {
+  const [value, setValue] = useState("");
+  const [sent, setSent] = useState("");
+  return <div className="docs-agent-stack"><Components.PromptInput value={value} onValueChange={setValue} onSubmit={(text) => { setSent(text); setValue(""); }} placeholder="Ask about a run, a repo or an approval" /><p role="status" className="cdt-muted">{sent === "" ? "" : `Sent: ${sent}`}</p></div>;
+}
+function ConfirmationPreview() {
+  const [state, setState] = useState<Components.ConfirmationState>("pending");
+  return <Components.Confirmation title="Merge pull request #42?" description="The agent wants to merge into main. Two required checks passed." state={state} onApprove={() => setState("approved")} onReject={() => setState("rejected")} />;
+}
+function SuggestionsPreview() {
+  const [picked, setPicked] = useState("");
+  return <div className="docs-agent-stack"><Components.Suggestions>{["Show failed runs", "Summarise today's approvals", "Draft a release note"].map((text) => <Components.Suggestion key={text} suggestion={text} onSelect={setPicked} />)}</Components.Suggestions><p role="status" className="cdt-muted">{picked === "" ? "" : `Selected: ${picked}`}</p></div>;
+}
 export function ComponentPreview({ compact = false, forceError = false, name }: { readonly compact?: boolean; readonly forceError?: boolean; readonly name: string }) {
   if (forceError) throw new Error(`Forced ${name} preview failure`);
   switch (name) {
@@ -302,6 +324,17 @@ export function ComponentPreview({ compact = false, forceError = false, name }: 
     case "NumberInput": return <NumberInputPreview />;
     case "RelationGraph": return <Components.RelationGraph label="Synthetic relationships" nodes={[{ id: "sample:a", label: "Change A" }, { id: "sample:b", label: "Change B" }]} edges={[{ id: "sample:edge", source: "sample:a", target: "sample:b", type: "references", label: "references", evidence: "Synthetic reference example", ambiguous: true }]} stateMessage="Synthetic data; no production API connected." />;
     case "AppShellNavTrigger": return <ShellTriggerPreview compact={compact} />;
+    case "Conversation": return <ConversationPreview compact={compact} />;
+    case "Message": return <div className="docs-agent-stack"><Components.Message from="user">Summarise the incident</Components.Message><Components.Message from="assistant" name="Conductor" avatar={<Components.Avatar name="Conductor" size="sm" />}>Three services were affected for 12 minutes.</Components.Message></div>;
+    case "PromptInput": return <PromptInputPreview />;
+    case "Reasoning": return <Components.Reasoning duration={4}>Compared the failing canary with the previous release and found the new cache key.</Components.Reasoning>;
+    case "Tool": return <Components.Tool name="github.search_issues" status="completed" input={{ query: "label:incident", limit: 5 }} output="3 issues found" defaultOpen={!compact} />;
+    case "Confirmation": return <ConfirmationPreview />;
+    case "Sources": return <Components.Sources sources={AGENT_SOURCES} />;
+    case "InlineCitation": return <p>Page the on-call engineer first<Components.InlineCitation index={1} source={AGENT_SOURCES[0]!} />.</p>;
+    case "Suggestions": return <SuggestionsPreview />;
+    case "Suggestion": return <Components.Suggestion suggestion="Show failed runs" onSelect={() => undefined} />;
+    case "Shimmer": return <Components.Shimmer>Thinking…</Components.Shimmer>;
     default: throw new Error(`Unknown component preview: ${name}`);
   }
 }

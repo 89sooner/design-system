@@ -7,6 +7,7 @@ import { userEvent } from "@vitest/browser/context";
 import { cleanup, render } from "@testing-library/react";
 import { afterEach, expect, test } from "vitest";
 import "@conductor-by-89soone/css/component.css";
+import "@conductor-by-89soone/css/agent.css";
 import { a11yScenarios } from "./a11y-scenarios";
 import { cursorViolations } from "./cursor-contract";
 import { stackingViolations } from "./stacking-contract";

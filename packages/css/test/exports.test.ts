@@ -36,10 +36,14 @@ describe("@conductor-by-89soone/css package contract", () => {
     expect(exportsMap["./component.css"]).toMatchObject({ default: "./dist/component.css" });
   });
 
+  test("CR-061 FR-CMP-016: the opt-in ./agent.css entry point is declared", () => {
+    expect(exportsMap["./agent.css"]).toMatchObject({ style: "./dist/agent.css", default: "./dist/agent.css" });
+  });
+
   test("FR-DX-003 AC-1: @conductor-by-89soone/css exposes only declared entry points", () => {
     // Asserted as rules, not as a snapshot of the key list: at WP-003 a snapshot
     // assertion failed for an entry point that was legitimately added.
-    for (const required of [".", "./component.css", "./package.json"]) {
+    for (const required of [".", "./component.css", "./agent.css", "./package.json"]) {
       expect(Object.keys(exportsMap)).toContain(required);
     }
 

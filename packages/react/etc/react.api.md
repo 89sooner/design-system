@@ -301,7 +301,59 @@ export interface CommandPaletteProps extends Omit<HTMLAttributes<HTMLDivElement>
 }
 
 // @public
+export const Confirmation: react.ForwardRefExoticComponent<ConfirmationProps & react.RefAttributes<HTMLElement>>;
+
+// @public (undocumented)
+export interface ConfirmationLabels {
+    // (undocumented)
+    readonly approve: string;
+    // (undocumented)
+    readonly approved: string;
+    // (undocumented)
+    readonly reject: string;
+    // (undocumented)
+    readonly rejected: string;
+}
+
+// @public (undocumented)
+export interface ConfirmationProps extends Omit<HTMLAttributes<HTMLElement>, "title"> {
+    readonly busy?: boolean;
+    // (undocumented)
+    readonly description?: ReactNode;
+    // (undocumented)
+    readonly labels?: Partial<ConfirmationLabels>;
+    // (undocumented)
+    readonly onApprove?: () => void;
+    // (undocumented)
+    readonly onReject?: () => void;
+    // (undocumented)
+    readonly state: ConfirmationState;
+    // (undocumented)
+    readonly title: ReactNode;
+}
+
+// @public (undocumented)
+export type ConfirmationState = "pending" | "approved" | "rejected";
+
+// @public
 export const CONSUMED_PACKAGES: readonly ["@conductor-by-89soone/tokens", "@conductor-by-89soone/css"];
+
+// @public
+export const Conversation: react.ForwardRefExoticComponent<ConversationProps & react.RefAttributes<HTMLDivElement>>;
+
+// @public (undocumented)
+export interface ConversationLabels {
+    // (undocumented)
+    readonly log: string;
+    // (undocumented)
+    readonly scrollToLatest: string;
+}
+
+// @public (undocumented)
+export interface ConversationProps extends HTMLAttributes<HTMLDivElement> {
+    // (undocumented)
+    readonly labels?: Partial<ConversationLabels>;
+}
 
 // @public (undocumented)
 export const CopyButton: react.ForwardRefExoticComponent<CopyButtonProps & react.RefAttributes<HTMLSpanElement>>;
@@ -595,6 +647,24 @@ export interface IconButtonProps extends Omit<ButtonProps, "children" | "aria-la
 // @public
 export type IconSlot = ReactNode;
 
+// @public
+export const InlineCitation: react.ForwardRefExoticComponent<InlineCitationProps & react.RefAttributes<HTMLButtonElement>>;
+
+// @public (undocumented)
+export interface InlineCitationLabels {
+    // (undocumented)
+    readonly citation: (index: number, title: string) => string;
+}
+
+// @public (undocumented)
+export interface InlineCitationProps extends Omit<ComponentPropsWithoutRef<"button">, "children"> {
+    readonly index: number;
+    // (undocumented)
+    readonly labels?: Partial<InlineCitationLabels>;
+    // (undocumented)
+    readonly source: SourceItem;
+}
+
 // @public (undocumented)
 export const Kbd: react.ForwardRefExoticComponent<KbdProps & react.RefAttributes<HTMLElement>>;
 
@@ -613,6 +683,43 @@ export function layoutRelationNodes(nodes: readonly RelationNode[]): {
     description?: string;
     unavailable?: boolean;
 }[];
+
+// @public (undocumented)
+export const Message: react.ForwardRefExoticComponent<MessageProps & react.RefAttributes<HTMLDivElement>>;
+
+// @public (undocumented)
+export interface MessageLabels {
+    // (undocumented)
+    readonly assistant: string;
+    // (undocumented)
+    readonly error: string;
+    // (undocumented)
+    readonly streaming: string;
+    // (undocumented)
+    readonly system: string;
+    // (undocumented)
+    readonly user: string;
+}
+
+// @public (undocumented)
+export interface MessageProps extends HTMLAttributes<HTMLDivElement> {
+    readonly actions?: ReactNode;
+    // (undocumented)
+    readonly avatar?: ReactNode;
+    // (undocumented)
+    readonly from: MessageRole;
+    // (undocumented)
+    readonly labels?: Partial<MessageLabels>;
+    readonly name?: ReactNode;
+    // (undocumented)
+    readonly status?: MessageStatus;
+}
+
+// @public (undocumented)
+export type MessageRole = "user" | "assistant" | "system";
+
+// @public (undocumented)
+export type MessageStatus = "complete" | "streaming" | "error";
 
 // @public (undocumented)
 export const Meter: react.ForwardRefExoticComponent<MeterProps & react.RefAttributes<HTMLDivElement>>;
@@ -894,6 +1001,45 @@ export interface ProgressRingProps extends Omit<HTMLAttributes<HTMLDivElement>, 
 }
 
 // @public (undocumented)
+export const PromptInput: react.ForwardRefExoticComponent<PromptInputProps & react.RefAttributes<HTMLFormElement>>;
+
+// @public (undocumented)
+export interface PromptInputLabels {
+    // (undocumented)
+    readonly input: string;
+    // (undocumented)
+    readonly stop: string;
+    // (undocumented)
+    readonly submit: string;
+}
+
+// @public (undocumented)
+export interface PromptInputProps extends Omit<ComponentPropsWithoutRef<"form">, "onSubmit" | "children"> {
+    // (undocumented)
+    readonly disabled?: boolean;
+    // (undocumented)
+    readonly labels?: Partial<PromptInputLabels>;
+    readonly maxRows?: number;
+    // (undocumented)
+    readonly onStop?: () => void;
+    readonly onSubmit: (value: string) => void;
+    // (undocumented)
+    readonly onValueChange: (value: string) => void;
+    // (undocumented)
+    readonly placeholder?: string;
+    readonly status?: PromptInputStatus;
+    readonly submitOn?: "enter" | "mod-enter";
+    // (undocumented)
+    readonly textareaRef?: Ref<HTMLTextAreaElement>;
+    readonly toolbar?: ReactNode;
+    // (undocumented)
+    readonly value: string;
+}
+
+// @public (undocumented)
+export type PromptInputStatus = "ready" | "submitted" | "streaming" | "error";
+
+// @public (undocumented)
 export const RadioGroup: {
     readonly Root: react.ForwardRefExoticComponent<Omit<RadixRadioGroup.RadioGroupProps & react.RefAttributes<HTMLDivElement>, "ref"> & {
         readonly invalid?: boolean;
@@ -916,6 +1062,27 @@ export type RadioGroupRootProps = ComponentPropsWithoutRef<typeof RadixRadioGrou
     readonly invalid?: boolean;
     readonly orientation?: "vertical" | "horizontal";
 };
+
+// @public (undocumented)
+export const Reasoning: react.ForwardRefExoticComponent<ReasoningProps & react.RefAttributes<HTMLDivElement>>;
+
+// @public (undocumented)
+export interface ReasoningLabels {
+    // (undocumented)
+    readonly thinking: string;
+    // (undocumented)
+    readonly thought: (seconds: number | undefined) => string;
+}
+
+// @public (undocumented)
+export interface ReasoningProps extends Omit<ComponentPropsWithoutRef<typeof RadixCollapsible.Root>, "children"> {
+    // (undocumented)
+    readonly children: ReactNode;
+    readonly duration?: number;
+    // (undocumented)
+    readonly labels?: Partial<ReasoningLabels>;
+    readonly streaming?: boolean;
+}
 
 // @public (undocumented)
 export interface RelationEdge {
@@ -1159,6 +1326,12 @@ export interface SeverityTagProps extends Omit<HTMLAttributes<HTMLSpanElement>, 
     readonly severity: Severity;
 }
 
+// @public
+export const Shimmer: react.ForwardRefExoticComponent<ShimmerProps & react.RefAttributes<HTMLSpanElement>>;
+
+// @public (undocumented)
+export type ShimmerProps = HTMLAttributes<HTMLSpanElement>;
+
 // @public (undocumented)
 export type Size = "sm" | "md";
 
@@ -1166,6 +1339,33 @@ export type Size = "sm" | "md";
 export const Skeleton: react.ForwardRefExoticComponent<HTMLAttributes<HTMLDivElement> & {
     readonly label: string;
 } & react.RefAttributes<HTMLDivElement>>;
+
+// @public (undocumented)
+export interface SourceItem {
+    // (undocumented)
+    readonly description?: string;
+    // (undocumented)
+    readonly href: string;
+    // (undocumented)
+    readonly title: string;
+}
+
+// @public (undocumented)
+export const Sources: react.ForwardRefExoticComponent<SourcesProps & react.RefAttributes<HTMLDivElement>>;
+
+// @public (undocumented)
+export interface SourcesLabels {
+    // (undocumented)
+    readonly summary: (count: number) => string;
+}
+
+// @public (undocumented)
+export interface SourcesProps extends Omit<ComponentPropsWithoutRef<typeof RadixCollapsible.Root>, "children"> {
+    // (undocumented)
+    readonly labels?: Partial<SourcesLabels>;
+    // (undocumented)
+    readonly sources: readonly SourceItem[];
+}
 
 // @public (undocumented)
 export const Spinner: react.ForwardRefExoticComponent<SpinnerProps & react.RefAttributes<HTMLDivElement>>;
@@ -1191,6 +1391,33 @@ export interface StatusBadgeProps extends Omit<HTMLAttributes<HTMLSpanElement>, 
     readonly label: string;
     // (undocumented)
     readonly status: Status;
+}
+
+// @public (undocumented)
+export const Suggestion: react.ForwardRefExoticComponent<SuggestionProps & react.RefAttributes<HTMLButtonElement>>;
+
+// @public (undocumented)
+export interface SuggestionProps extends Omit<ComponentPropsWithoutRef<"button">, "onSelect" | "children"> {
+    readonly children?: ReactNode;
+    // (undocumented)
+    readonly onSelect: (suggestion: string) => void;
+    // (undocumented)
+    readonly suggestion: string;
+}
+
+// @public
+export const Suggestions: react.ForwardRefExoticComponent<SuggestionsProps & react.RefAttributes<HTMLDivElement>>;
+
+// @public (undocumented)
+export interface SuggestionsLabels {
+    // (undocumented)
+    readonly group: string;
+}
+
+// @public (undocumented)
+export interface SuggestionsProps extends HTMLAttributes<HTMLDivElement> {
+    // (undocumented)
+    readonly labels?: Partial<SuggestionsLabels>;
 }
 
 // @public (undocumented)
@@ -1351,6 +1578,39 @@ export type ToggleGroupProps = ComponentPropsWithoutRef<typeof RadixToggleGroup.
 
 // @public (undocumented)
 export type Tone = "neutral" | "accent" | "info" | "success" | "warning" | "danger";
+
+// @public (undocumented)
+export const Tool: react.ForwardRefExoticComponent<ToolProps & react.RefAttributes<HTMLDivElement>>;
+
+// @public (undocumented)
+export interface ToolLabels {
+    // (undocumented)
+    readonly error: string;
+    // (undocumented)
+    readonly parameters: string;
+    // (undocumented)
+    readonly result: string;
+    // (undocumented)
+    readonly status: Readonly<Record<"pending" | "running" | "awaiting-approval" | "completed" | "error", string>>;
+}
+
+// @public (undocumented)
+export interface ToolProps extends Omit<ComponentPropsWithoutRef<typeof RadixCollapsible.Root>, "children"> {
+    readonly children?: ReactNode;
+    // (undocumented)
+    readonly errorText?: ReactNode;
+    readonly input?: unknown;
+    readonly labels?: Partial<Omit<ToolLabels, "status">> & {
+        readonly status?: Partial<ToolLabels["status"]>;
+    };
+    readonly name: string;
+    readonly output?: unknown;
+    // (undocumented)
+    readonly status: ToolStatus;
+}
+
+// @public (undocumented)
+export type ToolStatus = "pending" | "running" | "awaiting-approval" | "completed" | "error";
 
 // @public (undocumented)
 export const Tooltip: {

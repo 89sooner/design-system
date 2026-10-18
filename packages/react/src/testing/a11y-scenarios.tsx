@@ -1,6 +1,6 @@
 // Refs: WP-024 FR-QA-003 FR-A11Y-002 FR-A11Y-005
 import { useRef, useState, type ReactElement } from "react";
-import { AlertDialog, Avatar, CommandPalette, DatePicker, NumberInput, Pagination, RadioGroup, Toast, ToggleGroup } from "../index";
+import { AlertDialog, Avatar, CommandPalette, Confirmation, Conversation, InlineCitation, Message, PromptInput, Reasoning, Shimmer, Sources, Suggestion, Suggestions, Tool, DatePicker, NumberInput, Pagination, RadioGroup, Toast, ToggleGroup } from "../index";
 import {
   AppShell, AppShellNavTrigger, Tabs, Popover, Collapsible, Combobox, MultiSelect, FilterChip, FilterToolbar, DataTable, WorkbenchLayout, DetailInspector, PathList, Breadcrumb, Skeleton, CopyButton, ProcessingStatus, RelationGraph,
   Badge,
@@ -135,6 +135,27 @@ function NumberFixture({ invalid = false }: { readonly invalid?: boolean }): Rea
   return <><Field label="Max steps" error={invalid ? "Too many steps." : undefined}><NumberInput {...keyboardTarget} min={1} max={50} value={value} onChange={(event) => setValue(event.currentTarget.value)} suffix="steps" /></Field><output data-count="">{value}</output></>;
 }
 
+// CR-061 FR-CMP-016 fixtures.
+function ConversationFixture(): ReactElement {
+  return <Conversation style={{ blockSize: 240 }}><Message from="user">Why did the deploy fail?</Message><Message from="assistant" name="Conductor" status="streaming">The migration step timed out<InlineCitation index={1} source={{ href: "https://example.com/runbook", title: "Deploy runbook" }} /></Message><Reasoning duration={3}>Checked the last three runs.</Reasoning><Tool name="ci.get_logs" status="completed" input={{ run: 42 }} output="Timeout after 600s" /><Sources sources={[{ href: "https://example.com/runbook", title: "Deploy runbook" }]} /><Shimmer>Working…</Shimmer></Conversation>;
+}
+function PromptFixture({ streaming = false }: { readonly streaming?: boolean }): ReactElement {
+  const [value, setValue] = useState("");
+  const [sent, setSent] = useState("");
+  return <><PromptInput value={value} onValueChange={setValue} onSubmit={(text) => { setSent(text); setValue(""); }} status={streaming ? "streaming" : "ready"} onStop={() => setSent("stopped")} /><output data-sent="">{sent}</output></>;
+}
+function ConfirmationFixture({ decided = false }: { readonly decided?: boolean }): ReactElement {
+  const [state, setState] = useState<"pending" | "approved" | "rejected">(decided ? "approved" : "pending");
+  return <><Confirmation title="Merge pull request #42?" description="Two checks are still running." state={state} onApprove={() => setState("approved")} onReject={() => setState("rejected")} /><output data-decision="">{state}</output></>;
+}
+function SuggestionsFixture(): ReactElement {
+  const [picked, setPicked] = useState("");
+  return <><Suggestions><Suggestion suggestion="Show failed runs" onSelect={setPicked} /><Suggestion suggestion="Summarise approvals" onSelect={setPicked} /></Suggestions><output data-picked="">{picked}</output></>;
+}
+function ToolFixture(): ReactElement {
+  return <Tool name="github.merge" status="awaiting-approval" input={{ pr: 42 }} defaultOpen><Confirmation title="Merge #42?" state="pending" onApprove={() => undefined} onReject={() => undefined} /></Tool>;
+}
+
 export const a11yScenarios: readonly A11yScenario[] = [
   { component: "Combobox", state: "default", keyboard: { kind: "steps", steps: [{ target: "[role=combobox]", keys: "{ArrowDown}{Enter}", check: "[data-choice]", expected: "one" }] }, render: () => <ComboFixture /> },
   { component: "Combobox", state: "disabled", render: () => <ComboFixture disabled /> },
@@ -167,6 +188,20 @@ export const a11yScenarios: readonly A11yScenario[] = [
   { component: "Avatar", state: "default", keyboard: { kind: "static" }, render: () => <><Avatar name="Ada Lovelace" /><Avatar name="Grace Hopper" size="lg" /></> },
   { component: "NumberInput", state: "default", keyboard: { kind: "steps", steps: [{ target: "input[type=number]", keys: "{ArrowUp}", check: "[data-count]", expected: "11" }] }, render: () => <NumberFixture /> },
   { component: "NumberInput", state: "error", render: () => <NumberFixture invalid /> },
+  { component: "Conversation", state: "default", keyboard: { kind: "steps", steps: [{ target: "[role=log]", keys: "{ArrowDown}", check: "[role=log]", attribute: "tabindex", expected: "0" }] }, render: () => <ConversationFixture /> },
+  { component: "PromptInput", state: "default", keyboard: { kind: "steps", steps: [{ target: "textarea", keys: "Deploy{Enter}", check: "[data-sent]", expected: "Deploy" }] }, render: () => <PromptFixture /> },
+  { component: "PromptInput", state: "interactive", render: () => <PromptFixture streaming /> },
+  { component: "Reasoning", state: "default", keyboard: { kind: "steps", steps: [{ target: ".cdt-reasoning__trigger", keys: "{Enter}", check: ".cdt-reasoning__trigger", attribute: "aria-expanded", expected: "true" }] }, render: () => <Reasoning duration={3}>Checked the last three runs.</Reasoning> },
+  { component: "Tool", state: "open", render: () => <ToolFixture /> },
+  { component: "Tool", state: "default", keyboard: { kind: "steps", steps: [{ target: ".cdt-tool__trigger", keys: "{Enter}", check: ".cdt-tool__trigger", attribute: "aria-expanded", expected: "true" }] }, render: () => <Tool name="ci.get_logs" status="running" input={{ run: 42 }} /> },
+  { component: "Confirmation", state: "default", keyboard: { kind: "steps", steps: [{ target: ".cdt-confirmation button", keys: "{Enter}", check: "[data-decision]", expected: "approved" }] }, render: () => <ConfirmationFixture /> },
+  { component: "Confirmation", state: "interactive", render: () => <ConfirmationFixture decided /> },
+  { component: "Sources", state: "default", keyboard: { kind: "steps", steps: [{ target: ".cdt-sources__trigger", keys: "{Enter}", check: ".cdt-sources__trigger", attribute: "aria-expanded", expected: "true" }] }, render: () => <Sources sources={[{ href: "https://example.com/runbook", title: "Deploy runbook" }, { href: "https://example.com/pm", title: "Postmortem" }]} /> },
+  { component: "InlineCitation", state: "default", keyboard: { kind: "overlay", role: "dialog" }, render: () => <p>Page the on-call first<InlineCitation {...keyboardTarget} index={1} source={{ href: "https://example.com/runbook", title: "Deploy runbook", description: "Steps for paging." }} />.</p> },
+  { component: "Suggestions", state: "default", keyboard: { kind: "steps", steps: [{ target: ".cdt-suggestion", keys: "{Enter}", check: "[data-picked]", expected: "Show failed runs" }] }, render: () => <SuggestionsFixture /> },
+  { component: "Shimmer", state: "default", keyboard: { kind: "static" }, render: () => <Shimmer>Searching the repository…</Shimmer> },
+  { component: "Suggestion", state: "disabled", keyboard: { kind: "static" }, render: () => <Suggestion suggestion="Retry the last run" onSelect={() => undefined} disabled /> },
+  { component: "Message", state: "error", keyboard: { kind: "static" }, render: () => <Message from="assistant" status="error">Partial answer</Message> },
   { component: "RelationGraph", state: "default", keyboard: { kind: "steps", steps: [{ target: "[aria-label='Graph view controls'] button", keys: "{Enter}", check: "output", expected: "150%" }] }, render: () => <RelationFixture /> },
   // Radix roving focus moves focus from an arrow key inside a `setTimeout` (react-roving-focus
   // defers the imperative focus out of the keydown handler). Sent as one burst, `{Enter}` could

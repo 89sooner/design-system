@@ -213,3 +213,72 @@ export interface NumberInputLabels {
   readonly decrement: string;
 }
 export const DEFAULT_NUMBER_INPUT_LABELS: NumberInputLabels = { increment: "Increase", decrement: "Decrease" };
+
+/* CR-061 agent interface components (FR-CMP-016). English defaults, overridable per instance. */
+
+export interface ConversationLabels {
+  readonly log: string;
+  readonly scrollToLatest: string;
+}
+export const DEFAULT_CONVERSATION_LABELS: ConversationLabels = { log: "Conversation", scrollToLatest: "Scroll to latest message" };
+
+export interface MessageLabels {
+  readonly user: string;
+  readonly assistant: string;
+  readonly system: string;
+  readonly streaming: string;
+  readonly error: string;
+}
+export const DEFAULT_MESSAGE_LABELS: MessageLabels = { user: "You", assistant: "Assistant", system: "System", streaming: "Responding", error: "The response failed." };
+
+export interface PromptInputLabels {
+  readonly input: string;
+  readonly submit: string;
+  readonly stop: string;
+}
+export const DEFAULT_PROMPT_INPUT_LABELS: PromptInputLabels = { input: "Message", submit: "Send", stop: "Stop" };
+
+export interface ReasoningLabels {
+  readonly thinking: string;
+  readonly thought: (seconds: number | undefined) => string;
+}
+export const DEFAULT_REASONING_LABELS: ReasoningLabels = {
+  thinking: "Thinking…",
+  thought: (seconds) => (seconds === undefined ? "Thought for a few seconds" : seconds === 1 ? "Thought for 1 second" : `Thought for ${seconds} seconds`),
+};
+
+export interface ToolLabels {
+  readonly parameters: string;
+  readonly result: string;
+  readonly error: string;
+  readonly status: Readonly<Record<"pending" | "running" | "awaiting-approval" | "completed" | "error", string>>;
+}
+export const DEFAULT_TOOL_LABELS: ToolLabels = {
+  parameters: "Parameters",
+  result: "Result",
+  error: "Error",
+  status: { pending: "Pending", running: "Running", "awaiting-approval": "Awaiting approval", completed: "Completed", error: "Error" },
+};
+
+export interface ConfirmationLabels {
+  readonly approve: string;
+  readonly reject: string;
+  readonly approved: string;
+  readonly rejected: string;
+}
+export const DEFAULT_CONFIRMATION_LABELS: ConfirmationLabels = { approve: "Approve", reject: "Reject", approved: "Approved", rejected: "Rejected" };
+
+export interface SourcesLabels {
+  readonly summary: (count: number) => string;
+}
+export const DEFAULT_SOURCES_LABELS: SourcesLabels = { summary: (count) => (count === 1 ? "Used 1 source" : `Used ${count} sources`) };
+
+export interface InlineCitationLabels {
+  readonly citation: (index: number, title: string) => string;
+}
+export const DEFAULT_INLINE_CITATION_LABELS: InlineCitationLabels = { citation: (index, title) => `Source ${index}: ${title}` };
+
+export interface SuggestionsLabels {
+  readonly group: string;
+}
+export const DEFAULT_SUGGESTIONS_LABELS: SuggestionsLabels = { group: "Suggestions" };

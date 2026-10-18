@@ -25,6 +25,7 @@ import { AlertDialog } from "../alert-dialog";
 import { RadioGroup, ToggleGroup } from "../selection";
 import { Avatar } from "../avatar";
 import { NumberInput } from "../number-input";
+import { Confirmation, Conversation, InlineCitation, Message, PromptInput, Reasoning, Shimmer, Sources, Suggestion, Suggestions, Tool } from "../agent";
 
 export interface PublicComponent {
   readonly name: string;
@@ -89,6 +90,17 @@ export const publicComponents: readonly PublicComponent[] = [
   { name: "ToggleGroup", testFile: "testing/selection.test.tsx", render: () => createElement(ToggleGroup.Root, { type: "single", "aria-label": "View" }, createElement(ToggleGroup.Item, { value: "a" }, "A")) },
   { name: "Avatar", testFile: "testing/selection.test.tsx", render: () => createElement(Avatar, { name: "Ada Lovelace" }) },
   { name: "NumberInput", testFile: "testing/selection.test.tsx", render: () => createElement(NumberInput, { "aria-label": "Count" }) },
+  { name: "Conversation", testFile: "testing/agent.test.tsx", render: () => createElement(Conversation, null, createElement(Message, { from: "user", children: "Hi" })) },
+  { name: "Message", testFile: "testing/agent.test.tsx", render: () => createElement(Message, { from: "assistant", status: "streaming", children: "Hello" }) },
+  { name: "PromptInput", testFile: "testing/agent.test.tsx", render: () => createElement(PromptInput, { value: "", onValueChange() {}, onSubmit() {} }) },
+  { name: "Reasoning", testFile: "testing/agent.test.tsx", render: () => createElement(Reasoning, { streaming: true, children: "Thinking" }) },
+  { name: "Tool", testFile: "testing/agent.test.tsx", render: () => createElement(Tool, { name: "search", status: "running", input: { q: "x" } }) },
+  { name: "Confirmation", testFile: "testing/agent.test.tsx", render: () => createElement(Confirmation, { title: "Approve?", state: "pending", onApprove() {}, onReject() {} }) },
+  { name: "Sources", testFile: "testing/agent.test.tsx", render: () => createElement(Sources, { sources: [{ href: "https://example.com", title: "Example" }] }) },
+  { name: "InlineCitation", testFile: "testing/agent.test.tsx", render: () => createElement(InlineCitation, { index: 1, source: { href: "https://example.com", title: "Example" } }) },
+  { name: "Suggestions", testFile: "testing/agent.test.tsx", render: () => createElement(Suggestions, null, createElement(Suggestion, { suggestion: "Next", onSelect() {} })) },
+  { name: "Suggestion", testFile: "testing/agent.test.tsx", render: () => createElement(Suggestion, { suggestion: "Next", onSelect() {} }) },
+  { name: "Shimmer", testFile: "testing/agent.test.tsx", render: () => createElement(Shimmer, null, "Thinking") },
 ];
 
 export function missingComponentTests(
