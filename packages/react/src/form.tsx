@@ -62,7 +62,8 @@ export const Field = forwardRef<HTMLDivElement, FieldProps>(function Field({ chi
   return (
     <FieldContext.Provider value={{ id, descriptionId, errorId, invalid, required }}>
       <div {...props} ref={ref} className={cx("cdt-field", className)}>
-        <label className="cdt-field__label" htmlFor={id}>{label}{required ? <span className="cdt-field__required" aria-hidden="true">*</span> : null}</label>
+        {/* The id names group controls (RadioGroup) through aria-labelledby; `htmlFor` cannot. */}
+        <label id={`${id}-label`} className="cdt-field__label" htmlFor={id}>{label}{required ? <span className="cdt-field__required" aria-hidden="true">*</span> : null}</label>
         {description === undefined ? null : <div id={descriptionId} className="cdt-field__description">{description}</div>}
         {/*
           `required` is not injected into the child. Every Conductor control reads it from
@@ -77,7 +78,8 @@ export const Field = forwardRef<HTMLDivElement, FieldProps>(function Field({ chi
 });
 Field.displayName = "Field";
 
-function useMissingLabelWarning(name: string, hasField: boolean, ariaLabel: string | undefined, ariaLabelledBy: string | undefined): void {
+/** Module-internal: shared with `selection.tsx` and `number-input.tsx`. */
+export function useMissingLabelWarning(name: string, hasField: boolean, ariaLabel: string | undefined, ariaLabelledBy: string | undefined): void {
   useEffect(() => {
     if (process.env.NODE_ENV !== "production" && !hasField && ariaLabel === undefined && ariaLabelledBy === undefined) {
       console.warn(`[conductor] ${name} requires Field, aria-label, or aria-labelledby.`);

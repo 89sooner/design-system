@@ -1,6 +1,6 @@
 # Conductor Design System UI 컴포넌트 명세서
 
-> 상태: review | 버전: v0.12 | 갱신일: 2026-10-15
+> 상태: review | 버전: v0.13 | 갱신일: 2026-10-18
 
 ## 0. 문서 위치와 범위
 
@@ -22,6 +22,7 @@
 | 피드백 | FR-CMP-008 | API-CMP-008 | C-060, C-061, C-062, C-063, C-064 |
 | 셸 (OD-004 조건부) | FR-CMP-009 | API-CMP-009 | C-070, C-071, C-072 |
 | 알림·날짜·명령·페이지 (CR-054) | FR-CMP-014 | API-CMP-010 | C-073, C-074, C-075, C-076 |
+| 확인·선택·식별·숫자 입력 (CR-060) | FR-CMP-015 | API-CMP-011 | C-077, C-078, C-079, C-080, C-081 |
 
 ## 1. 컴포넌트 설계 원칙
 
@@ -1291,3 +1292,20 @@ component 토큰은 semantic 토큰만 참조한다(FR-TOK-002 AC-3). 아래 표
 | C-076 | `Pagination` | `cdt-pagination` | 기본 버튼 | `page`, `pageCount`, `onPageChange`, `siblings`(기본 1), `size`, `labels` |
 
 공개 함수 `filterCommands(commands, query)`와 `paginationRange(page, pageCount, siblings)`는 화면 없이 시험할 수 있도록 함께 export한다. 스타일은 `@conductor-by-89soone/css`의 `controls.css`(cdt.component 층)에 있다.
+
+## CR-060 컴포넌트 (FR-CMP-015)
+
+| ID | 컴포넌트 | 루트 클래스 | 동작 소유 | 주요 props |
+| --- | --- | --- | --- | --- |
+| C-077 | `AlertDialog` (`Root`, `Trigger`, `Content`, `Title`, `Description`, `Footer`, `Cancel`, `Action`) | `cdt-dialog cdt-alert-dialog` (Content), `cdt-alert-dialog__footer` | Radix AlertDialog | `Content`: `size`(기본 `sm`); `Action`: `tone`(`danger` 기본·`accent`) |
+| C-078 | `RadioGroup` (`Root`, `Item`) | `cdt-radio-group`, `cdt-radio`, `cdt-radio__control` | Radix RadioGroup | `Root`: `value`·`defaultValue`·`onValueChange`, `orientation`, `invalid`, `required`; `Item`: `value`, `children`(라벨), `description`, `disabled` |
+| C-079 | `ToggleGroup` (`Root`, `Item`) | `cdt-toggle-group`, `cdt-toggle-group__item` | Radix ToggleGroup | `Root`: `type`(`single`·`multiple`), `value`·`onValueChange`, `size`; `Item`: `value`, `icon` |
+| C-080 | `Avatar` | `cdt-avatar` | Radix Avatar | `name`(필수, 접근성 이름·이니셜), `src`, `size`(`sm` 24·`md` 32·`lg` 40px), `decorative` |
+| C-081 | `NumberInput` | `cdt-number-input`, `cdt-number-input__field` | 기본 `<input type="number">` | 기본 input props(`min`·`max`·`step`·`value`·`onChange`), `suffix`, `size`, `invalid`, `labels` |
+
+- **결정**: RadioGroup의 원은 Checkbox와 같은 20px이다(CR-059). 클릭 대상은 라벨 행 전체이고 행 높이가 40px다. `Field` 라벨에 `id`(`<field-id>-label`)를 더해 그룹 컨트롤이 `aria-labelledby`로 이름을 받는다.
+- **결정**: NumberInput의 증감 버튼은 탭 순서에서 빠진다. 키보드 경로는 입력의 화살표 키이고, 버튼은 포인터용이다. `className`은 바깥 래퍼에, 나머지 기본 props와 `ref`는 `<input>`에 간다.
+- **결정**: AlertDialog는 Dialog의 `cdt-dialog` 표면을 재사용한다. 그래서 오버레이 쌓임 계약(CR-058)과 모션이 그대로 적용된다.
+
+공개 함수 `avatarInitials(name)`는 화면 없이 시험할 수 있도록 함께 export한다. 스타일은 `@conductor-by-89soone/css`의 `controls.css`(cdt.component 층)에 있다.
+

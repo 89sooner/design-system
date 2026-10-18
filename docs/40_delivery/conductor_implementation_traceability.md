@@ -1,6 +1,6 @@
 # Conductor Design System 구현 추적 원장
 
-> 상태: review | 버전: v0.47 | 갱신일: 2026-10-13
+> 상태: review | 버전: v0.48 | 갱신일: 2026-10-18
 
 ## 1. 목적과 갱신 규칙
 
@@ -235,6 +235,7 @@ PR Search 소비처의 `DEV-380`이 트리거다: 화면 계약이 최대 20계�
 | FR-DOC-009 | `apps/docs/src/blocks.ts`, `src/block-examples.tsx`, `App.tsx`, `shell.tsx`, `styles/base.css` | `apps/docs/src/blocks.test.ts`, `apps/docs/e2e/blocks.spec.ts`, `apps/docs/e2e/workspaces.spec.ts` | WP-035 | 검증됨 (AC-1~AC-5. 빈 상태 4유형, 결합 필터·칩·결과 수·0건 복귀·`aria-sort`, 필드·요약 오류와 포커스·미저장 변경·삭제 확인, 4폭×2테마 axe serious 0·넘침 0) |
 | FR-DOC-010 | `packages/tokens/src/measure.ts`, `src/index.ts`, `apps/docs/src/theme-overrides.ts`, `src/theme-playground.tsx`, `App.tsx`, `shell.tsx` | `packages/tokens/src/measure.test.ts`, `apps/docs/src/theme-overrides.test.ts`, `apps/docs/e2e/playground.spec.ts`, `apps/docs/e2e/workspaces.spec.ts` | WP-036 | 검증됨 (AC-1~AC-5. 미리보기 한정 재정의와 별칭 전파, 기본 설정에서 9쌍이 보고서와 일치, 스니펫, 잘못된 입력 거부와 초기화, 4폭×2테마 axe serious 0·넘침 0) |
 | FR-CMP-014 | `packages/react/src/toast.tsx`, `date-picker.tsx`, `command.tsx`, `pagination.tsx`, `labels.ts`, `packages/css/src/controls.css`, `apps/docs/src/catalog.tsx`(미리보기) | `packages/react/src/testing/controls.test.tsx`, `a11y.browser.test.tsx`(시나리오), `hydration.browser.test.tsx`, `apps/docs/e2e/controls.spec.ts` | WP-037 | 검증됨 (AC-1~AC-5) |
+| FR-CMP-015 | `packages/react/src/alert-dialog.tsx`, `selection.tsx`, `avatar.tsx`, `number-input.tsx`, `labels.ts`, `form.tsx`(Field 라벨 id), `packages/css/src/controls.css`, `apps/docs/src/catalog.tsx`(미리보기) | `packages/react/src/testing/selection.test.tsx`, `a11y.browser.test.tsx`(시나리오), `component-css.browser.test.tsx` | WP-038 | 검증됨 (AC-1~AC-6) |
 | FR-DOC-004 | `apps/docs/src/token-reference.tsx`, `scripts/build-contrast-report.mjs` | `apps/docs/e2e/tokens.spec.ts` | WP-021 | 검증됨 (AC-1~AC-4와 리포트 누락 폴백. 빌드 산출 `tokens.json`·`contrast-report.json`을 소비하며 화면에서 대비율을 재계산하지 않음) |
 | FR-DOC-005 | `apps/docs/index.html`, `src/theme.ts`, `src/App.tsx` | `apps/docs/e2e/shell.spec.ts` | WP-018 | 검증됨 (AC-1~AC-5와 localStorage 차단 폴백. 첫 페인트 스니펫이 React 전 루트 속성을 결정) |
 | FR-DOC-006 | `apps/docs/src/guides.tsx`, `src/catalog.tsx` | `apps/docs/e2e/guides.spec.ts` | WP-022 | 검증됨 (AC-1~AC-3. 성공 공지·2초 복귀, polite live region, Clipboard 미지원 시 disabled/선택 가능 코드) |
@@ -379,6 +380,7 @@ OD-002(시각 회귀 이월)와 OD-004(셸 컴포넌트군 패키지 포함)는 
 | WP-035 | FR-DOC-009 | done | W-063 빈 상태, W-064 필터 테이블, W-065 설정 폼. 규칙은 `blocks.ts` 순수 함수, 화면은 공개 export만 조합. CR-051. |
 | WP-036 | FR-DOC-010 | done | W-031 Theme Playground, tokens API-TOK-004(`contrastRatio`·OKLab 함수) 공개. CR-052. |
 | WP-037 | FR-CMP-014 | done | Toast·DatePicker·CommandPalette·Pagination(C-073~C-076), `controls.css`, 레지스트리·a11y·SSR 시험, 카탈로그 미리보기·지침. CR-054. |
+| WP-038 | FR-CMP-015 | done | AlertDialog·RadioGroup·ToggleGroup·Avatar·NumberInput(C-077~C-081), `controls.css`, 레지스트리·a11y·SSR 시험, 카탈로그 미리보기·지침. CR-060. |
 
 착수 문서 validator --report: exit 0, FR49/49, Phase7. 실제 소비자 코드는 읽기만 수행했으며 운영 연동·소비자 마이그레이션은 실행하지 않았다. 공개 기록에는 일반화된 계약과 합성 데이터만 남긴다.
 
@@ -601,3 +603,12 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | 패키지 | css: `.cdt-checkbox` 20×20·`.cdt-switch` 42×24를 버튼 상자로, 히트 영역 `::after`(40px, 좁은 화면 42px), 오류 경계 순서 수정. react·tokens 변화 없음 |
 | 시험 | `bundle.test.ts` "FR-CMP-007 AC-5 / CR-059". Chromium 캡처로 전후 비교: 상자 40×42→20×20, 스위치 버튼 42×42→42×24, 포커스 링이 트랙을 따름 |
 | 검증 (CI) | PR #62 head `105eeb4`: verify(node 20·22), visual regression 통과. CR-059 closed |
+
+### CR-060 확인·선택·식별·숫자 입력 컴포넌트 (2026-10-18)
+
+| 범위 | 결과 |
+| --- | --- |
+| 패키지 | react: `AlertDialog`(C-077), `RadioGroup`(C-078), `ToggleGroup`(C-079), `Avatar`·`avatarInitials`(C-080), `NumberInput`(C-081), `NumberInputLabels`. Field 라벨에 `id` 추가. 새 의존성 Radix alert-dialog 1.1.23·radio-group 1.4.7·toggle-group 1.1.19·avatar 1.2.6(2026-07-24 묶음, 공통 모듈 한 벌 유지). css: `controls.css`에 다섯 컴포넌트 규칙 |
+| 시험 | `selection.test.tsx` 23건(공통 계약 3종 포함), a11y 시나리오 9건(열린 AlertDialog axe, RadioGroup·ToggleGroup·NumberInput 키보드 경로, 오류·비활성 상태). 브라우저 시험 294/294(skip 1)로 axe·포커스 링·커서·쌓임 계약 통과 |
+| 검증 (CI) | PR #64 head `93cbd63`: verify(node 20·22), visual regression 통과. CR-060 closed |
+

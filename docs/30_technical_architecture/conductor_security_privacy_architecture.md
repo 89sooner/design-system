@@ -1,6 +1,6 @@
 # Conductor Design System 보안 및 개인정보 아키텍처
 
-> 상태: review | 버전: v0.6 | 갱신일: 2026-10-13
+> 상태: review | 버전: v0.7 | 갱신일: 2026-10-18
 
 ## 1. 범위 재정의: 이 제품은 공급망 보안 문제다
 
@@ -28,7 +28,7 @@ Conductor의 의존성은 두 종류로 나뉜다.
 | 의존성 | 범위 | 신뢰 근거 | 관련 요구사항 |
 | --- | --- | --- | --- |
 | React | `^18.0.0 \|\| ^19.0.0` | 소비자가 직접 설치하고 검증한다 | FR-CMP-001, FR-DX-004 |
-| Radix UI(개별 프리미티브 패키지) | 정확한 버전 고정, caret 미사용. 모든 프리미티브를 같은 배포 묶음(같은 날 함께 배포된 버전)에 맞춘다. 묶음이 다르면 내부 공통 모듈(`react-focus-scope`·`react-presence` 등)이 소비자 번들에 여러 벌 들어간다(CR-058, 2026-07-24 묶음) | Conductor가 버전을 통제하고 DOM 구조 변경을 시각 회귀 검사로 검출한다 | FR-CMP-006, ADR-004, R-3 |
+| Radix UI(개별 프리미티브 패키지) | 정확한 버전 고정, caret 미사용. 모든 프리미티브를 같은 배포 묶음(같은 날 함께 배포된 버전)에 맞춘다. 묶음이 다르면 내부 공통 모듈(`react-focus-scope`·`react-presence` 등)이 소비자 번들에 여러 벌 들어간다(CR-058, 2026-07-24 묶음). CR-060이 더한 alert-dialog 1.1.23·radio-group 1.4.7·toggle-group 1.1.19·avatar 1.2.6도 같은 묶음이고, 추가 뒤에도 공통 모듈은 한 벌이다 | Conductor가 버전을 통제하고 DOM 구조 변경을 시각 회귀 검사로 검출한다 | FR-CMP-006, ADR-004, R-3 |
 | lucide-react | peer, 소비자가 아이콘 컴포넌트를 props로 주입 | Conductor는 아이콘을 번들하지 않는다 | FR-CMP-004 |
 | react-day-picker (dependency, CR-054) | `10.0.1` 정확한 버전. 전이 의존 `date-fns`, `@date-fns/tz` | 달력 격자·키보드 탐색을 맡는 접근성 검증 라이브러리. 자체 CSS는 import하지 않는다. 추가 시점 `pnpm audit --audit-level high` 결과가 main과 같았다(새 권고 0건) | FR-CMP-014 |
 

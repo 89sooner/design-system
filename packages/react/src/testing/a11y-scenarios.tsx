@@ -1,6 +1,6 @@
 // Refs: WP-024 FR-QA-003 FR-A11Y-002 FR-A11Y-005
 import { useRef, useState, type ReactElement } from "react";
-import { CommandPalette, DatePicker, Pagination, Toast } from "../index";
+import { AlertDialog, Avatar, CommandPalette, DatePicker, NumberInput, Pagination, RadioGroup, Toast, ToggleGroup } from "../index";
 import {
   AppShell, AppShellNavTrigger, Tabs, Popover, Collapsible, Combobox, MultiSelect, FilterChip, FilterToolbar, DataTable, WorkbenchLayout, DetailInspector, PathList, Breadcrumb, Skeleton, CopyButton, ProcessingStatus, RelationGraph,
   Badge,
@@ -41,7 +41,7 @@ export type KeyboardPath =
   | { readonly kind: "static" }
   | { readonly kind: "focus" }
   | { readonly kind: "toggle" }
-  | { readonly kind: "overlay"; readonly role: "dialog" | "listbox" | "menu" | "tooltip"; readonly opensOnFocus?: boolean }
+  | { readonly kind: "overlay"; readonly role: "dialog" | "alertdialog" | "listbox" | "menu" | "tooltip"; readonly opensOnFocus?: boolean }
   | { readonly kind: "skip-link" };
 
 export interface A11yScenario {
@@ -118,6 +118,23 @@ function PaginationFixture(): ReactElement {
   return <Pagination page={page} pageCount={8} onPageChange={setPage} />;
 }
 
+// CR-060 FR-CMP-015 fixtures.
+function AlertDialogFixture({ open = false }: { readonly open?: boolean }): ReactElement {
+  return <AlertDialog.Root defaultOpen={open}><AlertDialog.Trigger {...keyboardTarget}>Delete workspace</AlertDialog.Trigger><AlertDialog.Content><AlertDialog.Title>Delete workspace?</AlertDialog.Title><AlertDialog.Description>This cannot be undone.</AlertDialog.Description><AlertDialog.Footer><AlertDialog.Cancel>Cancel</AlertDialog.Cancel><AlertDialog.Action>Delete</AlertDialog.Action></AlertDialog.Footer></AlertDialog.Content></AlertDialog.Root>;
+}
+function RadioFixture({ disabled = false, invalid = false }: { readonly disabled?: boolean; readonly invalid?: boolean }): ReactElement {
+  const [value, setValue] = useState("30");
+  return <><Field label="Retention" error={invalid ? "Pick a retention period." : undefined}><RadioGroup.Root value={value} onValueChange={setValue} disabled={disabled}><RadioGroup.Item value="30">30 days</RadioGroup.Item><RadioGroup.Item value="90" description="Recommended">90 days</RadioGroup.Item></RadioGroup.Root></Field><output data-choice="">{value}</output></>;
+}
+function ToggleFixture(): ReactElement {
+  const [view, setView] = useState("list");
+  return <><ToggleGroup.Root type="single" aria-label="View" value={view} onValueChange={(next) => { if (next !== "") setView(next); }}><ToggleGroup.Item value="list">List</ToggleGroup.Item><ToggleGroup.Item value="board">Board</ToggleGroup.Item></ToggleGroup.Root><output data-view="">{view}</output></>;
+}
+function NumberFixture({ invalid = false }: { readonly invalid?: boolean }): ReactElement {
+  const [value, setValue] = useState("10");
+  return <><Field label="Max steps" error={invalid ? "Too many steps." : undefined}><NumberInput {...keyboardTarget} min={1} max={50} value={value} onChange={(event) => setValue(event.currentTarget.value)} suffix="steps" /></Field><output data-count="">{value}</output></>;
+}
+
 export const a11yScenarios: readonly A11yScenario[] = [
   { component: "Combobox", state: "default", keyboard: { kind: "steps", steps: [{ target: "[role=combobox]", keys: "{ArrowDown}{Enter}", check: "[data-choice]", expected: "one" }] }, render: () => <ComboFixture /> },
   { component: "Combobox", state: "disabled", render: () => <ComboFixture disabled /> },
@@ -140,6 +157,16 @@ export const a11yScenarios: readonly A11yScenario[] = [
   { component: "CommandPalette", state: "default", keyboard: { kind: "overlay", role: "dialog" }, render: () => <CommandFixture /> },
   { component: "CommandPalette", state: "open", axeSelector: '[role="dialog"]', render: () => <CommandFixture initiallyOpen /> },
   { component: "Pagination", state: "default", keyboard: { kind: "steps", steps: [{ target: "[aria-label='Page 2']", keys: "{Enter}", check: "[aria-current=page]", expected: "2" }] }, render: () => <PaginationFixture /> },
+  { component: "AlertDialog", state: "default", keyboard: { kind: "overlay", role: "alertdialog" }, render: () => <AlertDialogFixture /> },
+  { component: "AlertDialog", state: "open", axeSelector: '[role="alertdialog"]', render: () => <AlertDialogFixture open /> },
+  // Radix moves the checked radio on arrow keys (roving focus); the output shows the new value.
+  { component: "RadioGroup", state: "default", keyboard: { kind: "steps", steps: [{ target: "[role=radio][aria-checked=true]", keys: "{ArrowDown}", check: "[data-choice]", expected: "90" }] }, render: () => <RadioFixture /> },
+  { component: "RadioGroup", state: "disabled", render: () => <RadioFixture disabled /> },
+  { component: "RadioGroup", state: "error", render: () => <RadioFixture invalid /> },
+  { component: "ToggleGroup", state: "default", keyboard: { kind: "steps", steps: [{ target: "[role=radio][data-state=on]", keys: "{ArrowRight}", check: "[data-view]", expected: "list" }, { target: "[role=radio][data-state=off]", keys: " ", check: "[data-view]", expected: "board" }] }, render: () => <ToggleFixture /> },
+  { component: "Avatar", state: "default", keyboard: { kind: "static" }, render: () => <><Avatar name="Ada Lovelace" /><Avatar name="Grace Hopper" size="lg" /></> },
+  { component: "NumberInput", state: "default", keyboard: { kind: "steps", steps: [{ target: "input[type=number]", keys: "{ArrowUp}", check: "[data-count]", expected: "11" }] }, render: () => <NumberFixture /> },
+  { component: "NumberInput", state: "error", render: () => <NumberFixture invalid /> },
   { component: "RelationGraph", state: "default", keyboard: { kind: "steps", steps: [{ target: "[aria-label='Graph view controls'] button", keys: "{Enter}", check: "output", expected: "150%" }] }, render: () => <RelationFixture /> },
   // Radix roving focus moves focus from an arrow key inside a `setTimeout` (react-roving-focus
   // defers the imperative focus out of the keydown handler). Sent as one burst, `{Enter}` could

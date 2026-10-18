@@ -1,6 +1,6 @@
 # Conductor Design System 최종 요구사항 정의서
 
-> 상태: baseline | 버전: v1.13 | 갱신일: 2026-10-13
+> 상태: baseline | 버전: v1.14 | 갱신일: 2026-10-18
 
 ## 1. 문서 개요
 
@@ -38,7 +38,7 @@ Conductor는 `agent-ai-platform/packages/web`의 시각 언어를 3개 npm 패�
 2. 다크(기준) 및 라이트 테마, 시스템 설정 연동, 테마별 대비 검증, 소스 계승 토큰의 접근성 교정 — FR-THM-001 ~ FR-THM-005
 3. 캐스케이드 레이어 기반 프레임워크 비종속 스타일시트 — FR-CSS-001 ~ FR-CSS-005
 4. React 프리미티브 컴포넌트 — 기존 FR-CMP-001 ~ FR-CMP-009 및 CR-041 확장 FR-CMP-010 ~ FR-CMP-013 (§17, review)
-5. 정적 문서 사이트 — FR-DOC-001 ~ FR-DOC-007 및 CR-048 확장 FR-DOC-008 (§18), CR-051 확장 FR-DOC-009 (§19), CR-052 확장 FR-DOC-010 (§20), CR-053 보강 FR-DOC-001 AC-5·FR-CMP-013 AC-5 (§21), CR-054 확장 FR-CMP-014 (§22)
+5. 정적 문서 사이트 — FR-DOC-001 ~ FR-DOC-007 및 CR-048 확장 FR-DOC-008 (§18), CR-051 확장 FR-DOC-009 (§19), CR-052 확장 FR-DOC-010 (§20), CR-053 보강 FR-DOC-001 AC-5·FR-CMP-013 AC-5 (§21), CR-054 확장 FR-CMP-014 (§22), CR-060 확장 FR-CMP-015 (§24)
 6. WCAG 2.1 AA 접근성 기준선 — FR-A11Y-001 ~ FR-A11Y-005
 7. 모노레포 빌드, 타입 배포, 진입점 선언, SSR 안전성, 버저닝 — FR-DX-001 ~ FR-DX-005
 8. 토큰 계약·단위·접근성·시각 회귀 검사 — FR-QA-001 ~ FR-QA-004
@@ -961,7 +961,7 @@ OD-001(2026-07-10 종결)이 확정한 정책이다. 소스 팔레트를 실측�
 ## 13. 우선순위와 릴리스 전략
 
 - **Must**: FR-TOK-001 ~ FR-TOK-007, FR-THM-001 ~ FR-THM-005, FR-CSS-001 ~ FR-CSS-005, FR-CMP-001 ~ FR-CMP-008, FR-DOC-001 ~ FR-DOC-005, FR-A11Y-001 ~ FR-A11Y-005, FR-DX-001 ~ FR-DX-004, FR-QA-001 ~ FR-QA-003
-- **Should**: FR-TOK-008, FR-TOK-009, FR-CMP-009, FR-DOC-006, FR-DOC-007, FR-DOC-008, FR-DOC-009, FR-DOC-010, FR-CMP-014, FR-DX-005
+- **Should**: FR-TOK-008, FR-TOK-009, FR-CMP-009, FR-DOC-006, FR-DOC-007, FR-DOC-008, FR-DOC-009, FR-DOC-010, FR-CMP-014, FR-CMP-015, FR-DX-005
 - **Deferred (REL-004)**: FR-QA-004 — OD-002에 따라 v1 릴리스 게이트에서 제외
 - **Could**: 없음
 - **Won't (이번 범위)**: 4.3 Out of Scope 표 전체
@@ -1131,3 +1131,21 @@ v1.11 baseline 이력을 유지한다. 사용자가 2026-10-13에 경쟁력 평�
 ## 23. CR-055 범위 문구 정정 (baseline)
 
 v1.12 baseline 이력을 유지한다. 사용자가 2026-10-13에 경쟁력 평가 리포트 4번(출처 제품에 역적용)을 "파일럿: 토큰·CSS·셸 교체"로 진행하라고 선택했다. 새 FR은 없다. 파일럿은 소비 저장소(agent-ai-platform)의 작업이므로 4.3 Out of Scope의 "agent-ai-platform 저장소 마이그레이션" 행을 그 경계로 고쳤다. 파일럿에서 드러난 소비자 관점의 한계는 원장 DEV-057·DEV-058로 기록한다.
+
+## 24. CR-060 확장 요구 (baseline)
+
+v1.13 baseline 이력을 유지한다. 사용자가 2026-10-18에 최신 디자인 시스템(shadcn/ui·Radix Themes·AI Elements, 2026-10-16 저장소 기준) 대비 미제공 컴포넌트 점검 결과 중 1번 묶음의 진행을 지시했다. 다섯 컴포넌트 모두 파일럿 앱(agent-ai-platform)이 직접 만들어 쓰거나 대체 컴포넌트가 없던 것이다.
+
+#### FR-CMP-015 확인·선택·식별·숫자 입력 컴포넌트
+
+| 항목 | 내용 |
+| --- | --- |
+| 상태 | approved |
+| 우선순위 | Should |
+| 출처 | CR-060 / 2026-10-18 사용자 실행 지시 |
+| 요구사항 | 시스템은 항상 `AlertDialog`, `RadioGroup`, `ToggleGroup`, `Avatar`, `NumberInput`을 `@conductor-by-89soone/react` 공개 export로 제공하고, 각 컴포넌트의 역할·포커스·키보드 동작을 Radix 프리미티브나 브라우저 기본 컨트롤에 위임하여야 한다. |
+| 수용 기준 | AC-1 (AlertDialog, C-077): Radix AlertDialog로 `role="alertdialog"`, 포커스 가두기, Cancel 첫 포커스, 바깥 클릭으로 닫히지 않음을 처리한다. 제목과 설명이 이름과 설명이 되고, Action은 기본 danger 톤 primary 버튼(`tone="accent"` 선택 가능)이다. 열린 표면은 가림막 위에 있다(CR-058 쌓임 계약). AC-2 (RadioGroup, C-078): Radix RadioGroup으로 `radiogroup`/`radio` 역할과 화살표 이동·선택을 처리한다. `Field` 안에서 라벨이 그룹 이름(`aria-labelledby`)이 되고 설명·오류·required·invalid를 이어받는다. 선택지 문구가 라디오를 라벨링해 행 전체가 40px 이상 클릭 대상이다. Field도 접근성 이름도 없으면 개발 빌드에서 경고한다. AC-3 (ToggleGroup, C-079): Radix ToggleGroup으로 `type="single"`(radio·`aria-checked`)과 `type="multiple"`(button·`aria-pressed`)을 처리하고, 눌린 항목은 색 외에 굵기와 배경으로도 구별된다. AC-4 (Avatar, C-080): Radix Avatar가 이미지 로드를 판단하고 실패하면 이니셜을 보인다. `name`이 접근성 이름(`role="img"`)이며 이니셜은 보조 기술에서 숨긴다. `decorative`면 아바타 전체를 숨긴다. 공개 함수 `avatarInitials(name)`는 첫·끝 단어의 첫 글자, 한 단어면 앞 두 글자를 돌려준다. AC-5 (NumberInput, C-081): 기본 `<input type="number">`가 `spinbutton` 역할, 화살표 증감, min/max/step 검증을 맡는다. 증감 버튼은 입력의 `stepUp`/`stepDown`을 호출하고 `input` 이벤트를 보내 `onChange`가 타이핑과 똑같이 발생한다. 버튼은 탭 순서에서 빠지고 `labels`로 이름을 바꿀 수 있다(기본 `Increase`·`Decrease`). `Field` 연결은 TextField와 같다. AC-6: 다섯 컴포넌트는 FR-CMP-007 AC-5의 40px(좁은 화면 42px) 높이, 포커스 링 토큰, 커서 계약(CR-057), axe serious 이상 0건을 지킨다. |
+| 검증 방법 | test |
+| 관련 화면 | W-020, W-021 |
+| 관련 API/데이터 | API-CMP-011 / ENT-CMP-001 |
+| 예외/실패 처리 | 날짜·시간 숫자 입력, 로케일별 숫자 서식(천 단위 구분 등), 아바타 그룹 겹침 표시, 체크박스·라디오 카드형 변형은 이 FR 범위가 아니다. 새 런타임 의존성(`@radix-ui/react-alert-dialog@1.1.23`, `@radix-ui/react-radio-group@1.4.7`, `@radix-ui/react-toggle-group@1.1.19`, `@radix-ui/react-avatar@1.2.6`)은 기존 프리미티브와 같은 2026-07-24 배포 묶음으로 정확히 고정한다(보안 아키텍처 3.1, CR-058). |

@@ -1570,5 +1570,173 @@
       "Each page button is named \"Page n\"; the ellipsis is hidden from assistive technology.",
       "Previous and Next are disabled on the first and last page."
     ]
+  },
+  "AlertDialog": {
+    "purpose": "A confirmation that interrupts the page and must be answered before anything else, for actions that are destructive or cannot be undone.",
+    "use": [
+      "Use before deleting, revoking or overwriting something the user cannot get back.",
+      "Name the object and the consequence in the title and description, such as how many records are removed.",
+      "Label the action button with the verb, not \"OK\", so it reads the same out of context."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it for forms or content the user can dismiss freely.",
+        "instead": "Dialog"
+      },
+      {
+        "rule": "Do not use it to report an outcome after the fact.",
+        "instead": "Toast"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Tab / Shift + Tab",
+        "action": "Moves between Cancel and the action; focus stays inside the dialog."
+      },
+      {
+        "keys": "Enter / Space",
+        "action": "Activates the focused button."
+      },
+      {
+        "keys": "Escape",
+        "action": "Cancels and returns focus to the trigger."
+      }
+    ],
+    "accessibility": [
+      "Renders role=\"alertdialog\", named by its title and described by its description.",
+      "Cancel receives focus first, so a stray Enter never confirms.",
+      "A click outside does not close it; only Cancel, the action or Escape do."
+    ]
+  },
+  "RadioGroup": {
+    "purpose": "One choice from a short list of options that are all visible at once, such as a retention period or a deployment strategy.",
+    "use": [
+      "Use for two to six mutually exclusive options the user should compare side by side.",
+      "Wrap it in Field so the label names the group and the error reaches every option.",
+      "Preselect the recommended option when there is a safe default."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it for a long or dynamic list of options.",
+        "instead": "Select"
+      },
+      {
+        "rule": "Do not use it for an on/off setting that applies immediately.",
+        "instead": "Switch"
+      },
+      {
+        "rule": "Do not use it for choices that are not exclusive.",
+        "instead": "Checkbox"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Tab",
+        "action": "Moves into the group, onto the checked option."
+      },
+      {
+        "keys": "Arrow keys",
+        "action": "Move to and check the next or previous option."
+      }
+    ],
+    "accessibility": [
+      "The group has role=\"radiogroup\" and takes its name from the Field label.",
+      "The option text labels each radio, so the whole row is a click target of at least 40px.",
+      "The checked state is a filled circle and aria-checked, not colour alone."
+    ]
+  },
+  "ToggleGroup": {
+    "purpose": "A segmented control that switches a view or mode in place, such as list, board or timeline layouts of the same results.",
+    "use": [
+      "Use type=\"single\" for a view switch where exactly one segment stays pressed.",
+      "Use type=\"multiple\" for independent toggles that sit together, such as formatting options.",
+      "Give the group an aria-label that names what it switches."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it to show different content panels with their own headings.",
+        "instead": "Tabs"
+      },
+      {
+        "rule": "Do not use it for a choice submitted with a form.",
+        "instead": "RadioGroup"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Tab",
+        "action": "Moves into the group, onto the pressed item."
+      },
+      {
+        "keys": "Arrow keys",
+        "action": "Move focus between items."
+      },
+      {
+        "keys": "Enter / Space",
+        "action": "Presses the focused item."
+      }
+    ],
+    "accessibility": [
+      "Single groups expose radios with aria-checked; multiple groups expose buttons with aria-pressed.",
+      "The pressed item is raised on the accent tint and bold, not colour alone.",
+      "Items reach the 40px control height."
+    ]
+  },
+  "Avatar": {
+    "purpose": "A person or team shown by picture, falling back to initials when there is no picture or it fails to load.",
+    "use": [
+      "Use next to an author, assignee or approver name in lists and timelines.",
+      "Pass the full name; it is the accessible name and the source of the initials.",
+      "Set decorative when the name is printed right next to the avatar."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it to show a status or a count.",
+        "instead": "Badge"
+      },
+      {
+        "rule": "Do not use it as the only way to tell people apart in a dense table.",
+        "instead": "Table"
+      }
+    ],
+    "keyboard": "static",
+    "accessibility": [
+      "The avatar is role=\"img\" named by the person's name; the initials are hidden from assistive technology.",
+      "Decorative avatars are hidden entirely, so a name is never announced twice.",
+      "The image has an empty alt; the name on the avatar already describes it."
+    ]
+  },
+  "NumberInput": {
+    "purpose": "Entry of a bounded number, such as a step limit, a retry count or a budget, with an optional unit and stepper buttons.",
+    "use": [
+      "Set min, max and step so the browser validates the value and the arrow keys respect the bounds.",
+      "Put the unit in suffix rather than in the label text.",
+      "Wrap it in Field so the label, description and error are connected."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it for identifiers, codes or phone numbers that only look numeric.",
+        "instead": "TextField"
+      },
+      {
+        "rule": "Do not use it for a choice between a few fixed values.",
+        "instead": "RadioGroup"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Arrow Up / Arrow Down",
+        "action": "Steps the value by step, within min and max."
+      },
+      {
+        "keys": "Tab",
+        "action": "Moves past the field; the stepper buttons are not separate tab stops."
+      }
+    ],
+    "accessibility": [
+      "The field is a native spinbutton, so its value, minimum and maximum are announced.",
+      "The stepper buttons are named Increase and Decrease and can be relabelled with labels.",
+      "Invalid values use Field's error message and a red border, not colour alone."
+    ]
   }
 }

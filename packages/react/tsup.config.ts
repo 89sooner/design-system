@@ -23,6 +23,10 @@ export default defineConfig({
     "src/date-picker.tsx",
     "src/command.tsx",
     "src/pagination.tsx",
+    "src/alert-dialog.tsx",
+    "src/selection.tsx",
+    "src/avatar.tsx",
+    "src/number-input.tsx",
     "src/route-focus.ts",
   ],
   format: ["esm"],
@@ -44,5 +48,5 @@ export default defineConfig({
     }
   },
   target: "es2022",
-  external: ["react", "react-dom", "lucide-react", "@radix-ui/react-dialog", "@radix-ui/react-dropdown-menu", "@radix-ui/react-tooltip", "@radix-ui/react-toast", "react-day-picker"],
+  external: ["react", "react-dom", "lucide-react", "@radix-ui/react-dialog", "@radix-ui/react-dropdown-menu", "@radix-ui/react-tooltip", "@radix-ui/react-toast", "react-day-picker", "@radix-ui/react-alert-dialog", "@radix-ui/react-avatar", "@radix-ui/react-radio-group", "@radix-ui/react-toggle-group"],
 });

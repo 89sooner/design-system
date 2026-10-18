@@ -12,15 +12,19 @@ import { forwardRef } from 'react';
 import { HTMLAttributes } from 'react';
 import { Matcher } from 'react-day-picker';
 import { MouseEventHandler } from 'react';
+import * as RadixAlertDialog from '@radix-ui/react-alert-dialog';
+import * as RadixAvatar from '@radix-ui/react-avatar';
 import * as RadixCheckbox from '@radix-ui/react-checkbox';
 import * as RadixCollapsible from '@radix-ui/react-collapsible';
 import * as RadixDialog from '@radix-ui/react-dialog';
 import * as RadixDropdownMenu from '@radix-ui/react-dropdown-menu';
 import * as RadixPopover from '@radix-ui/react-popover';
+import * as RadixRadioGroup from '@radix-ui/react-radio-group';
 import * as RadixSelect from '@radix-ui/react-select';
 import * as RadixSwitch from '@radix-ui/react-switch';
 import * as RadixTabs from '@radix-ui/react-tabs';
 import * as RadixToast from '@radix-ui/react-toast';
+import * as RadixToggleGroup from '@radix-ui/react-toggle-group';
 import * as RadixTooltip from '@radix-ui/react-tooltip';
 import * as react from 'react';
 import { ReactElement } from 'react';
@@ -28,6 +32,32 @@ import { ReactNode } from 'react';
 import { Ref } from 'react';
 import { TdHTMLAttributes } from 'react';
 import { ThHTMLAttributes } from 'react';
+
+// @public (undocumented)
+export const AlertDialog: {
+    readonly Root: react.FC<RadixAlertDialog.AlertDialogProps>;
+    readonly Trigger: react.ForwardRefExoticComponent<RadixAlertDialog.AlertDialogTriggerProps & react.RefAttributes<HTMLButtonElement>>;
+    readonly Content: react.ForwardRefExoticComponent<Omit<RadixAlertDialog.AlertDialogContentProps & react.RefAttributes<HTMLDivElement>, "ref"> & {
+        readonly size?: "sm" | "md";
+    } & react.RefAttributes<HTMLDivElement>>;
+    readonly Title: react.ForwardRefExoticComponent<Omit<RadixAlertDialog.AlertDialogTitleProps & react.RefAttributes<HTMLHeadingElement>, "ref"> & react.RefAttributes<HTMLHeadingElement>>;
+    readonly Description: react.ForwardRefExoticComponent<Omit<RadixAlertDialog.AlertDialogDescriptionProps & react.RefAttributes<HTMLParagraphElement>, "ref"> & react.RefAttributes<HTMLParagraphElement>>;
+    readonly Footer: react.ForwardRefExoticComponent<Omit<react.DetailedHTMLProps<react.HTMLAttributes<HTMLDivElement>, HTMLDivElement>, "ref"> & react.RefAttributes<HTMLDivElement>>;
+    readonly Cancel: react.ForwardRefExoticComponent<Omit<RadixAlertDialog.AlertDialogCancelProps & react.RefAttributes<HTMLButtonElement>, "ref"> & react.RefAttributes<HTMLButtonElement>>;
+    readonly Action: react.ForwardRefExoticComponent<Omit<RadixAlertDialog.AlertDialogActionProps & react.RefAttributes<HTMLButtonElement>, "ref"> & {
+        readonly tone?: "danger" | "accent";
+    } & react.RefAttributes<HTMLButtonElement>>;
+};
+
+// @public (undocumented)
+export type AlertDialogActionProps = ComponentPropsWithoutRef<typeof RadixAlertDialog.Action> & {
+    readonly tone?: "danger" | "accent";
+};
+
+// @public (undocumented)
+export type AlertDialogContentProps = ComponentPropsWithoutRef<typeof RadixAlertDialog.Content> & {
+    readonly size?: "sm" | "md";
+};
 
 // @public (undocumented)
 export const AppShell: react.ForwardRefExoticComponent<AppShellProps & react.RefAttributes<HTMLDivElement>>;
@@ -55,6 +85,22 @@ export interface AppShellProps extends Omit<HTMLAttributes<HTMLDivElement>, "chi
     readonly skipLinkLabel: string;
     // (undocumented)
     readonly topBar?: ReactNode;
+}
+
+// @public (undocumented)
+export const Avatar: react.ForwardRefExoticComponent<AvatarProps & react.RefAttributes<HTMLSpanElement>>;
+
+// @public
+export function avatarInitials(name: string): string;
+
+// @public (undocumented)
+export interface AvatarProps extends Omit<ComponentPropsWithoutRef<typeof RadixAvatar.Root>, "children"> {
+    readonly decorative?: boolean;
+    readonly name: string;
+    // (undocumented)
+    readonly size?: "sm" | "md" | "lg";
+    // (undocumented)
+    readonly src?: string;
 }
 
 // @public (undocumented)
@@ -657,6 +703,28 @@ export interface NavListProps extends Omit<HTMLAttributes<HTMLElement>, "childre
     readonly renderLink: (item: NavItem, props: NavLinkRenderProps) => ReactNode;
 }
 
+// @public (undocumented)
+export const NumberInput: react.ForwardRefExoticComponent<NumberInputProps & react.RefAttributes<HTMLInputElement>>;
+
+// @public (undocumented)
+export interface NumberInputLabels {
+    // (undocumented)
+    readonly decrement: string;
+    // (undocumented)
+    readonly increment: string;
+}
+
+// @public
+export interface NumberInputProps extends Omit<ComponentPropsWithoutRef<"input">, "size" | "type"> {
+    // (undocumented)
+    readonly invalid?: boolean;
+    // (undocumented)
+    readonly labels?: Partial<NumberInputLabels>;
+    // (undocumented)
+    readonly size?: "sm" | "md";
+    readonly suffix?: ReactNode;
+}
+
 // @public
 export const PACKAGE_NAME: "@conductor-by-89soone/react";
 
@@ -824,6 +892,30 @@ export interface ProgressRingProps extends Omit<HTMLAttributes<HTMLDivElement>, 
     // (undocumented)
     readonly valueText: string;
 }
+
+// @public (undocumented)
+export const RadioGroup: {
+    readonly Root: react.ForwardRefExoticComponent<Omit<RadixRadioGroup.RadioGroupProps & react.RefAttributes<HTMLDivElement>, "ref"> & {
+        readonly invalid?: boolean;
+        readonly orientation?: "vertical" | "horizontal";
+    } & react.RefAttributes<HTMLDivElement>>;
+    readonly Item: react.ForwardRefExoticComponent<Omit<RadixRadioGroup.RadioGroupItemProps & react.RefAttributes<HTMLButtonElement>, "ref"> & {
+        readonly children: ReactNode;
+        readonly description?: ReactNode;
+    } & react.RefAttributes<HTMLButtonElement>>;
+};
+
+// @public (undocumented)
+export type RadioGroupItemProps = ComponentPropsWithoutRef<typeof RadixRadioGroup.Item> & {
+    readonly children: ReactNode;
+    readonly description?: ReactNode;
+};
+
+// @public (undocumented)
+export type RadioGroupRootProps = ComponentPropsWithoutRef<typeof RadixRadioGroup.Root> & {
+    readonly invalid?: boolean;
+    readonly orientation?: "vertical" | "horizontal";
+};
 
 // @public (undocumented)
 export interface RelationEdge {
@@ -1240,6 +1332,24 @@ export type ToastTone = "info" | "success" | "warning" | "danger";
 export type ToastViewportProps = ComponentPropsWithoutRef<typeof RadixToast.Viewport>;
 
 // @public (undocumented)
+export const ToggleGroup: {
+    readonly Root: react.ForwardRefExoticComponent<ToggleGroupProps & react.RefAttributes<HTMLDivElement>>;
+    readonly Item: react.ForwardRefExoticComponent<Omit<RadixToggleGroup.ToggleGroupItemProps & react.RefAttributes<HTMLButtonElement>, "ref"> & {
+        readonly icon?: ReactNode;
+    } & react.RefAttributes<HTMLButtonElement>>;
+};
+
+// @public (undocumented)
+export type ToggleGroupItemProps = ComponentPropsWithoutRef<typeof RadixToggleGroup.Item> & {
+    readonly icon?: ReactNode;
+};
+
+// @public (undocumented)
+export type ToggleGroupProps = ComponentPropsWithoutRef<typeof RadixToggleGroup.Root> & {
+    readonly size?: Size;
+};
+
+// @public (undocumented)
 export type Tone = "neutral" | "accent" | "info" | "success" | "warning" | "danger";
 
 // @public (undocumented)
@@ -1295,7 +1405,7 @@ export interface WorkbenchLayoutProps extends HTMLAttributes<HTMLDivElement> {
 
 // Warnings were encountered during analysis:
 //
-// dist/form.d.ts:66:5 - (ae-forgotten-export) The symbol "SelectRoot" needs to be exported by the entry point index.d.ts
+// dist/form.d.ts:68:5 - (ae-forgotten-export) The symbol "SelectRoot" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

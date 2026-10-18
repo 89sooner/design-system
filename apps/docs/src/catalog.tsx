@@ -224,6 +224,25 @@ function PaginationPreview({ compact = false }: { readonly compact?: boolean }) 
   // The catalog tile is narrow; one fewer sibling keeps the row on one line there.
   return <Components.Pagination page={page} pageCount={12} onPageChange={setPage} siblings={compact ? 0 : 1} aria-label="Release history pages" />;
 }
+// CR-060 FR-CMP-015 previews.
+function AlertDialogPreview() {
+  const [result, setResult] = useState("");
+  return <><Components.AlertDialog.Root><Components.AlertDialog.Trigger asChild><Components.Button tone="danger">Delete workspace</Components.Button></Components.AlertDialog.Trigger>
+    <Components.AlertDialog.Content><Components.AlertDialog.Title>Delete the staging workspace?</Components.AlertDialog.Title><Components.AlertDialog.Description>Its 14 runs and their audit trail are removed. This cannot be undone.</Components.AlertDialog.Description>
+      <Components.AlertDialog.Footer><Components.AlertDialog.Cancel onClick={() => setResult("Kept")}>Cancel</Components.AlertDialog.Cancel><Components.AlertDialog.Action onClick={() => setResult("Deleted")}>Delete workspace</Components.AlertDialog.Action></Components.AlertDialog.Footer></Components.AlertDialog.Content></Components.AlertDialog.Root><p role="status">{result}</p></>;
+}
+function RadioGroupPreview({ compact = false }: { readonly compact?: boolean }) {
+  const [value, setValue] = useState("90");
+  return <Components.Field label="Log retention"><Components.RadioGroup.Root value={value} onValueChange={setValue} orientation={compact ? "horizontal" : "vertical"}><Components.RadioGroup.Item value="30">30 days</Components.RadioGroup.Item><Components.RadioGroup.Item value="90" description={compact ? undefined : "Recommended for audits"}>90 days</Components.RadioGroup.Item><Components.RadioGroup.Item value="365">1 year</Components.RadioGroup.Item></Components.RadioGroup.Root></Components.Field>;
+}
+function ToggleGroupPreview() {
+  const [view, setView] = useState("list");
+  return <Components.ToggleGroup.Root type="single" aria-label="Results view" value={view} onValueChange={(next) => { if (next !== "") setView(next); }}><Components.ToggleGroup.Item value="list">List</Components.ToggleGroup.Item><Components.ToggleGroup.Item value="board">Board</Components.ToggleGroup.Item><Components.ToggleGroup.Item value="timeline">Timeline</Components.ToggleGroup.Item></Components.ToggleGroup.Root>;
+}
+function NumberInputPreview() {
+  const [value, setValue] = useState("25");
+  return <Components.Field label="Max steps per run" description="Between 1 and 100."><Components.NumberInput min={1} max={100} value={value} onChange={(event) => setValue(event.currentTarget.value)} suffix="steps" /></Components.Field>;
+}
 export function ComponentPreview({ compact = false, forceError = false, name }: { readonly compact?: boolean; readonly forceError?: boolean; readonly name: string }) {
   if (forceError) throw new Error(`Forced ${name} preview failure`);
   switch (name) {
@@ -276,6 +295,11 @@ export function ComponentPreview({ compact = false, forceError = false, name }: 
     case "DatePicker": return <DatePickerPreview />;
     case "CommandPalette": return <CommandPalettePreview />;
     case "Pagination": return <PaginationPreview compact={compact} />;
+    case "AlertDialog": return <AlertDialogPreview />;
+    case "RadioGroup": return <RadioGroupPreview compact={compact} />;
+    case "ToggleGroup": return <ToggleGroupPreview />;
+    case "Avatar": return <div className="docs-avatar-row"><Components.Avatar name="Ada Lovelace" size="sm" /><Components.Avatar name="Grace Hopper" /><Components.Avatar name="Platform team" size="lg" /></div>;
+    case "NumberInput": return <NumberInputPreview />;
     case "RelationGraph": return <Components.RelationGraph label="Synthetic relationships" nodes={[{ id: "sample:a", label: "Change A" }, { id: "sample:b", label: "Change B" }]} edges={[{ id: "sample:edge", source: "sample:a", target: "sample:b", type: "references", label: "references", evidence: "Synthetic reference example", ambiguous: true }]} stateMessage="Synthetic data; no production API connected." />;
     case "AppShellNavTrigger": return <ShellTriggerPreview compact={compact} />;
     default: throw new Error(`Unknown component preview: ${name}`);

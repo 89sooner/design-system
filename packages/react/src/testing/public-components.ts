@@ -21,6 +21,10 @@ import { Toast } from "../toast";
 import { DatePicker } from "../date-picker";
 import { CommandPalette } from "../command";
 import { Pagination } from "../pagination";
+import { AlertDialog } from "../alert-dialog";
+import { RadioGroup, ToggleGroup } from "../selection";
+import { Avatar } from "../avatar";
+import { NumberInput } from "../number-input";
 
 export interface PublicComponent {
   readonly name: string;
@@ -80,6 +84,11 @@ export const publicComponents: readonly PublicComponent[] = [
   { name: "DatePicker", testFile: "testing/controls.test.tsx", render: () => createElement(DatePicker, { "aria-label": "Date", value: undefined, onValueChange() {} }) },
   { name: "CommandPalette", testFile: "testing/controls.test.tsx", render: () => createElement(CommandPalette, { open: false, onOpenChange() {}, commands: [], onSelect() {} }) },
   { name: "Pagination", testFile: "testing/controls.test.tsx", render: () => createElement(Pagination, { page: 1, pageCount: 3, onPageChange() {} }) },
+  { name: "AlertDialog", testFile: "testing/selection.test.tsx", render: () => createElement(AlertDialog.Root, null, createElement(AlertDialog.Trigger, null, "Delete")) },
+  { name: "RadioGroup", testFile: "testing/selection.test.tsx", render: () => createElement(RadioGroup.Root, { "aria-label": "Choice" }, createElement(RadioGroup.Item, { value: "a", children: "A" })) },
+  { name: "ToggleGroup", testFile: "testing/selection.test.tsx", render: () => createElement(ToggleGroup.Root, { type: "single", "aria-label": "View" }, createElement(ToggleGroup.Item, { value: "a" }, "A")) },
+  { name: "Avatar", testFile: "testing/selection.test.tsx", render: () => createElement(Avatar, { name: "Ada Lovelace" }) },
+  { name: "NumberInput", testFile: "testing/selection.test.tsx", render: () => createElement(NumberInput, { "aria-label": "Count" }) },
 ];
 
 export function missingComponentTests(

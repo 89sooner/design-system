@@ -28,13 +28,13 @@ const guidanceSource = JSON.parse(readFileSync(fileURLToPath(new URL("../src/con
 const FAMILIES = [
   ["Actions", ["Button", "IconButton"]],
   ["Surfaces", ["Card", "CardGrid", "Panel"]],
-  ["Status", ["Badge", "StatusBadge", "SeverityTag"]],
+  ["Status", ["Badge", "StatusBadge", "SeverityTag", "Avatar"]],
   ["Data", ["Table", "Timeline", "CodeBlock", "Kbd"]],
-  ["Overlays", ["Dialog", "Drawer", "Tooltip", "DropdownMenu", "Popover"]],
-  ["Forms", ["Field", "TextField", "TextArea", "Select", "Switch", "Checkbox", "DatePicker"]],
+  ["Overlays", ["Dialog", "AlertDialog", "Drawer", "Tooltip", "DropdownMenu", "Popover"]],
+  ["Forms", ["Field", "TextField", "TextArea", "Select", "Switch", "Checkbox", "RadioGroup", "NumberInput", "DatePicker"]],
   ["Feedback", ["Banner", "Toast", "EmptyState", "Meter", "ProgressRing", "Spinner", "Skeleton"]],
   ["Shell", ["AppShell", "AppShellNavTrigger", "NavList", "TopBar"]],
-  ["Interaction", ["Tabs", "Collapsible", "CommandPalette", "Pagination"]],
+  ["Interaction", ["Tabs", "ToggleGroup", "Collapsible", "CommandPalette", "Pagination"]],
   ["Search workbench", ["Combobox", "MultiSelect", "FilterChip", "FilterToolbar", "DataTable", "WorkbenchLayout", "DetailInspector", "PathList", "Breadcrumb", "CopyButton"]],
   ["Relations", ["RelationGraph"]],
   ["Operations", ["ProcessingStatus"]],
@@ -75,6 +75,11 @@ const ROOT_CLASSES = {
   DatePicker: "cdt-date-picker",
   CommandPalette: "cdt-command",
   Pagination: "cdt-pagination",
+  AlertDialog: "cdt-alert-dialog",
+  RadioGroup: "cdt-radio-group",
+  ToggleGroup: "cdt-toggle-group",
+  Avatar: "cdt-avatar",
+  NumberInput: "cdt-number-input",
   EmptyState: "cdt-empty-state",
   Meter: "cdt-meter",
   ProgressRing: "cdt-progress-ring",
@@ -105,7 +110,7 @@ const exported = new Set([...publicDeclarations.matchAll(/export \{([^}]+)\}/g)]
 const declared = [...declarations.matchAll(/declare const (\w+):/g)].map((match) => match[1]).filter((name) => !ignored.has(name) && exported.has(name));
 const source = ts.createSourceFile("index.d.ts", declarations, ts.ScriptTarget.Latest, true);
 const members = new Map(source.statements.filter(ts.isInterfaceDeclaration).filter((statement) => statement.name.text.endsWith("Props")).map((statement) => [statement.name.text, statement.members.filter(ts.isPropertySignature).map((property) => ({ name: property.name.getText(source).replaceAll('"', ""), required: property.questionToken === undefined, type: property.type?.getText(source) ?? "unknown" }))]));
-const aliases = { Dialog: "DialogContentProps", Drawer: "DrawerContentProps", Tooltip: "TooltipContentProps", DropdownMenu: "DropdownMenuItemProps", Select: "SelectTriggerProps" };
+const aliases = { Dialog: "DialogContentProps", Drawer: "DrawerContentProps", Tooltip: "TooltipContentProps", DropdownMenu: "DropdownMenuItemProps", Select: "SelectTriggerProps", AlertDialog: "AlertDialogContentProps", RadioGroup: "RadioGroupRootProps" };
 
 // Family lookup: name → { family, order } where `order` sorts the catalog into display order.
 const placement = new Map();

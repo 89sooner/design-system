@@ -265,3 +265,4 @@
   .docs-detail__back:hover svg { transform: translateX(calc(var(--cdt-space-1) / -2)); }
   .docs-detail__back svg { transition: transform var(--cdt-motion-fast); }
 }
+.docs-avatar-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--cdt-space-2); }

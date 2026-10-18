@@ -1,6 +1,6 @@
 # Conductor Design System 작업 패키지
 
-> 상태: review | 버전: v0.13 | 갱신일: 2026-10-13
+> 상태: review | 버전: v0.14 | 갱신일: 2026-10-18
 
 ## 1. 목적
 
@@ -792,3 +792,16 @@ design-system/
 - 완료 기준(DoD): FR-CMP-014 AC-1~AC-5를 단위·브라우저·E2E 시험으로 증명한다.
 - 검증 방법: `testing/controls.test.tsx`, a11y 브라우저 시험, `e2e/controls.spec.ts`
 - 기록: 구현 원장 WP-037, FR-CMP-014 매핑
+
+## WP-038 확인·선택·식별·숫자 입력 컴포넌트 (CR-060)
+
+- 릴리스: REL-004 (CR-060, react·css minor)
+- 관련 요구사항: FR-CMP-015
+- 관련 화면: W-020, W-021
+- 선행 WP: WP-037
+- 구현 범위: `alert-dialog.tsx`, `selection.tsx`(RadioGroup·ToggleGroup), `avatar.tsx`, `number-input.tsx`, `labels.ts` 추가 타입, `form.tsx`(Field 라벨 id·라벨 경고 공유), `controls.css`, 공개 레지스트리·a11y 시나리오·SSR, 카탈로그 미리보기와 지침 5종
+- 제외: 아바타 그룹, 로케일 숫자 서식, 체크박스·라디오 카드형, 파일럿 앱 교체(별도 소비자 작업)
+- 완료 기준(DoD): FR-CMP-015 AC-1~AC-6을 단위·브라우저 시험으로 증명한다.
+- 검증 방법: `testing/selection.test.tsx`, a11y·component-css 브라우저 시험(axe·키보드·포커스 링·커서·쌓임)
+- 기록: 구현 원장 WP-038, FR-CMP-015 매핑
+

@@ -76,4 +76,65 @@
   .cdt-pagination__page { min-inline-size: var(--cdt-space-7); font-variant-numeric: tabular-nums; justify-content: center; }
   .cdt-pagination__page[aria-current="page"] { border-color: var(--cdt-accent); color: var(--cdt-text-primary); font-weight: 650; }
   .cdt-pagination__ellipsis { display: inline-grid; place-items: center; min-inline-size: var(--cdt-space-6); color: var(--cdt-text-muted); }
+
+  /*
+   * CR-060 FR-CMP-015: AlertDialog, RadioGroup, ToggleGroup, Avatar and NumberInput.
+   * AlertDialog reuses `cdt-dialog` (components.css) and only adds the footer row.
+   */
+  /* The description states an irreversible consequence, so it reads at secondary contrast, not muted. */
+  .cdt-alert-dialog .cdt-dialog__description { color: var(--cdt-text-secondary); }
+  .cdt-alert-dialog__footer { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--cdt-space-2); margin-block-start: var(--cdt-space-5); }
+
+  /* RadioGroup — a 20px circle like Checkbox (CR-059); the label row is the 40px hit target. */
+  .cdt-radio-group { display: grid; gap: var(--cdt-space-1); }
+  .cdt-radio-group--horizontal { display: flex; flex-wrap: wrap; column-gap: var(--cdt-space-5); }
+  .cdt-radio { display: inline-flex; align-items: flex-start; gap: var(--cdt-space-3); min-block-size: var(--cdt-input-min-height); padding-block: calc((var(--cdt-input-min-height) - 20px) / 2); /* cdt-allow-literal: C-078 circle size centres the first line */ color: var(--cdt-text-primary); cursor: pointer; }
+  .cdt-radio--disabled { color: var(--cdt-text-muted); cursor: not-allowed; }
+  .cdt-radio__control { display: inline-grid; flex: 0 0 auto; place-items: center; inline-size: 20px; block-size: 20px; /* cdt-allow-literal: C-078 radio circle size */ padding: 0; border: var(--cdt-border-width-hairline) solid var(--cdt-input-border); border-radius: var(--cdt-radius-pill); background: var(--cdt-input-background); cursor: inherit; transition: border-color var(--cdt-motion-fast), box-shadow var(--cdt-motion-fast); }
+  .cdt-radio__control[data-state="checked"] { border-color: var(--cdt-input-border-focus); background: var(--cdt-accent); }
+  .cdt-radio__control:focus-visible { outline: none; box-shadow: var(--cdt-focus-ring); transition: none; }
+  .cdt-radio__control:disabled { opacity: 0.6; }
+  .cdt-radio-group--invalid .cdt-radio__control:not([data-state="checked"]) { border-color: var(--cdt-input-border-invalid); }
+  .cdt-radio__indicator { display: block; inline-size: var(--cdt-space-2); block-size: var(--cdt-space-2); border-radius: var(--cdt-radius-pill); background: var(--cdt-text-inverse); }
+  .cdt-radio__text { display: grid; gap: var(--cdt-space-1); line-height: 20px; /* cdt-allow-literal: matches the C-078 circle so text centres on it */ }
+  .cdt-radio__description { color: var(--cdt-text-secondary); font-size: var(--cdt-font-size-sm); line-height: var(--cdt-font-line-height-md); }
+
+  /* ToggleGroup — a segmented control: one track, pressed segments raised on the accent tint. */
+  .cdt-toggle-group { display: inline-flex; gap: var(--cdt-space-1); padding: var(--cdt-space-1); border: var(--cdt-border-width-hairline) solid var(--cdt-border-default); border-radius: var(--cdt-radius-sm); background: var(--cdt-input-background); }
+  .cdt-toggle-group__item { display: inline-flex; align-items: center; justify-content: center; gap: var(--cdt-space-2); min-block-size: calc(var(--cdt-input-min-height) - var(--cdt-space-2) - 2px); /* cdt-allow-literal: track border keeps the group at the control height */ padding-inline: var(--cdt-space-3); border: 0; border-radius: var(--cdt-radius-xs); background: transparent; color: var(--cdt-text-secondary); font: inherit; font-size: var(--cdt-font-size-base); cursor: pointer; transition: background var(--cdt-motion-fast), color var(--cdt-motion-fast); }
+  .cdt-toggle-group__item:hover:not(:disabled) { background: var(--cdt-state-hover); color: var(--cdt-text-primary); }
+  .cdt-toggle-group__item[data-state="on"] { background: var(--cdt-accent-soft); color: var(--cdt-text-primary); font-weight: 600; }
+  .cdt-toggle-group__item:focus-visible { outline: none; box-shadow: var(--cdt-focus-ring); transition: none; }
+  .cdt-toggle-group__item:disabled { color: var(--cdt-button-disabled-text); cursor: not-allowed; }
+  .cdt-toggle-group__icon { display: inline-flex; }
+  .cdt-toggle-group--sm .cdt-toggle-group__item { min-block-size: calc(34px - var(--cdt-space-2) - 2px); /* cdt-allow-literal: C-051/C-053 compact control height */ font-size: var(--cdt-font-size-sm); }
+
+  /* Avatar — initials on a tint until the image loads; the circle never stretches. */
+  .cdt-avatar { position: relative; display: inline-grid; flex: 0 0 auto; place-items: center; overflow: hidden; border-radius: var(--cdt-radius-pill); background: var(--cdt-accent-soft); color: var(--cdt-text-primary); font-weight: 600; line-height: 1; user-select: none; vertical-align: middle; }
+  .cdt-avatar--sm { inline-size: var(--cdt-space-5); block-size: var(--cdt-space-5); font-size: var(--cdt-font-size-2xs); }
+  .cdt-avatar--md { inline-size: var(--cdt-space-6); block-size: var(--cdt-space-6); font-size: var(--cdt-font-size-sm); }
+  .cdt-avatar--lg { inline-size: var(--cdt-space-7); block-size: var(--cdt-space-7); font-size: var(--cdt-font-size-md); }
+  .cdt-avatar__image { inline-size: 100%; block-size: 100%; object-fit: cover; }
+  .cdt-avatar__fallback { cursor: default; }
+
+  /* NumberInput — the field is a full `cdt-input`; units and steppers sit inside its end padding. */
+  .cdt-number-input { position: relative; display: inline-flex; inline-size: 100%; }
+  .cdt-number-input__field { inline-size: 100%; min-block-size: var(--cdt-input-min-height); padding: var(--cdt-input-padding-block) calc(var(--cdt-space-7) + var(--cdt-space-1)) var(--cdt-input-padding-block) var(--cdt-input-padding-inline); border: var(--cdt-border-width-hairline) solid var(--cdt-input-border); border-radius: var(--cdt-input-radius); background: var(--cdt-input-background); color: var(--cdt-input-text); font: inherit; font-variant-numeric: tabular-nums; appearance: textfield; transition: border-color var(--cdt-motion-fast), background var(--cdt-motion-fast); }
+  .cdt-number-input__field::-webkit-inner-spin-button, .cdt-number-input__field::-webkit-outer-spin-button { margin: 0; appearance: none; }
+  .cdt-number-input__field:hover:not(:disabled) { border-color: var(--cdt-input-border-hover); }
+  .cdt-number-input__field:focus-visible { border-color: var(--cdt-input-border-focus); outline: none; background: var(--cdt-input-background-focus); box-shadow: var(--cdt-focus-ring); transition: none; }
+  .cdt-number-input__field:disabled { background: var(--cdt-state-disabled); color: var(--cdt-text-muted); cursor: not-allowed; }
+  .cdt-number-input--invalid .cdt-number-input__field { border-color: var(--cdt-input-border-invalid); }
+  .cdt-number-input--sm .cdt-number-input__field { min-block-size: 34px; /* cdt-allow-literal: C-051/C-053 compact control height */ padding-block: var(--cdt-space-1); }
+  .cdt-number-input__suffix { position: absolute; inset-block: 0; inset-inline-end: calc(var(--cdt-space-7) + var(--cdt-space-1)); display: inline-flex; align-items: center; color: var(--cdt-text-secondary); font-size: var(--cdt-font-size-sm); pointer-events: none; cursor: default; }
+  .cdt-number-input__steppers { position: absolute; inset-block: var(--cdt-space-1); inset-inline-end: var(--cdt-space-1); display: grid; grid-template-rows: 1fr 1fr; inline-size: var(--cdt-space-6); }
+  .cdt-number-input__step { display: grid; place-items: center; padding: 0; border: 0; border-radius: var(--cdt-radius-xs); background: transparent; color: var(--cdt-text-secondary); font-size: var(--cdt-font-size-2xs); line-height: 1; cursor: pointer; }
+  .cdt-number-input__step:hover:not(:disabled) { background: var(--cdt-state-hover); color: var(--cdt-text-primary); }
+  .cdt-number-input__step:disabled { color: var(--cdt-button-disabled-text); cursor: not-allowed; }
+
+  @media (max-width: {breakpoint.sm}) {
+    .cdt-radio,
+    .cdt-number-input__field { min-block-size: var(--cdt-input-min-height-compact); }
+    .cdt-toggle-group__item { min-block-size: calc(var(--cdt-input-min-height-compact) - var(--cdt-space-2) - 2px); /* cdt-allow-literal: track border keeps the group at the control height */ }
+  }
 }
