@@ -68,6 +68,7 @@ export function renderDesignMd({ tokens, themes, contrast, components, version }
     "",
     "```tsx",
     'import "@conductor-by-89soone/css"; // once, in the entry file',
+    'import "@conductor-by-89soone/css/agent.css"; // only where the Agent family (Conversation, Message, PromptInput, …) renders',
     'import { Button } from "@conductor-by-89soone/react";',
     "```",
     "",

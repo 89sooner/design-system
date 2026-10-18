@@ -66,6 +66,7 @@ describe("inspectBundle catches what it claims to catch", () => {
   test("the shipped bundles are clean", () => {
     expect(inspectBundle(readBuilt("../dist/index.css"), "index.css")).toEqual([]);
     expect(inspectBundle(readBuilt("../dist/component.css"), "component.css")).toEqual([]);
+    expect(inspectBundle(readBuilt("../dist/agent.css"), "agent.css")).toEqual([]);
   });
 });
 

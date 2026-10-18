@@ -598,4 +598,11 @@ export interface SourceItem { readonly href: string; readonly title: string; rea
 // ConfirmationLabels, SourcesLabels, InlineCitationLabels, SuggestionsLabels
 ```
 
-새 export만 있는 비파괴 변경이라 react·css 모두 minor다. 새 런타임 의존성은 없다(Radix Collapsible·Popover는 기존 의존성).
+`@conductor-by-89soone/css`에는 선택 진입점 `"./agent.css": { style, default: "./dist/agent.css" }`를 더한다. cdt.component 층 규칙만 담고 토큰은 선언하지 않으며, 메인 스타일시트(`.` 또는 `./component.css`) 다음에 import한다.
+
+```ts
+import "@conductor-by-89soone/css";
+import "@conductor-by-89soone/css/agent.css"; // 에이전트 컴포넌트를 그리는 곳에서만
+```
+
+새 export와 새 진입점만 있는 비파괴 변경이라 react·css 모두 minor다. 새 런타임 의존성은 없다(Radix Collapsible·Popover는 기존 의존성).

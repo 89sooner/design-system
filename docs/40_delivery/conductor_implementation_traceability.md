@@ -236,7 +236,7 @@ PR Search 소비처의 `DEV-380`이 트리거다: 화면 계약이 최대 20계�
 | FR-DOC-010 | `packages/tokens/src/measure.ts`, `src/index.ts`, `apps/docs/src/theme-overrides.ts`, `src/theme-playground.tsx`, `App.tsx`, `shell.tsx` | `packages/tokens/src/measure.test.ts`, `apps/docs/src/theme-overrides.test.ts`, `apps/docs/e2e/playground.spec.ts`, `apps/docs/e2e/workspaces.spec.ts` | WP-036 | 검증됨 (AC-1~AC-5. 미리보기 한정 재정의와 별칭 전파, 기본 설정에서 9쌍이 보고서와 일치, 스니펫, 잘못된 입력 거부와 초기화, 4폭×2테마 axe serious 0·넘침 0) |
 | FR-CMP-014 | `packages/react/src/toast.tsx`, `date-picker.tsx`, `command.tsx`, `pagination.tsx`, `labels.ts`, `packages/css/src/controls.css`, `apps/docs/src/catalog.tsx`(미리보기) | `packages/react/src/testing/controls.test.tsx`, `a11y.browser.test.tsx`(시나리오), `hydration.browser.test.tsx`, `apps/docs/e2e/controls.spec.ts` | WP-037 | 검증됨 (AC-1~AC-5) |
 | FR-CMP-015 | `packages/react/src/alert-dialog.tsx`, `selection.tsx`, `avatar.tsx`, `number-input.tsx`, `labels.ts`, `form.tsx`(Field 라벨 id), `packages/css/src/controls.css`, `apps/docs/src/catalog.tsx`(미리보기) | `packages/react/src/testing/selection.test.tsx`, `a11y.browser.test.tsx`(시나리오), `component-css.browser.test.tsx` | WP-038 | 검증됨 (AC-1~AC-6) |
-| FR-CMP-016 | `packages/react/src/agent.tsx`, `labels.ts`, `packages/css/src/agent.css`, `apps/docs/src/catalog.tsx`(미리보기) | `packages/react/src/testing/agent.test.tsx`, `a11y.browser.test.tsx`(시나리오), `component-css.browser.test.tsx` | WP-039 | 구현됨 (CI 대기) |
+| FR-CMP-016 | `packages/react/src/agent.tsx`, `labels.ts`, `packages/css/src/agent.css`, `apps/docs/src/catalog.tsx`(미리보기) | `packages/react/src/testing/agent.test.tsx`, `a11y.browser.test.tsx`(시나리오), `component-css.browser.test.tsx` | WP-039 | 구현됨 (AC-1~AC-10, CI 대기) |
 | FR-DOC-004 | `apps/docs/src/token-reference.tsx`, `scripts/build-contrast-report.mjs` | `apps/docs/e2e/tokens.spec.ts` | WP-021 | 검증됨 (AC-1~AC-4와 리포트 누락 폴백. 빌드 산출 `tokens.json`·`contrast-report.json`을 소비하며 화면에서 대비율을 재계산하지 않음) |
 | FR-DOC-005 | `apps/docs/index.html`, `src/theme.ts`, `src/App.tsx` | `apps/docs/e2e/shell.spec.ts` | WP-018 | 검증됨 (AC-1~AC-5와 localStorage 차단 폴백. 첫 페인트 스니펫이 React 전 루트 속성을 결정) |
 | FR-DOC-006 | `apps/docs/src/guides.tsx`, `src/catalog.tsx` | `apps/docs/e2e/guides.spec.ts` | WP-022 | 검증됨 (AC-1~AC-3. 성공 공지·2초 복귀, polite live region, Clipboard 미지원 시 disabled/선택 가능 코드) |
@@ -618,6 +618,6 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 
 | 범위 | 결과 |
 | --- | --- |
-| 패키지 | react: `Conversation`(C-082), `Message`(C-083), `PromptInput`(C-084), `Reasoning`(C-085), `Tool`(C-086), `Confirmation`(C-087), `Sources`(C-088), `InlineCitation`(C-089), `Suggestions`(C-090), `Suggestion`(C-091), `Shimmer`(C-092)와 Labels 타입 9종. 새 의존성 없음. css: `agent.css` |
+| 패키지 | react: `Conversation`(C-082), `Message`(C-083), `PromptInput`(C-084), `Reasoning`(C-085), `Tool`(C-086), `Confirmation`(C-087), `Sources`(C-088), `InlineCitation`(C-089), `Suggestions`(C-090), `Suggestion`(C-091), `Shimmer`(C-092)와 Labels 타입 9종. 새 의존성 없음. css: 선택 진입점 `./agent.css`(dist/agent.css, 2.0KB gzip). `index.css`·`component.css`는 늘지 않는다 |
 | 시험 | `agent.test.tsx` 30건(공통 계약 4종 포함), a11y 시나리오 14건(열린 Tool·InlineCitation axe, 컴포넌트별 키보드 경로, 스트리밍·오류·결정 상태). 브라우저 시험 344건(skip 1)으로 axe·포커스 링·커서·쌓임 계약 통과 |
-| 검증 (CI) | 대기 |
+| 검증 (CI) | head `fed36d2`에서 Lighthouse LCP p75 2528ms > 2500ms로 실패. agent.css 분리 뒤 재검증 대기 |

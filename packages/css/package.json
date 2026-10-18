@@ -32,6 +32,10 @@
       "style": "./dist/component.css",
       "default": "./dist/component.css"
     },
+    "./agent.css": {
+      "style": "./dist/agent.css",
+      "default": "./dist/agent.css"
+    },
     "./package.json": "./package.json"
   },
   "browserslist": [

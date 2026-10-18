@@ -6,6 +6,8 @@
 // without a preview `case` below. Only public components and public `cdt-*` classes are composed.
 // W-020/W-021 styles ride with this lazy chunk so the landing never downloads them (CR-042, NFR-001).
 import "./styles/catalog.css";
+// CR-061: the agent parts style from the opt-in stylesheet; only the catalog renders them.
+import "@conductor-by-89soone/css/agent.css";
 import * as Components from "@conductor-by-89soone/react";
 import { createPortal } from "react-dom";
 import {

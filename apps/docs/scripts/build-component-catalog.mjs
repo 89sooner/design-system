@@ -16,7 +16,7 @@ const declarations = readdirSync(declarationsDirectory)
   .filter((name) => name.endsWith(".d.ts"))
   .map((name) => readFileSync(`${declarationsDirectory}/${name}`, "utf8"))
   .join("\n");
-const stylesheet = readFileSync(`${root}/packages/css/dist/index.css`, "utf8");
+const stylesheet = `${readFileSync(`${root}/packages/css/dist/index.css`, "utf8")}\n${readFileSync(`${root}/packages/css/dist/agent.css`, "utf8")}`;
 const catalogSource = readFileSync(fileURLToPath(new URL("../src/catalog.tsx", import.meta.url)), "utf8");
 /** ENT-DOC-002: the hand-written usage guidance, one entry per public component (FR-DOC-003 AC-6). */
 const guidanceSource = JSON.parse(readFileSync(fileURLToPath(new URL("../src/content/component-guidance.json", import.meta.url)), "utf8"));

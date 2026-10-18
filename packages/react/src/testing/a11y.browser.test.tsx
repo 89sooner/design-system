@@ -5,6 +5,7 @@ import axe, { type Result } from "axe-core";
 import { afterAll, afterEach, describe, expect, test } from "vitest";
 import allowListSource from "../../../../axe-allowlist.json";
 import "@conductor-by-89soone/css";
+import "@conductor-by-89soone/css/agent.css";
 import { useState } from "react";
 import { Button } from "../action";
 import { AppShell } from "../shell";

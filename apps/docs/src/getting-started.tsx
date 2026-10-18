@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 
 const installCode = "pnpm add @conductor-by-89soone/tokens @conductor-by-89soone/css @conductor-by-89soone/react\npnpm add react react-dom lucide-react\npnpm run build";
 const styleCode = 'import "@conductor-by-89soone/css";';
+const agentStyleCode = 'import "@conductor-by-89soone/css/agent.css"; // only with the agent components';
 const themeCode = '<html data-cdt-theme="dark">';
 const renderCode = 'import { Button } from "@conductor-by-89soone/react";\n\nexport function SaveAction() {\n  return <Button variant="primary">Save changes</Button>;\n}';
 const layersCode = "@layer cdt.reset, cdt.base, cdt.layout, cdt.component, cdt.utility;";
@@ -97,6 +98,8 @@ export function GettingStarted() {
           <p className="docs-step-item__note">One import loads the tokens, the cascade layers and every component class.</p>
           <DocsCode language="ts" code={styleCode} />
           <Banner tone="warning">If this import is missing, development builds warn once in the console and components render without Conductor styles.</Banner>
+          <p className="docs-step-item__note">The agent components (Conversation, Message, PromptInput and the rest of the Agent family) style from a second, opt-in stylesheet. Import it after the first one only where you render them.</p>
+          <DocsCode language="ts" code={agentStyleCode} />
         </Step>
 
         <Step id="theme" number="04" title="Choose a theme">

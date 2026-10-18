@@ -1332,4 +1332,4 @@ component 토큰은 semantic 토큰만 참조한다(FR-TOK-002 AC-3). 아래 표
 - **결정**: Confirmation은 승인 게이트가 아니다. 승인 강제는 소비자 서버의 실행 경로가 맡고, 컴포넌트는 결정을 모아 콜백으로 넘긴다.
 - **결정**: Reasoning은 스트리밍이 끝날 때 한 번만 자동으로 닫는다. 그 뒤 사용자가 다시 열면 열린 채로 둔다.
 
-스타일은 `@conductor-by-89soone/css`의 `agent.css`(cdt.component 층)에 있다.
+- **결정**: 스타일은 `@conductor-by-89soone/css`의 선택 진입점 `./agent.css`(cdt.component 층)로 따로 배포한다. 에이전트 UI를 쓰는 앱만 메인 스타일시트 다음에 import한다(FR-CMP-016 AC-10). 메인 스타일시트의 토큰을 읽으므로 단독으로는 쓰지 않는다.

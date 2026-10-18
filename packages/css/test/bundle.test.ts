@@ -15,6 +15,7 @@ const GZIP_BUDGET_BYTES = 20 * 1024;
 
 const index = readBuilt("../dist/index.css");
 const component = readBuilt("../dist/component.css");
+const agent = readBuilt("../dist/agent.css");
 const bundles = [
   ["index.css", index],
   ["component.css", component],
@@ -958,5 +959,38 @@ describe("DEV-038 표현하지 않는 aria-sort 값", () => {
         expect(part).toMatch(/\[aria-sort=["']?(none|ascending|descending)["']?\]/);
       }
     }
+  });
+});
+
+describe("CR-061 FR-CMP-016 opt-in agent stylesheet", () => {
+  const LAYOUT_PROPERTY = /\b(?:width|height|inline-size|block-size|top|left|right|bottom|inset|margin|padding)\b/;
+
+  test("agent.css fixes the same layer order and passes every static output check", () => {
+    expect(agent.split("\n")[0]).toBe(LAYER_STATEMENT);
+    expect(agent).not.toContain("!important");
+    expect(inspectBundle(agent, "agent.css")).toEqual([]);
+  });
+
+  test("agent.css holds only cdt.component rules and declares no token of its own", () => {
+    for (const layer of ["cdt.reset", "cdt.base", "cdt.layout", "cdt.utility"]) expect(hasLayerBlock(agent, layer)).toBe(false);
+    expect(rulesInLayer(agent, "cdt.component").some((rule) => rule.selector === ".cdt-message")).toBe(true);
+    expect(agent).not.toMatch(/(?:^|[;{])\s*--cdt-[\w-]+\s*:/);
+  });
+
+  test.each(bundles)("%s leaves the agent parts out, so apps without them do not load them", (_name, css) => {
+    expect(css).not.toContain(".cdt-message");
+    expect(css).not.toContain(".cdt-prompt-input");
+  });
+
+  test("agent.css follows the motion rules: live motion tokens, no layout transitions", () => {
+    expect(agent).not.toMatch(/var\(--cdt-(?:button|card-interactive|table-row|input)-transition\)/);
+    const offenders = rulesInLayer(agent, "cdt.component")
+      .filter((rule) => rule.decls["transition"] !== undefined && LAYOUT_PROPERTY.test(rule.decls["transition"]))
+      .map((rule) => rule.selector);
+    expect(offenders).toEqual([]);
+  });
+
+  test("agent.css stays small: under 4KB gzip", () => {
+    expect(gzipSync(agent, { level: 9 }).length).toBeLessThanOrEqual(4 * 1024);
   });
 });
