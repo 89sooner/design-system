@@ -15,6 +15,7 @@ import { Card } from "../surface";
 import { a11yScenarios, AppShellKeyboardFixture, keyboardScenarios } from "./a11y-scenarios";
 import { cursorViolations } from "./cursor-contract";
 import { stackingViolations } from "./stacking-contract";
+import { hiddenViolations } from "./hidden-contract";
 import { publicComponents } from "./public-components";
 
 declare const __CONDUCTOR_A11Y_FIXTURE__: string;
@@ -336,4 +337,15 @@ test.skipIf(__CONDUCTOR_A11Y_FIXTURE__ !== "serious")("FR-QA-003 AC-2: serious v
   const results = await axe.run(document, { resultTypes: ["violations"] });
   const unexpected = unexpectedViolations(seriousViolations(results));
   expect(violationSummary(unexpected)).toEqual([]);
+});
+
+test("CR-062: with the full stylesheet, a part Radix closes with `hidden` takes no space", () => {
+  setTheme("dark");
+  const violations: string[] = [];
+  for (const scenario of a11yScenarios) {
+    render(scenario.render());
+    violations.push(...hiddenViolations(document.body, `${scenario.component} ${scenario.state}`));
+    cleanup();
+  }
+  expect(violations).toEqual([]);
 });
