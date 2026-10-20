@@ -638,5 +638,6 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | 패키지 | react: `NumberInputProps.variant`(`solid` 기본·`glass`), 래퍼 클래스 `cdt-number-input--glass`. css: `controls.css`에 glass 규칙 1줄(포커스·비활성 규칙 앞) |
 | FR 매핑 | FR-CMP-015 AC-7 → `packages/react/src/number-input.tsx`, `packages/css/src/controls.css`, `testing/selection.test.tsx`(AC-7), `testing/component-css.browser.test.tsx`(CR-063) |
 | 시험 | 단위 1건, 브라우저 1건(다크·라이트). glass 규칙을 지운 빌드에서 실패를 확인했다 |
-| 검증 (로컬) | 게이트 11종 통과(단위 806/806, a11y 347/347 skip 1), 문서 E2E 69/69. 시각 회귀·CI는 PR에서 판정 |
+| 검증 (로컬) | 게이트 11종 통과(단위 806/806, a11y 347/347 skip 1), 문서 E2E 69/69 |
+| 검증 (CI) | PR #70 head `5c618ef`: verify(node 20·22), visual regression 통과. CR-063 closed |
 
