@@ -1,4 +1,4 @@
-// Refs: CR-056 DEV-057 CR-057 CR-058 FR-A11Y-001 FR-CSS-002
+// Refs: CR-056 DEV-057 CR-057 CR-058 CR-062 CR-063 FR-A11Y-001 FR-CSS-002
 //
 // `@conductor-by-89soone/css/component.css` leaves out cdt.reset for consumers that bring their
 // own global reset. The focus ring must not depend on that reset: every keyboard stop that is a
@@ -6,6 +6,8 @@
 import { userEvent } from "@vitest/browser/context";
 import { cleanup, render } from "@testing-library/react";
 import { afterEach, expect, test } from "vitest";
+import { NumberInput } from "../number-input";
+import { TextField } from "../form";
 import "@conductor-by-89soone/css/component.css";
 import "@conductor-by-89soone/css/agent.css";
 import { a11yScenarios } from "./a11y-scenarios";
@@ -83,4 +85,30 @@ test("CR-062: with the component.css alone, a part Radix closes with `hidden` ta
     cleanup();
   }
   expect(violations).toEqual([]);
+});
+
+test("CR-063: a glass NumberInput rests on the glass TextField surface and keeps the solid focus and disabled backgrounds", async () => {
+  for (const theme of ["dark", "light"] as const) {
+    document.documentElement.dataset.cdtTheme = theme;
+    const { container } = render(<>
+      <TextField aria-label="Glass text" variant="glass" />
+      <NumberInput aria-label="Solid number" />
+      <NumberInput aria-label="Glass number" variant="glass" />
+      <NumberInput aria-label="Solid disabled" disabled />
+      <NumberInput aria-label="Glass disabled" variant="glass" disabled />
+    </>);
+    const field = (label: string): HTMLInputElement => container.querySelector<HTMLInputElement>(`[aria-label="${label}"]`)!;
+    const background = (label: string): string => getComputedStyle(field(label)).backgroundColor;
+    expect(background("Glass number"), theme).toBe(background("Glass text"));
+    expect(background("Glass number"), theme).not.toBe(background("Solid number"));
+    expect(background("Glass disabled"), theme).toBe(background("Solid disabled"));
+    field("Solid number").focus();
+    await userEvent.keyboard("{Shift>}{Tab}{/Shift}{Tab}");
+    const solidFocus = background("Solid number");
+    field("Glass number").focus();
+    await userEvent.keyboard("{Shift>}{Tab}{/Shift}{Tab}");
+    expect(field("Glass number").matches(":focus-visible"), theme).toBe(true);
+    expect(background("Glass number"), theme).toBe(solidFocus);
+    cleanup();
+  }
 });

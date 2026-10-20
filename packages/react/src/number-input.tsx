@@ -15,6 +15,8 @@ import { DEFAULT_NUMBER_INPUT_LABELS, type NumberInputLabels } from "./labels";
  */
 export interface NumberInputProps extends Omit<ComponentPropsWithoutRef<"input">, "size" | "type"> {
   readonly size?: "sm" | "md";
+  /** Surface texture, as on `TextField`: `glass` matches glass text fields in the same form (CR-063). */
+  readonly variant?: "solid" | "glass";
   readonly invalid?: boolean;
   /** Text after the number inside the field, such as a unit (`ms`, `%`, `USD`). */
   readonly suffix?: ReactNode;
@@ -27,7 +29,7 @@ function assignRef<T>(ref: Ref<T> | undefined, value: T | null): void {
 }
 
 export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(function NumberInput(
-  { "aria-describedby": ariaDescribedBy, "aria-invalid": ariaInvalid, "aria-label": ariaLabel, "aria-labelledby": ariaLabelledBy, className, disabled, id: ownId, invalid, labels, readOnly, required, size = "md", suffix, ...props },
+  { "aria-describedby": ariaDescribedBy, "aria-invalid": ariaInvalid, "aria-label": ariaLabel, "aria-labelledby": ariaLabelledBy, className, disabled, id: ownId, invalid, labels, readOnly, required, size = "md", suffix, variant = "solid", ...props },
   ref,
 ) {
   const t = { ...DEFAULT_NUMBER_INPUT_LABELS, ...labels };
@@ -49,7 +51,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(functi
   };
   const locked = disabled === true || readOnly === true;
   return (
-    <span className={cx("cdt-number-input", size === "sm" && "cdt-number-input--sm", control.invalid && "cdt-number-input--invalid", className)}>
+    <span className={cx("cdt-number-input", variant === "glass" && "cdt-number-input--glass", size === "sm" && "cdt-number-input--sm", control.invalid && "cdt-number-input--invalid", className)}>
       <input {...props} ref={setRef} type="number" inputMode="decimal" id={id} disabled={disabled} readOnly={readOnly} aria-label={ariaLabel} aria-labelledby={ariaLabelledBy} aria-describedby={control.describedBy} aria-invalid={ariaInvalid ?? (control.invalid || undefined)} required={required ?? control.required} className="cdt-number-input__field" />
       {suffix === undefined ? null : <span className="cdt-number-input__suffix" aria-hidden="true">{suffix}</span>}
       <span className="cdt-number-input__steppers">

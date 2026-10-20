@@ -1,4 +1,4 @@
-// FR-CMP-015 · CR-060: AlertDialog, RadioGroup, ToggleGroup, Avatar, NumberInput.
+// FR-CMP-015 · CR-060 · CR-063: AlertDialog, RadioGroup, ToggleGroup, Avatar, NumberInput.
 import { useState, type ComponentProps } from "react";
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, test, vi } from "vitest";
@@ -144,5 +144,14 @@ describe("FR-CMP-015 NumberInput", () => {
     expect(input.value).toBe("5");
     rerender(<NumberInput aria-label="Budget" min={5} disabled />);
     expect((screen.getByRole("button", { name: "Increase" }) as HTMLButtonElement).disabled).toBe(true);
+  });
+
+  test("AC-7: variant=\"glass\" marks the wrapper, solid is the default, and the field stays a spinbutton", () => {
+    const { container, rerender } = render(<NumberInput aria-label="Window" className="caps" />);
+    const wrapper = container.querySelector(".cdt-number-input");
+    expect(wrapper?.classList.contains("cdt-number-input--glass")).toBe(false);
+    rerender(<NumberInput aria-label="Window" className="caps" variant="glass" size="sm" />);
+    expect(wrapper?.className).toBe("cdt-number-input cdt-number-input--glass cdt-number-input--sm caps");
+    expect(screen.getByRole("spinbutton", { name: "Window" }).className).toBe("cdt-number-input__field");
   });
 });

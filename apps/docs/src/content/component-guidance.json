@@ -1711,7 +1711,7 @@
     "use": [
       "Set min, max and step so the browser validates the value and the arrow keys respect the bounds.",
       "Put the unit in suffix rather than in the label text.",
-      "Wrap it in Field so the label, description and error are connected."
+      "Wrap it in Field so the label, description and error are connected, and set variant=\"glass\" when the form's text fields are glass so every field sits on the same surface."
     ],
     "avoid": [
       {

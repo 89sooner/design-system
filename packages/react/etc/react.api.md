@@ -830,6 +830,7 @@ export interface NumberInputProps extends Omit<ComponentPropsWithoutRef<"input">
     // (undocumented)
     readonly size?: "sm" | "md";
     readonly suffix?: ReactNode;
+    readonly variant?: "solid" | "glass";
 }
 
 // @public
