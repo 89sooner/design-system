@@ -1,6 +1,6 @@
 # Conductor Design System 구현 추적 원장
 
-> 상태: review | 버전: v0.49 | 갱신일: 2026-10-18
+> 상태: review | 버전: v0.50 | 갱신일: 2026-10-19
 
 ## 1. 목적과 갱신 규칙
 
@@ -264,6 +264,7 @@ PR Search 소비처의 `DEV-380`이 트리거다: 화면 계약이 최대 20계�
 
 | DEV ID | 발견일 | 유형 | 내용 | 관련 ID | 처리 CR | 상태 |
 | --- | --- | --- | --- | --- | --- | --- |
+| DEV-060 | 2026-10-19 | 소비자 검증 편차 | **닫힌 `Tool` 카드 아래에 12px 빈 띠가 남았다.** agent-ai-platform DS-PILOT-11에서 발견. Radix가 닫힌 Collapsible 내용을 `hidden`으로 남기는데 `.cdt-tool__content { display: grid }`가 그것을 덮었다. `[hidden] { display: none }`을 두고, 모든 시나리오의 `[hidden]` 요소가 `display: none`인지 확인하는 브라우저 계약(`hidden-contract.ts`)을 더했다 | FR-CMP-016, C-086 | CR-062 | closed |
 | DEV-059 | 2026-10-15 | 구현 편차 | **`Checkbox`가 C-055의 20×20 상자 대신 40×40 상자를 그렸고, `Switch`의 포커스 링이 24px 트랙이 아니라 42×40 히트 상자에 그려졌다.** 사용자 보고로 발견. 두 컨트롤의 버튼 상자를 시각 크기로 바꾸고 40px 히트 영역을 투명 `::after`로 옮겼다. PR CI(head `da8e920`)의 visual regression에서 체크박스가 작아진 `AllComponents-grayscale-dark` 한 장만 기준을 넘었다. Docker 데몬이 없어 DEV-045·DEV-056과 같은 방법으로 그 한 장만 갱신했고, 같은 조건에서 27장 모두 통과한다 | FR-CMP-007, FR-A11Y-002, C-054, C-055 | CR-059 | closed |
 | DEV-058 | 2026-10-13 | 소비자 검증 편차 | **`AppShell` 안의 `DropdownMenu` 항목이 라우트를 바꾸면 포커스가 새 화면의 main에 남지 않는다.** agent-ai-platform 파일럿(CR-055)에서 드러났다. 메뉴가 열린 동안 Radix 포커스 범위가 AppShell의 main 포커스(routeKey 변경)를 되돌리고, 닫힐 때 트리거로 보낸다. 트리거 복귀만 막으면 body로 빠진다. 소비자는 `DropdownMenu.Content`의 `onCloseAutoFocus`에서 기본 동작을 막고 main에 직접 포커스를 준다(파일럿 `packages/web/src/shell/AppShell.tsx`, 시험 `test/integration/shell.test.tsx`). 패키지 쪽 해법(라우트 변경 시 열린 메뉴의 복귀 대상을 main으로 바꾸는 계약)은 후속 CR 후보다 | FR-CMP-006, FR-CMP-009, FR-A11Y-002, C-070 | CR-055, CR-056 | closed |
 | DEV-057 | 2026-10-13 | 소비자 검증 편차 | **`component.css`만 쓰는 소비자에서는 NavList 항목의 포커스 링을 패키지가 그리지 않는다.** `component.css`는 reset을 뺀 진입점인데, NavList 항목은 reset의 전역 `:focus-visible` 링에 기대고 자기 규칙이 없다. 파일럿은 기존 전역 링 규칙(`--focus-ring` = `--cdt-focus-ring` 별칭)을 남겨 해결했다. 함께 확인한 것: 소비자의 레이어 밖 전역 규칙(`a { color }`)은 `@layer cdt.*`를 언제나 이긴다(ADR-005의 설계대로다). 파일럿은 `a:not([class*="cdt-"])`로 좁혔다. 후속 CR 후보는 두 가지다. ① NavList 항목에 컴포넌트 레이어의 링을 둔다. ② 시작 안내(W-010)에 레이어 밖 규칙과의 관계를 적는다 | FR-CSS-001, FR-A11Y-001, FR-CMP-009, ADR-005, C-071 | CR-055, CR-056 | closed |
@@ -621,3 +622,12 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | 패키지 | react: `Conversation`(C-082), `Message`(C-083), `PromptInput`(C-084), `Reasoning`(C-085), `Tool`(C-086), `Confirmation`(C-087), `Sources`(C-088), `InlineCitation`(C-089), `Suggestions`(C-090), `Suggestion`(C-091), `Shimmer`(C-092)와 Labels 타입 9종. 새 의존성 없음. css: 선택 진입점 `./agent.css`(dist/agent.css, 2.0KB gzip). `index.css`·`component.css`는 늘지 않는다 |
 | 시험 | `agent.test.tsx` 30건(공통 계약 4종 포함), a11y 시나리오 14건(열린 Tool·InlineCitation axe, 컴포넌트별 키보드 경로, 스트리밍·오류·결정 상태). 브라우저 시험 344건(skip 1)으로 axe·포커스 링·커서·쌓임 계약 통과 |
 | 검증 (CI) | head `fed36d2`에서 Lighthouse LCP p75 2528ms > 2500ms로 실패해 agent.css를 선택 진입점으로 분리했다. head `448bb7d`: verify(node 20·22, LCP p75 2441ms), visual regression 통과. CR-061 closed |
+
+### CR-062 닫힌 Tool 카드의 여백 (2026-10-19)
+
+| 범위 | 결과 |
+| --- | --- |
+| 패키지 | css: `agent.css`에 닫힌 Reasoning·Tool·Sources 내용의 `[hidden] { display: none }`. react: 공개 API 변화 없음 |
+| 시험 | `testing/hidden-contract.ts`, a11y·component-css 브라우저 시험 각 1건(CR-062). 수정 전 실패를 재현했다 |
+| 검증 (CI) | PR #68 head `9861917`: verify(node 20·22), visual regression 통과. CR-062·DEV-060 closed |
+

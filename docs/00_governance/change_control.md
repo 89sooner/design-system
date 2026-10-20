@@ -80,6 +80,7 @@
 | CR-059 | 2026-10-15 | defect fix | 사용자 지시 (2026-10-15): "체크박스가 너무 크다 … 보통의 컴포넌트 사이즈로 맞춰라. switch 컴포넌트도 겉 테두리가 이상하다" | **Checkbox와 Switch를 C-054·C-055 결정대로 시각 크기(20×20 상자, 42×24 트랙)로 그리고, 40px 히트 영역은 투명 `::after`로 둔다.** 포커스 링이 트랙·상자 모양을 따른다. 오류 경계가 기본 경계에 덮이던 순서도 바로잡는다. 새 shall은 없다. css patch | FR-CMP-007, FR-A11Y-002 | `packages/css/src/components.css`, `packages/css/test/bundle.test.ts`, `conductor_ui_component_spec.md`(v0.12), `conductor_implementation_traceability.md`(DEV-059), Changeset(css patch) | closed |
 | CR-060 | 2026-10-18 | scope + design | 사용자 지시 (2026-10-18): 최신 디자인 시스템 대비 미제공 컴포넌트 점검 후 "1번 묶음부터 CR 등록하고 진행해" | **AlertDialog·RadioGroup·ToggleGroup·Avatar·NumberInput을 더한다.** 새 FR-CMP-015(SRS §24, v1.14). 동작은 Radix와 기본 `<input type="number">`에 위임한다. react·css minor | FR-CMP-015, FR-CMP-007, FR-A11Y-002 | SRS v1.14, PRD v0.8, feature v0.8, RTM v0.9, UI 명세 v0.13, API 계약 v0.9, 보안 v0.7, WP v0.14(WP-038), 원장 v0.48, `packages/react/src/*`, `packages/css/src/controls.css`, 카탈로그·지침, Changeset(react·css minor) | closed |
 | CR-061 | 2026-10-18 | scope + design | 사용자 지시 (2026-10-18): "Vercel AI Elements도 도입해라" — 질의 응답으로 Conductor 방식 재구현, 핵심 에이전트 UI 1차분, SDK에 묶이지 않는 props를 골랐다 | **에이전트 대화 UI 11종을 더한다.** 새 FR-CMP-016(SRS §25, v1.15). Tailwind·shadcn·AI SDK 없이 토큰·Radix로 다시 만든다. react·css minor | FR-CMP-016, FR-CMP-007, FR-A11Y-002 | SRS v1.15, PRD v0.9, feature v0.9, RTM v0.10, UI 명세 v0.14, API 계약 v0.10, WP v0.15(WP-039), 원장 v0.49, `packages/react/src/agent.tsx`, `packages/css/src/agent.css`, 카탈로그·지침, Changeset(react·css minor), `packages/css` 선택 진입점 `./agent.css` | closed |
+| CR-062 | 2026-10-19 | defect fix | 사용자 지시 (2026-10-19): "0.10.1로 도구 카드 여백 고치고 릴리스까지" | **닫힌 `Tool` 카드 아래 12px 여백을 없앤다.** Radix가 닫힌 Collapsible 내용을 `hidden`으로 남기는데 `.cdt-tool__content { display: grid }`가 그것을 덮었다. 에이전트 펼침 부품 3종에 `[hidden] { display: none }`을 두고, 모든 시나리오에서 `[hidden]` 요소가 자리를 차지하지 않는 브라우저 계약을 더한다. css patch | FR-CMP-016, FR-CSS-004, C-085, C-086, C-088 | `packages/css/src/agent.css`, `packages/react/src/testing/hidden-contract.ts`·a11y·component-css 브라우저 시험, UI 명세 v0.15, 원장 v0.50(DEV-060), Changeset(css patch) | closed |
 
 유형: `scope`(범위 변경), `design`(설계 변경), `implementation`(구현 편차 DEV-### 처리), `correction`(문서 오류 수정)
 
@@ -739,3 +740,17 @@ CR-041 구현 cascade와 로컬 검증은 2026-09-14에 종료했다. 사용자�
 | 검증 (2026-10-18, 로컬, 수정 전) | 게이트 12종 통과(단위 798/798, a11y 344/344 skip 1, size: Button 1.33KiB·css 14.63KiB, check:api는 추가만), 문서 E2E 69/69, 시각 회귀 27/27(DEV-045 방법으로 전체 카탈로그 기준 이미지 1장만 갱신), 문서 검증기 `--strict` 통과. 판정은 CI다 |
 | 검증 (2026-10-18, 로컬, 분리 후) | 게이트 12종 통과(단위 805/805, a11y 344/344 skip 1, css index.css 13.76KB gzip·agent.css 2.0KB gzip), 문서 E2E 69/69, 시각 회귀 27/27(기준 이미지 추가 변경 없음) |
 | CI · 종료 | PR #66 head `448bb7d`에서 verify(node 20·22, Lighthouse LCP p75 2441ms/2500ms 포함)·visual regression 통과. CR-061을 종료한다. 릴리스는 react·css minor(0.10.0) |
+
+## CR-062 닫힌 Tool 카드의 여백 (2026-10-19)
+
+| 항목 | 기록 |
+| --- | --- |
+| 유형 / 상태 | defect fix / closed |
+| 변경 근거 | 파일럿 앱 agent-ai-platform이 D-040 Step Timeline을 에이전트 대화 컴포넌트로 바꾸다가(DS-PILOT-11) 닫힌 `Tool` 카드 아래에 12px 빈 띠를 발견했고, 앱 `app.css`에 임시 규칙을 두었다. 사용자가 2026-10-19에 0.10.1로 고치고 릴리스하라고 지시했다 |
+| 원인 | Radix Collapsible은 닫힌 내용을 언마운트하지 않고 `hidden` 속성을 붙여 남긴다(자식만 비운다). `.cdt-tool__content { display: grid; padding: 0 space-3 space-3 }`가 UA의 `[hidden] { display: none }`보다 우선해, 비어 있는 내용 상자가 아래 padding 12px만큼 남았다(DEV-060). `.cdt-reasoning__content`·`.cdt-sources__content`는 `display`를 지정하지 않아 증상이 없었다. 같은 패턴인 `.cdt-collapsible__content`·`.cdt-tabs__content`는 이미 닫힌 상태를 `display: none`으로 처리하고 있다 |
+| 범위 판정 | 새 shall이 없다. FR-CMP-016 AC-5(Tool은 Radix Collapsible)의 닫힌 상태가 자리를 차지하지 않게 하는 결함 수정이다. 공개 API·토큰 변화가 없어 css patch다 |
+| 수정 | `agent.css`에 `.cdt-reasoning__content[hidden], .cdt-tool__content[hidden], .cdt-sources__content[hidden] { display: none; }`. 특이도(0,2,0)가 기본 규칙(0,1,0)보다 높다 |
+| 시험 | `testing/hidden-contract.ts`(렌더된 컴포넌트 안의 모든 `[hidden]` 요소가 `display: none`으로 계산되는지)를 a11y 브라우저 시험(전체 스타일시트)과 component-css 브라우저 시험(`component.css`+`agent.css`)에 더했다. 수정 전에는 두 시험 모두 `Tool default`·`Conversation default`의 `div.cdt-tool__content has hidden but display: grid`로 실패했고, 수정 뒤 통과한다 |
+| 검증 (2026-10-19, 로컬) | 게이트 12종 통과(단위 805/805, a11y 346/346 skip 1, size: Button 1.33KiB·css 13.55KiB, check:api 변화 없음), 문서 E2E 69/69, 시각 회귀 27/27(기준 이미지 변경 없음), 문서 검증기 `--strict` 통과. 판정은 CI다 |
+| CI · 종료 | PR #68 head `9861917`에서 verify(node 20·22, Lighthouse 포함)·visual regression 통과. CR-062를 종료한다. 릴리스는 css patch(0.10.1) |
+

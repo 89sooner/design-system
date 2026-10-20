@@ -11,6 +11,7 @@ import "@conductor-by-89soone/css/agent.css";
 import { a11yScenarios } from "./a11y-scenarios";
 import { cursorViolations } from "./cursor-contract";
 import { stackingViolations } from "./stacking-contract";
+import { hiddenViolations } from "./hidden-contract";
 
 afterEach(() => cleanup());
 
@@ -68,6 +69,17 @@ test("CR-058: with component.css alone, every open overlay surface sits above it
   for (const scenario of a11yScenarios) {
     render(scenario.render());
     violations.push(...stackingViolations(document, `${scenario.component} ${scenario.state}`));
+    cleanup();
+  }
+  expect(violations).toEqual([]);
+});
+
+test("CR-062: with the component.css alone, a part Radix closes with `hidden` takes no space", () => {
+  document.documentElement.dataset.cdtTheme = "dark";
+  const violations: string[] = [];
+  for (const scenario of a11yScenarios) {
+    render(scenario.render());
+    violations.push(...hiddenViolations(document.body, `${scenario.component} ${scenario.state}`));
     cleanup();
   }
   expect(violations).toEqual([]);

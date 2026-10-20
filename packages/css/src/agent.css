@@ -52,6 +52,8 @@
   .cdt-reasoning__trigger:focus-visible, .cdt-tool__trigger:focus-visible, .cdt-sources__trigger:focus-visible { outline: none; box-shadow: var(--cdt-focus-ring); transition: none; }
   .cdt-reasoning__chevron, .cdt-tool__chevron, .cdt-sources__chevron { display: inline-block; font-size: var(--cdt-font-size-xs); transition: transform var(--cdt-motion-fast); }
   .cdt-reasoning__trigger[data-state="open"] .cdt-reasoning__chevron, .cdt-tool__trigger[data-state="open"] .cdt-tool__chevron, .cdt-sources__trigger[data-state="open"] .cdt-sources__chevron { transform: rotate(180deg); }
+  /* Radix keeps closed content mounted with `hidden`; a `display` below must not bring it back (CR-062). */
+  .cdt-reasoning__content[hidden], .cdt-tool__content[hidden], .cdt-sources__content[hidden] { display: none; }
   .cdt-reasoning__content { margin-block-start: var(--cdt-space-1); padding-inline-start: var(--cdt-space-3); border-inline-start: var(--cdt-border-width-emphasis) solid var(--cdt-border-default); color: var(--cdt-text-secondary); font-size: var(--cdt-font-size-sm); line-height: var(--cdt-font-line-height-md); white-space: pre-wrap; }
 
   .cdt-tool { border: var(--cdt-border-width-hairline) solid var(--cdt-border-default); border-inline-start-width: var(--cdt-border-width-rail); border-radius: var(--cdt-radius-md); background: var(--cdt-surface-raised); }
