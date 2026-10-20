@@ -120,6 +120,9 @@
   /* NumberInput — the field is a full `cdt-input`; units and steppers sit inside its end padding. */
   .cdt-number-input { position: relative; display: inline-flex; inline-size: 100%; }
   .cdt-number-input__field { inline-size: 100%; min-block-size: var(--cdt-input-min-height); padding: var(--cdt-input-padding-block) calc(var(--cdt-space-7) + var(--cdt-space-1)) var(--cdt-input-padding-block) var(--cdt-input-padding-inline); border: var(--cdt-border-width-hairline) solid var(--cdt-input-border); border-radius: var(--cdt-input-radius); background: var(--cdt-input-background); color: var(--cdt-input-text); font: inherit; font-variant-numeric: tabular-nums; appearance: textfield; transition: border-color var(--cdt-motion-fast), background var(--cdt-motion-fast); }
+  /* CR-063: the glass surface of `.cdt-input--glass`. Declared before the focus and disabled rules of equal
+     specificity, so those keep their own backgrounds, as they do on a glass TextField. */
+  .cdt-number-input--glass .cdt-number-input__field { background: var(--cdt-surface-tint-1); }
   .cdt-number-input__field::-webkit-inner-spin-button, .cdt-number-input__field::-webkit-outer-spin-button { margin: 0; appearance: none; }
   .cdt-number-input__field:hover:not(:disabled) { border-color: var(--cdt-input-border-hover); }
   .cdt-number-input__field:focus-visible { border-color: var(--cdt-input-border-focus); outline: none; background: var(--cdt-input-background-focus); box-shadow: var(--cdt-focus-ring); transition: none; }

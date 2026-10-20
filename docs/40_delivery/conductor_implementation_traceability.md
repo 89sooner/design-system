@@ -1,6 +1,6 @@
 # Conductor Design System 구현 추적 원장
 
-> 상태: review | 버전: v0.50 | 갱신일: 2026-10-19
+> 상태: review | 버전: v0.51 | 갱신일: 2026-10-20
 
 ## 1. 목적과 갱신 규칙
 
@@ -630,4 +630,12 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | 패키지 | css: `agent.css`에 닫힌 Reasoning·Tool·Sources 내용의 `[hidden] { display: none }`. react: 공개 API 변화 없음 |
 | 시험 | `testing/hidden-contract.ts`, a11y·component-css 브라우저 시험 각 1건(CR-062). 수정 전 실패를 재현했다 |
 | 검증 (CI) | PR #68 head `9861917`: verify(node 20·22), visual regression 통과. CR-062·DEV-060 closed |
+
+### CR-063 NumberInput glass 변형 (2026-10-20)
+
+| 범위 | 결과 |
+| --- | --- |
+| 패키지 | react: `NumberInputProps.variant`(`solid` 기본·`glass`), 래퍼 클래스 `cdt-number-input--glass`. css: `controls.css`에 glass 규칙 1줄(포커스·비활성 규칙 앞) |
+| FR 매핑 | FR-CMP-015 AC-7 → `packages/react/src/number-input.tsx`, `packages/css/src/controls.css`, `testing/selection.test.tsx`(AC-7), `testing/component-css.browser.test.tsx`(CR-063) |
+| 시험 | 단위 1건, 브라우저 1건(다크·라이트). glass 규칙을 지운 빌드에서 실패를 확인했다 |
 

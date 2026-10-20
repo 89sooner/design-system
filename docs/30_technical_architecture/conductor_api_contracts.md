@@ -1,6 +1,6 @@
 # Conductor Design System 패키지 공개 API 계약
 
-> 상태: review | 버전: v0.10 | 갱신일: 2026-10-18
+> 상태: review | 버전: v0.11 | 갱신일: 2026-10-20
 
 ## 0. 문서 재해석
 
@@ -572,7 +572,9 @@ export const NumberInput: ForwardRef<HTMLInputElement, NumberInputProps>;
 export interface NumberInputLabels { readonly increment: string; readonly decrement: string }
 ```
 
-새 export만 있는 비파괴 변경이라 react·css 모두 minor다. `Field` 라벨에 `id`가 더해지는 것도 추가 속성이다. 새 런타임 의존성은 `@radix-ui/react-alert-dialog@1.1.23`, `@radix-ui/react-radio-group@1.4.7`, `@radix-ui/react-toggle-group@1.1.19`, `@radix-ui/react-avatar@1.2.6`(정확한 버전, 2026-07-24 묶음)이다.
+새 export만 있는 비파괴 변경이라 react·css 모두 minor다. `Field` 라벨에 `id`가 더해지는 것도 추가 속성이다.
+
+CR-063은 `NumberInputProps`에 `readonly variant?: "solid" | "glass"`(기본 `solid`)를 더한다. `TextFieldProps`·`TextAreaProps`의 같은 이름 prop과 뜻이 같다. 선택 prop 추가라 react·css minor다. 새 런타임 의존성은 `@radix-ui/react-alert-dialog@1.1.23`, `@radix-ui/react-radio-group@1.4.7`, `@radix-ui/react-toggle-group@1.1.19`, `@radix-ui/react-avatar@1.2.6`(정확한 버전, 2026-07-24 묶음)이다.
 
 ## CR-061 API-CMP-012 (FR-CMP-016)
 

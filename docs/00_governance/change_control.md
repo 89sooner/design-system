@@ -81,6 +81,7 @@
 | CR-060 | 2026-10-18 | scope + design | 사용자 지시 (2026-10-18): 최신 디자인 시스템 대비 미제공 컴포넌트 점검 후 "1번 묶음부터 CR 등록하고 진행해" | **AlertDialog·RadioGroup·ToggleGroup·Avatar·NumberInput을 더한다.** 새 FR-CMP-015(SRS §24, v1.14). 동작은 Radix와 기본 `<input type="number">`에 위임한다. react·css minor | FR-CMP-015, FR-CMP-007, FR-A11Y-002 | SRS v1.14, PRD v0.8, feature v0.8, RTM v0.9, UI 명세 v0.13, API 계약 v0.9, 보안 v0.7, WP v0.14(WP-038), 원장 v0.48, `packages/react/src/*`, `packages/css/src/controls.css`, 카탈로그·지침, Changeset(react·css minor) | closed |
 | CR-061 | 2026-10-18 | scope + design | 사용자 지시 (2026-10-18): "Vercel AI Elements도 도입해라" — 질의 응답으로 Conductor 방식 재구현, 핵심 에이전트 UI 1차분, SDK에 묶이지 않는 props를 골랐다 | **에이전트 대화 UI 11종을 더한다.** 새 FR-CMP-016(SRS §25, v1.15). Tailwind·shadcn·AI SDK 없이 토큰·Radix로 다시 만든다. react·css minor | FR-CMP-016, FR-CMP-007, FR-A11Y-002 | SRS v1.15, PRD v0.9, feature v0.9, RTM v0.10, UI 명세 v0.14, API 계약 v0.10, WP v0.15(WP-039), 원장 v0.49, `packages/react/src/agent.tsx`, `packages/css/src/agent.css`, 카탈로그·지침, Changeset(react·css minor), `packages/css` 선택 진입점 `./agent.css` | closed |
 | CR-062 | 2026-10-19 | defect fix | 사용자 지시 (2026-10-19): "0.10.1로 도구 카드 여백 고치고 릴리스까지" | **닫힌 `Tool` 카드 아래 12px 여백을 없앤다.** Radix가 닫힌 Collapsible 내용을 `hidden`으로 남기는데 `.cdt-tool__content { display: grid }`가 그것을 덮었다. 에이전트 펼침 부품 3종에 `[hidden] { display: none }`을 두고, 모든 시나리오에서 `[hidden]` 요소가 자리를 차지하지 않는 브라우저 계약을 더한다. css patch | FR-CMP-016, FR-CSS-004, C-085, C-086, C-088 | `packages/css/src/agent.css`, `packages/react/src/testing/hidden-contract.ts`·a11y·component-css 브라우저 시험, UI 명세 v0.15, 원장 v0.50(DEV-060), Changeset(css patch) | closed |
+| CR-063 | 2026-10-20 | scope | 사용자 지시 (2026-10-20): "NumberInput에 glass 변형 추가하고 릴리스까지" | **`NumberInput`에 `variant="solid" \| "glass"`를 더한다.** TextField·TextArea와 같은 표면 질감이다. `glass`는 쉬는 상태의 입력 배경을 `surface.tint.1`로 두고, 포커스·비활성 배경은 solid와 같다. 기본값은 `solid`라 기존 화면은 바뀌지 않는다. react·css minor | FR-CMP-015, C-081, C-051 | SRS v1.16(§26 FR-CMP-015 AC-7), PRD v0.10, RTM v0.11, UI 명세 v0.16, API 계약 v0.11, 원장 v0.51, `packages/react/src/number-input.tsx`, `packages/css/src/controls.css`, selection·component-css 시험, 지침, API 리포트, Changeset(react·css minor) | open |
 
 유형: `scope`(범위 변경), `design`(설계 변경), `implementation`(구현 편차 DEV-### 처리), `correction`(문서 오류 수정)
 
@@ -754,3 +755,13 @@ CR-041 구현 cascade와 로컬 검증은 2026-09-14에 종료했다. 사용자�
 | 검증 (2026-10-19, 로컬) | 게이트 12종 통과(단위 805/805, a11y 346/346 skip 1, size: Button 1.33KiB·css 13.55KiB, check:api 변화 없음), 문서 E2E 69/69, 시각 회귀 27/27(기준 이미지 변경 없음), 문서 검증기 `--strict` 통과. 판정은 CI다 |
 | CI · 종료 | PR #68 head `9861917`에서 verify(node 20·22, Lighthouse 포함)·visual regression 통과. CR-062를 종료한다. 릴리스는 css patch(0.10.1) |
 
+## CR-063 NumberInput glass 변형 (2026-10-20)
+
+| 항목 | 기록 |
+| --- | --- |
+| 유형 / 상태 | scope / open |
+| 변경 근거 | 파일럿 앱 agent-ai-platform이 D-100 트리거 폼의 숫자 칸 두 개를 `NumberInput`으로 바꾸면서(DS-PILOT-14), 같은 폼의 glass `TextField` 사이에서 두 칸만 어둡게 보였다. 앱은 `app.css`에 임시 규칙(`.number-input-glass`)을 두었다. 사용자가 2026-10-20에 NumberInput에 glass 변형을 더하고 릴리스하라고 지시했다 |
+| 범위 판정 | FR-CMP-015 AC-5는 NumberInput의 동작만 정하고 표면 질감은 정하지 않았다. 새 prop은 공개 API 추가라 결함 수정이 아니다. FR-CMP-015에 AC-7을 더한다(SRS §26, v1.16). 새 컴포넌트·토큰은 없다. 비파괴 추가라 react·css minor다 |
+| 설계 | C-051 TextField의 결정을 그대로 따른다. `.cdt-input--glass`는 배경만 `surface.tint.1`로 바꾸고, 포커스(`.cdt-input:focus-visible`)와 비활성 배경은 더 높은 특이도로 이긴다. NumberInput의 시각은 내부 `<input>`(`.cdt-number-input__field`)에 있으므로 변형 클래스는 래퍼(`cdt-number-input--glass`, `size`·`invalid`와 같은 자리)에 붙이고, `.cdt-number-input--glass .cdt-number-input__field`를 같은 특이도의 포커스·비활성 규칙보다 앞에 둔다. 그래서 포커스·비활성 배경은 solid와 같다. 새 토큰을 만들지 않는다(TextField glass도 `surface.tint.1`을 직접 쓴다) |
+| 구현 | `packages/react/src/number-input.tsx`(`variant`, 기본 `solid`), `packages/css/src/controls.css`(glass 규칙 1줄), `testing/selection.test.tsx`(AC-7 1건), `testing/component-css.browser.test.tsx`(CR-063 1건), 지침 `use` 문장 보강, `etc/react.api.md` |
+| 시험 | 브라우저 시험이 다크·라이트 두 테마에서 glass NumberInput의 쉬는 배경 = glass TextField 배경 ≠ solid NumberInput 배경, 포커스 배경 = solid 포커스 배경, 비활성 배경 = solid 비활성 배경을 확인한다. glass 규칙을 지운 빌드에서는 `dark: expected 'rgb(8, 11, 18)' to be 'rgba(109, 124, 255, 0.11)'`로 실패하는 것을 확인했다 |

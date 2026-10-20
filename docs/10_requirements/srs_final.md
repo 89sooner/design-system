@@ -1,6 +1,6 @@
 # Conductor Design System 최종 요구사항 정의서
 
-> 상태: baseline | 버전: v1.15 | 갱신일: 2026-10-18
+> 상태: baseline | 버전: v1.16 | 갱신일: 2026-10-20
 
 ## 1. 문서 개요
 
@@ -38,7 +38,7 @@ Conductor는 `agent-ai-platform/packages/web`의 시각 언어를 3개 npm 패�
 2. 다크(기준) 및 라이트 테마, 시스템 설정 연동, 테마별 대비 검증, 소스 계승 토큰의 접근성 교정 — FR-THM-001 ~ FR-THM-005
 3. 캐스케이드 레이어 기반 프레임워크 비종속 스타일시트 — FR-CSS-001 ~ FR-CSS-005
 4. React 프리미티브 컴포넌트 — 기존 FR-CMP-001 ~ FR-CMP-009 및 CR-041 확장 FR-CMP-010 ~ FR-CMP-013 (§17, review)
-5. 정적 문서 사이트 — FR-DOC-001 ~ FR-DOC-007 및 CR-048 확장 FR-DOC-008 (§18), CR-051 확장 FR-DOC-009 (§19), CR-052 확장 FR-DOC-010 (§20), CR-053 보강 FR-DOC-001 AC-5·FR-CMP-013 AC-5 (§21), CR-054 확장 FR-CMP-014 (§22), CR-060 확장 FR-CMP-015 (§24), CR-061 확장 FR-CMP-016 (§25)
+5. 정적 문서 사이트 — FR-DOC-001 ~ FR-DOC-007 및 CR-048 확장 FR-DOC-008 (§18), CR-051 확장 FR-DOC-009 (§19), CR-052 확장 FR-DOC-010 (§20), CR-053 보강 FR-DOC-001 AC-5·FR-CMP-013 AC-5 (§21), CR-054 확장 FR-CMP-014 (§22), CR-060 확장 FR-CMP-015 (§24), CR-061 확장 FR-CMP-016 (§25), CR-063 보강 FR-CMP-015 AC-7 (§26)
 6. WCAG 2.1 AA 접근성 기준선 — FR-A11Y-001 ~ FR-A11Y-005
 7. 모노레포 빌드, 타입 배포, 진입점 선언, SSR 안전성, 버저닝 — FR-DX-001 ~ FR-DX-005
 8. 토큰 계약·단위·접근성·시각 회귀 검사 — FR-QA-001 ~ FR-QA-004
@@ -1167,3 +1167,11 @@ v1.14 baseline 이력을 유지한다. 사용자가 2026-10-18에 Vercel AI Elem
 | 관련 화면 | W-020, W-021 |
 | 관련 API/데이터 | API-CMP-012 / ENT-CMP-001 |
 | 예외/실패 처리 | 코드 하이라이트(shiki), 수식(katex), 다이어그램(mermaid), 워크플로 캔버스(xyflow), 애니메이션 런타임(rive), 마크다운 스트리밍 렌더러, 파일 첨부·음성 입력, AI SDK 메시지 형식 어댑터는 이 FR 범위가 아니다. 새 런타임 의존성은 없다. |
+
+## 26. CR-063 보강 (baseline)
+
+v1.15 baseline 이력을 유지한다. 파일럿 앱(agent-ai-platform)이 glass 텍스트 입력이 있는 폼에 `NumberInput`을 넣자 숫자 칸만 다른 표면으로 보였고, 사용자가 2026-10-20에 glass 변형을 더하라고 지시했다. 새 FR은 만들지 않고 FR-CMP-015에 수용 기준을 더한다.
+
+| FR | 추가 수용 기준 |
+| --- | --- |
+| FR-CMP-015 | AC-7 (NumberInput, C-081): `variant?: "solid" \| "glass"`(기본 `solid`)를 받는다. `glass`면 래퍼에 `cdt-number-input--glass`가 붙고, 쉬는 상태의 입력 배경이 같은 테마의 glass `TextField`(C-051)와 같다. 포커스와 비활성 배경은 `solid`와 같다. `solid`의 시각은 바뀌지 않는다. 다크·라이트 두 테마에서 브라우저 시험으로 확인한다. |

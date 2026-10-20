@@ -1,6 +1,6 @@
 # Conductor Design System UI 컴포넌트 명세서
 
-> 상태: review | 버전: v0.15 | 갱신일: 2026-10-19
+> 상태: review | 버전: v0.16 | 갱신일: 2026-10-20
 
 ## 0. 문서 위치와 범위
 
@@ -1302,9 +1302,10 @@ component 토큰은 semantic 토큰만 참조한다(FR-TOK-002 AC-3). 아래 표
 | C-078 | `RadioGroup` (`Root`, `Item`) | `cdt-radio-group`, `cdt-radio`, `cdt-radio__control` | Radix RadioGroup | `Root`: `value`·`defaultValue`·`onValueChange`, `orientation`, `invalid`, `required`; `Item`: `value`, `children`(라벨), `description`, `disabled` |
 | C-079 | `ToggleGroup` (`Root`, `Item`) | `cdt-toggle-group`, `cdt-toggle-group__item` | Radix ToggleGroup | `Root`: `type`(`single`·`multiple`), `value`·`onValueChange`, `size`; `Item`: `value`, `icon` |
 | C-080 | `Avatar` | `cdt-avatar` | Radix Avatar | `name`(필수, 접근성 이름·이니셜), `src`, `size`(`sm` 24·`md` 32·`lg` 40px), `decorative` |
-| C-081 | `NumberInput` | `cdt-number-input`, `cdt-number-input__field` | 기본 `<input type="number">` | 기본 input props(`min`·`max`·`step`·`value`·`onChange`), `suffix`, `size`, `invalid`, `labels` |
+| C-081 | `NumberInput` | `cdt-number-input`, `cdt-number-input__field`, `cdt-number-input--glass` | 기본 `<input type="number">` | 기본 input props(`min`·`max`·`step`·`value`·`onChange`), `suffix`, `size`, `variant`(`solid` 기본·`glass`, CR-063), `invalid`, `labels` |
 
 - **결정**: RadioGroup의 원은 Checkbox와 같은 20px이다(CR-059). 클릭 대상은 라벨 행 전체이고 행 높이가 40px다. `Field` 라벨에 `id`(`<field-id>-label`)를 더해 그룹 컨트롤이 `aria-labelledby`로 이름을 받는다.
+- **결정 (CR-063)**: NumberInput의 `variant`는 C-051 TextField와 같은 표면 질감이다. `glass`는 쉬는 상태의 입력 배경만 `surface.tint.1`로 바꾸고, 포커스·비활성 배경은 `solid`와 같다. 변형 클래스는 `size`·`invalid`처럼 래퍼에 붙고, 규칙은 내부 입력을 고른다.
 - **결정**: NumberInput의 증감 버튼은 탭 순서에서 빠진다. 키보드 경로는 입력의 화살표 키이고, 버튼은 포인터용이다. `className`은 바깥 래퍼에, 나머지 기본 props와 `ref`는 `<input>`에 간다.
 - **결정**: AlertDialog는 Dialog의 `cdt-dialog` 표면을 재사용한다. 그래서 오버레이 쌓임 계약(CR-058)과 모션이 그대로 적용된다.
 
