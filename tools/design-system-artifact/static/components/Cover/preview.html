@@ -1,0 +1,42 @@
+<!-- @dsCard height=288 -->
+<!doctype html>
+<html><head><meta charset="utf-8"><style>
+html,body{margin:0;height:100%}
+body{background:var(--cdt-surface-base);font-family:var(--cdt-font-sans)}
+.cover{position:relative;width:960px;height:288px;overflow:hidden}
+svg{position:absolute;inset:0}
+.accent{fill:var(--cdt-accent)}
+.accent-strong{fill:var(--cdt-accent-strong)}
+.elevated{fill:var(--cdt-surface-elevated);stroke:var(--cdt-border-strong);stroke-width:var(--cdt-border-width-hairline)}
+.success{fill:var(--cdt-status-success)}
+.waiting{fill:var(--cdt-status-waiting)}
+.dot{fill:var(--cdt-border-strong)}
+.lg{rx:var(--cdt-radius-lg)}
+.md{rx:var(--cdt-radius-md)}
+.text{position:absolute;left:var(--cdt-space-7);bottom:var(--cdt-space-7);max-width:440px}
+.name{margin:0;color:var(--cdt-text-primary);font-size:80px;line-height:.92;font-weight:700;letter-spacing:-0.035em}
+.tag{margin:var(--cdt-space-3) 0 0;color:var(--cdt-text-muted);font-size:14px;line-height:21px}
+</style></head>
+<body><div class="cover">
+<svg viewBox="0 0 960 288" width="960" height="288" aria-hidden="true">
+<!--
+blocks: cdt-accent 168x234 slab, cdt-accent-strong 120x144, cdt-surface-elevated 120x120 (cdt-border-strong hairline), cdt-status-success 48x48, cdt-status-waiting 144x24 pill
+arrangement: one tall accent slab bleeding off the top with satellites bleeding top-right and bottom; everything right of x=480
+pattern: dot grid at cdt-space-5 (24px) pitch in cdt-border-strong — "precise, technical, mono" row, chosen because the README sells a dense operator console with translucent hairline layers
+scales: cdt-space-5 24, cdt-space-8 48; radii cdt-radius-lg 18, cdt-radius-md 12; pill = half of 24; dot r = cdt-border-width-emphasis 2
+-->
+<rect class="accent lg" x="528" y="-18" width="168" height="234"/>
+<rect class="waiting md" x="528" y="240" width="144" height="24"/>
+<rect class="accent-strong lg" x="720" y="168" width="120" height="144"/>
+<rect class="elevated lg" x="864" y="-24" width="120" height="120"/>
+<rect class="success md" x="864" y="120" width="48" height="48"/>
+<g>
+<circle class="dot" cx="732" cy="36" r="2"/><circle class="dot" cx="756" cy="36" r="2"/><circle class="dot" cx="780" cy="36" r="2"/><circle class="dot" cx="804" cy="36" r="2"/><circle class="dot" cx="828" cy="36" r="2"/>
+<circle class="dot" cx="732" cy="60" r="2"/><circle class="dot" cx="756" cy="60" r="2"/><circle class="dot" cx="780" cy="60" r="2"/><circle class="dot" cx="804" cy="60" r="2"/><circle class="dot" cx="828" cy="60" r="2"/>
+<circle class="dot" cx="732" cy="84" r="2"/><circle class="dot" cx="756" cy="84" r="2"/><circle class="dot" cx="780" cy="84" r="2"/><circle class="dot" cx="804" cy="84" r="2"/><circle class="dot" cx="828" cy="84" r="2"/>
+<circle class="dot" cx="732" cy="108" r="2"/><circle class="dot" cx="756" cy="108" r="2"/><circle class="dot" cx="780" cy="108" r="2"/><circle class="dot" cx="804" cy="108" r="2"/><circle class="dot" cx="828" cy="108" r="2"/>
+<circle class="dot" cx="732" cy="132" r="2"/><circle class="dot" cx="756" cy="132" r="2"/><circle class="dot" cx="780" cy="132" r="2"/><circle class="dot" cx="804" cy="132" r="2"/><circle class="dot" cx="828" cy="132" r="2"/>
+</g>
+</svg>
+<div class="text"><h1 class="name">Conductor</h1><p class="tag">Tokens, CSS and React primitives for agent operations.</p></div>
+</div></body></html>

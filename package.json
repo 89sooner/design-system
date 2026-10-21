@@ -24,7 +24,8 @@
     "check:api": "node scripts/check-api.mjs",
     "check:release-tags": "node scripts/check-release-tags.mjs",
     "check:secrets": "node scripts/scan-secrets.mjs",
-    "lighthouse": "node scripts/check-lighthouse.mjs"
+    "lighthouse": "node scripts/check-lighthouse.mjs",
+    "ds:artifact": "node tools/design-system-artifact/build.mjs"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

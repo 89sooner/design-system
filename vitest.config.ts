@@ -62,6 +62,15 @@ export default defineConfig({
           include: ["*.test.mjs"],
         },
       },
+      {
+        // `pnpm ds:artifact`: the producer of the claude.ai design system artifact.
+        test: {
+          name: "design-system-artifact",
+          root: fromRoot("./tools/design-system-artifact"),
+          environment: "node",
+          include: ["test/*.test.mjs"],
+        },
+      },
     ],
   },
 });

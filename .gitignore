@@ -10,6 +10,8 @@ test-results/
 size-report.json
 temp/
 dist-server/
+# Rebuilt by `pnpm ds:artifact`; the published design system artifact is the copy that matters.
+tools/design-system-artifact/out/
 
 # Generated token artifacts. The token source (schema/primitives/palette/scales/
 # components) is the only input; these are emitted by `pnpm --filter @conductor/tokens
