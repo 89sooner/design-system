@@ -1,6 +1,6 @@
 # 요구사항-화면 추적 매트릭스
 
-> 상태: review | 버전: v0.12 | 갱신일: 2026-10-21
+> 상태: review | 버전: v0.13 | 갱신일: 2026-10-22
 
 ## 1. 목적
 
@@ -69,7 +69,7 @@ UI가 없는 요구사항은 아래 표면 중 하나에 간접 노출된다.
 | FR-TOK-008 | Should | — | SFC-PKG, W-030 | — | z-index 스케일 |
 | FR-TOK-009 | Should | W-012 | SFC-PKG | — | 브레이크포인트 |
 | FR-THM-001 | Must | W-010, W-030 | SFC-PKG | FLOW-002 | 기준 팔레트 |
-| FR-THM-002 | Must | W-010, W-030 | SFC-PKG | FLOW-002 | 라이트 팔레트 |
+| FR-THM-002 | Must | W-010, W-030 | SFC-PKG | FLOW-002 | 라이트 팔레트; 경계 무게 사다리·표 머리글·배지 채움 (CR-065) |
 | FR-THM-003 | Must | W-001, W-030 | SFC-PKG | FLOW-002 | 테마 결정 우선순위 |
 | FR-THM-004 | Must | W-030, W-050 | SFC-CLI, SFC-CI | FLOW-003 | 대비 검사 |
 | FR-THM-005 | Must | W-030, W-050 | SFC-CLI, SFC-PKG | FLOW-003 | 소스 계승 토큰 교정 (OD-001 종결); placeholder 역할 토큰과 CP-122·CP-123 (CR-064) |
@@ -159,7 +159,7 @@ NFR은 화면 하나에 귀속되지 않는다. 각 NFR이 어디서 측정되�
 | FR-CMP-014 | W-020, W-021 / SFC-PKG | WP-037 | Toast·DatePicker·CommandPalette·Pagination 동작, axe(열린 상태 포함), 키보드 경로 (CR-054) |
 | FR-CMP-015 | W-020, W-021 / SFC-PKG | WP-038 | AlertDialog·RadioGroup·ToggleGroup·Avatar·NumberInput 동작, axe(열린 상태 포함), 키보드 경로, 쌓임·커서·포커스 링 계약 (CR-060); NumberInput glass 배경이 glass TextField와 같고 포커스·비활성은 solid와 같은지 두 테마 브라우저 시험 (CR-063) |
 | FR-CMP-016 | W-020, W-021 / SFC-PKG | WP-039 | 에이전트 대화 컴포넌트 11종 동작(전송·IME·중단, 스트리밍 상태, 펼침, 승인 결정, 인용), axe(열린 상태 포함), 키보드 경로, 포커스 링·커서 계약 (CR-061) |
-| FR-CMP-013 | W-060, W-061, W-062 / SFC-PKG / SFC-REL | WP-029 | Radix 키보드·포커스와 tarball 소비 |
+| FR-CMP-013 | W-060, W-061, W-062 / SFC-PKG / SFC-REL | WP-029 | Radix 키보드·포커스와 tarball 소비; Tabs 활성 표시선 (CR-065) |
 
 
 ### CR-041 실제 조합 화면 경로

@@ -1,6 +1,6 @@
 # Conductor Design System 최종 요구사항 정의서
 
-> 상태: baseline | 버전: v1.17 | 갱신일: 2026-10-21
+> 상태: baseline | 버전: v1.18 | 갱신일: 2026-10-22
 
 ## 1. 문서 개요
 
@@ -38,7 +38,7 @@ Conductor는 `agent-ai-platform/packages/web`의 시각 언어를 3개 npm 패�
 2. 다크(기준) 및 라이트 테마, 시스템 설정 연동, 테마별 대비 검증, 소스 계승 토큰의 접근성 교정 — FR-THM-001 ~ FR-THM-005
 3. 캐스케이드 레이어 기반 프레임워크 비종속 스타일시트 — FR-CSS-001 ~ FR-CSS-005
 4. React 프리미티브 컴포넌트 — 기존 FR-CMP-001 ~ FR-CMP-009 및 CR-041 확장 FR-CMP-010 ~ FR-CMP-013 (§17, review)
-5. 정적 문서 사이트 — FR-DOC-001 ~ FR-DOC-007 및 CR-048 확장 FR-DOC-008 (§18), CR-051 확장 FR-DOC-009 (§19), CR-052 확장 FR-DOC-010 (§20), CR-053 보강 FR-DOC-001 AC-5·FR-CMP-013 AC-5 (§21), CR-054 확장 FR-CMP-014 (§22), CR-060 확장 FR-CMP-015 (§24), CR-061 확장 FR-CMP-016 (§25), CR-063 보강 FR-CMP-015 AC-7 (§26), CR-064 보강 FR-THM-005 AC-8·FR-CMP-004 AC-7·FR-CMP-010 AC-6 (§27)
+5. 정적 문서 사이트 — FR-DOC-001 ~ FR-DOC-007 및 CR-048 확장 FR-DOC-008 (§18), CR-051 확장 FR-DOC-009 (§19), CR-052 확장 FR-DOC-010 (§20), CR-053 보강 FR-DOC-001 AC-5·FR-CMP-013 AC-5 (§21), CR-054 확장 FR-CMP-014 (§22), CR-060 확장 FR-CMP-015 (§24), CR-061 확장 FR-CMP-016 (§25), CR-063 보강 FR-CMP-015 AC-7 (§26), CR-064 보강 FR-THM-005 AC-8·FR-CMP-004 AC-7·FR-CMP-010 AC-6 (§27), CR-065 정정·보강 FR-THM-002 AC-3·AC-5·FR-CMP-013 AC-6 (§28)
 6. WCAG 2.1 AA 접근성 기준선 — FR-A11Y-001 ~ FR-A11Y-005
 7. 모노레포 빌드, 타입 배포, 진입점 선언, SSR 안전성, 버저닝 — FR-DX-001 ~ FR-DX-005
 8. 토큰 계약·단위·접근성·시각 회귀 검사 — FR-QA-001 ~ FR-QA-004
@@ -305,7 +305,7 @@ FR-QA-004(시각 회귀)와 FR-CMP-009(셸 컴포넌트군)는 2026-07-10에 OD-
 | 우선순위 | Must |
 | 출처 | F-THM-002 / SRC-USER |
 | 요구사항 | 시스템은 항상 라이트 테마를 다크 테마와 동일한 semantic 토큰 키 집합으로 제공하여야 한다. |
-| 수용 기준 | AC-1: 두 테마의 semantic 토큰 키 집합의 대칭 차집합이 공집합이다. AC-2: 라이트 테마 적용 시 루트 요소의 계산된 `color-scheme`이 `light`다. AC-3: 다크 테마에서 alpha 값으로 정의된 경계 토큰(`border.subtle`, `border.default`, `border.strong`)이 라이트 테마에서도 동일 키로 존재하며, 라이트 배경 위에서 FR-A11Y-004의 비텍스트 대비 3:1을 만족한다. AC-4: 라이트 테마에서 `elevation.*` 토큰의 그림자 alpha가 다크 테마와 다른 값을 갖는다(동일 값 재사용 금지). |
+| 수용 기준 | AC-1: 두 테마의 semantic 토큰 키 집합의 대칭 차집합이 공집합이다. AC-2: 라이트 테마 적용 시 루트 요소의 계산된 `color-scheme`이 `light`다. AC-3 (CR-065 정정): 다크 테마의 경계 토큰(`border.subtle`, `border.default`, `border.strong`, `border.control`)이 라이트 테마에서도 동일 키로 존재한다. 장식 경계 세 토큰은 FR-THM-005 AC-4에 따라 대비 검사 대상이 아니며, 라이트 세 표면(`surface.base`·`surface.raised`·`surface.elevated`) 위에서 `border.subtle` < `border.default` < `border.strong` < 3:1 ≤ `border.control` 순서를 지키고, `surface.raised` 위 대비가 같은 키의 다크 값을 넘지 않는다. FR-A11Y-004의 비텍스트 3:1은 `border.control`이 진다(FR-THM-005 AC-2). AC-4: 라이트 테마에서 `elevation.*` 토큰의 그림자 alpha가 다크 테마와 다른 값을 갖는다(동일 값 재사용 금지). AC-5 (CR-065): 표면 단계를 그리는 장치는 테마의 명도 방향을 따른다. 표 머리글은 본문보다 텍스트 색 쪽으로 한 단계(다크에서 밝게, 라이트에서 어둡게) 움직이고, 배지 채움은 부모 표면 위에 얹는 반투명 색이라 라이트의 흰 표면 위에서도 칩이 보인다. |
 | 검증 방법 | test |
 | 관련 화면 | W-010, W-030 |
 | 관련 API/데이터 | API-THM-001 / ENT-THM-001 |
@@ -927,7 +927,7 @@ OD-001(2026-07-10 종결)이 확정한 정책이다. 소스 팔레트를 실측�
 | 토큰 | 소스 값 | 교정 값 | 다크 대비율 (교정 전 → 후) | 근거 |
 | --- | --- | --- | --- | --- |
 | `focusRing` | accent alpha 0.30 | accent alpha 0.80 | `surface.base` 1.50 → 3.93 / `surface.raised` 2.58(0.6 기준) → 3.56 | WCAG 2.4.11 포커스 표시자는 3:1을 만족해야 한다. 장식으로 분류할 수 없다 |
-| `border.control` (신규) | 없음 (소스는 `border.default` 사용) | slate `#94a3b8` alpha 0.60 | `surface.raised` 1.30 → 3.23 | WCAG 1.4.11. 폼 컨트롤 경계는 컴포넌트 식별에 필수다 |
+| `border.control` (신규) | 없음 (소스는 `border.default` 사용) | slate `#94a3b8` alpha 0.60 (라이트 `rgba(12, 18, 28, 0.5)`, CR-065) | `surface.raised` 1.30 → 3.23 (라이트 3.40 ~ 3.51) | WCAG 1.4.11. 폼 컨트롤 경계는 컴포넌트 식별에 필수다 |
 
 용도 분류 (값을 보존한다):
 
@@ -938,9 +938,9 @@ OD-001(2026-07-10 종결)이 확정한 정책이다. 소스 팔레트를 실측�
 | `text.muted` | `#8290a3` | `body` | 4.76 ~ 6.06 | 제약 없음 |
 | `text.placeholder` (CR-064) | `#8290a3` (= `text.muted`) | `body` | `surface.raised` 5.22 (라이트 6.81) | 활성 입력의 placeholder 전용 역할. 새 색이 아니라 두 테마 모두 `text.muted`와 같은 값이다(FR-TOK-002 AC-2가 같은 계층 참조를 CR-008의 4건으로 묶으므로 별칭이 아니라 값으로 둔다). `input.placeholder`가 이 토큰을 가리킨다. 입력이 실제로 칠하는 표면에서 4.5:1 이상이어야 한다(FR-THM-005 AC-8) |
 | `text.faint` | `#5f6d80` | `decorative` | 2.94 ~ 3.74 | 본문 금지. `surface.elevated` 위 사용 금지(2.94). 메타·타임스탬프·대문자 라벨 전용. 사용자가 읽고 행동해야 하는 글자(활성 입력의 placeholder 포함)에는 쓰지 않는다(CR-064) |
-| `border.subtle` | slate alpha 0.10 | `decorative` | 1.13 | WCAG 1.4.11 예외: 카드/패널 경계는 표면색 차이로 이미 식별 가능하다 |
-| `border.default` | slate alpha 0.18 | `decorative` | 1.30 | 위와 같다. 폼 컨트롤에는 `border.control`을 쓴다 |
-| `border.strong` | slate alpha 0.30 | `decorative` | 1.69 | 위와 같다 |
+| `border.subtle` | slate alpha 0.10 | `decorative` | 1.13 | WCAG 1.4.11 예외: 카드/패널 경계는 표면색 차이로 이미 식별 가능하다. 라이트는 잉크 alpha 0.07(1.15, CR-065) |
+| `border.default` | slate alpha 0.18 | `decorative` | 1.30 | 위와 같다. 폼 컨트롤에는 `border.control`을 쓴다. 라이트는 잉크 alpha 0.12(1.29, CR-065) |
+| `border.strong` | slate alpha 0.30 | `decorative` | 1.69 | 위와 같다. 라이트는 잉크 alpha 0.20(1.55, CR-065) |
 | `accent` | `#6d7cff` | `body` | 4.40 ~ 5.60 | `surface.elevated` 위 본문 사용 금지(4.40). 대형 텍스트와 비텍스트는 허용 |
 | `status.queued` | `#64748b` | `nonText` | 3.25 ~ 3.56 | 아이콘과 텍스트 병기 필수(FR-A11Y-003). `surface.raised` 3.56, `surface.elevated` 3.25로 기준 충족 |
 | `status.neutralEnd` | `#94a3b8` | `nonText` (CR-035) | 6.61 (`badge.marker.background`) | 아이콘과 텍스트 병기 필수. 점/마커 전용, 텍스트 전경 금지. CP-042로 검사한다. CR-006은 소스 값 `#475569`(2.04 ~ 2.60)를 보존하는 대가로 `decorative` 분류와 WCAG 1.4.11 예외를 택했고, 그 대가는 "다크 테마에서 종료 상태 점이 흐리게 읽힌다"는 승인된 제약이었다. CR-035가 값을 `slate.400`으로 올려 그 예외를 폐기했다. 마커는 채움이 아니라 링으로 그려 queued의 채운 점과 형태로도 구분된다 |
@@ -1186,3 +1186,15 @@ v1.16 baseline 이력을 유지한다. PR 조사 화면을 Conductor로 시제�
 | FR-THM-005 | AC-8: 활성 입력의 placeholder는 `text.placeholder`(`usage: body`, 두 테마 모두 `text.muted`와 같은 값)를 쓰고 `text.faint`를 쓰지 않는다. `input.placeholder`는 `text.placeholder`를 참조한다. `TextField`·`TextArea`·`NumberInput`·`PromptInput`의 placeholder가 각 입력이 실제로 칠하는 배경 위에서 다크·라이트 모두 4.5:1 이상이다. 대비 쌍 CP-122(`surface.raised`)·CP-123(`input.background`)으로 검사하고, 브라우저 시험이 계산된 `::placeholder` 색과 입력 배경으로 확인한다. |
 | FR-CMP-004 | AC-7: `Badge`·`StatusBadge`·`SeverityTag`는 한 줄 라벨이라 자기 안에서 줄을 바꾸지 않는다(`white-space: nowrap`). 표 셀 안의 버튼도 같다. 셀의 본문 글자는 계속 줄을 바꾼다. `StatusBadge`는 `appearance?: "chip" \| "plain"`(기본 `chip`)을 받는다. `plain`은 채움·경계·표지 점 없이 상태색 아이콘과 `text.primary` 글자를 그린다. 색·아이콘·텍스트 세 채널(AC-1의 배경 대신 아이콘 색)은 유지한다. |
 | FR-CMP-010 | AC-6: `DataTable` 행은 안정 ID를 `data-row-id`로 노출하고, 열은 선택적 `minInlineSize`를 받으며, `stateAction`이 error/partial 배너에 다음 행동을 둔다. 선택된 행의 눌린 버튼은 `text.primary`로 그리고, 정렬 가능한 헤더의 버튼은 헤더의 글자 스타일을 따른다. 분할 레이아웃의 `WorkbenchLayout` 패널은 결과를 스크롤해도 화면 안에 남고(`AppShell` 안에서는 상단 막대 아래) 자체 스크롤을 갖는다. **breakpoint.md** 미만에서는 결과 아래로 쌓인다. |
+
+## 28. CR-065 정정·보강 (baseline)
+
+v1.17 baseline 이력을 유지한다. 사용자가 2026-10-22 Tabs의 "테두리가 비치는" 모양과 라이트 테마의 어정쩡한 테두리를 지적했다. 0.12.0 문서 사이트에서 재현한 원인은 넷이다. 활성 탭의 안쪽 밑줄이 둥근 상자 모서리를 따라 휘어 목록 구분선 위에 두 번째 선으로 떴고, 라이트 장식 경계가 불투명 중간 회색(`border.default` 4.36:1, `border.strong` 5.52:1)이라 다크(1.37·1.75)의 세 배 무게로 컨트롤 경계와 구분되지 않았으며, 배지 칩과 표 머리글이 `surface.raised`를 기준으로 칠해져 라이트의 흰 표면 위에서 칩이 사라지고 머리글이 본문보다 밝았다.
+
+라이트 장식 경계의 무게는 이 문서 안의 충돌에서 왔다. FR-THM-002 AC-3이 라이트 장식 경계에 3:1을 요구했고, FR-THM-005 AC-4(OD-001 결정)는 같은 토큰을 대비 검사에서 뺐다. OD-001이 정한 쪽을 따라 AC-3을 정정한다(DEV-062). 새 FR·새 토큰·공개 API는 없다.
+
+| FR | 변경 |
+| --- | --- |
+| FR-THM-002 | AC-3 정정: 장식 경계 세 토큰은 대비 검사 대상이 아니고, 라이트 세 표면에서 subtle < default < strong < 3:1 ≤ `border.control` 순서를 지키며 같은 키의 다크 무게를 넘지 않는다. 라이트 값은 `rgba(12, 18, 28, α)`(α 0.07 / 0.12 / 0.20 / control 0.50, `surface.raised` 위 1.15 / 1.29 / 1.55 / 3.51). AC-5 추가: 표 머리글은 본문보다 텍스트 색 쪽으로 한 단계 움직이고, 배지 채움은 부모 표면 위의 반투명 색이다. |
+| FR-CMP-013 | AC-6: `Tabs`의 활성 상태는 배경 상자나 그림자 없이, 목록 구분선(`border.default`) 위에 정확히 놓인 곧은 `accent` 표시선(구분선보다 두껍다)과 `text.primary` 글자로 나타낸다. 호버 면은 구분선에 닿지 않는다. 세로 방향은 같은 선을 inline-end에 두고, 강제 색 모드에서는 시스템 강조색으로 다시 그린다. |
+

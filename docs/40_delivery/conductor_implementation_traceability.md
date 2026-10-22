@@ -1,6 +1,6 @@
 # Conductor Design System 구현 추적 원장
 
-> 상태: review | 버전: v0.52 | 갱신일: 2026-10-21
+> 상태: review | 버전: v0.53 | 갱신일: 2026-10-22
 
 ## 1. 목적과 갱신 규칙
 
@@ -210,7 +210,7 @@ PR Search 소비처의 `DEV-380`이 트리거다: 화면 계약이 최대 20계�
 | FR-TOK-008 | `src/scales.ts` | `src/scales.test.ts` | WP-005 | 검증됨 (AC-1~AC-3) |
 | FR-TOK-009 | `packages/tokens/src/scales.ts`, `src/build/media.ts`, `packages/css/build.mjs`, `packages/css/checks.mjs` | `packages/tokens/src/scales.test.ts`, `packages/css/test/bundle.test.ts`, `test/checks.test.ts` | WP-005, WP-009 | 검증됨 (AC-1~AC-3. CSS 소스의 `{breakpoint.sm}`·`{breakpoint.md}`가 공개 `@conductor-by-89soone/tokens/breakpoints` 값으로 560px·800px 리터럴 치환되고 산출 미디어 조건의 breakpoint CSS 변수 0건. `CSS-MEDIA-VAR` 음성 테스트 포함) |
 | FR-THM-001 | `src/palette.dark.ts`, `src/token-source.ts`, `src/build/emit-css.ts` | `src/palette.dark.test.ts`, `src/build/emit-css.test.ts` | WP-002, WP-010 | 검증됨 (AC-1~AC-4. 다크 소스 1:1·별칭·키 대칭 및 `color-scheme: dark`) |
-| FR-THM-002 | `src/palette.light.ts`, `src/token-source.ts`, `src/build/emit-css.ts` | `src/theme-contract.test.ts`, `src/contrast/check.test.ts`, `src/build/emit-css.test.ts` | WP-010 | 검증됨 (AC-1~AC-4. 키 대칭, light color-scheme, 불투명 라이트 경계 3:1 이상, elevation alpha 차이) |
+| FR-THM-002 | `src/palette.light.ts`, `src/token-source.ts`, `src/build/emit-css.ts`, `packages/css/src/components.css` | `src/theme-contract.test.ts`, `src/contrast/check.test.ts`, `src/build/emit-css.test.ts`, `src/palette.light.test.ts`, `packages/css/test/bundle.test.ts`, `component-css.browser.test.tsx` | WP-010, CR-065 | 검증됨 (AC-1~AC-5. 키 대칭, light color-scheme, 라이트 경계 무게 사다리(CR-065 정정 — 이전 기록 "불투명 라이트 경계 3:1 이상"은 `border.subtle` 1.04~1.23으로 사실이 아니었다, DEV-062), elevation alpha 차이, 표 머리글·배지 채움 방향) |
 | FR-THM-003 | `src/token-source.ts`, `src/build/emit-css.ts`, `apps/docs/src/theme.ts` | `src/build/emit-css.test.ts`, `apps/docs/e2e/shell.spec.ts` | WP-010, WP-018 | 검증됨 (CSS 명시 속성 우선·OS 폴백·무효값 다크, 문서 사이트 토글이 속성만 변경하고 컴포넌트를 재마운트하지 않음) |
 | FR-THM-004 | `src/contrast-pairs.ts`, `src/contrast-cli.ts` | `src/contrast-pairs.test.ts`, `src/contrast/check.test.ts` | WP-007, WP-010 | 검증됨 (AC-1~AC-4. 두 테마 232/232 통과(dataviz CP-043~CP-117 포함, CR-036), alpha 합성 포함. 금지 조합 FP-001·FP-002는 별칭 종점까지 해석해 `TOK-CP-FORBIDDEN`으로 차단하고 매 실행에 재측정한다 — CR-035. CR-064로 244/244(CP-122·CP-123 추가)) |
 | FR-THM-005 | `src/palette.dark.ts`, `src/contrast-pairs.ts`, `src/lint-cli.ts` | `src/palette.dark.test.ts`, `src/contrast-pairs.test.ts` | WP-002, WP-006, WP-007 | 검증됨 (AC-1 focusRing 3.93/3.56, AC-2 border.control 3.23, AC-3 lint 차단 + 금지쌍 FP-001 실증, AC-4~AC-7 usage 분류. CR-035 반영: `status.neutralEnd`=nonText `#94a3b8`, CP-042로 다크 6.61 · 라이트 8.58, CP-025는 영구 결번. CR-064: AC-8 `text.placeholder`(body, `text.muted`와 같은 값) → `input.placeholder`, CP-122 다크 5.22·라이트 6.81, CP-123 다크 6.06·라이트 6.99, 브라우저 시험이 TextField·TextArea·NumberInput·PromptInput의 계산된 placeholder 대비를 두 테마에서 확인) |
@@ -264,6 +264,7 @@ PR Search 소비처의 `DEV-380`이 트리거다: 화면 계약이 최대 20계�
 
 | DEV ID | 발견일 | 유형 | 내용 | 관련 ID | 처리 CR | 상태 |
 | --- | --- | --- | --- | --- | --- | --- |
+| DEV-062 | 2026-10-22 | 문서/코드 불일치 | **SRS 두 조항이 라이트 장식 경계에 서로 다른 것을 요구했고, 구현은 어느 쪽도 온전히 따르지 않았다.** FR-THM-002 AC-3은 라이트 `border.subtle`·`default`·`strong`에 비텍스트 3:1을, FR-THM-005 AC-4(OD-001)는 같은 토큰을 대비 검사 제외로 정했다. 토큰 명세 6.3은 AC-3을 따라 `border.default`·`border.strong`을 불투명 중간 회색(`surface.raised` 위 4.36·5.52)으로 정해 다크(1.37·1.75)의 세 배 무게가 되었고 컨트롤 경계(4.63)와 구분되지 않았다. 그러면서 `border.subtle` `#e2e8f0`은 1.04~1.23으로 AC-3도 지키지 못했다. 이를 검사하는 시험은 없었다. 사용자 지적(2026-10-22, 라이트 테두리가 어정쩡하다)에서 발견 | FR-THM-002, FR-THM-005 | CR-065 | open |
 | DEV-061 | 2026-10-21 | 문서/코드 불일치 | **입력 placeholder의 대비를 입력이 칠하지 않는 표면에서 읽었다.** `components.ts`의 `input.placeholder` 설명과 토큰 명세 7.5절은 "다크 입력은 `surface.base` 위"라고 가정했지만 `.cdt-input`·`.cdt-textarea`·`.cdt-select__trigger`는 `surface.raised`를 칠한다(CR-019). `text.faint` placeholder는 그 위에서 다크 3.22:1·라이트 4.36:1이었다. 함께 `NumberInput` 내부 입력에는 placeholder 규칙이 없어 브라우저 기본 회색(다크 4.27:1)이었다. PR 조사 화면 감사(2026-10-21)와 CR-064 브라우저 시험에서 발견 | FR-THM-005, C-051, C-081 | CR-064 | closed |
 | DEV-060 | 2026-10-19 | 소비자 검증 편차 | **닫힌 `Tool` 카드 아래에 12px 빈 띠가 남았다.** agent-ai-platform DS-PILOT-11에서 발견. Radix가 닫힌 Collapsible 내용을 `hidden`으로 남기는데 `.cdt-tool__content { display: grid }`가 그것을 덮었다. `[hidden] { display: none }`을 두고, 모든 시나리오의 `[hidden]` 요소가 `display: none`인지 확인하는 브라우저 계약(`hidden-contract.ts`)을 더했다 | FR-CMP-016, C-086 | CR-062 | closed |
 | DEV-059 | 2026-10-15 | 구현 편차 | **`Checkbox`가 C-055의 20×20 상자 대신 40×40 상자를 그렸고, `Switch`의 포커스 링이 24px 트랙이 아니라 42×40 히트 상자에 그려졌다.** 사용자 보고로 발견. 두 컨트롤의 버튼 상자를 시각 크기로 바꾸고 40px 히트 영역을 투명 `::after`로 옮겼다. PR CI(head `da8e920`)의 visual regression에서 체크박스가 작아진 `AllComponents-grayscale-dark` 한 장만 기준을 넘었다. Docker 데몬이 없어 DEV-045·DEV-056과 같은 방법으로 그 한 장만 갱신했고, 같은 조건에서 27장 모두 통과한다 | FR-CMP-007, FR-A11Y-002, C-054, C-055 | CR-059 | closed |
@@ -651,4 +652,14 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | 시험 | 브라우저 5건(두 테마), 단위 2건, 토큰 3건 수정·추가. 수정 전 CSS·토큰으로 되돌린 빌드에서 브라우저 5건이 모두 실패함을 확인했다 |
 | 편차 | DEV-061 (입력 배경 가정, NumberInput placeholder 누락) |
 | 검증 (CI) | PR #73 head `3091a7d`: verify(node 20·22), visual regression 통과. CR-064·DEV-061 closed |
+
+### CR-065 Tabs 활성 표시와 라이트 테마 경계 무게 (2026-10-22)
+
+| 범위 | 결과 |
+| --- | --- |
+| 패키지 | tokens: 라이트 `border.subtle`·`default`·`strong`·`control`을 `rgba(12, 18, 28, 0.07 / 0.12 / 0.2 / 0.5)`로(`surface.raised` 위 1.15 / 1.29 / 1.55 / 3.51), primitive 설명 정리(값 변경 없음). css: `interaction.css` Tabs — 목록 `border.default` 구분선·`space.1` 여백, 트리거 `::after` 표시선(활성 `accent`), 호버 면, 세로 방향, `forced-colors`. `components.css` — 배지 칩 `color-mix(tone 10%, transparent)`(중립 8%), 표 머리글 `color-mix(text.primary 3%, surface.timeline)` |
+| FR 매핑 | FR-THM-002 AC-3·AC-5 → `palette.light.ts`, `components.css`, 시험 `palette.light.test.ts`(CR-065 5건), `test/bundle.test.ts`(CR-065), `component-css.browser.test.tsx`(CR-065 표 머리글). FR-CMP-013 AC-6 → `interaction.css`, `test/bundle.test.ts`(CR-065 Tabs 3건), `component-css.browser.test.tsx`(CR-065 Tabs) |
+| 시험 | 토큰 6건(경계 사다리 3표면, 다크보다 무겁지 않음 3키), 번들 4건 추가·1건 수정(배지 칩), 브라우저 2건(두 테마). 수정 전 소스로 되돌린 빌드에서 토큰·번들 11건과 브라우저 2건이 모두 실패함을 확인했다 |
+| 편차 | DEV-062 (FR-THM-002 AC-3 ↔ FR-THM-005 AC-4 충돌, 라이트 장식 경계 무게) |
+| 검증 (로컬) | 게이트 12종 통과(단위 831/831, a11y 356 통과·1 skip, check:contrast 244/244), 문서 E2E 69/69. 시각 회귀는 CI가 판정한다 |
 

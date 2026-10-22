@@ -1,4 +1,4 @@
-// Refs: CR-056 DEV-057 CR-057 CR-058 CR-062 CR-063 CR-064 DEV-061 FR-A11Y-001 FR-CSS-002 FR-THM-005 FR-CMP-004 FR-CMP-010
+// Refs: CR-056 DEV-057 CR-057 CR-058 CR-062 CR-063 CR-064 CR-065 DEV-061 FR-A11Y-001 FR-CSS-002 FR-THM-005 FR-CMP-004 FR-CMP-010
 //
 // `@conductor-by-89soone/css/component.css` leaves out cdt.reset for consumers that bring their
 // own global reset. The focus ring must not depend on that reset: every keyboard stop that is a
@@ -11,6 +11,8 @@ import { TextArea, TextField } from "../form";
 import { Badge, StatusBadge } from "../status";
 import { DataTable, DetailInspector, WorkbenchLayout } from "../workbench";
 import { PromptInput } from "../agent";
+import { Tabs } from "../interaction";
+import { Table } from "../data";
 import "@conductor-by-89soone/css/component.css";
 import "@conductor-by-89soone/css/agent.css";
 import { a11yScenarios } from "./a11y-scenarios";
@@ -246,3 +248,47 @@ test("CR-064 FR-CMP-010 AC-6: the split-view inspector stays in view while resul
   expect(getComputedStyle(view()).position).toBe("static");
   await page.viewport(1280, 800);
 });
+
+// ---- CR-065 ----
+
+/** sRGB channels 0–255 from `rgb()`/`rgba()` or the `color(srgb …)` form Chromium gives a `color-mix()`. */
+const srgb = (color: string): [number, number, number] => {
+  const modern = /color\(srgb ([^)]*)\)/.exec(color);
+  if (modern) return (modern[1] ?? "").split(/[\s/]+/).slice(0, 3).map((value) => Number(value) * 255) as [number, number, number];
+  return channels(color);
+};
+/** What `getComputedStyle` reports for a transparent background. */
+const TRANSPARENT = "rgba(0, 0, 0, 0)"; /* cdt-allow-literal: computed value of `transparent`, not a colour choice */
+const lightness = (color: string): number => srgb(color).reduce((sum, value) => sum + value, 0);
+
+test("CR-065: the active tab's indicator lies on the list's rule, with no filled box behind the label", () => {
+  for (const theme of ["dark", "light"] as const) {
+    document.documentElement.dataset.cdtTheme = theme;
+    render(<Tabs.Root defaultValue="results"><Tabs.List aria-label="Views"><Tabs.Trigger value="results">Results</Tabs.Trigger><Tabs.Trigger value="history">History</Tabs.Trigger></Tabs.List><Tabs.Content value="results">Results panel</Tabs.Content><Tabs.Content value="history">History panel</Tabs.Content></Tabs.Root>);
+    const list = document.querySelector<HTMLElement>(".cdt-tabs__list")!;
+    const active = document.querySelector<HTMLElement>(".cdt-tabs__trigger[data-state=active]")!;
+    const idle = document.querySelector<HTMLElement>(".cdt-tabs__trigger[data-state=inactive]")!;
+    const indicator = getComputedStyle(active, "::after");
+    const indicatorBottom = active.getBoundingClientRect().bottom - Number.parseFloat(indicator.bottom);
+    expect(Math.abs(indicatorBottom - list.getBoundingClientRect().bottom), theme).toBeLessThan(0.5);
+    expect(Number.parseFloat(indicator.height), theme).toBeGreaterThan(Number.parseFloat(getComputedStyle(list).borderBottomWidth));
+    expect(getComputedStyle(active).backgroundColor, theme).toBe(TRANSPARENT);
+    expect(getComputedStyle(active).boxShadow, theme).toBe("none");
+    expect(getComputedStyle(idle, "::after").backgroundColor, theme).toBe(TRANSPARENT);
+    expect(indicator.backgroundColor, theme).not.toBe(TRANSPARENT);
+    cleanup();
+  }
+});
+
+test("CR-065: a table header steps toward the text colour — lighter than the rows in dark, darker in light", () => {
+  for (const [theme, header] of [["dark", "lighter"], ["light", "darker"]] as const) {
+    document.documentElement.dataset.cdtTheme = theme;
+    render(<Table aria-label="Changes"><Table.Head><Table.Row><Table.HeaderCell>Change</Table.HeaderCell></Table.Row></Table.Head><Table.Body><Table.Row><Table.Cell>Keep filters</Table.Cell></Table.Row></Table.Body></Table>);
+    const head = lightness(getComputedStyle(document.querySelector(".cdt-table__head")!).backgroundColor);
+    const body = lightness(getComputedStyle(document.querySelector(".cdt-table__scroll")!).backgroundColor);
+    if (header === "lighter") expect(head, theme).toBeGreaterThan(body);
+    else expect(head, theme).toBeLessThan(body);
+    cleanup();
+  }
+});
+

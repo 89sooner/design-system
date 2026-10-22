@@ -303,7 +303,11 @@
     padding: calc(var(--cdt-badge-padding-block) / 2) var(--cdt-space-2);
     border: var(--cdt-border-width-hairline) solid transparent;
     border-radius: min(var(--cdt-badge-radius), var(--cdt-radius-xs));
-    background: color-mix(in srgb, var(--cdt-badge-tone) 6%, var(--cdt-surface-raised));
+    /*
+     * A tint over whatever the parent paints (CR-065). Mixing into `surface.raised` gave the chip the
+     * card's own colour, so on a light card or row (`surface.raised` is near white) it disappeared.
+     */
+    background: color-mix(in srgb, var(--cdt-badge-tone) 10%, transparent);
     color: var(--cdt-text-primary);
     font-size: var(--cdt-badge-font-size);
     font-weight: 500;
@@ -384,7 +388,7 @@
 
   /* 상태는 옅은 색면과 아이콘으로, 읽을 내용은 높은 대비의 글자로 구분한다. */
   .cdt-badge--neutral {
-    background: color-mix(in srgb, var(--cdt-text-muted) 4%, var(--cdt-surface-raised));
+    background: color-mix(in srgb, var(--cdt-text-muted) 8%, transparent);
     color: var(--cdt-text-secondary);
   }
 
@@ -465,8 +469,14 @@
     text-align: start;
   }
 
+  /*
+   * The header is a step away from the body in the direction of the text colour (CR-065): lighter
+   * than the rows in dark (the old `surface.raised` step, within 3 RGB units), darker in light.
+   * `surface.raised` made the light header the brightest band, so it read as the content and the
+   * rows as the background.
+   */
   .cdt-table__head {
-    background: var(--cdt-surface-raised);
+    background: color-mix(in srgb, var(--cdt-text-primary) 3%, var(--cdt-surface-timeline));
   }
 
   .cdt-table__header-cell {

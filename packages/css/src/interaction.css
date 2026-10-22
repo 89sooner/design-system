@@ -1,14 +1,32 @@
 @layer cdt.component {
   .cdt-collapsible { min-inline-size: 0; }
-  .cdt-tabs__list { display: flex; flex-wrap: wrap; gap: var(--cdt-space-1); border-block-end: var(--cdt-border-width-hairline) solid var(--cdt-border-control); }
+  /*
+   * CR-065. The selected tab is marked by one straight indicator that lies on the list's rule, not by
+   * a filled box: the box's rounded corners bent its inset underline into a curve that floated above
+   * the rule, so two lines showed through. The rule is a divider (decorative), the indicator carries
+   * the state (accent, 3:1+ on every surface), and the label also turns primary. Hover is a wash that
+   * stops `space.1` short of the rule so it never touches the indicator.
+   */
+  .cdt-tabs__list { --cdt-tabs-indicator-offset: calc(var(--cdt-space-1) + var(--cdt-border-width-hairline)); display: flex; flex-wrap: wrap; gap: var(--cdt-space-1); padding-block-end: var(--cdt-space-1); border-block-end: var(--cdt-border-width-hairline) solid var(--cdt-border-default); }
   .cdt-tabs__trigger, .cdt-collapsible__trigger { min-block-size: var(--cdt-button-min-height); padding: var(--cdt-space-2) var(--cdt-space-3); border: 0; border-radius: var(--cdt-radius-sm); background: transparent; color: var(--cdt-text-secondary); font: inherit; cursor: pointer; transition: background var(--cdt-motion-fast), color var(--cdt-motion-fast); }
-  .cdt-tabs__trigger[data-state="active"] { background: var(--cdt-surface-2); color: var(--cdt-text-primary); box-shadow: inset 0 calc(-1 * var(--cdt-border-width-hairline)) var(--cdt-text-primary); }
+  .cdt-tabs__trigger { position: relative; }
+  .cdt-tabs__trigger::after { content: ""; position: absolute; inset-inline: 0; inset-block-end: calc(var(--cdt-tabs-indicator-offset) * -1); block-size: var(--cdt-border-width-emphasis); border-radius: var(--cdt-radius-pill); background: transparent; transition: background var(--cdt-motion-fast); }
+  .cdt-tabs__trigger:not(:disabled):hover { background: var(--cdt-state-hover); color: var(--cdt-text-primary); }
+  .cdt-tabs__trigger[data-state="active"] { color: var(--cdt-text-primary); }
+  .cdt-tabs__trigger[data-state="active"]::after { background: var(--cdt-accent); }
   .cdt-tabs__trigger:disabled, .cdt-collapsible__trigger:disabled { color: var(--cdt-button-disabled-text); cursor: not-allowed; }
   .cdt-tabs__trigger:focus-visible, .cdt-collapsible__trigger:focus-visible, .cdt-tabs__content:focus-visible { outline: none; box-shadow: var(--cdt-focus-ring); }
   .cdt-tabs__content { padding-block: var(--cdt-space-3); }
   .cdt-tabs__content[hidden], .cdt-collapsible__content[data-state="closed"] { display: none; }
   .cdt-tabs[data-orientation="vertical"] { display: flex; gap: var(--cdt-space-3); }
-  .cdt-tabs__list[data-orientation="vertical"] { flex-direction: column; }
+  .cdt-tabs__list[data-orientation="vertical"] { flex-direction: column; flex-wrap: nowrap; padding-block-end: 0; padding-inline-end: var(--cdt-space-1); border-block-end: 0; border-inline-end: var(--cdt-border-width-hairline) solid var(--cdt-border-default); }
+  .cdt-tabs__list[data-orientation="vertical"] .cdt-tabs__trigger { text-align: start; }
+  .cdt-tabs__list[data-orientation="vertical"] .cdt-tabs__trigger::after { inset-block: 0; inset-inline: auto calc(var(--cdt-tabs-indicator-offset) * -1); block-size: auto; inline-size: var(--cdt-border-width-emphasis); }
+
+  /* Forced colours drop backgrounds, so the indicator is redrawn in the system highlight. */
+  @media (forced-colors: active) {
+    .cdt-tabs__trigger[data-state="active"]::after { background: Highlight; forced-color-adjust: none; }
+  }
   .cdt-popover { transform-origin: var(--radix-popover-content-transform-origin); z-index: var(--cdt-z-overlay); max-inline-size: min(calc(100vw - var(--cdt-space-8)), var(--radix-popover-content-available-width)); max-block-size: var(--radix-popover-content-available-height); overflow: auto; padding: var(--cdt-space-4); border: var(--cdt-border-width-hairline) solid var(--cdt-border-control); border-radius: var(--cdt-radius-md); background: var(--cdt-surface-raised); color: var(--cdt-text-primary); box-shadow: var(--cdt-elevation-overlay); }
   .cdt-collapsible__content { padding: var(--cdt-space-3); }
 

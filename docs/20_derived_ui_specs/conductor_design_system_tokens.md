@@ -1,6 +1,6 @@
 # Conductor Design System 토큰 명세
 
-> 상태: review | 버전: v0.15 | 갱신일: 2026-10-21
+> 상태: review | 버전: v0.16 | 갱신일: 2026-10-22
 
 ## 0. 문서 성격과 범위 경계
 
@@ -147,13 +147,13 @@ primitive 토큰은 CSS로 산출되지 않고 `@conductor-by-89soone/tokens` �
 | `ink.100` | `#f1f4f8` | 0.90179 | 6절 파생 |
 | `ink.150` | `#eef1f6` | 0.87742 | 6절 파생 |
 | `ink.200` | `#e8ecf2` | 0.83558 | 6절 파생 |
-| `ink.250` | `#e2e8f0` | 0.80173 | Tailwind Slate 200 |
+| `ink.250` | `#e2e8f0` | 0.80173 | Tailwind Slate 200 (라이트 `state.disabled`; CR-065 전 `border.subtle`) |
 | `ink.300` | `#dce6f3` | 0.78280 | `tokens.css:20` `--text-mono-payload` |
 | `ink.350` | `#c5cfdd` | 0.61716 | `tokens.css:16` `--text-secondary` |
 | `ink.400` | `#8290a3` | 0.27337 | `tokens.css:17` `--text-muted` |
-| `ink.500` | `#6b788c` | 0.18452 | 6절 파생 |
+| `ink.500` | `#6b788c` | 0.18452 | 6절 파생 (라이트 `text.faint`) |
 | `ink.600` | `#5f6d80` | 0.14929 | `tokens.css:18` `--text-faint` |
-| `ink.650` | `#5b6879` | 0.13505 | 6절 파생 |
+| `ink.650` | `#5b6879` | 0.13505 | 6절 파생 (CR-065부터 semantic 참조 없음, 공개 primitive로 유지) |
 | `ink.700` | `#4d5a6e` | 0.10016 | 6절 파생 |
 | `ink.750` | `#33415a` | 0.05223 | 6절 파생 |
 | `ink.800` | `#1b2537` | 0.01832 | 6절 파생 |
@@ -184,7 +184,7 @@ primitive 토큰은 CSS로 산출되지 않고 `@conductor-by-89soone/tokens` �
 | 키 | 값 | 소스 위치 |
 | --- | --- | --- |
 | `slate.400` | `#94a3b8` | `tokens.css:22-24` 경계 3종의 기저색, `app.css:57` 스크롤바. `border.control`(alpha 0.60)의 기저색이기도 하다 |
-| `slate.500` | `#64748b` | `tokens.css:33` `--status-queued`. 라이트 `border.control`이 이 stop을 불투명하게 재사용한다 |
+| `slate.500` | `#64748b` | `tokens.css:33` `--status-queued`. CR-065 전에는 라이트 `border.control`이 이 stop을 불투명하게 재사용했다 |
 | `slate.600` | `#475569` | `tokens.css:39` `--status-neutral-end`. CR-035 이후 소비처 없음 — 대체된 소스 값의 기록으로 남긴다 |
 | `slate.700` | `#3f4b5f` | 6절 파생 (라이트 `status.neutralEnd`) |
 | `slate.750` | `#52607a` | 6절 파생 (라이트 `status.queued`) |
@@ -279,10 +279,10 @@ primitive 토큰은 CSS로 산출되지 않고 `@conductor-by-89soone/tokens` �
 
 | 토큰 키 | 용도 | 다크 값 | 라이트 값 | 관련 FR |
 | --- | --- | --- | --- | --- |
-| `border.subtle` | decorative | `rgba(148, 163, 184, 0.1)` | `#e2e8f0` | FR-THM-005 AC-4 |
-| `border.default` | decorative | `rgba(148, 163, 184, 0.18)` | `#6b788c` | FR-THM-005 AC-4 |
-| `border.strong` | decorative | `rgba(148, 163, 184, 0.3)` | `#5b6879` | FR-THM-005 AC-4 |
-| `border.control` | nonText | `rgba(148, 163, 184, 0.6)` | `#64748b` | FR-THM-005 AC-2 |
+| `border.subtle` | decorative | `rgba(148, 163, 184, 0.1)` | `rgba(12, 18, 28, 0.07)` | FR-THM-005 AC-4, FR-THM-002 AC-3 (CR-065) |
+| `border.default` | decorative | `rgba(148, 163, 184, 0.18)` | `rgba(12, 18, 28, 0.12)` | FR-THM-005 AC-4, FR-THM-002 AC-3 (CR-065) |
+| `border.strong` | decorative | `rgba(148, 163, 184, 0.3)` | `rgba(12, 18, 28, 0.2)` | FR-THM-005 AC-4, FR-THM-002 AC-3 (CR-065) |
+| `border.control` | nonText | `rgba(148, 163, 184, 0.6)` | `rgba(12, 18, 28, 0.5)` | FR-THM-005 AC-2, FR-THM-002 AC-3 (CR-065) |
 | `border` | decorative | `{border.default}` | `{border.default}` | FR-TOK-003 AC-1, FR-THM-001 AC-2 |
 
 **`border.subtle`·`border.default`·`border.strong`은 `decorative`다.** 세 토큰의 다크 값은 비텍스트 3:1을 만족하지 못한다(합성 후 1.13:1 / 1.30:1 / 1.69:1). WCAG 1.4.11은 컴포넌트를 식별하는 데 필요한 시각 정보에만 3:1을 요구하는데, 이 세 토큰이 그리는 카드·패널·표 행의 경계는 표면색 차이(`surface.raised` 대 `surface.base`)와 `elevation.*` 그림자가 이미 식별한다. 경계선은 그 식별을 보조할 뿐 단독으로 지지하지 않는다. 이 예외 근거는 SRS 12.1절이 확정했고 대비 검사 대상에서 제외된다(FR-THM-005 AC-4).
@@ -601,18 +601,18 @@ FR-THM-002는 라이트 테마가 다크 테마와 **동일한 semantic 키 집�
 
 앞의 세 토큰은 `decorative`이므로 대비 기준을 지지 않는다(FR-THM-005 AC-4). `border.control`만 3:1을 지며, alpha 0.60이 그 기준을 세 표면 모두에서 넘긴다. 같은 slate 색이 3:1을 만들려면 α ≥ 0.55(`surface.base`), 0.57(`raised`), 0.59(`elevated`)가 필요하다. 0.60은 가장 까다로운 `surface.elevated`를 3.11:1로 통과시키는 최소 근처의 값이다.
 
-라이트에서는 alpha 방식이 성립하지 않는다. 같은 `rgba(148, 163, 184, 0.6)`을 흰 배경에 합성하면 `#bfc8d4`로 1.69:1이다. 어두운 잉크로 바꿔 `rgba(12, 18, 28, α)`를 흰 배경에 합성해도 α = 0.45에서 2.93:1, 3:1을 넘으려면 α ≈ 0.47이 필요하며 그 시점의 합성색은 사실상 불투명 중간 회색이다. "반투명 층"이라는 P-4의 성질이 소멸한다.
+라이트의 첫 판(CR-065 이전)은 네 경계를 모두 불투명 값으로 정했다. 당시 FR-THM-002 AC-3이 라이트 장식 경계에도 3:1을 요구했고, 어두운 잉크 alpha로 3:1을 넘기려면 α ≈ 0.47이 필요해 "반투명 층"의 성질이 사라진다고 보았기 때문이다. 그 결과 `border.default` `#6b788c`(`surface.raised` 위 4.36:1)·`border.strong` `#5b6879`(5.52:1)가 컨트롤 경계 `#64748b`(4.63:1)와 같은 무게가 되어, 카드·패널·코드 블록이 입력과 똑같은 굵은 윤곽으로 그려졌다. 같은 키의 다크 무게(1.37·1.75)의 세 배다. 반대로 `border.subtle` `#e2e8f0`은 `surface.base` 위 1.04:1이라 거의 보이지 않았고, AC-3의 3:1도 지키지 못했다(DEV-062).
 
-**결론**: 라이트 경계는 네 토큰 모두 alpha를 버리고 불투명 값으로 정의한다. `surface.*`가 라이트에서 모두 불투명하므로 합성 성질을 잃어도 잃는 것이 없다.
+**CR-065 결론**: AC-3은 FR-THM-005 AC-4(OD-001)와 충돌했으므로 OD-001 쪽으로 정정했다. 장식 경계는 두 테마 모두 대비 검사 대상이 아니고, 3:1은 `border.control`만 진다. 라이트 경계는 다크와 같은 구조 — 표면 위에 합성하는 반투명 층 — 로 되돌린다. 잉크는 라이트 그림자와 같은 `ink.880`의 RGB(`12, 18, 28`)다.
 
-| semantic 키 | `usage` | 라이트 값 | primitive | `surface.base` 위 | `surface.raised` 위 | `surface.elevated` 위 | 판정 |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| `border.subtle` | decorative | `#e2e8f0` | `{ink.250}` | 1.04:1 | 1.20:1 | 1.23:1 | 검사 대상 아님 |
-| `border.default` | decorative | `#6b788c` | `{ink.500}` | 3.78:1 | 4.36:1 | 4.48:1 | 검사 대상 아님 |
-| `border.strong` | decorative | `#5b6879` | `{ink.650}` | 4.79:1 | 5.52:1 | 5.67:1 | 검사 대상 아님 |
-| `border.control` | nonText | `#64748b` | `{slate.500}` | 4.01:1 | 4.63:1 | 4.76:1 | 세 표면 모두 통과 |
+| semantic 키 | `usage` | 라이트 값 | `surface.base` 위 합성색 / 대비 | `surface.raised` 위 합성색 / 대비 | `surface.elevated` 위 합성색 / 대비 | 다크 (`surface.raised` 위) |
+| --- | --- | --- | --- | --- | --- | --- |
+| `border.subtle` | decorative | `rgba(12, 18, 28, 0.07)` | `#d9dde3` / 1.15:1 | `#eaeced` / 1.15:1 | `#eeeeef` / 1.16:1 | 1.17:1 |
+| `border.default` | decorative | `rgba(12, 18, 28, 0.12)` | `#ced2d8` / 1.28:1 | `#dee0e2` / 1.29:1 | `#e2e3e4` / 1.29:1 | 1.37:1 |
+| `border.strong` | decorative | `rgba(12, 18, 28, 0.2)` | `#bcc0c7` / 1.54:1 | `#cbcdd0` / 1.55:1 | `#ced0d2` / 1.55:1 | 1.75:1 |
+| `border.control` | nonText | `rgba(12, 18, 28, 0.5)` | `#7a7f87` / 3.40:1 | `#84878d` / 3.51:1 | `#86898e` / 3.51:1 | 3.23:1 |
 
-라이트 `border.control`은 `{slate.500}`(`#64748b`)이다. 새 primitive를 만들지 않았다 — 이 값은 다크 `status.queued`가 이미 쓰는 stop이며, 라이트 표면 위에서 세 표면 모두 3:1을 넘고 라이트 `border.default`(`#6b788c`)보다 어두워 컨트롤 경계가 장식 경계보다 뚜렷하다는 서열이 유지된다. 다크에서 `border.control`이 `border.strong`보다 뚜렷한 것과 같은 서열이다.
+세 표면 모두에서 subtle < default < strong < 3:1 ≤ control이고, 장식 경계 세 키는 같은 키의 다크 무게를 넘지 않는다(토큰 시험이 두 조건을 지킨다). `border.control`은 CP-016 ~ CP-018로 세 표면 모두 3:1을 넘는다. 컨트롤 경계가 장식 경계보다 뚜렷하다는 서열은 다크와 같다. 반투명이므로 선택·호버처럼 색이 얹힌 표면 위에서도 같은 무게로 읽힌다.
 
 ### 6.3.1 `focusRing`의 라이트 값
 
@@ -645,7 +645,7 @@ FR-THM-002는 라이트 테마가 다크 테마와 **동일한 semantic 키 집�
 
 세 라이트 alpha(0.08, 0.12, 0.20)가 세 다크 alpha(0.18, 0.26, 0.45)와 모두 다르므로 FR-THM-002 AC-4를 만족한다. 오프셋과 블러 반경(`12px 30px`, `18px 46px`, `24px 64px`)은 테마 무관하게 유지한다 — 기하 구조는 광원 모델이지 색이 아니다.
 
-`elevation.overlay`의 두 번째 그림자 `0 0 0 1px {border.strong}`은 semantic 참조다. 라이트에서 자동으로 `#5b6879`로 해석되어 오버레이 경계가 3:1을 유지한다.
+`elevation.overlay`의 두 번째 그림자 `0 0 0 1px {border.strong}`은 semantic 참조다. 라이트에서 자동으로 `rgba(12, 18, 28, 0.2)`로 해석된다(CR-065 이전 `#5b6879`). 오버레이 경계는 장식이며, 패널은 `surface.elevated`와 첫 번째 그림자가 가림막 위에서 식별한다.
 
 ### 6.5 반투명 표면: `surface.glass`와 `surface.overlay`
 
@@ -660,7 +660,7 @@ FR-THM-002 예외 처리는 이 경우를 예상하고 규정했다: "다크 전
 - `surface.glass` semantic 토큰은 두 테마 모두에 존재한다(키 대칭 유지).
 - 라이트에서 글래스 표면을 쓰는 component 토큰 `overlay.background`와 `card.background`는 `{surface.glass}` 대신 `{surface.elevated}`(불투명)를 참조하도록 **라이트 팔레트가 재정의한다**(7.6절).
 - 재정의는 component 토큰의 라이트 값 열에서 일어난다. React·CSS 코드는 언제나 `--cdt-overlay-background`를 읽으므로 수정되지 않는다.
-- 라이트에서 패널 경계는 `border.strong`(`#5b6879`, 5.52:1)과 `elevation.raised`가 담당한다.
+- 라이트에서 패널 경계는 `border.strong`(`rgba(12, 18, 28, 0.2)`, 1.55:1 — 장식, CR-065)과 `elevation.raised`가 담당한다.
 
 `accent.glow`도 같은 처리를 받는다. 다크 `rgba(109, 124, 255, 0.28)`은 어두운 표면 위에서 발광으로 읽힌다. 라이트에서 같은 개념을 재현할 수 없으므로 alpha를 0.22로 낮추고, 글로우가 정보를 전달하는 유일한 수단인 곳이 없도록 component 토큰이 항상 `border.strong` 또는 텍스트를 함께 지정한다. `accent.glow`는 두 테마에서 `decorative`다.
 
@@ -707,7 +707,7 @@ Tailwind ramp를 쓰는 색은 같은 색상 계열에서 2~3단계 어두운 st
 | `state.disabled` | `#18202c` | `#e2e8f0` | `{ink.820}` ↔ `{ink.250}`. `text.muted`를 얹었을 때 다크 5.05:1, 라이트 5.67:1 |
 | `state.disabledPolicy` | `#422006` | `#fef3c7` | `{amber.950}` ↔ `{amber.100}`. 정책 차단은 amber 계열을 유지한다. 다크는 어두운 amber 채움에 밝은 amber 텍스트, 라이트는 밝은 amber 채움에 어두운 amber 텍스트 |
 | `focusRing` | `0 0 0 3px rgba(109, 124, 255, 0.8)` | `0 0 0 3px rgba(79, 91, 213, 0.8)` | FR-THM-005 AC-1의 교정 값. 두 테마가 각자의 `accent` RGB를 같은 alpha로 합성한다. 측정값은 6.3.1절 |
-| `border.control` | `rgba(148, 163, 184, 0.6)` | `#64748b` | FR-THM-005 AC-2의 신규 토큰. 라이트는 6.3절의 불투명 규칙을 따른다 |
+| `border.control` | `rgba(148, 163, 184, 0.6)` | `rgba(12, 18, 28, 0.5)` | FR-THM-005 AC-2의 신규 토큰. 라이트는 6.3절의 반투명 잉크 규칙을 따른다(CR-065) |
 
 ---
 
@@ -1047,9 +1047,9 @@ CP-025는 CR-006으로 선언 목록에서 제거되었다. **ID는 재사용하
 | CP-013 | `focusRing` | `surface.base` | nonText | 3.0 | 3.93 pass | 3.30 pass |
 | CP-014 | `focusRing` | `surface.raised` | nonText | 3.0 | 3.56 pass | 3.66 pass |
 | CP-015 | `focusRing` | `surface.elevated` | nonText | 3.0 | 3.34 pass | 3.72 pass |
-| CP-016 | `border.control` | `surface.base` | nonText | 3.0 | 3.39 pass | 4.01 pass |
-| CP-017 | `border.control` | `surface.raised` | nonText | 3.0 | 3.23 pass | 4.63 pass |
-| CP-018 | `border.control` | `surface.elevated` | nonText | 3.0 | 3.11 pass | 4.76 pass |
+| CP-016 | `border.control` | `surface.base` | nonText | 3.0 | 3.39 pass | 3.40 pass |
+| CP-017 | `border.control` | `surface.raised` | nonText | 3.0 | 3.23 pass | 3.51 pass |
+| CP-018 | `border.control` | `surface.elevated` | nonText | 3.0 | 3.11 pass | 3.51 pass |
 | CP-019 | `status.running` | `surface.raised` | body | 4.5 | 4.82 pass | 5.39 pass |
 | CP-020 | `status.waiting` | `surface.raised` | body | 4.5 | 7.89 pass | 4.89 pass |
 | CP-021 | `status.success` | `surface.raised` | body | 4.5 | 6.68 pass | 5.34 pass |
@@ -1101,7 +1101,7 @@ FR-THM-005가 강제한 두 교정이 9건의 미달을 제거했다. `focusRing
 | CP-015 `focusRing` / `surface.elevated` (다크) | 1.54 (alpha 0.30) | **3.34** | 3.0 |
 | CP-013 ~ CP-015 (라이트) | 1.50 / 1.53 / 1.54 | **3.30 / 3.66 / 3.72** | 3.0 |
 | CP-016 ~ CP-018 `border.control` (다크) | 1.30 / 1.37 / 1.38 (`border.default` 사용 시) | **3.39 / 3.23 / 3.11** | 3.0 |
-| CP-016 ~ CP-018 `border.control` (라이트) | 4.36 (`border.default` 사용 시) | **4.01 / 4.63 / 4.76** | 3.0 |
+| CP-016 ~ CP-018 `border.control` (라이트) | 4.36 (`border.default` 사용 시) | **3.40 / 3.51 / 3.51** (CR-065 전 4.01 / 4.63 / 4.76) | 3.0 |
 
 라이트에서 `border.default`는 이미 불투명 값이라 3:1을 넘었다. `border.control`을 도입한 실익은 다크에 있다. 그러나 토큰 키는 두 테마에 대칭으로 존재해야 하므로(FR-QA-001 AC-1) 라이트에도 대응 값을 정의했다.
 

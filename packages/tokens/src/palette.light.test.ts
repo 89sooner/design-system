@@ -11,6 +11,7 @@
  */
 import { describe, expect, test } from "vitest";
 import { TokenBuildError } from "./build/errors";
+import { compositeOver, contrastRatio, parseColor, type Rgba } from "./contrast/color";
 import { darkPalette } from "./palette.dark";
 import { derivePalette, lightAdditions, lightPalette } from "./palette.light";
 import type { TokenDefinition } from "./schema";
@@ -79,3 +80,42 @@ describe("FR-THM-002: deriving a theme from the canonical palette", () => {
     expect(lightPalette.map((token) => token.key)).toEqual(darkPalette.map((token) => token.key));
   });
 });
+
+/**
+ * CR-065. The light decorative edges used to be opaque mid greys (4.36:1 and 5.52:1 on
+ * `surface.raised`), heavier than the 3:1 control edge's dark counterpart and three times the weight
+ * of the same keys in dark (1.37:1, 1.75:1). Cards, panels and dividers then drew as hard outlines
+ * that competed with the inputs inside them. These checks keep the two themes on one ladder.
+ */
+describe("CR-065 FR-THM-005 AC-4: light edges keep the dark theme's weight ladder", () => {
+  const colour = (palette: readonly TokenDefinition[], key: string): Rgba => {
+    const resolved = (k: string): string => {
+      const token = palette.find((candidate) => candidate.key === k);
+      if (token === undefined) throw new Error(`missing ${k}`);
+      return token.alias === undefined ? (token.value as string) : resolved(token.alias);
+    };
+    const parsed = parseColor(resolved(key));
+    if (parsed === undefined) throw new Error(`unparsable ${key}`);
+    return parsed;
+  };
+  const edge = (palette: readonly TokenDefinition[], border: string, surface: string): number => {
+    const background = colour(palette, surface);
+    return contrastRatio(compositeOver(colour(palette, border), background), background);
+  };
+  const decorative = ["border.subtle", "border.default", "border.strong"];
+
+  test.each(["surface.base", "surface.raised", "surface.elevated"])(
+    "CR-065: on light %s the edges climb subtle < default < strong < 3:1 <= control",
+    (surface) => {
+      const ratios = [...decorative, "border.control"].map((key) => edge(lightPalette, key, surface));
+      expect(ratios).toEqual([...ratios].sort((one, other) => one - other));
+      expect(ratios[2]).toBeLessThan(3);
+      expect(ratios[3]).toBeGreaterThanOrEqual(3);
+    },
+  );
+
+  test.each(decorative)("CR-065: light %s is never heavier than the same key in dark", (key) => {
+    expect(edge(lightPalette, key, "surface.raised")).toBeLessThanOrEqual(edge(darkPalette, key, "surface.raised"));
+  });
+});
+
