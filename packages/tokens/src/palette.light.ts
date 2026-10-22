@@ -17,14 +17,17 @@ import { darkPalette } from "./palette.dark";
 import type { TokenDefinition } from "./schema";
 
 const baseValues: Readonly<Record<string, string>> = {
-  "surface.base": "#e8ecf2",
-  "surface.canvas": "#eef1f6",
-  "surface.subtle": "#f3f6f9",
-  "surface.raised": "#fbfcfd",
+  // CR-066: lifted and desaturated. Same 220° cool-neutral hue and the same base → elevated order,
+  // but the range is [0.88, 1.00] instead of [0.84, 1.00] and the chroma is lower, so the page reads
+  // as a clean light ground instead of a grey-blue wash.
+  "surface.base": "#eff1f5",
+  "surface.canvas": "#f3f5f8",
+  "surface.subtle": "#f8f9fb",
+  "surface.raised": "#fcfdfe",
   "surface.elevated": "#ffffff",
   "surface.overlay": "rgba(12, 18, 28, 0.45)",
-  "surface.glass": "rgba(251, 252, 253, 0.86)",
-  "surface.timeline": "#f1f4f8",
+  "surface.glass": "rgba(252, 253, 254, 0.86)",
+  "surface.timeline": "#f6f7f9",
   "surface.track": "rgba(12, 18, 28, 0.08)",
   "surface.tint.1": "rgba(79, 91, 213, 0.1)",
   "surface.tint.2": "rgba(4, 120, 87, 0.05)",
@@ -55,9 +58,11 @@ const baseValues: Readonly<Record<string, string>> = {
   "meter.normal": "#047857",
   "meter.warning": "#b45309",
   "meter.exceeded": "#dc2626",
-  "elevation.raised": "0 12px 30px rgba(12, 18, 28, 0.08)",
-  "elevation.hover": "0 18px 46px rgba(12, 18, 28, 0.12)",
-  "elevation.overlay": "0 24px 64px rgba(12, 18, 28, 0.2), 0 0 0 1px {border.strong}",
+  // CR-066: two layers. A tight contact shadow gives the edge; a soft ambient one gives the lift.
+  // The single wide blur of the dark ramp reads as a grey smudge under a light card.
+  "elevation.raised": "0 1px 2px rgba(12, 18, 28, 0.05), 0 4px 12px rgba(12, 18, 28, 0.05)",
+  "elevation.hover": "0 2px 4px rgba(12, 18, 28, 0.06), 0 12px 28px rgba(12, 18, 28, 0.1)",
+  "elevation.overlay": "0 4px 12px rgba(12, 18, 28, 0.08), 0 20px 48px rgba(12, 18, 28, 0.16), 0 0 0 1px {border.strong}",
   "focusRing": "0 0 0 3px rgba(79, 91, 213, 0.8)",
   "state.hover": "rgba(12, 18, 28, 0.05)",
   "state.selected": "rgba(79, 91, 213, 0.12)",
