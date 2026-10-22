@@ -39,7 +39,7 @@ export { Combobox, MultiSelect, FilterChip, FilterToolbar, DataTable, WorkbenchL
 export type { SearchOption, ComboboxProps, MultiSelectProps, FilterChipProps, DataColumn, DataSort, DataTableProps, WorkbenchLayoutProps, DetailInspectorProps, PathItem, PathListProps, CopyButtonProps, ProcessingStage, ProcessingStatusProps } from "./workbench";
 
 export { Tabs, Popover, Collapsible } from "./interaction";
-export type { TabsRootProps, TabsContentProps, PopoverContentProps } from "./interaction";
+export type { TabsRootProps, TabsListProps, TabsContentProps, PopoverContentProps } from "./interaction";
 export { AppShellNavTrigger } from "./shell";
 
 export { RelationGraph, layoutRelationNodes } from "./relation";

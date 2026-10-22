@@ -996,7 +996,7 @@ describe("CR-061 FR-CMP-016 opt-in agent stylesheet", () => {
   });
 });
 
-describe("CR-065 tabs indicator and light-theme surfaces", () => {
+describe("CR-065 · CR-067 tabs and light-theme surfaces", () => {
   const components = topLevelRules(index, "cdt.component");
   // The minifier drops attribute quotes and writes `::after` as `:after`, and may merge rules.
   const normal = (selector: string) => selector.replaceAll('"', "").replaceAll("::", ":");
@@ -1005,26 +1005,39 @@ describe("CR-065 tabs indicator and light-theme surfaces", () => {
     return matching.length === 0 ? undefined : { decls: Object.assign({}, ...matching.map((candidate) => candidate.decls)) as Record<string, string> };
   };
 
-  test("CR-065 FR-CMP-008: the active tab is a straight indicator, not a box with a bent inset underline", () => {
+  test("CR-067 FR-CMP-013: the default list is a segmented track with no rule under it", () => {
+    const list = rule(".cdt-tabs__list");
+    expect(list?.decls["border-block-end"]).toBeUndefined();
+    expect(list?.decls.background).toBe("var(--cdt-surface-base)");
     const active = rule('.cdt-tabs__trigger[data-state="active"]');
-    expect(active?.decls.background).toBeUndefined();
-    expect(active?.decls["box-shadow"]).toBeUndefined();
+    expect(active?.decls.background).toBe("var(--cdt-surface-elevated)");
     expect(active?.decls.color).toBe("var(--cdt-text-primary)");
-    expect(rule('.cdt-tabs__trigger[data-state="active"]::after')?.decls.background).toBe("var(--cdt-accent)");
+    expect(rule(".cdt-tabs__trigger::after")).toBeUndefined();
   });
 
-  test("CR-065: the indicator lies on the list's rule, and the rule is a decorative divider", () => {
-    const list = rule(".cdt-tabs__list");
+  test("CR-065 · CR-067: the line variant keeps one straight accent line lying on the list's decorative rule", () => {
+    const list = rule(".cdt-tabs__list--line");
     expect(list?.decls["border-block-end"]).toContain("var(--cdt-border-default)");
     expect(list?.decls["--cdt-tabs-indicator-offset"]).toBe("calc(var(--cdt-space-1) + var(--cdt-border-width-hairline))");
-    const indicator = rule(".cdt-tabs__trigger::after");
+    const active = rule('.cdt-tabs__list--line .cdt-tabs__trigger[data-state="active"]');
+    // cssnano writes `background: transparent` as `0 0`.
+    expect(["transparent", "0 0"]).toContain(active?.decls.background);
+    expect(active?.decls["box-shadow"]).toBe("none");
+    const indicator = rule(".cdt-tabs__list--line .cdt-tabs__trigger::after");
     expect(indicator?.decls["inset-block-end"]).toBe("calc(var(--cdt-tabs-indicator-offset) * -1)");
     expect(indicator?.decls["block-size"]).toBe("var(--cdt-border-width-emphasis)");
+    expect(rule('.cdt-tabs__list--line .cdt-tabs__trigger[data-state="active"]::after')?.decls.background).toBe("var(--cdt-accent)");
   });
 
-  test("CR-065: forced colours redraw the indicator in the system highlight", () => {
-    const forced = mediaRules(index, "cdt.component", /forced-colors: ?active/).find((candidate) => candidate.selector === ".cdt-tabs__trigger[data-state=active]:after");
-    expect(forced?.decls.background?.toLowerCase()).toBe("highlight");
+  test("CR-067: a focused tab's ring outranks both selected-state box-shadows by specificity, not source order", () => {
+    expect(rule(".cdt-tabs__list .cdt-tabs__trigger:focus-visible")?.decls["box-shadow"]).toBe("var(--cdt-focus-ring)");
+  });
+
+  test("CR-065 · CR-067: forced colours redraw the selection in the system highlight", () => {
+    const forced = mediaRules(index, "cdt.component", /forced-colors: ?active/);
+    const find = (selector: string) => forced.find((candidate) => candidate.selector.split(",").map(normal).includes(normal(selector)));
+    expect(find(".cdt-tabs__trigger[data-state=active]")?.decls.outline?.toLowerCase()).toContain("highlight");
+    expect(find(".cdt-tabs__list--line .cdt-tabs__trigger[data-state=active]:after")?.decls.background?.toLowerCase()).toBe("highlight");
   });
 
   test("CR-065: the table header steps toward the text colour, so it is darker than the rows in light", () => {

@@ -1,6 +1,6 @@
 # 요구사항-화면 추적 매트릭스
 
-> 상태: review | 버전: v0.13 | 갱신일: 2026-10-22
+> 상태: review | 버전: v0.14 | 갱신일: 2026-10-22
 
 ## 1. 목적
 
@@ -159,7 +159,7 @@ NFR은 화면 하나에 귀속되지 않는다. 각 NFR이 어디서 측정되�
 | FR-CMP-014 | W-020, W-021 / SFC-PKG | WP-037 | Toast·DatePicker·CommandPalette·Pagination 동작, axe(열린 상태 포함), 키보드 경로 (CR-054) |
 | FR-CMP-015 | W-020, W-021 / SFC-PKG | WP-038 | AlertDialog·RadioGroup·ToggleGroup·Avatar·NumberInput 동작, axe(열린 상태 포함), 키보드 경로, 쌓임·커서·포커스 링 계약 (CR-060); NumberInput glass 배경이 glass TextField와 같고 포커스·비활성은 solid와 같은지 두 테마 브라우저 시험 (CR-063) |
 | FR-CMP-016 | W-020, W-021 / SFC-PKG | WP-039 | 에이전트 대화 컴포넌트 11종 동작(전송·IME·중단, 스트리밍 상태, 펼침, 승인 결정, 인용), axe(열린 상태 포함), 키보드 경로, 포커스 링·커서 계약 (CR-061) |
-| FR-CMP-013 | W-060, W-061, W-062 / SFC-PKG / SFC-REL | WP-029 | Radix 키보드·포커스와 tarball 소비; Tabs 활성 표시선 (CR-065) |
+| FR-CMP-013 | W-060, W-061, W-062 / SFC-PKG / SFC-REL | WP-029 | Radix 키보드·포커스와 tarball 소비; Tabs 활성 표시선 (CR-065), Tabs 세그먼트형 기본·`variant="line"` (CR-067) |
 
 
 ### CR-041 실제 조합 화면 경로

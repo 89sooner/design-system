@@ -1,6 +1,6 @@
 # Conductor Design System 최종 요구사항 정의서
 
-> 상태: baseline | 버전: v1.18 | 갱신일: 2026-10-22
+> 상태: baseline | 버전: v1.19 | 갱신일: 2026-10-22
 
 ## 1. 문서 개요
 
@@ -38,7 +38,7 @@ Conductor는 `agent-ai-platform/packages/web`의 시각 언어를 3개 npm 패�
 2. 다크(기준) 및 라이트 테마, 시스템 설정 연동, 테마별 대비 검증, 소스 계승 토큰의 접근성 교정 — FR-THM-001 ~ FR-THM-005
 3. 캐스케이드 레이어 기반 프레임워크 비종속 스타일시트 — FR-CSS-001 ~ FR-CSS-005
 4. React 프리미티브 컴포넌트 — 기존 FR-CMP-001 ~ FR-CMP-009 및 CR-041 확장 FR-CMP-010 ~ FR-CMP-013 (§17, review)
-5. 정적 문서 사이트 — FR-DOC-001 ~ FR-DOC-007 및 CR-048 확장 FR-DOC-008 (§18), CR-051 확장 FR-DOC-009 (§19), CR-052 확장 FR-DOC-010 (§20), CR-053 보강 FR-DOC-001 AC-5·FR-CMP-013 AC-5 (§21), CR-054 확장 FR-CMP-014 (§22), CR-060 확장 FR-CMP-015 (§24), CR-061 확장 FR-CMP-016 (§25), CR-063 보강 FR-CMP-015 AC-7 (§26), CR-064 보강 FR-THM-005 AC-8·FR-CMP-004 AC-7·FR-CMP-010 AC-6 (§27), CR-065 정정·보강 FR-THM-002 AC-3·AC-5·FR-CMP-013 AC-6 (§28)
+5. 정적 문서 사이트 — FR-DOC-001 ~ FR-DOC-007 및 CR-048 확장 FR-DOC-008 (§18), CR-051 확장 FR-DOC-009 (§19), CR-052 확장 FR-DOC-010 (§20), CR-053 보강 FR-DOC-001 AC-5·FR-CMP-013 AC-5 (§21), CR-054 확장 FR-CMP-014 (§22), CR-060 확장 FR-CMP-015 (§24), CR-061 확장 FR-CMP-016 (§25), CR-063 보강 FR-CMP-015 AC-7 (§26), CR-064 보강 FR-THM-005 AC-8·FR-CMP-004 AC-7·FR-CMP-010 AC-6 (§27), CR-065 정정·보강 FR-THM-002 AC-3·AC-5·FR-CMP-013 AC-6 (§28), CR-067 정정 FR-CMP-013 AC-6 (§29)
 6. WCAG 2.1 AA 접근성 기준선 — FR-A11Y-001 ~ FR-A11Y-005
 7. 모노레포 빌드, 타입 배포, 진입점 선언, SSR 안전성, 버저닝 — FR-DX-001 ~ FR-DX-005
 8. 토큰 계약·단위·접근성·시각 회귀 검사 — FR-QA-001 ~ FR-QA-004
@@ -1196,5 +1196,12 @@ v1.17 baseline 이력을 유지한다. 사용자가 2026-10-22 Tabs의 "테두�
 | FR | 변경 |
 | --- | --- |
 | FR-THM-002 | AC-3 정정: 장식 경계 세 토큰은 대비 검사 대상이 아니고, 라이트 세 표면에서 subtle < default < strong < 3:1 ≤ `border.control` 순서를 지키며 같은 키의 다크 무게를 넘지 않는다. 라이트 값은 `rgba(12, 18, 28, α)`(α 0.07 / 0.12 / 0.20 / control 0.50, `surface.raised` 위 1.15 / 1.29 / 1.55 / 3.51). AC-5 추가: 표 머리글은 본문보다 텍스트 색 쪽으로 한 단계 움직이고, 배지 채움은 부모 표면 위의 반투명 색이다. |
-| FR-CMP-013 | AC-6: `Tabs`의 활성 상태는 배경 상자나 그림자 없이, 목록 구분선(`border.default`) 위에 정확히 놓인 곧은 `accent` 표시선(구분선보다 두껍다)과 `text.primary` 글자로 나타낸다. 호버 면은 구분선에 닿지 않는다. 세로 방향은 같은 선을 inline-end에 두고, 강제 색 모드에서는 시스템 강조색으로 다시 그린다. |
+| FR-CMP-013 | AC-6 (CR-067이 §29로 대체): `Tabs`의 활성 상태는 배경 상자나 그림자 없이, 목록 구분선(`border.default`) 위에 정확히 놓인 곧은 `accent` 표시선(구분선보다 두껍다)과 `text.primary` 글자로 나타낸다. 호버 면은 구분선에 닿지 않는다. 세로 방향은 같은 선을 inline-end에 두고, 강제 색 모드에서는 시스템 강조색으로 다시 그린다. |
 
+## 29. CR-067 정정 (baseline)
+
+v1.18 baseline 이력을 유지한다. CR-065 뒤에도 사용자가 2026-10-22 "탭 선택 시 아직도 아래쪽 테두리 지는 게 어색하다"며 다른 디자인 시스템을 참조해 개선하라고 지시했다. 공개 소스를 비교했다: shadcn/ui의 기본 Tabs는 아래 테두리 없이 옅은 트랙 안에서 선택 탭을 떠오른 알약으로 그리고 밑줄형은 `variant="line"`으로 둔다. Radix Themes는 밑줄형 Tabs와 별개로 SegmentedControl을 두고, Mantine은 `default`(밑줄)·`outline`·`pills` 변형을 둔다. GitHub Primer는 페이지 단위 이동에 UnderlineNav를, 같은 화면 안 보기 전환에 SegmentedControl을 권한다. Conductor의 Tabs는 같은 자리의 패널을 바꾸는 용도이므로 기본을 세그먼트형으로 바꾸고 밑줄형을 변형으로 남긴다. 새 FR은 없다.
+
+| FR | 변경 |
+| --- | --- |
+| FR-CMP-013 | AC-6 정정: `Tabs.List`는 `variant?: "segmented" \| "line"`(기본 `segmented`)을 받는다. `segmented`는 `surface.base` 트랙 안에서 선택 탭을 `surface.elevated` 알약(장식 경계 1px 고리)으로 그리며, 목록 아래 구분선과 표시선이 없다. 두 테마 모두 알약이 트랙보다 밝다. 글자 굵기는 선택 여부와 무관하게 같아 선택이 이웃 탭을 밀지 않는다. `line`은 CR-065의 모양 — 목록 구분선(`border.default`) 위에 정확히 놓인 2px `accent` 표시선 — 을 유지한다. 포커스 링은 포커스된 선택 탭에서도 선택 표시보다 우선해 보인다. 강제 색 모드에서는 세그먼트형 선택을 `Highlight` 외곽선으로, 밑줄형 표시선을 `Highlight`로 다시 그린다. |
