@@ -682,4 +682,5 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | FR 매핑 | FR-CMP-013 AC-6 → `interaction.tsx`, `interaction.css`, 시험 `testing/interaction.test.tsx`(CR-067), `css/test/bundle.test.ts`(CR-065 · CR-067), `testing/component-css.browser.test.tsx`(CR-067, CR-065 · CR-067) |
 | 시험 | 단위 1건, 번들 4건, 브라우저 2건. 수정 전 소스에서 새 시험 5건 실패 확인 |
 | 검증 (로컬) | 게이트 12종 통과(단위 837/837, a11y 357 통과·1 skip), 문서 E2E 69/69, 시각 회귀 27장(회색조 카탈로그 1장 갱신) |
+| 검증 (CI) | PR #80 head `46856ed`: verify(node 20·22), visual regression 통과. CR-067 closed |
 
