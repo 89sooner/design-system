@@ -1,6 +1,6 @@
 # 요구사항-화면 추적 매트릭스
 
-> 상태: review | 버전: v0.11 | 갱신일: 2026-10-20
+> 상태: review | 버전: v0.12 | 갱신일: 2026-10-21
 
 ## 1. 목적
 
@@ -72,7 +72,7 @@ UI가 없는 요구사항은 아래 표면 중 하나에 간접 노출된다.
 | FR-THM-002 | Must | W-010, W-030 | SFC-PKG | FLOW-002 | 라이트 팔레트 |
 | FR-THM-003 | Must | W-001, W-030 | SFC-PKG | FLOW-002 | 테마 결정 우선순위 |
 | FR-THM-004 | Must | W-030, W-050 | SFC-CLI, SFC-CI | FLOW-003 | 대비 검사 |
-| FR-THM-005 | Must | W-030, W-050 | SFC-CLI, SFC-PKG | FLOW-003 | 소스 계승 토큰 교정 (OD-001 종결) |
+| FR-THM-005 | Must | W-030, W-050 | SFC-CLI, SFC-PKG | FLOW-003 | 소스 계승 토큰 교정 (OD-001 종결); placeholder 역할 토큰과 CP-122·CP-123 (CR-064) |
 | FR-CSS-001 | Must | W-002 | SFC-PKG | — | 캐스케이드 레이어 |
 | FR-CSS-002 | Must | — | SFC-PKG, 전 화면 | — | 리셋/베이스 |
 | FR-CSS-003 | Must | W-012 | SFC-PKG | — | 레이아웃 프리미티브 |
@@ -81,7 +81,7 @@ UI가 없는 요구사항은 아래 표면 중 하나에 간접 노출된다.
 | FR-CMP-001 | Must | W-021 | SFC-PKG | — | 공통 계약 |
 | FR-CMP-002 | Must | W-020, W-021 | SFC-PKG | FLOW-001 | 액션 |
 | FR-CMP-003 | Must | W-020, W-021 | SFC-PKG | FLOW-001 | 표면 |
-| FR-CMP-004 | Must | W-020, W-021, W-040 | SFC-PKG | FLOW-001 | 상태 표시 |
+| FR-CMP-004 | Must | W-020, W-021, W-040 | SFC-PKG | FLOW-001 | 상태 표시; 배지 한 줄·StatusBadge plain (CR-064) |
 | FR-CMP-005 | Must | W-020, W-021 | SFC-PKG | FLOW-001 | 데이터 표시 |
 | FR-CMP-006 | Must | W-020, W-021 | SFC-PKG | FLOW-004 | 오버레이 |
 | FR-CMP-007 | Must | W-020, W-021 | SFC-PKG | FLOW-001 | 폼 |
@@ -153,7 +153,7 @@ NFR은 화면 하나에 귀속되지 않는다. 각 NFR이 어디서 측정되�
 
 | 요구사항 | 화면 / 표면 | 구현 단위 | 검증 |
 | --- | --- | --- | --- |
-| FR-CMP-010 | W-060 / SFC-PKG | WP-030 | 검색·선택·미리보기·복귀, IME, 상태·커서 |
+| FR-CMP-010 | W-060 / SFC-PKG | WP-030 | 검색·선택·미리보기·복귀, IME, 상태·커서; 행 ID·열 최소 폭·배너 행동·선택 행 대비·패널 고정 (CR-064) |
 | FR-CMP-011 | W-061 / SFC-PKG | WP-031 | 그래프/목록 방향·근거, 결정성, 50/300노드 |
 | FR-CMP-012 | W-062 / SFC-PKG | WP-032 | 단계 의미, 허용 행동, 부분/미확인 |
 | FR-CMP-014 | W-020, W-021 / SFC-PKG | WP-037 | Toast·DatePicker·CommandPalette·Pagination 동작, axe(열린 상태 포함), 키보드 경로 (CR-054) |

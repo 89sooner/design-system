@@ -134,8 +134,19 @@ const text: TokenDefinition[] = [
     usage: "decorative",
     value: "#5f6d80",
     description:
-      "Meta text, timestamps, uppercase labels and input placeholders only. Contrast-exempt: " +
-      "2.94:1 to 3.74:1 never reaches body 4.5:1. Forbidden on `surface.elevated` (FR-THM-005 AC-3).",
+      "Meta text, timestamps and uppercase labels only — never text a user must read to act, " +
+      "including input placeholders (CR-064). Contrast-exempt: 2.94:1 to 3.74:1 never reaches body " +
+      "4.5:1. Forbidden on `surface.elevated` (FR-THM-005 AC-3).",
+  }),
+  darkToken({
+    key: "text.placeholder",
+    usage: "body",
+    // The same value as `text.muted`, not an alias: FR-TOK-002 AC-2 allows only the four same-tier
+    // references CR-008 lists. No new colour enters the palette (OD-001 stays a minimal remediation).
+    value: "#8290a3",
+    description:
+      "Example text inside an active field (CR-064, FR-THM-005 AC-8). Its own role so a placeholder " +
+      "can be tuned apart from supporting copy; today it equals `text.muted`, 5.22:1 on `surface.raised`.",
   }),
   darkToken({
     key: "text.inverse",

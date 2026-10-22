@@ -14,12 +14,19 @@
   .cdt-data-table { min-inline-size: 0; }
   .cdt-data-table[data-density="compact"] { --cdt-table-cell-padding-block: var(--cdt-workbench-compact-padding); }
   .cdt-data-table [data-selected] { background: var(--cdt-state-selected); }
+  /* CR-064: the pressed row button on the selected fill reads as primary text (muted measured 4.34:1 in dark). */
+  .cdt-data-table [data-selected] .cdt-btn[aria-pressed="true"] { color: var(--cdt-text-primary); }
+  /* CR-064: a sortable header's button takes the header's type, so sortable and plain headers read as one row. */
+  .cdt-data-table .cdt-table__header-cell > .cdt-btn { margin-inline: calc(var(--cdt-space-2) * -1); color: inherit; font: inherit; letter-spacing: inherit; text-transform: inherit; }
   .cdt-data-table .cdt-table__cell { overflow-wrap: anywhere; }
   .cdt-data-table > .cdt-filter-toolbar { padding: var(--cdt-space-3); justify-content: space-between; }
   .cdt-workbench { display: grid; min-inline-size: 0; border: var(--cdt-border-width-hairline) solid var(--cdt-border-default); border-radius: var(--cdt-radius-md); background: var(--cdt-workbench-background); }
   .cdt-workbench[data-inspecting] { grid-template-columns: minmax(0, 1fr) minmax(0, var(--cdt-workbench-inspector-share)); }
   .cdt-workbench__results { min-inline-size: 0; }
   .cdt-workbench__inspector { min-inline-size: 0; border-inline-start: var(--cdt-border-width-hairline) solid var(--cdt-border-default); padding: var(--cdt-space-4); overflow-wrap: anywhere; }
+  /* CR-064: in the split layout the inspector stays in view while the results scroll; it scrolls on its own. */
+  .cdt-workbench[data-inspecting] .cdt-workbench__inspector { position: sticky; inset-block-start: 0; align-self: start; max-block-size: 100vh; overflow: auto; }
+  .cdt-app-shell .cdt-workbench[data-inspecting] .cdt-workbench__inspector { inset-block-start: var(--cdt-top-bar-min-height); max-block-size: calc(100vh - var(--cdt-top-bar-min-height)); }
   .cdt-workbench__resize { display: flex; flex-wrap: wrap; align-items: center; gap: var(--cdt-space-2); color: var(--cdt-text-muted); }
   .cdt-detail-inspector header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--cdt-space-2); }
   .cdt-detail-inspector h2 { font-size: var(--cdt-font-size-lg); }
@@ -32,7 +39,7 @@
   .cdt-processing-status .cdt-timeline__step { background: var(--cdt-workbench-background); }
   @media (max-width: {breakpoint.md}) {
     .cdt-workbench[data-inspecting] { grid-template-columns: minmax(0, 1fr); }
-    .cdt-workbench__inspector { border-inline-start: none; border-block-start: var(--cdt-border-width-hairline) solid var(--cdt-border-default); }
+    .cdt-workbench__inspector, .cdt-workbench[data-inspecting] .cdt-workbench__inspector, .cdt-app-shell .cdt-workbench[data-inspecting] .cdt-workbench__inspector { position: static; max-block-size: none; overflow: visible; border-inline-start: none; border-block-start: var(--cdt-border-width-hairline) solid var(--cdt-border-default); }
     .cdt-workbench__resize { display: none; }
   }
 }

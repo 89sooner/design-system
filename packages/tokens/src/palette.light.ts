@@ -31,6 +31,7 @@ const baseValues: Readonly<Record<string, string>> = {
   "text.primary": "#0c121c",
   "text.secondary": "#33415a",
   "text.muted": "#4d5a6e",
+  "text.placeholder": "#4d5a6e",
   "text.faint": "#6b788c",
   "text.inverse": "#f4f7fb",
   "text.monoPayload": "#1b2537",

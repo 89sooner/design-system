@@ -254,6 +254,17 @@ const tonePairs: ContrastPair[] = [
   pair("CP-121", "text.primary", "tone.danger.backgroundHover", "body"),
 ];
 
+/**
+ * CR-064: the placeholder of an active field is text a user reads, so it is measured on the fills
+ * the fields actually paint — `.cdt-input`/`.cdt-textarea`/`.cdt-select__trigger` use
+ * `surface.raised`; NumberInput and PromptInput use `input.background`. The old assumption that
+ * every field sat on `surface.base` (DEV-061) is why a 3.22:1 placeholder passed unnoticed.
+ */
+const placeholderPairs: ContrastPair[] = [
+  pair("CP-122", "input.placeholder", "surface.raised", "body"),
+  pair("CP-123", "input.placeholder", "input.background", "body"),
+];
+
 export const contrastPairs: readonly ContrastPair[] = [
   ...textOnSurface,
   ...accentPairs,
@@ -265,6 +276,7 @@ export const contrastPairs: readonly ContrastPair[] = [
   ...disabledPairs,
   ...datavizPairs,
   ...tonePairs,
+  ...placeholderPairs,
 ];
 
 /** A combination that must never render. `FP-###`, permanent like a `CP-###`. */
@@ -288,8 +300,8 @@ export interface ForbiddenPair {
 /**
  * Two combinations the token documentation forbids in prose. Prose is not a check: a `lint:tokens`
  * rule can only see two custom properties named in one declaration block, so the ban survived only
- * as long as nobody reached the same colours through an alias — `input.placeholder` resolves to
- * `text.faint` and any component token could resolve to `surface.elevated`.
+ * as long as nobody reached the same colours through an alias — `input.placeholder` used to resolve
+ * to `text.faint` (until CR-064) and any component token could resolve to `surface.elevated`.
  *
  * Declaring them here puts the ban on the token graph instead of on the text of a stylesheet.
  * `check.ts` resolves both sides through their aliases and fails a declared contrast pair that

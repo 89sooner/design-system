@@ -1,6 +1,6 @@
 # Conductor Design System 최종 요구사항 정의서
 
-> 상태: baseline | 버전: v1.16 | 갱신일: 2026-10-20
+> 상태: baseline | 버전: v1.17 | 갱신일: 2026-10-21
 
 ## 1. 문서 개요
 
@@ -38,7 +38,7 @@ Conductor는 `agent-ai-platform/packages/web`의 시각 언어를 3개 npm 패�
 2. 다크(기준) 및 라이트 테마, 시스템 설정 연동, 테마별 대비 검증, 소스 계승 토큰의 접근성 교정 — FR-THM-001 ~ FR-THM-005
 3. 캐스케이드 레이어 기반 프레임워크 비종속 스타일시트 — FR-CSS-001 ~ FR-CSS-005
 4. React 프리미티브 컴포넌트 — 기존 FR-CMP-001 ~ FR-CMP-009 및 CR-041 확장 FR-CMP-010 ~ FR-CMP-013 (§17, review)
-5. 정적 문서 사이트 — FR-DOC-001 ~ FR-DOC-007 및 CR-048 확장 FR-DOC-008 (§18), CR-051 확장 FR-DOC-009 (§19), CR-052 확장 FR-DOC-010 (§20), CR-053 보강 FR-DOC-001 AC-5·FR-CMP-013 AC-5 (§21), CR-054 확장 FR-CMP-014 (§22), CR-060 확장 FR-CMP-015 (§24), CR-061 확장 FR-CMP-016 (§25), CR-063 보강 FR-CMP-015 AC-7 (§26)
+5. 정적 문서 사이트 — FR-DOC-001 ~ FR-DOC-007 및 CR-048 확장 FR-DOC-008 (§18), CR-051 확장 FR-DOC-009 (§19), CR-052 확장 FR-DOC-010 (§20), CR-053 보강 FR-DOC-001 AC-5·FR-CMP-013 AC-5 (§21), CR-054 확장 FR-CMP-014 (§22), CR-060 확장 FR-CMP-015 (§24), CR-061 확장 FR-CMP-016 (§25), CR-063 보강 FR-CMP-015 AC-7 (§26), CR-064 보강 FR-THM-005 AC-8·FR-CMP-004 AC-7·FR-CMP-010 AC-6 (§27)
 6. WCAG 2.1 AA 접근성 기준선 — FR-A11Y-001 ~ FR-A11Y-005
 7. 모노레포 빌드, 타입 배포, 진입점 선언, SSR 안전성, 버저닝 — FR-DX-001 ~ FR-DX-005
 8. 토큰 계약·단위·접근성·시각 회귀 검사 — FR-QA-001 ~ FR-QA-004
@@ -936,7 +936,8 @@ OD-001(2026-07-10 종결)이 확정한 정책이다. 소스 팔레트를 실측�
 | `text.primary` | `#f4f7fb` | `body` | 14.40 ~ 18.32 | 제약 없음 |
 | `text.secondary` | `#c5cfdd` | `body` | 9.83 ~ 12.51 | 제약 없음 |
 | `text.muted` | `#8290a3` | `body` | 4.76 ~ 6.06 | 제약 없음 |
-| `text.faint` | `#5f6d80` | `decorative` | 2.94 ~ 3.74 | 본문 금지. `surface.elevated` 위 사용 금지(2.94). 메타·타임스탬프·플레이스홀더 전용 |
+| `text.placeholder` (CR-064) | `#8290a3` (= `text.muted`) | `body` | `surface.raised` 5.22 (라이트 6.81) | 활성 입력의 placeholder 전용 역할. 새 색이 아니라 두 테마 모두 `text.muted`와 같은 값이다(FR-TOK-002 AC-2가 같은 계층 참조를 CR-008의 4건으로 묶으므로 별칭이 아니라 값으로 둔다). `input.placeholder`가 이 토큰을 가리킨다. 입력이 실제로 칠하는 표면에서 4.5:1 이상이어야 한다(FR-THM-005 AC-8) |
+| `text.faint` | `#5f6d80` | `decorative` | 2.94 ~ 3.74 | 본문 금지. `surface.elevated` 위 사용 금지(2.94). 메타·타임스탬프·대문자 라벨 전용. 사용자가 읽고 행동해야 하는 글자(활성 입력의 placeholder 포함)에는 쓰지 않는다(CR-064) |
 | `border.subtle` | slate alpha 0.10 | `decorative` | 1.13 | WCAG 1.4.11 예외: 카드/패널 경계는 표면색 차이로 이미 식별 가능하다 |
 | `border.default` | slate alpha 0.18 | `decorative` | 1.30 | 위와 같다. 폼 컨트롤에는 `border.control`을 쓴다 |
 | `border.strong` | slate alpha 0.30 | `decorative` | 1.69 | 위와 같다 |
@@ -1175,3 +1176,13 @@ v1.15 baseline 이력을 유지한다. 파일럿 앱(agent-ai-platform)이 glass
 | FR | 추가 수용 기준 |
 | --- | --- |
 | FR-CMP-015 | AC-7 (NumberInput, C-081): `variant?: "solid" \| "glass"`(기본 `solid`)를 받는다. `glass`면 래퍼에 `cdt-number-input--glass`가 붙고, 쉬는 상태의 입력 배경이 같은 테마의 glass `TextField`(C-051)와 같다. 포커스와 비활성 배경은 `solid`와 같다. `solid`의 시각은 바뀌지 않는다. 다크·라이트 두 테마에서 브라우저 시험으로 확인한다. |
+
+## 27. CR-064 보강 (baseline)
+
+v1.16 baseline 이력을 유지한다. PR 조사 화면을 Conductor로 시제품화하며 세 결함을 재현했다. 입력 placeholder가 입력이 실제로 칠하는 `surface.raised` 위에서 3.22:1(다크)·4.36:1(라이트)로 본문 기준에 못 미쳤고, 1363px·미리보기 40%에서 상태 배지 "merged"가 두 줄로 갈라졌으며, 분할 작업대에서 결과를 내리면 미리보기가 화면 밖으로 사라졌다. 사용자가 2026-10-21에 권장안(placeholder는 새 색 없이 역할 토큰으로 분리, 패널 고정은 기본값, 패키지 수정을 먼저 한 PR로)대로 진행하라고 지시했다. OD-001의 원칙(소스 값 보존, 교정은 최소)은 유지한다. 바뀌는 값은 `input.placeholder`의 참조 대상 하나이고, 새 색은 없다. 새 FR은 만들지 않고 수용 기준을 더한다.
+
+| FR | 추가 수용 기준 |
+| --- | --- |
+| FR-THM-005 | AC-8: 활성 입력의 placeholder는 `text.placeholder`(`usage: body`, 두 테마 모두 `text.muted`와 같은 값)를 쓰고 `text.faint`를 쓰지 않는다. `input.placeholder`는 `text.placeholder`를 참조한다. `TextField`·`TextArea`·`NumberInput`·`PromptInput`의 placeholder가 각 입력이 실제로 칠하는 배경 위에서 다크·라이트 모두 4.5:1 이상이다. 대비 쌍 CP-122(`surface.raised`)·CP-123(`input.background`)으로 검사하고, 브라우저 시험이 계산된 `::placeholder` 색과 입력 배경으로 확인한다. |
+| FR-CMP-004 | AC-7: `Badge`·`StatusBadge`·`SeverityTag`는 한 줄 라벨이라 자기 안에서 줄을 바꾸지 않는다(`white-space: nowrap`). 표 셀 안의 버튼도 같다. 셀의 본문 글자는 계속 줄을 바꾼다. `StatusBadge`는 `appearance?: "chip" \| "plain"`(기본 `chip`)을 받는다. `plain`은 채움·경계·표지 점 없이 상태색 아이콘과 `text.primary` 글자를 그린다. 색·아이콘·텍스트 세 채널(AC-1의 배경 대신 아이콘 색)은 유지한다. |
+| FR-CMP-010 | AC-6: `DataTable` 행은 안정 ID를 `data-row-id`로 노출하고, 열은 선택적 `minInlineSize`를 받으며, `stateAction`이 error/partial 배너에 다음 행동을 둔다. 선택된 행의 눌린 버튼은 `text.primary`로 그리고, 정렬 가능한 헤더의 버튼은 헤더의 글자 스타일을 따른다. 분할 레이아웃의 `WorkbenchLayout` 패널은 결과를 스크롤해도 화면 안에 남고(`AppShell` 안에서는 상단 막대 아래) 자체 스크롤을 갖는다. **breakpoint.md** 미만에서는 결과 아래로 쌓인다. |

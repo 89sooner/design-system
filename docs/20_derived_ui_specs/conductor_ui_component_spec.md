@@ -1,6 +1,6 @@
 # Conductor Design System UI 컴포넌트 명세서
 
-> 상태: review | 버전: v0.16 | 갱신일: 2026-10-20
+> 상태: review | 버전: v0.17 | 갱신일: 2026-10-21
 
 ## 0. 문서 위치와 범위
 
@@ -376,6 +376,7 @@ export type IconButtonProps = PolymorphicProps<"button", IconButtonOwnProps> & {
 - **상태**: `default`만 갖는다.
 - **접근성 책임**: accessible name은 **소비자**가 `children` 텍스트로 제공한다. 아이콘의 `aria-hidden="true"`는 **Conductor**가 부여한다.
 - **사용 규칙**: 실행 상태를 표시할 때는 `Badge`가 아니라 `StatusBadge`(C-021)를 쓴다. 심각도는 `SeverityTag`(C-022)를 쓴다.
+- **결정 (CR-064)**: 배지는 한 줄 라벨이다. `.cdt-badge`는 `white-space: nowrap`이라 표 셀의 `overflow-wrap: anywhere` 아래에서도 "merged"가 갈라지지 않는다. 칸이 좁으면 배지를 줄이지 않고 열 우선순위(소비자의 `visibleColumns`)와 표의 가로 스크롤이 받는다.
 - **금지**: `Badge`에 `onClick`을 부여하지 않는다. 클릭 가능한 태그가 필요하면 `Button variant="ghost" size="sm"`을 쓴다. 텍스트를 숨기고 아이콘만 남기지 않는다.
 - **관련**: FR-CMP-004, FR-A11Y-003 / W-020, W-021.
 
@@ -397,6 +398,7 @@ export type IconButtonProps = PolymorphicProps<"button", IconButtonOwnProps> & {
 - **variant**: 없음. — **tone**: 없음. `status`가 색을 결정한다. `tone`과 `status`를 동시에 노출하지 않는다. — **size**: 없음.
 - **이벤트**: 없음.
 - **상태**: `default`만 갖는다.
+- **결정 (CR-064)**: `appearance?: "chip" | "plain"`(기본 `chip`). `plain`은 `cdt-status-badge--plain`을 붙여 채움·경계·표지 점을 빼고, 아이콘은 상태색, 글자는 `text.primary`로 그린다. 같은 행에 lifecycle `Badge`가 있을 때 두 상태 어휘가 같은 모양으로 보이지 않게 하는 용도다(FR-CMP-004 AC-7).
 - **접근성 책임**: 아이콘에 `aria-hidden="true"`를 부여하는 것은 **Conductor**다. 접근 가능한 이름은 `label` 텍스트가 제공하며 문자열은 **소비자**가 넘긴다(FR-CMP-004 AC-2). 그레이스케일 렌더에서 7종이 텍스트로 구분되는 것은 `label`이 필수이기 때문이다(FR-CMP-004 AC-5, FR-A11Y-003 AC-1).
 - **사용 규칙**: `icon`과 `label`이 모두 필수이므로, 세 채널(색·아이콘·텍스트) 중 어느 하나도 생략할 수 없다.
 - **금지**: `iconOnly` 모드를 제공하지 않는다(FR-CMP-004 예외/실패 처리). 공간이 부족하면 소비자가 `Tooltip`(C-042)으로 감싼다. `label`에 빈 문자열을 넘기지 않는다.
@@ -739,7 +741,7 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
   - `app.css:725-735` — `input:not([type="checkbox"]):not([type="radio"])` `min-height: 40px`, `border: 1px solid var(--border-default)`, `border-radius: var(--radius-sm)`, 어두운 반투명 배경, `padding: 9px 12px`.
   - `app.css:737-741` — hover 시 `border-color: var(--border-strong)`.
   - `app.css:743-750` — focus 시 `border-color: var(--accent)`, `box-shadow: var(--focus-ring)`, `outline: none`.
-  - `app.css:752-755` — placeholder 색 `--text-faint`.
+  - `app.css:752-755` — placeholder 색 `--text-faint`. CR-064부터 `input.placeholder` → `text.placeholder`(`text.muted`와 같은 값)로 바꿨다. 입력이 칠하는 `surface.raised` 위에서 소스 값은 다크 3.22:1이었다(FR-THM-005 AC-8).
   - `app.css:712-723` — `.input-glass` 밝은 반투명 배경, `border-radius: var(--radius-md)`, `padding: 10px 14px`, `font-size: 14px`.
   - `app.css:1154-1165` — `.input-glass` hover/focus/placeholder 변형.
   - **결정**: 소스는 두 개의 입력 시각을 갖는다. 요소 셀렉터 기반의 `solid`(기본)와 클래스 기반의 `glass`다. 이를 `variant="solid" | "glass"`로 노출한다. 요소 셀렉터는 `cdt.reset` 레이어의 폰트 상속 정규화(`app.css:28-33`)에만 남기고, 시각은 `.cdt-input` 클래스 셀렉터가 소유한다(FR-CSS-004 AC-1).
@@ -1281,7 +1283,12 @@ component 토큰은 semantic 토큰만 참조한다(FR-TOK-002 AC-3). 아래 표
 
 ## CR-041 확장 계약 (FR-CMP-010~013)
 
-기존 Button/Table/Badge/Banner/Timeline/Panel/Drawer를 우선 재사용한다. 신규 계약은 Tabs·Popover·Collapsible/Accordion, 검색 입력/필터 칩·DataTable·Workbench/Inspector·경로 탐색, 관계 그래프/목록, 운영 단계 표현이다. 각 공개 export의 타입·ref·이름·disabled/busy·이벤트 전달과 반복 ID를 검증한다. 실제 최종 API와 예제는 패키지 README와 API report를 함께 본다.
+기존 Button/Table/Badge/Banner/Timeline/Panel/Drawer를 우선 재사용한다.
+
+- **결정 (CR-064, FR-CMP-010 AC-6)**: `DataTable`의 행은 `data-row-id`로 안정 ID를 드러내 소비자가 복귀 시 행과 포커스를 되찾을 수 있다. `DataColumn.minInlineSize`는 헤더 셀의 최소 폭이고, `stateAction`은 error/partial 배너의 행동 자리다. 선택된 행의 눌린 버튼은 `text.primary`(muted는 `state.selected` 위 다크 4.34:1), 정렬 헤더 버튼은 헤더 글자 스타일을 상속한다. 표 셀 안의 버튼은 줄을 바꾸지 않는다.
+- **결정 (CR-064)**: 분할 레이아웃의 `WorkbenchLayout` 패널은 `position: sticky`와 자체 스크롤을 갖는다. `AppShell` 안에서는 `--cdt-top-bar-min-height` 아래에 붙는다. **breakpoint.md** 미만에서는 결과 아래로 쌓이고 고정하지 않는다.
+
+신규 계약은 Tabs·Popover·Collapsible/Accordion, 검색 입력/필터 칩·DataTable·Workbench/Inspector·경로 탐색, 관계 그래프/목록, 운영 단계 표현이다. 각 공개 export의 타입·ref·이름·disabled/busy·이벤트 전달과 반복 ID를 검증한다. 실제 최종 API와 예제는 패키지 README와 API report를 함께 본다.
 
 ## CR-054 컴포넌트 (FR-CMP-014)
 

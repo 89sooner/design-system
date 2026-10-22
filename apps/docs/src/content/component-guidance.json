@@ -165,7 +165,8 @@
     "purpose": "Shows one of seven run or task statuses through colour, icon and text together.",
     "use": [
       "Use for lifecycle states: queued, running, waiting, success, partial, danger and neutralEnd.",
-      "Pass the icon named by STATUS_ICONS for the status from the tokens package."
+      "Pass the icon named by STATUS_ICONS for the status from the tokens package.",
+      "Use appearance=\"plain\" in dense rows that already hold a Badge: the icon keeps the status colour and the text stays full contrast, without the chip."
     ],
     "avoid": [
       {
@@ -1182,7 +1183,7 @@
     "use": [
       "Use it for result sets that need sorting, row preview or incremental loading.",
       "Sort in the parent or on the server and pass the sort state in.",
-      "Use state to show loading, error and partial results honestly."
+      "Use state to show loading, error and partial results honestly, and stateAction to offer the retry in that banner."
     ],
     "avoid": [
       {
@@ -1237,7 +1238,8 @@
     ],
     "accessibility": [
       "The width control is a native range input with a visible label.",
-      "The inspector share is clamped between 25 and 60 percent."
+      "The inspector share is clamped between 25 and 60 percent.",
+      "In the split layout the inspector stays in view while the results scroll and scrolls on its own; below the md breakpoint it stacks under the results."
     ]
   },
   "DetailInspector": {

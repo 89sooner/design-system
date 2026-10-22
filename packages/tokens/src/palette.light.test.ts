@@ -69,6 +69,11 @@ describe("FR-THM-002: deriving a theme from the canonical palette", () => {
     expect(derived.map((token) => token.key)).toContain("surface.paper");
   });
 
+  test("FR-THM-005 AC-8 (CR-064): the light placeholder role has light `text.muted`'s value", () => {
+    const value = (key: string) => lightPalette.find((token) => token.key === key)?.value;
+    expect(value("text.placeholder")).toBe(value("text.muted"));
+  });
+
   test("FR-THM-002: the real light palette derives from dark with no theme-only keys today", () => {
     expect(lightAdditions).toEqual([]);
     expect(lightPalette.map((token) => token.key)).toEqual(darkPalette.map((token) => token.key));

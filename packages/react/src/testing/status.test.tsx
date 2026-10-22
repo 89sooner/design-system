@@ -61,6 +61,21 @@ describe("status components", () => {
     }
   });
 
+  test("FR-CMP-004 AC-7 (CR-064): appearance=\"plain\" keeps icon and text, drops the marker, and chip stays the default", () => {
+    const { container } = render(<>
+      <StatusBadge status="queued" icon="●" label="Queued" />
+      <StatusBadge appearance="plain" status="queued" icon="●" label="Queued" />
+      <StatusBadge appearance="plain" status="danger" icon="●" label="Failing" />
+    </>);
+    const [chip, plainQueued, plainDanger] = [...container.querySelectorAll(".cdt-status-badge")];
+    expect(chip!.classList.contains("cdt-status-badge--plain")).toBe(false);
+    expect(chip!.querySelector(".cdt-status-badge__marker")).not.toBeNull();
+    expect([...plainQueued!.classList]).toEqual(expect.arrayContaining(["cdt-status-badge--plain", "cdt-status-badge--queued"]));
+    expect(plainQueued!.querySelector(".cdt-status-badge__marker")).toBeNull();
+    expect(plainDanger!.querySelector('.cdt-badge__icon[aria-hidden="true"]')).not.toBeNull();
+    expect(plainDanger!.textContent).toBe("●Failing");
+  });
+
   test("FR-A11Y-003: Badge hides an optional decorative icon", () => {
     const { getByText } = render(<Badge icon="●">Neutral</Badge>);
     expect(getByText("Neutral").querySelector(".cdt-badge__icon")?.getAttribute("aria-hidden")).toBe("true");

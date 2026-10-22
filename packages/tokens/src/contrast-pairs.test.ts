@@ -7,7 +7,8 @@ const index = buildTokenIndex(canonicalTokens());
 
 /** tokens spec 8.2: 116 declared pairs, CP-001 through CP-117 with CP-025 permanently retired (CR-036 added CP-043~CP-117). */
 // CR-050 added CP-118~CP-121 (text.primary on the OKLab tone fills).
-const DECLARED_PAIRS = 120;
+// CR-064 added CP-122~CP-123 (input.placeholder on the two fills fields paint).
+const DECLARED_PAIRS = 122;
 
 describe("FR-THM-004 AC-1: the declared contrast pairs", () => {
   test("FR-THM-004 AC-1: contrast-pairs.ts declares the 41 pairs of tokens spec 8.2", () => {
@@ -20,11 +21,11 @@ describe("FR-THM-004 AC-1: the declared contrast pairs", () => {
     for (const id of ids) expect(id).toMatch(/^CP-\d{3}$/);
   });
 
-  test("CR-035: the ids run CP-001..CP-121 with only CP-025 missing, and it stays missing", () => {
+  test("CR-035: the ids run CP-001..CP-123 with only CP-025 missing, and it stays missing", () => {
     // CR-006 removed CP-025; CR-035 restored the obligation as CP-042 rather than reusing the
     // number, so an old report naming CP-025 still means the retired 2.24:1 measurement.
     const numbers = contrastPairs.map((pair) => Number(pair.id.slice(3)));
-    const expected = Array.from({ length: 121 }, (_, offset) => offset + 1).filter((number) => number !== 25);
+    const expected = Array.from({ length: 123 }, (_, offset) => offset + 1).filter((number) => number !== 25);
     expect([...numbers].sort((one, other) => one - other)).toEqual(expected);
   });
 

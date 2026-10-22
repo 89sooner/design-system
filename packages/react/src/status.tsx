@@ -35,18 +35,23 @@ export interface StatusBadgeProps extends Omit<HTMLAttributes<HTMLSpanElement>, 
    */
   readonly icon: ReactNode;
   readonly label: string;
+  /**
+   * `chip` (default) is the tinted badge. `plain` drops the fill, border and marker dot and keeps the
+   * status-coloured icon and the text, for dense rows where another badge already sits (CR-064).
+   */
+  readonly appearance?: "chip" | "plain";
 }
 
 const markerStatuses: readonly Status[] = ["queued", "neutralEnd"];
 
 export const StatusBadge = forwardRef<HTMLSpanElement, StatusBadgeProps>(function StatusBadge(
-  { className, icon, label, status, ...props },
+  { appearance = "chip", className, icon, label, status, ...props },
   ref,
 ) {
-  const isMarker = markerStatuses.includes(status);
+  const isMarker = appearance === "chip" && markerStatuses.includes(status);
   const statusClass = status === "neutralEnd" ? "neutral-end" : status;
   return (
-    <span {...props} ref={ref} className={cx("cdt-badge", "cdt-status-badge", `cdt-status-badge--${statusClass}`, className)}>
+    <span {...props} ref={ref} className={cx("cdt-badge", "cdt-status-badge", `cdt-status-badge--${statusClass}`, appearance === "plain" && "cdt-status-badge--plain", className)}>
       {isMarker ? <span className={cx("cdt-status-badge__marker", status === "neutralEnd" && "cdt-status-badge__marker--neutral-end")} aria-hidden="true" /> : null}
       <span className="cdt-badge__icon" aria-hidden="true" data-cdt-icon={STATUS_ICONS[status]}>{icon}</span>
       {label}
