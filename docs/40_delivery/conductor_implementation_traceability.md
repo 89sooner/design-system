@@ -672,4 +672,4 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | FR 매핑 | FR-THM-002 → `palette.light.ts`, 시험 `palette.light.test.ts`(CR-066 4건). FR-THM-005 → 대비 244/244 |
 | 시험 | 토큰 4건. 수정 전 값으로 되돌린 빌드에서 4건 모두 실패 |
 | 검증 (로컬) | 게이트 12종 통과(단위 835/835, a11y 356 통과·1 skip, check:contrast 244/244), 문서 E2E 69/69, 시각 회귀 27장 기준 이미지 변경 없이 통과 |
-
+| 검증 (CI) | PR #78 head `eda8322`: verify(node 20·22), visual regression 통과. CR-066 closed |
