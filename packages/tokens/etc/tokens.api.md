@@ -110,6 +110,7 @@ export const tokens: {
         readonly secondary: "var(--cdt-text-secondary)";
         readonly muted: "var(--cdt-text-muted)";
         readonly faint: "var(--cdt-text-faint)";
+        readonly placeholder: "var(--cdt-text-placeholder)";
         readonly inverse: "var(--cdt-text-inverse)";
         readonly monoPayload: "var(--cdt-text-mono-payload)";
     };

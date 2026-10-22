@@ -389,6 +389,7 @@ export interface DataColumn<Row> {
     readonly header: string;
     // (undocumented)
     readonly id: string;
+    readonly minInlineSize?: string;
     // (undocumented)
     readonly numeric?: boolean;
     // (undocumented)
@@ -465,6 +466,7 @@ export interface DataTableProps<Row> extends Omit<HTMLAttributes<HTMLDivElement>
     readonly sort?: DataSort;
     // (undocumented)
     readonly state?: "ready" | "loading" | "error" | "partial";
+    readonly stateAction?: ReactNode;
     // (undocumented)
     readonly visibleColumns?: readonly string[];
 }
@@ -1387,6 +1389,7 @@ export const StatusBadge: react.ForwardRefExoticComponent<StatusBadgeProps & rea
 
 // @public (undocumented)
 export interface StatusBadgeProps extends Omit<HTMLAttributes<HTMLSpanElement>, "children"> {
+    readonly appearance?: "chip" | "plain";
     readonly icon: ReactNode;
     // (undocumented)
     readonly label: string;

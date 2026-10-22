@@ -1,6 +1,6 @@
 # Conductor Design System 패키지 공개 API 계약
 
-> 상태: review | 버전: v0.11 | 갱신일: 2026-10-20
+> 상태: review | 버전: v0.12 | 갱신일: 2026-10-21
 
 ## 0. 문서 재해석
 
@@ -332,6 +332,7 @@ export type SeverityValue = "read" | "write" | "destructive" | "blocked";
 
 export interface StatusBadgeProps extends React.ComponentPropsWithoutRef<"span"> {
   status: StatusValue; // 이외 값은 TypeScript 컴파일 오류(FR-CMP-004 AC-3)
+  appearance?: "chip" | "plain"; // CR-064, 기본 "chip"
 }
 
 export interface SeverityTagProps extends React.ComponentPropsWithoutRef<"span"> {
@@ -608,3 +609,14 @@ import "@conductor-by-89soone/css/agent.css"; // 에이전트 컴포넌트를 �
 ```
 
 새 export와 새 진입점만 있는 비파괴 변경이라 react·css 모두 minor다. 새 런타임 의존성은 없다(Radix Collapsible·Popover는 기존 의존성).
+
+## CR-064 추가 prop (FR-CMP-004 AC-7, FR-CMP-010 AC-6)
+
+```ts
+export interface StatusBadgeProps { readonly appearance?: "chip" | "plain" } // 기본 "chip"
+export interface DataColumn<Row> { readonly minInlineSize?: string }         // CSS 길이, 헤더 셀의 최소 폭
+export interface DataTableProps<Row> { readonly stateAction?: ReactNode }     // error/partial 배너의 행동
+// DataTable 행: <tr data-row-id={rowId(row)}>
+```
+
+모두 선택 prop·속성 추가라 react minor다. 토큰 패키지의 `tokens.text.placeholder`(`var(--cdt-text-placeholder)`)는 새 키 추가라 tokens minor다. `--cdt-input-placeholder`의 값이 `text.faint`에서 `text.placeholder`로 바뀌는 것은 이름이 같은 시각 변경이다.

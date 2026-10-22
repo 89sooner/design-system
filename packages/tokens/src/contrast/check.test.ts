@@ -236,12 +236,13 @@ describe("FR-THM-004 AC-1: a malformed pair declaration is an error, never a sil
     expect(error.format()).toContain("forbidden: FP-001");
   });
 
-  test("FR-THM-005 AC-3: the ban survives an alias — `input.placeholder` is `text.faint`", () => {
+  test("FR-THM-005 AC-3: the ban survives an alias — `topBar.eyebrowText` is `text.faint`", () => {
     // This is the case prose and `lint:tokens` both miss: neither side is spelled `text.faint`
     // or `surface.elevated` in the declaration, but the token graph resolves to both.
     const error = thrownBy(() =>
       checkContrast({
-        pairs: [pairOf("CP-904", "input.placeholder", "surface.elevated", "nonText")],
+        // `input.placeholder` was the example until CR-064 moved it to `text.placeholder`.
+        pairs: [pairOf("CP-904", "topBar.eyebrowText", "surface.elevated", "nonText")],
         themes: [DARK],
       }),
     );

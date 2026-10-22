@@ -311,6 +311,8 @@
     letter-spacing: normal;
     vertical-align: middle;
     text-transform: none;
+    /* One label: a table cell's `overflow-wrap: anywhere` must not split "merged" into two lines (CR-064). */
+    white-space: nowrap;
   }
 
   .cdt-badge__icon {
@@ -405,6 +407,17 @@
     border-color: color-mix(in srgb, var(--cdt-badge-marker-border) 20%, var(--cdt-badge-marker-background));
     background: var(--cdt-badge-marker-background);
     color: var(--cdt-badge-marker-text);
+  }
+
+  /*
+   * Plain appearance (CR-064): status colour on the icon, text at full contrast, no fill, border or
+   * marker dot. For dense rows where a lifecycle Badge already sits beside it.
+   */
+  .cdt-status-badge--plain {
+    padding-inline: 0;
+    border-color: transparent;
+    background: transparent;
+    color: var(--cdt-text-primary);
   }
 
   .cdt-status-badge__marker {
@@ -508,6 +521,11 @@
     border-bottom: var(--cdt-border-width-hairline) solid var(--cdt-table-cell-border);
     vertical-align: middle;
     color: var(--cdt-text-secondary);
+  }
+
+  /* A control in a cell is one unit too; the cell's text still wraps around it (CR-064). */
+  .cdt-table__cell .cdt-btn {
+    white-space: nowrap;
   }
 
   .cdt-table__row {
@@ -868,7 +886,8 @@
   }
 
   .cdt-input::placeholder,
-  .cdt-textarea::placeholder { color: var(--cdt-input-placeholder); opacity: 1; }
+  .cdt-textarea::placeholder,
+  .cdt-number-input__field::placeholder { color: var(--cdt-input-placeholder); opacity: 1; } /* NumberInput: CR-064, DEV-061 */
 
   .cdt-input-wrap:focus-within .cdt-input__icon { color: var(--cdt-accent); }
   .cdt-select__trigger[data-placeholder] { color: var(--cdt-input-placeholder); }

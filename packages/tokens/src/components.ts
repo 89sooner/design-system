@@ -221,9 +221,10 @@ const input: TokenDefinition[] = [
   component("input.text", ref("text.primary"), "Field value.", "body"),
   component(
     "input.placeholder",
-    ref("text.faint"),
-    "Placeholder. `text.faint` is allowed here and the dark field sits on `surface.base`, so the " +
-      "combination FR-THM-005 AC-3 forbids never renders.",
+    ref("text.placeholder"),
+    "Placeholder. Readable text, so `body` (CR-064): checked on `surface.raised`, which `.cdt-input` " +
+      "paints, and on `input.background`, which NumberInput and PromptInput paint (CP-122, CP-123).",
+    "body",
   ),
   component("input.border", ref("border.control"), "Field edge. 3.23:1 on `surface.raised`."),
   component("input.borderHover", ref("border.control"), "Hovered field edge."),

@@ -56,6 +56,19 @@ describe("FR-CMP-010 search contracts", () => {
     fireEvent.click(screen.getByRole("link", { name: "Alpha" })); expect(select).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole("button", { name: "Preview Alpha" })); expect(select.mock.calls[0]?.[0]).toBe("a");
   });
+  test("CR-064 AC-6: rows carry their stable ID, columns take a minimum width, and the state banner takes an action", () => {
+    const retry = vi.fn();
+    render(<DataTable label="PRs" rows={[{ id: "atlas/search#70" }, { id: "atlas/web#71" }]} rowId={(row) => row.id} rowLabel={(row) => row.id}
+      columns={[{ id: "id", header: "ID", cell: (row) => row.id }, { id: "state", header: "State", minInlineSize: "7rem" /* cdt-allow-literal: consumer-supplied column minimum under test */, cell: () => "open" }]}
+      state="partial" message="One repository couldn't be searched." stateAction={<button type="button" onClick={retry}>Retry</button>} />);
+    expect([...document.querySelectorAll("tbody tr")].map((row) => row.getAttribute("data-row-id"))).toEqual(["atlas/search#70", "atlas/web#71"]);
+    const [idHeader, stateHeader] = screen.getAllByRole("columnheader");
+    expect(idHeader!.style.minInlineSize).toBe("");
+    expect(stateHeader!.style.minInlineSize).toBe("7rem"); /* cdt-allow-literal: the value passed above */
+    fireEvent.click(screen.getByRole("button", { name: "Retry" }));
+    expect(retry).toHaveBeenCalledOnce();
+  });
+
   test("empty/loading/error rows and cursor action remain honest", () => {
     const load = vi.fn(); const props = { label: "Results", rows: [] as string[], rowId: (row: string) => row, rowLabel: (row: string) => row, columns: [{ id: "name", header: "Name", cell: (row: string) => row }] };
     const { rerender } = render(<DataTable {...props} />); expect(screen.getByText("No results")).toBeTruthy();

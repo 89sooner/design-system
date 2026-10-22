@@ -1,6 +1,6 @@
 # Conductor Design System 토큰 명세
 
-> 상태: review | 버전: v0.14 | 갱신일: 2026-10-15
+> 상태: review | 버전: v0.15 | 갱신일: 2026-10-21
 
 ## 0. 문서 성격과 범위 경계
 
@@ -267,12 +267,13 @@ primitive 토큰은 CSS로 산출되지 않고 `@conductor-by-89soone/tokens` �
 | `text.secondary` | body | `#c5cfdd` | `#33415a` | FR-THM-005, FR-A11Y-004 |
 | `text.muted` | body | `#8290a3` | `#4d5a6e` | FR-THM-005, FR-A11Y-004 |
 | `text.faint` | decorative | `#5f6d80` | `#6b788c` | FR-THM-005 AC-3 |
+| `text.placeholder` | body | `#8290a3` (= `text.muted`) | `#4d5a6e` (= `text.muted`) | FR-THM-005 AC-8 (CR-064) |
 | `text.inverse` | body | `#07111f` | `#f4f7fb` | FR-A11Y-004 |
 | `text.monoPayload` | body | `#dce6f3` | `#1b2537` | FR-CMP-005 AC-4 |
 
 세 본문 토큰의 다크 대비율은 표면 5단계 전체에서 기준을 넘는다. 최저값은 언제나 `surface.elevated`(`#192535`) 위에서 나온다: `text.primary` 14.40:1, `text.secondary` 9.83:1, `text.muted` 4.76:1. 최고값은 `surface.base` 위 18.32:1 / 12.51:1 / 6.06:1이다. 세 토큰에 사용 제약이 없다.
 
-**`text.faint`는 `decorative`이며 `surface.elevated` 위에서 쓸 수 없다.** 다크 `#5f6d80`은 `surface.base` 위 3.74:1, `surface.elevated` 위 2.94:1로 본문 4.5:1을 어디에서도 만족하지 않는다. 허용 용도는 메타 정보, 타임스탬프, 대문자 라벨(`.nav-section-label`, `.topbar-eyebrow`), 입력 placeholder다. `surface.elevated` 위 사용이 발견되면 `pnpm lint:tokens`가 실패한다(FR-THM-005 AC-3). 이 규칙은 다크 측정값에서 도출되었고 두 테마에 동일하게 적용한다 — 라이트에서는 같은 조합이 4.48:1이지만, 토큰의 사용 규칙이 테마에 따라 갈라지면 컴포넌트 코드가 테마를 분기해야 하므로(10.4절) 규칙을 통일한다.
+**`text.faint`는 `decorative`이며 `surface.elevated` 위에서 쓸 수 없다.** 다크 `#5f6d80`은 `surface.base` 위 3.74:1, `surface.elevated` 위 2.94:1로 본문 4.5:1을 어디에서도 만족하지 않는다. 허용 용도는 메타 정보, 타임스탬프, 대문자 라벨(`.nav-section-label`, `.topbar-eyebrow`)이다. 입력 placeholder는 CR-064부터 이 목록에서 빠졌다 — 활성 입력의 placeholder는 사용자가 읽고 행동하는 글자이므로 `text.placeholder`를 쓴다. `surface.elevated` 위 사용이 발견되면 `pnpm lint:tokens`가 실패한다(FR-THM-005 AC-3). 이 규칙은 다크 측정값에서 도출되었고 두 테마에 동일하게 적용한다 — 라이트에서는 같은 조합이 4.48:1이지만, 토큰의 사용 규칙이 테마에 따라 갈라지면 컴포넌트 코드가 테마를 분기해야 하므로(10.4절) 규칙을 통일한다.
 
 ### 5.4 경계
 
@@ -891,7 +892,7 @@ CR-018 이전 구현은 상태 semantic 색을 배경 전체에 적용하고 `te
 | `input.background` | `{surface.base}` | `{surface.elevated}` | FR-CMP-007 |
 | `input.backgroundFocus` | `{surface.canvas}` | `{surface.elevated}` | FR-CMP-007 |
 | `input.text` | `{text.primary}` | | FR-A11Y-004 |
-| `input.placeholder` | `{text.faint}` | | FR-THM-005 AC-3 |
+| `input.placeholder` | `{text.placeholder}` | | FR-THM-005 AC-8 (CR-064) |
 | `input.border` | `{border.control}` | | FR-THM-005 AC-2 |
 | `input.borderHover` | `{border.control}` | | FR-CMP-007 |
 | `input.borderFocus` | `{accent}` | | FR-A11Y-001 |
@@ -909,9 +910,9 @@ CR-018 이전 구현은 상태 semantic 색을 배경 전체에 적용하고 `te
 
 `input.border`는 소스의 `border-default`(다크 1.30:1)가 아니라 신규 `{border.control}`(다크 3.23:1)을 참조한다. 입력 요소는 배경이 주변 표면과 거의 같고 라벨이 요소 바깥에 있으므로, 경계선이 사라지면 입력 영역의 범위를 알 방법이 없다. 이것이 SRS 12.1절의 두 교정 대상 중 하나다.
 
-`input.placeholder`가 `{text.faint}`를 참조하는 것은 소스와 일치하며(`app.css:752-755`), SRS 12.1절이 placeholder를 `text.faint`의 명시적 허용 용도로 나열한다. 필드의 라벨은 placeholder가 아니라 `input.label.text`(`{text.secondary}`, 다크 `surface.base` 위 12.51:1)가 전달한다 — `Field`가 라벨을 `htmlFor`/`id`로 연결하기 때문이다(FR-CMP-007 AC-1). 설명은 별도 `text.muted` 단계에 남겨 라벨과 보조 정보의 위계를 분리한다(CR-019).
+`input.placeholder`는 CR-064부터 `{text.placeholder}`(`usage: body`, 두 테마 모두 `text.muted`와 같은 값)를 참조한다. 별칭이 아니라 값으로 두는 것은 FR-TOK-002 AC-2가 semantic 사이 참조를 CR-008의 4건으로 묶기 때문이다. 소스(`app.css:752-755`)는 `--text-faint`를 썼고 v1.16까지 SRS 12.1절도 그것을 허용했지만, 입력이 실제로 칠하는 `surface.raised` 위에서 다크 3.22:1·라이트 4.36:1로 본문 기준에 못 미쳤다. 새 역할 토큰은 새 색을 들이지 않으므로 OD-001의 값 보존 원칙을 깨지 않는다. CP-122(`surface.raised`)와 CP-123(`input.background`)이 검사한다(8.2절). 필드의 라벨은 placeholder가 아니라 `input.label.text`(`{text.secondary}`, 다크 `surface.base` 위 12.51:1)가 전달한다 — `Field`가 라벨을 `htmlFor`/`id`로 연결하기 때문이다(FR-CMP-007 AC-1). 설명은 별도 `text.muted` 단계에 남겨 라벨과 보조 정보의 위계를 분리한다(CR-019).
 
-`text.faint`의 `surface.elevated` 금지 규칙(5.3절)과 이 참조는 충돌하지 않는다. 그 금지는 다크 측정값 2.94:1에서 나왔고, 다크 `input.background`는 `{surface.base}`다. 라이트에서만 `input.background`가 `{surface.elevated}`를 참조하는데, 라이트 `text.faint`(`#6b788c`)는 흰 배경 위에서 4.48:1이다. 금지 조합이 실제로 렌더되는 경로가 없다.
+**`input.background`와 실제 입력 배경은 다르다(DEV-061).** `.cdt-input`·`.cdt-textarea`·`.cdt-select__trigger`는 `input.background`가 아니라 `surface.raised`를 칠한다(CR-019 정제). `input.background`를 칠하는 것은 `NumberInput`의 내부 입력, `PromptInput`, `RadioGroup`의 원, `ToggleGroup`, `Switch`, `Checkbox`다. v0.14까지 이 절은 "다크 입력은 `surface.base` 위"라고 가정했고, 그래서 placeholder 대비를 `surface.base` 기준으로만 읽었다. CR-064는 두 배경을 모두 대비 쌍으로 선언한다.
 
 ### 7.5.1 `feedbackMeter.*`
 
@@ -1025,7 +1026,7 @@ FR-THM-004 AC-1은 검사 대상 쌍이 `packages/tokens/src/contrast-pairs.ts`�
 
 ### 8.2 선언된 쌍과 측정 결과
 
-선언된 쌍 120개 × 2개 테마 = 240건. 모든 수치는 계산된 값이다. CP-042는 CR-035가 `status.neutralEnd`를 `nonText`로 되돌리며 되살린 의무이고, CP-043~CP-117은 CR-036이 더한 dataviz 쌍, CP-118~CP-121은 CR-050이 더한 톤 틴트 쌍이다.
+선언된 쌍 122개 × 2개 테마 = 244건. 모든 수치는 계산된 값이다. CP-042는 CR-035가 `status.neutralEnd`를 `nonText`로 되돌리며 되살린 의무이고, CP-043~CP-117은 CR-036이 더한 dataviz 쌍, CP-118~CP-121은 CR-050이 더한 톤 틴트 쌍, CP-122~CP-123은 CR-064가 더한 placeholder 쌍이다.
 
 CP-025는 CR-006으로 선언 목록에서 제거되었다. **ID는 재사용하지 않는다** — 번호를 당기면 이전 리포트·테스트 이름·커밋 메시지의 CP 참조가 다른 쌍을 가리키게 된다. 제거된 자리는 표에 흔적으로 남긴다.
 
@@ -1083,6 +1084,8 @@ CP-043 ~ CP-117: dataviz 25키 × 3표면(`surface.base`·`surface.canvas`·`sur
 
 CP-118 ~ CP-121: `text.primary` 위 `tone.accent.background`·`tone.accent.backgroundHover`·`tone.danger.background`·`tone.danger.backgroundHover`(5.11.1절, body 4.5:1). 다크 13.67 ~ 15.09, 라이트 15.39 ~ 17.34.
 
+CP-122 `input.placeholder` / `surface.raised`(body 4.5): 다크 5.22, 라이트 6.81. CP-123 `input.placeholder` / `input.background`(body 4.5): 다크 6.06, 라이트 6.99. CR-064 전 값(`text.faint`)이었다면 CP-122는 다크 3.22·라이트 4.36으로 둘 다 미달이다.
+
 라이트 `severity.*` 4쌍(CP-029 ~ CP-032)의 측정값이 다크와 동일하다. 라이트 `badge.severity.text`가 `{text.inverse}`(`#f4f7fb`)이고 다크 `badge.severity.text`가 `{text.primary}`(`#f4f7fb`)로 값이 같으며, 심각도 채움 4색이 두 테마에서 같은 값이기 때문이다. 우연이 아니라 5.8절과 6.2절의 정의가 만나는 지점이다.
 
 `badge.marker.dot`의 두 변형을 모두 선언한다 — `status.queued`가 CP-039, `status.neutralEnd`가 CP-042다(8.4절). 후자는 `decorative`이던 동안 선언 대상이 아니었고, CR-035가 `nonText`로 올리면서 검사에 들어왔다.
@@ -1109,7 +1112,7 @@ FR-THM-005가 강제한 두 교정이 9건의 미달을 제거했다. `focusRing
 | 토큰 | 다크 측정값 | 제외 사유 |
 | --- | --- | --- |
 | `surface.*` (9개) | — | 대비 검사의 배경 인자다. 표면 자체는 전경이 아니다 |
-| `text.faint` | `surface.base` 3.74 / `surface.elevated` 2.94 | 본문이 아니다. 메타·타임스탬프·대문자 라벨·placeholder 전용이며 `surface.elevated` 위 사용을 `pnpm lint:tokens`가 차단한다 (FR-THM-005 AC-3) |
+| `text.faint` | `surface.base` 3.74 / `surface.elevated` 2.94 | 본문이 아니다. 메타·타임스탬프·대문자 라벨 전용이며(placeholder는 CR-064부터 `text.placeholder`) `surface.elevated` 위 사용을 `pnpm lint:tokens`가 차단한다 (FR-THM-005 AC-3) |
 | `border.subtle` | 1.13 | WCAG 1.4.11 예외. 카드·패널 경계는 표면색 차이와 `elevation.*` 그림자가 이미 식별한다 |
 | `border.default` | 1.30 | 위와 같다. 폼 컨트롤에는 `border.control`을 쓴다 |
 | `border.strong` | 1.69 | 위와 같다 |
@@ -1162,6 +1165,7 @@ FR-THM-005가 강제한 두 교정이 9건의 미달을 제거했다. `focusRing
 | `focusRing` (CP-013 ~ CP-015) | 0건 | 0건 | FR-THM-005 AC-1 교정으로 해소 (alpha 0.30 → 0.80) |
 | 폼 컨트롤 경계 (CP-016 ~ CP-018) | 0건 | 0건 | FR-THM-005 AC-2 신규 `border.control`로 해소 |
 | `text.faint` | — | — | `decorative` 분류 + `surface.elevated` 금지 (FR-THM-005 AC-3) |
+| placeholder (CP-122, CP-123) | 0건 | 0건 | `text.placeholder` 역할 토큰으로 해소 (FR-THM-005 AC-8, CR-064) |
 | `border.subtle` / `default` / `strong` | — | — | `decorative` 분류, WCAG 1.4.11 예외 (FR-THM-005 AC-4) |
 | `accent` | 0건 | 0건 | `body` 분류 + `surface.elevated` 본문 금지 |
 | `status.queued` (CP-024, CP-039) | 0건 | 0건 | `nonText` 분류 유지 + 아이콘·텍스트 병기 (FR-THM-005 AC-5) |
@@ -1170,7 +1174,7 @@ FR-THM-005가 강제한 두 교정이 9건의 미달을 제거했다. `focusRing
 | 상태·미터·심각도 나머지 | 0건 | 0건 | `body` 분류로 전부 통과 |
 | **합계** | **0건** | **0건** | |
 
-선언된 120개 쌍 × 2개 테마 = 240건이 전부 통과한다. `pnpm check:contrast`는 다크와 라이트 모두에서 종료 코드 0을 반환하며, M-3(미달 0건)과 FR-A11Y-004 AC-1이 충족된다.
+선언된 122개 쌍 × 2개 테마 = 244건이 전부 통과한다. `pnpm check:contrast`는 다크와 라이트 모두에서 종료 코드 0을 반환하며, M-3(미달 0건)과 FR-A11Y-004 AC-1이 충족된다.
 
 대가는 사라지지 않고 위치를 옮겼다. `status.neutralEnd`의 다크 시인성 저하(최대 2.60:1)는 대비 검사가 아니라 **알려진 제약**으로 관리된다(`conductor_implementation_traceability.md` §5). 검사를 통과했다는 사실이 그 점이 잘 보인다는 뜻은 아니다.
 ---

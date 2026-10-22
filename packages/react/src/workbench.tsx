@@ -72,7 +72,11 @@ export const MultiSelect = /* @__PURE__ */ forwardRef<HTMLFieldSetElement, Multi
 });
 export const FilterToolbar = /* @__PURE__ */ forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function FilterToolbar({ className, ...props }, ref) { return <div {...props} ref={ref} className={cx("cdt-filter-toolbar", className)} />; });
 
-export interface DataColumn<Row> { readonly id: string; readonly header: string; readonly cell: (row: Row) => ReactNode; readonly sortable?: boolean; readonly numeric?: boolean }
+export interface DataColumn<Row> {
+  readonly id: string; readonly header: string; readonly cell: (row: Row) => ReactNode; readonly sortable?: boolean; readonly numeric?: boolean;
+  /** CSS length the column never shrinks below (CR-064). Narrower tables scroll inside themselves instead of breaking a badge. */
+  readonly minInlineSize?: string;
+}
 export interface DataSort { readonly column: string; readonly direction: "ascending" | "descending" }
 export interface DataTableProps<Row> extends Omit<HTMLAttributes<HTMLDivElement>, "onSelect"> {
   readonly label: string; readonly rows: readonly Row[]; readonly columns: readonly DataColumn<Row>[];
@@ -82,16 +86,18 @@ export interface DataTableProps<Row> extends Omit<HTMLAttributes<HTMLDivElement>
   readonly sort?: DataSort; readonly onSortChange?: (sort: DataSort) => void;
   readonly visibleColumns?: readonly string[]; readonly density?: "comfortable" | "compact";
   readonly state?: "ready" | "loading" | "error" | "partial"; readonly message?: string;
+  /** Next step shown in the error/partial banner, such as a retry button (CR-064). */
+  readonly stateAction?: ReactNode;
   readonly hasMore?: boolean; readonly onLoadMore?: () => void; readonly loadingMore?: boolean;
   readonly labels?: Partial<DataTableLabels>;
 }
-function DataTableRoot<Row>({ label, rows, columns, rowId, rowLabel, selectedId, onSelect, sort, onSortChange, visibleColumns, density = "comfortable", state = "ready", message, hasMore, onLoadMore, loadingMore, labels, className, ...props }: DataTableProps<Row>, ref: Ref<HTMLDivElement>) {
+function DataTableRoot<Row>({ label, rows, columns, rowId, rowLabel, selectedId, onSelect, sort, onSortChange, visibleColumns, density = "comfortable", state = "ready", message, stateAction, hasMore, onLoadMore, loadingMore, labels, className, ...props }: DataTableProps<Row>, ref: Ref<HTMLDivElement>) {
   const t = { ...DEFAULT_DATA_TABLE_LABELS, ...labels };
   const shown = columns.filter(column => visibleColumns === undefined || visibleColumns.includes(column.id));
   return <div {...props} ref={ref} className={cx("cdt-data-table", className)} data-density={density} aria-busy={state === "loading" || loadingMore || undefined}>
-    {state === "error" || state === "partial" ? <Banner tone="warning">{message ?? (state === "error" ? t.error : t.partial)}</Banner> : null}
-    <Table caption={label}><Table.Head><Table.Row>{onSelect && <Table.HeaderCell>{t.previewColumn}</Table.HeaderCell>}{shown.map(column => <Table.HeaderCell key={column.id} aria-sort={sort?.column === column.id ? sort.direction : undefined}>{column.sortable && onSortChange ? <Button variant="ghost" size="sm" onClick={() => onSortChange({ column: column.id, direction: sort?.column === column.id && sort.direction === "ascending" ? "descending" : "ascending" })}>{column.header}{sort?.column === column.id ? sort.direction === "ascending" ? " ↑" : " ↓" : " ↕"}</Button> : column.header}</Table.HeaderCell>)}</Table.Row></Table.Head>
-    <Table.Body>{state !== "loading" && rows.map(row => <Table.Row key={rowId(row)} data-selected={selectedId === rowId(row) || undefined}>{onSelect && <Table.Cell><Button size="sm" variant="ghost" aria-label={t.preview(rowLabel(row))} aria-pressed={selectedId === rowId(row)} onClick={event => onSelect(rowId(row), event.currentTarget)}>{t.select}</Button></Table.Cell>}{shown.map(column => <Table.Cell key={column.id} numeric={column.numeric}>{column.cell(row)}</Table.Cell>)}</Table.Row>)}{(state === "loading" || rows.length === 0) && <Table.Row><Table.Cell colSpan={shown.length + (onSelect ? 1 : 0)}>{state === "loading" ? <Skeleton label={t.loading} /> : <EmptyState title={state === "error" ? t.failed : t.empty} />}</Table.Cell></Table.Row>}</Table.Body></Table>
+    {state === "error" || state === "partial" ? <Banner tone="warning" action={stateAction}>{message ?? (state === "error" ? t.error : t.partial)}</Banner> : null}
+    <Table caption={label}><Table.Head><Table.Row>{onSelect && <Table.HeaderCell>{t.previewColumn}</Table.HeaderCell>}{shown.map(column => <Table.HeaderCell key={column.id} aria-sort={sort?.column === column.id ? sort.direction : undefined} style={column.minInlineSize === undefined ? undefined : { minInlineSize: column.minInlineSize }}>{column.sortable && onSortChange ? <Button variant="ghost" size="sm" onClick={() => onSortChange({ column: column.id, direction: sort?.column === column.id && sort.direction === "ascending" ? "descending" : "ascending" })}>{column.header}{sort?.column === column.id ? sort.direction === "ascending" ? " ↑" : " ↓" : " ↕"}</Button> : column.header}</Table.HeaderCell>)}</Table.Row></Table.Head>
+    <Table.Body>{state !== "loading" && rows.map(row => <Table.Row key={rowId(row)} data-row-id={rowId(row)} data-selected={selectedId === rowId(row) || undefined}>{onSelect && <Table.Cell><Button size="sm" variant="ghost" aria-label={t.preview(rowLabel(row))} aria-pressed={selectedId === rowId(row)} onClick={event => onSelect(rowId(row), event.currentTarget)}>{t.select}</Button></Table.Cell>}{shown.map(column => <Table.Cell key={column.id} numeric={column.numeric}>{column.cell(row)}</Table.Cell>)}</Table.Row>)}{(state === "loading" || rows.length === 0) && <Table.Row><Table.Cell colSpan={shown.length + (onSelect ? 1 : 0)}>{state === "loading" ? <Skeleton label={t.loading} /> : <EmptyState title={state === "error" ? t.failed : t.empty} />}</Table.Cell></Table.Row>}</Table.Body></Table>
     <div className="cdt-filter-toolbar"><span role="status">{t.loaded(state === "loading" ? 0 : rows.length)}</span>{hasMore && onLoadMore ? <Button onClick={onLoadMore} loading={loadingMore} disabled={state === "loading"}>{t.loadMore}</Button> : null}</div>
   </div>;
 }

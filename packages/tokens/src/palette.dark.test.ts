@@ -136,6 +136,8 @@ describe("dark palette against the source tokens.css", () => {
       [
         // FR-THM-005 AC-2: the one new colour token.
         "border.control",
+        // CR-064 / FR-THM-005 AC-8: a placeholder role with `text.muted`'s value (no new colour).
+        "text.placeholder",
         // CR-013: source progress tracks live only in app.css, not tokens.css.
         "surface.track",
         // CR-031: source application background glows are reusable decorative surfaces.
@@ -190,6 +192,14 @@ describe("dark palette against the source tokens.css", () => {
 
   test("FR-THM-005 AC-3: `text.faint` is decorative", () => {
     expect(byKey.get("text.faint")?.usage).toBe("decorative");
+  });
+
+  test("FR-THM-005 AC-8: placeholders read `text.placeholder`, a body role with `text.muted`'s value, not `text.faint`", () => {
+    expect(byKey.get("text.placeholder")?.usage).toBe("body");
+    expect(resolved.get("text.placeholder")).toBe(resolved.get("text.muted"));
+    const input = tokens.find((token) => token.key === "input.placeholder");
+    expect(input?.alias).toBe("text.placeholder");
+    expect(input?.usage).toBe("body");
   });
 
   test("FR-THM-005 AC-4: `border.subtle`, `border.default` and `border.strong` are decorative", () => {
