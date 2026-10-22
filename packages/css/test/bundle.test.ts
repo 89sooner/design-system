@@ -367,7 +367,8 @@ describe("FR-CMP-004 status display styles", () => {
     const badge = components.find((rule) => rule.selector === ".cdt-badge");
     expect(running?.decls["--cdt-badge-tone"]).toBe("var(--cdt-status-running)");
     expect(badge?.decls.background).toContain("var(--cdt-badge-tone)");
-    expect(badge?.decls.background).toContain("var(--cdt-surface-raised)");
+    // CR-065: a tint over the parent's surface, so the chip shows on a near-white light card too.
+    expect(badge?.decls.background).toBe("color-mix(in srgb, var(--cdt-badge-tone) 10%, transparent)");
     expect(badge?.decls.color).toBe("var(--cdt-text-primary)");
   });
 
@@ -992,5 +993,41 @@ describe("CR-061 FR-CMP-016 opt-in agent stylesheet", () => {
 
   test("agent.css stays small: under 4KB gzip", () => {
     expect(gzipSync(agent, { level: 9 }).length).toBeLessThanOrEqual(4 * 1024);
+  });
+});
+
+describe("CR-065 tabs indicator and light-theme surfaces", () => {
+  const components = topLevelRules(index, "cdt.component");
+  // The minifier drops attribute quotes and writes `::after` as `:after`, and may merge rules.
+  const normal = (selector: string) => selector.replaceAll('"', "").replaceAll("::", ":");
+  const rule = (selector: string) => {
+    const matching = components.filter((candidate) => candidate.selector.split(",").map(normal).includes(normal(selector)));
+    return matching.length === 0 ? undefined : { decls: Object.assign({}, ...matching.map((candidate) => candidate.decls)) as Record<string, string> };
+  };
+
+  test("CR-065 FR-CMP-008: the active tab is a straight indicator, not a box with a bent inset underline", () => {
+    const active = rule('.cdt-tabs__trigger[data-state="active"]');
+    expect(active?.decls.background).toBeUndefined();
+    expect(active?.decls["box-shadow"]).toBeUndefined();
+    expect(active?.decls.color).toBe("var(--cdt-text-primary)");
+    expect(rule('.cdt-tabs__trigger[data-state="active"]::after')?.decls.background).toBe("var(--cdt-accent)");
+  });
+
+  test("CR-065: the indicator lies on the list's rule, and the rule is a decorative divider", () => {
+    const list = rule(".cdt-tabs__list");
+    expect(list?.decls["border-block-end"]).toContain("var(--cdt-border-default)");
+    expect(list?.decls["--cdt-tabs-indicator-offset"]).toBe("calc(var(--cdt-space-1) + var(--cdt-border-width-hairline))");
+    const indicator = rule(".cdt-tabs__trigger::after");
+    expect(indicator?.decls["inset-block-end"]).toBe("calc(var(--cdt-tabs-indicator-offset) * -1)");
+    expect(indicator?.decls["block-size"]).toBe("var(--cdt-border-width-emphasis)");
+  });
+
+  test("CR-065: forced colours redraw the indicator in the system highlight", () => {
+    const forced = mediaRules(index, "cdt.component", /forced-colors: ?active/).find((candidate) => candidate.selector === ".cdt-tabs__trigger[data-state=active]:after");
+    expect(forced?.decls.background?.toLowerCase()).toBe("highlight");
+  });
+
+  test("CR-065: the table header steps toward the text colour, so it is darker than the rows in light", () => {
+    expect(rule(".cdt-table__head")?.decls.background).toBe("color-mix(in srgb, var(--cdt-text-primary) 3%, var(--cdt-surface-timeline))");
   });
 });

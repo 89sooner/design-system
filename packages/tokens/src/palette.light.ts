@@ -35,10 +35,13 @@ const baseValues: Readonly<Record<string, string>> = {
   "text.faint": "#6b788c",
   "text.inverse": "#f4f7fb",
   "text.monoPayload": "#1b2537",
-  "border.subtle": "#e2e8f0",
-  "border.default": "#6b788c",
-  "border.strong": "#5b6879",
-  "border.control": "#64748b",
+  // CR-065: decorative edges are translucent ink like the dark slate alphas, so they sit at the
+  // same weight on every surface (1.15 / 1.29 / 1.55 on `surface.raised`, dark 1.17 / 1.37 / 1.75).
+  // `border.control` stays the only edge that carries 3:1, and it stays the darkest.
+  "border.subtle": "rgba(12, 18, 28, 0.07)",
+  "border.default": "rgba(12, 18, 28, 0.12)",
+  "border.strong": "rgba(12, 18, 28, 0.2)",
+  "border.control": "rgba(12, 18, 28, 0.5)",
   "accent.DEFAULT": "#4f5bd5",
   "accent.strong": "#3f4ac0",
   "accent.soft": "rgba(79, 91, 213, 0.14)",

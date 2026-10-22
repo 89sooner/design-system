@@ -1,6 +1,6 @@
 # Conductor Design System UI 컴포넌트 명세서
 
-> 상태: review | 버전: v0.17 | 갱신일: 2026-10-21
+> 상태: review | 버전: v0.18 | 갱신일: 2026-10-22
 
 ## 0. 문서 위치와 범위
 
@@ -377,6 +377,7 @@ export type IconButtonProps = PolymorphicProps<"button", IconButtonOwnProps> & {
 - **접근성 책임**: accessible name은 **소비자**가 `children` 텍스트로 제공한다. 아이콘의 `aria-hidden="true"`는 **Conductor**가 부여한다.
 - **사용 규칙**: 실행 상태를 표시할 때는 `Badge`가 아니라 `StatusBadge`(C-021)를 쓴다. 심각도는 `SeverityTag`(C-022)를 쓴다.
 - **결정 (CR-064)**: 배지는 한 줄 라벨이다. `.cdt-badge`는 `white-space: nowrap`이라 표 셀의 `overflow-wrap: anywhere` 아래에서도 "merged"가 갈라지지 않는다. 칸이 좁으면 배지를 줄이지 않고 열 우선순위(소비자의 `visibleColumns`)와 표의 가로 스크롤이 받는다.
+- **결정 (CR-065)**: 칩 배경은 `color-mix(in srgb, tone 10%, transparent)`(중립 8%)로 부모 표면 위에 얹힌다. `surface.raised`에 섞던 이전 값은 칩을 카드·행과 같은 색으로 만들어, 라이트의 거의 흰 표면 위에서 칩이 사라졌다(FR-THM-002 AC-5).
 - **금지**: `Badge`에 `onClick`을 부여하지 않는다. 클릭 가능한 태그가 필요하면 `Button variant="ghost" size="sm"`을 쓴다. 텍스트를 숨기고 아이콘만 남기지 않는다.
 - **관련**: FR-CMP-004, FR-A11Y-003 / W-020, W-021.
 
@@ -476,6 +477,7 @@ export type IconButtonProps = PolymorphicProps<"button", IconButtonOwnProps> & {
 - **사용 규칙**: `Card`(C-010) 안에 넣으면 가로 스크롤이 카드 경계 안에서 발생한다(FR-CMP-003 AC-4). 숫자 열에는 `numeric`을 지정한다.
 - **금지**: 정렬, 페이지네이션, 가상 스크롤을 제공하지 않는다(FR-CMP-005 예외/실패 처리). 데이터 로직은 소비자가 소유한다. `Table` 자식에 구조 셀렉터를 가정한 CSS를 작성하지 않는다(FR-CSS-004 AC-4).
 - **관련**: FR-CMP-005, FR-CMP-003, FR-A11Y-002 / W-020, W-021.
+- **결정 (CR-065)**: 머리글 `.cdt-table__head`는 `color-mix(in srgb, text.primary 3%, surface.timeline)`이다. 본문보다 텍스트 색 쪽으로 한 단계 움직여 다크에서는 밝고(이전 `surface.raised`와 RGB 3 이내), 라이트에서는 어둡다. `surface.raised`였을 때 라이트 머리글이 가장 밝은 띠가 되어 본문과 위계가 뒤집혀 보였다(FR-THM-002 AC-5).
 
 #### C-031 Timeline
 
@@ -1287,6 +1289,7 @@ component 토큰은 semantic 토큰만 참조한다(FR-TOK-002 AC-3). 아래 표
 
 - **결정 (CR-064, FR-CMP-010 AC-6)**: `DataTable`의 행은 `data-row-id`로 안정 ID를 드러내 소비자가 복귀 시 행과 포커스를 되찾을 수 있다. `DataColumn.minInlineSize`는 헤더 셀의 최소 폭이고, `stateAction`은 error/partial 배너의 행동 자리다. 선택된 행의 눌린 버튼은 `text.primary`(muted는 `state.selected` 위 다크 4.34:1), 정렬 헤더 버튼은 헤더 글자 스타일을 상속한다. 표 셀 안의 버튼은 줄을 바꾸지 않는다.
 - **결정 (CR-064)**: 분할 레이아웃의 `WorkbenchLayout` 패널은 `position: sticky`와 자체 스크롤을 갖는다. `AppShell` 안에서는 `--cdt-top-bar-min-height` 아래에 붙는다. **breakpoint.md** 미만에서는 결과 아래로 쌓이고 고정하지 않는다.
+- **결정 (CR-065, FR-CMP-013 AC-6)**: `Tabs`의 활성 표시는 채운 상자가 아니다. 목록은 `border.default` 구분선과 `space.1` 아래 여백을 갖고, 각 트리거의 `::after`(높이 `border.width.emphasis`, `radius.pill`)가 `space.1 + hairline`만큼 내려가 구분선 위에 정확히 놓인다. 활성 탭은 그 선이 `accent`이고 글자가 `text.primary`이며 배경·그림자가 없다. 호버는 `state.hover` 면이며 구분선에 닿지 않는다. 세로 방향은 같은 선을 inline-end 구분선 위에 둔다. 강제 색 모드에서는 `Highlight`로 다시 그린다. 이전에는 활성 탭이 `surface.2` 상자 안에 `inset 0 -1px` 밑줄을 그렸는데, 안쪽 그림자가 둥근 아래 모서리를 따라 휘어 `border.control` 구분선 위에 두 번째 선으로 떴다.
 
 신규 계약은 Tabs·Popover·Collapsible/Accordion, 검색 입력/필터 칩·DataTable·Workbench/Inspector·경로 탐색, 관계 그래프/목록, 운영 단계 표현이다. 각 공개 export의 타입·ref·이름·disabled/busy·이벤트 전달과 반복 ID를 검증한다. 실제 최종 API와 예제는 패키지 README와 API report를 함께 본다.
 
