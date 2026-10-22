@@ -1,6 +1,6 @@
 # Conductor Design System 패키지 공개 API 계약
 
-> 상태: review | 버전: v0.12 | 갱신일: 2026-10-21
+> 상태: review | 버전: v0.13 | 갱신일: 2026-10-22
 
 ## 0. 문서 재해석
 
@@ -620,3 +620,14 @@ export interface DataTableProps<Row> { readonly stateAction?: ReactNode }     //
 ```
 
 모두 선택 prop·속성 추가라 react minor다. 토큰 패키지의 `tokens.text.placeholder`(`var(--cdt-text-placeholder)`)는 새 키 추가라 tokens minor다. `--cdt-input-placeholder`의 값이 `text.faint`에서 `text.placeholder`로 바뀌는 것은 이름이 같은 시각 변경이다.
+
+## CR-067 추가 prop (FR-CMP-013 AC-6)
+
+```ts
+export type TabsListProps = ComponentPropsWithoutRef<typeof RadixTabs.List> & {
+  readonly variant?: "segmented" | "line"; // 기본 "segmented"
+};
+// <Tabs.List variant="line"> → class "cdt-tabs__list cdt-tabs__list--line"
+```
+
+선택 prop과 새 타입 export만 있는 비파괴 추가라 react minor다. 새 클래스 `cdt-tabs__list--line`은 css minor다. 기본 모양이 밑줄형에서 세그먼트형으로 바뀌는 것은 이름이 같은 시각 변경이며, 밑줄형을 유지하려는 소비자는 `variant="line"`을 준다.

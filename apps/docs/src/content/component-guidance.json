@@ -996,7 +996,7 @@
   "Tabs": {
     "purpose": "Switches between related panels of content in the same place, built on Radix Tabs.",
     "use": [
-      "Use it for peer views of the same subject.",
+      "Use it for peer views of one panel; the default segmented list fits there, and variant=\"line\" suits section navigation across a page.",
       "Keep the default manual activation when switching a panel is expensive.",
       "Use forceMount on a panel whose state must survive switching."
     ],

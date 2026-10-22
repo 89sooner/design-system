@@ -1,6 +1,6 @@
 # Conductor Design System 구현 추적 원장
 
-> 상태: review | 버전: v0.54 | 갱신일: 2026-10-22
+> 상태: review | 버전: v0.55 | 갱신일: 2026-10-22
 
 ## 1. 목적과 갱신 규칙
 
@@ -673,3 +673,13 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | 시험 | 토큰 4건. 수정 전 값으로 되돌린 빌드에서 4건 모두 실패 |
 | 검증 (로컬) | 게이트 12종 통과(단위 835/835, a11y 356 통과·1 skip, check:contrast 244/244), 문서 E2E 69/69, 시각 회귀 27장 기준 이미지 변경 없이 통과 |
 | 검증 (CI) | PR #78 head `eda8322`: verify(node 20·22), visual regression 통과. CR-066 closed |
+
+### CR-067 Tabs 세그먼트형 기본과 밑줄 변형 (2026-10-22)
+
+| 범위 | 결과 |
+| --- | --- |
+| 패키지 | react: `TabsListProps`(`variant?: "segmented" \| "line"`, 기본 `segmented`). css: `interaction.css` — 기본 세그먼트형(트랙·알약·고정 굵기), `.cdt-tabs__list--line`에 CR-065 밑줄형, 포커스 규칙 순서, 강제 색 |
+| FR 매핑 | FR-CMP-013 AC-6 → `interaction.tsx`, `interaction.css`, 시험 `testing/interaction.test.tsx`(CR-067), `css/test/bundle.test.ts`(CR-065 · CR-067), `testing/component-css.browser.test.tsx`(CR-067, CR-065 · CR-067) |
+| 시험 | 단위 1건, 번들 4건, 브라우저 2건. 수정 전 소스에서 새 시험 5건 실패 확인 |
+| 검증 (로컬) | 게이트 12종 통과(단위 837/837, a11y 357 통과·1 skip), 문서 E2E 69/69, 시각 회귀 27장(회색조 카탈로그 1장 갱신) |
+

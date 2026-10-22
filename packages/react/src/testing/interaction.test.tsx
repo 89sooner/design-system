@@ -46,6 +46,14 @@ test("FR-CMP-013: automatic activation is opt-in; repeated values get unique lin
     if (trigger.getAttribute("aria-selected") === "true") expect(document.getElementById(trigger.getAttribute("aria-controls") ?? "")).not.toBeNull();
   }
 });
+test("CR-067 FR-CMP-013 AC-6: Tabs.List is segmented by default and takes variant=\"line\" for the underline form", () => {
+  const view = render(<><Tabs.Root defaultValue="a"><Tabs.List aria-label="Default"><Tabs.Trigger value="a">A</Tabs.Trigger></Tabs.List></Tabs.Root><Tabs.Root defaultValue="b"><Tabs.List aria-label="Line" variant="line" className="consumer"><Tabs.Trigger value="b">B</Tabs.Trigger></Tabs.List></Tabs.Root></>);
+  const [segmented, line] = view.getAllByRole("tablist");
+  expect(segmented?.className).toBe("cdt-tabs__list");
+  expect(line?.className).toBe("cdt-tabs__list cdt-tabs__list--line consumer");
+  expect(line?.hasAttribute("variant")).toBe(false);
+});
+
 test("FR-CMP-013: tabs refs and native events reach the Radix element", () => {
   const ref = createRef<HTMLButtonElement>();
   const click = vi.fn();

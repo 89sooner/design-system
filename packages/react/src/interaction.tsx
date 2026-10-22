@@ -17,8 +17,15 @@ const TabsRoot = forwardRef<HTMLDivElement, TabsRootProps>(function TabsRoot(
   const selected = value ?? localValue;
   return <TabValue.Provider value={selected}><RadixTabs.Root {...props} ref={ref} className={cx("cdt-tabs", className)} activationMode={activationMode} value={selected} onValueChange={(next) => { setLocalValue(next); onValueChange?.(next); }} /></TabValue.Provider>;
 });
-const TabsList = forwardRef<HTMLDivElement, ComponentPropsWithoutRef<typeof RadixTabs.List>>(function TabsList({ className, ...props }, ref) {
-  return <RadixTabs.List {...props} ref={ref} className={cx("cdt-tabs__list", className)} />;
+export type TabsListProps = ComponentPropsWithoutRef<typeof RadixTabs.List> & {
+  /**
+   * `segmented` (default): a recessed track with the selected tab raised as a pill, for switching
+   * views of one panel. `line`: an underline on a divider, for section navigation across a page.
+   */
+  readonly variant?: "segmented" | "line";
+};
+const TabsList = forwardRef<HTMLDivElement, TabsListProps>(function TabsList({ className, variant = "segmented", ...props }, ref) {
+  return <RadixTabs.List {...props} ref={ref} className={cx("cdt-tabs__list", variant === "line" && "cdt-tabs__list--line", className)} />;
 });
 const TabsTrigger = forwardRef<HTMLButtonElement, ComponentPropsWithoutRef<typeof RadixTabs.Trigger>>(function TabsTrigger({ className, ...props }, ref) {
   return <RadixTabs.Trigger {...props} ref={ref} className={cx("cdt-tabs__trigger", className)} />;

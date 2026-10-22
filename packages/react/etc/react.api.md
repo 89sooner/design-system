@@ -1460,13 +1460,20 @@ export interface TableProps extends HTMLAttributes<HTMLDivElement> {
 // @public (undocumented)
 export const Tabs: {
     readonly Root: react.ForwardRefExoticComponent<Omit<RadixTabs.TabsProps & react.RefAttributes<HTMLDivElement>, "ref"> & react.RefAttributes<HTMLDivElement>>;
-    readonly List: react.ForwardRefExoticComponent<Omit<RadixTabs.TabsListProps & react.RefAttributes<HTMLDivElement>, "ref"> & react.RefAttributes<HTMLDivElement>>;
+    readonly List: react.ForwardRefExoticComponent<Omit<RadixTabs.TabsListProps & react.RefAttributes<HTMLDivElement>, "ref"> & {
+        readonly variant?: "segmented" | "line";
+    } & react.RefAttributes<HTMLDivElement>>;
     readonly Trigger: react.ForwardRefExoticComponent<Omit<RadixTabs.TabsTriggerProps & react.RefAttributes<HTMLButtonElement>, "ref"> & react.RefAttributes<HTMLButtonElement>>;
     readonly Content: react.ForwardRefExoticComponent<Omit<RadixTabs.TabsContentProps & react.RefAttributes<HTMLDivElement>, "ref"> & react.RefAttributes<HTMLDivElement>>;
 };
 
 // @public
 export type TabsContentProps = ComponentPropsWithoutRef<typeof RadixTabs.Content>;
+
+// @public (undocumented)
+export type TabsListProps = ComponentPropsWithoutRef<typeof RadixTabs.List> & {
+    readonly variant?: "segmented" | "line";
+};
 
 // @public (undocumented)
 export type TabsRootProps = ComponentPropsWithoutRef<typeof RadixTabs.Root>;

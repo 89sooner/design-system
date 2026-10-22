@@ -1,4 +1,4 @@
-// Refs: CR-056 DEV-057 CR-057 CR-058 CR-062 CR-063 CR-064 CR-065 DEV-061 FR-A11Y-001 FR-CSS-002 FR-THM-005 FR-CMP-004 FR-CMP-010
+// Refs: CR-056 DEV-057 CR-057 CR-058 CR-062 CR-063 CR-064 CR-065 CR-066 CR-067 DEV-061 FR-A11Y-001 FR-CSS-002 FR-THM-005 FR-CMP-004 FR-CMP-010
 //
 // `@conductor-by-89soone/css/component.css` leaves out cdt.reset for consumers that bring their
 // own global reset. The focus ring must not depend on that reset: every keyboard stop that is a
@@ -261,10 +261,28 @@ const srgb = (color: string): [number, number, number] => {
 const TRANSPARENT = "rgba(0, 0, 0, 0)"; /* cdt-allow-literal: computed value of `transparent`, not a colour choice */
 const lightness = (color: string): number => srgb(color).reduce((sum, value) => sum + value, 0);
 
-test("CR-065: the active tab's indicator lies on the list's rule, with no filled box behind the label", () => {
+test("CR-067: the default tab list is a segmented track — no rule under it, and the selected pill sits above the track in both themes", () => {
   for (const theme of ["dark", "light"] as const) {
     document.documentElement.dataset.cdtTheme = theme;
     render(<Tabs.Root defaultValue="results"><Tabs.List aria-label="Views"><Tabs.Trigger value="results">Results</Tabs.Trigger><Tabs.Trigger value="history">History</Tabs.Trigger></Tabs.List><Tabs.Content value="results">Results panel</Tabs.Content><Tabs.Content value="history">History panel</Tabs.Content></Tabs.Root>);
+    const list = document.querySelector<HTMLElement>(".cdt-tabs__list")!;
+    const active = document.querySelector<HTMLElement>(".cdt-tabs__trigger[data-state=active]")!;
+    const idle = document.querySelector<HTMLElement>(".cdt-tabs__trigger[data-state=inactive]")!;
+    expect(Number.parseFloat(getComputedStyle(list).borderBottomWidth), theme).toBe(0);
+    expect(getComputedStyle(active, "::after").content, theme).toBe("none");
+    expect(lightness(getComputedStyle(active).backgroundColor), theme).toBeGreaterThan(lightness(getComputedStyle(list).backgroundColor));
+    expect(getComputedStyle(idle).backgroundColor, theme).toBe(TRANSPARENT);
+    expect(getComputedStyle(active).fontWeight, theme).toBe(getComputedStyle(idle).fontWeight);
+    const [top, bottom] = [active.getBoundingClientRect(), list.getBoundingClientRect()];
+    expect(top.bottom, theme).toBeLessThan(bottom.bottom);
+    cleanup();
+  }
+});
+
+test("CR-065 · CR-067: the line variant's indicator lies on the list's rule, with no filled box behind the label", () => {
+  for (const theme of ["dark", "light"] as const) {
+    document.documentElement.dataset.cdtTheme = theme;
+    render(<Tabs.Root defaultValue="results"><Tabs.List variant="line" aria-label="Views"><Tabs.Trigger value="results">Results</Tabs.Trigger><Tabs.Trigger value="history">History</Tabs.Trigger></Tabs.List><Tabs.Content value="results">Results panel</Tabs.Content><Tabs.Content value="history">History panel</Tabs.Content></Tabs.Root>);
     const list = document.querySelector<HTMLElement>(".cdt-tabs__list")!;
     const active = document.querySelector<HTMLElement>(".cdt-tabs__trigger[data-state=active]")!;
     const idle = document.querySelector<HTMLElement>(".cdt-tabs__trigger[data-state=inactive]")!;
