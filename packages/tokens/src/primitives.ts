@@ -18,12 +18,12 @@ function primitive(key: string, value: string, description: string): TokenDefini
 /** Neutral lightness spine. Ordered by descending relative luminance (tokens spec 4.1). */
 const ink: TokenDefinition[] = [
   primitive("ink.0", "#ffffff", "Pure white. `::selection` text, light `surface.elevated`."),
-  primitive("ink.25", "#fbfcfd", "Light `surface.raised`."),
+  primitive("ink.25", "#fcfdfe", "Light `surface.raised` (CR-066)."),
   primitive("ink.50", "#f4f7fb", "Dark `text.primary`, light `text.inverse`."),
-  primitive("ink.75", "#f3f6f9", "Light `surface.subtle`."),
-  primitive("ink.100", "#f1f4f8", "Light `surface.timeline`."),
-  primitive("ink.150", "#eef1f6", "Light `surface.canvas`."),
-  primitive("ink.200", "#e8ecf2", "Light `surface.base`."),
+  primitive("ink.75", "#f8f9fb", "Light `surface.subtle` (CR-066)."),
+  primitive("ink.100", "#f6f7f9", "Light `surface.timeline` (CR-066)."),
+  primitive("ink.150", "#f3f5f8", "Light `surface.canvas` (CR-066)."),
+  primitive("ink.200", "#eff1f5", "Light `surface.base` (CR-066)."),
   primitive("ink.250", "#e2e8f0", "Light `state.disabled` (light `border.subtle` until CR-065)."),
   primitive("ink.300", "#dce6f3", "Dark `text.monoPayload`."),
   primitive("ink.350", "#c5cfdd", "Dark `text.secondary`."),

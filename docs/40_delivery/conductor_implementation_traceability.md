@@ -1,6 +1,6 @@
 # Conductor Design System 구현 추적 원장
 
-> 상태: review | 버전: v0.53 | 갱신일: 2026-10-22
+> 상태: review | 버전: v0.54 | 갱신일: 2026-10-22
 
 ## 1. 목적과 갱신 규칙
 
@@ -663,4 +663,13 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | 편차 | DEV-062 (FR-THM-002 AC-3 ↔ FR-THM-005 AC-4 충돌, 라이트 장식 경계 무게) |
 | 검증 (로컬) | 게이트 12종 통과(단위 831/831, a11y 356 통과·1 skip, check:contrast 244/244), 문서 E2E 69/69. 시각 회귀: PR CI(head `b0cb2c1`)에서 라이트 Card·Table·Timeline·Banner 4장이 의도한 변화로 임계를 넘어, DEV-045 방법으로 그 4장만 갱신했다. 같은 조건에서 27장 모두 통과 |
 | 검증 (CI) | PR #76 head `fff3305`: verify(node 20·22), visual regression 통과. CR-065·DEV-062 closed |
+
+### CR-066 라이트 표면 명도와 그림자 (2026-10-22)
+
+| 범위 | 결과 |
+| --- | --- |
+| 패키지 | tokens: 라이트 `surface.base`·`canvas`·`timeline`·`subtle`·`raised`·`glass` 값(같은 색상각·서열, 휘도 구간 [0.88, 1.00], 낮은 채도), 라이트 `elevation.raised`·`hover`·`overlay` 두 층. primitive 5건 값. 다크·CSS·React 변경 없음 |
+| FR 매핑 | FR-THM-002 → `palette.light.ts`, 시험 `palette.light.test.ts`(CR-066 4건). FR-THM-005 → 대비 244/244 |
+| 시험 | 토큰 4건. 수정 전 값으로 되돌린 빌드에서 4건 모두 실패 |
+| 검증 (로컬) | 게이트 12종 통과(단위 835/835, a11y 356 통과·1 skip, check:contrast 244/244), 문서 E2E 69/69, 시각 회귀 27장 기준 이미지 변경 없이 통과 |
 

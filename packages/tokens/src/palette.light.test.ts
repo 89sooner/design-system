@@ -119,3 +119,38 @@ describe("CR-065 FR-THM-005 AC-4: light edges keep the dark theme's weight ladde
   });
 });
 
+
+/**
+ * CR-066. The light surfaces sat in [0.84, 1.00] relative luminance with a saturated 220° tint, so
+ * the page read as a grey-blue wash, and the light elevation ramp was the dark ramp's single wide
+ * blur at a lower alpha, which reads as a grey smudge under a light card. These checks keep the
+ * lifted ground and the two-layer shadow.
+ */
+describe("CR-066 FR-THM-002: light surfaces and elevation", () => {
+  const luminance = (key: string): number => {
+    const value = lightPalette.find((token) => token.key === key)?.value;
+    const parsed = typeof value === "string" ? parseColor(value) : undefined;
+    if (parsed === undefined) throw new Error(`unparsable ${key}`);
+    const channel = (c: number): number => { const v = c / 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+    return 0.2126 * channel(parsed.r) + 0.7152 * channel(parsed.g) + 0.0722 * channel(parsed.b);
+  };
+  const order = ["surface.base", "surface.canvas", "surface.timeline", "surface.subtle", "surface.raised", "surface.elevated"];
+
+  test("CR-066: light surfaces keep the dark depth order and start from a lifted ground (≥ 0.87)", () => {
+    const steps = order.map(luminance);
+    expect(steps).toEqual([...steps].sort((one, other) => one - other));
+    expect(new Set(steps).size).toBe(steps.length);
+    expect(steps[0]).toBeGreaterThanOrEqual(0.87);
+  });
+
+  test.each(["elevation.raised", "elevation.hover", "elevation.overlay"])(
+    "CR-066: light %s starts with a tight contact layer (blur ≤ 12px) before the ambient one",
+    (key) => {
+      const value = String(lightPalette.find((token) => token.key === key)?.value ?? "");
+      const layers = value.split(/,(?![^(]*\))/).map((layer) => layer.trim()).filter((layer) => !layer.startsWith("0 0 0"));
+      expect(layers.length).toBeGreaterThanOrEqual(2);
+      const blur = Number(/^\S+\s+\S+\s+(\d+)px/.exec(layers[0] ?? "")?.[1]);
+      expect(blur).toBeLessThanOrEqual(12);
+    },
+  );
+});

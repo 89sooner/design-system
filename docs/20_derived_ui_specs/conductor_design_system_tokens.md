@@ -1,6 +1,6 @@
 # Conductor Design System 토큰 명세
 
-> 상태: review | 버전: v0.16 | 갱신일: 2026-10-22
+> 상태: review | 버전: v0.17 | 갱신일: 2026-10-22
 
 ## 0. 문서 성격과 범위 경계
 
@@ -141,12 +141,12 @@ primitive 토큰은 CSS로 산출되지 않고 `@conductor-by-89soone/tokens` �
 | 키 | 값 | 상대 휘도 | 소스 위치 |
 | --- | --- | --- | --- |
 | `ink.0` | `#ffffff` | 1.00000 | `app.css:47` `::selection color` |
-| `ink.25` | `#fbfcfd` | 0.97222 | 6절 파생 |
+| `ink.25` | `#fcfdfe` | 0.98102 | 6절 파생 (CR-066, 이전 `#fbfcfd`) |
 | `ink.50` | `#f4f7fb` | 0.92720 | `tokens.css:15` `--text-primary` |
-| `ink.75` | `#f3f6f9` | 0.91806 | 6절 파생 |
-| `ink.100` | `#f1f4f8` | 0.90179 | 6절 파생 |
-| `ink.150` | `#eef1f6` | 0.87742 | 6절 파생 |
-| `ink.200` | `#e8ecf2` | 0.83558 | 6절 파생 |
+| `ink.75` | `#f8f9fb` | 0.94673 | 6절 파생 (CR-066, 이전 `#f3f6f9`) |
+| `ink.100` | `#f6f7f9` | 0.92954 | 6절 파생 (CR-066, 이전 `#f1f4f8`) |
+| `ink.150` | `#f3f5f8` | 0.91137 | 6절 파생 (CR-066, 이전 `#eef1f6`) |
+| `ink.200` | `#eff1f5` | 0.87854 | 6절 파생 (CR-066, 이전 `#e8ecf2`) |
 | `ink.250` | `#e2e8f0` | 0.80173 | Tailwind Slate 200 (라이트 `state.disabled`; CR-065 전 `border.subtle`) |
 | `ink.300` | `#dce6f3` | 0.78280 | `tokens.css:20` `--text-mono-payload` |
 | `ink.350` | `#c5cfdd` | 0.61716 | `tokens.css:16` `--text-secondary` |
@@ -245,17 +245,17 @@ primitive 토큰은 CSS로 산출되지 않고 `@conductor-by-89soone/tokens` �
 
 | 토큰 키 | 용도 | 다크 값 | 라이트 값 | 관련 FR |
 | --- | --- | --- | --- | --- |
-| `surface.base` | decorative | `#080b12` | `#e8ecf2` | FR-THM-001, FR-THM-002 |
-| `surface.canvas` | decorative | `#0b101a` | `#eef1f6` | FR-THM-001, FR-THM-002 |
-| `surface.subtle` | decorative | `#101722` | `#f3f6f9` | FR-THM-001, FR-THM-002 |
+| `surface.base` | decorative | `#080b12` | `#eff1f5` | FR-THM-001, FR-THM-002 |
+| `surface.canvas` | decorative | `#0b101a` | `#f3f5f8` | FR-THM-001, FR-THM-002 |
+| `surface.subtle` | decorative | `#101722` | `#f8f9fb` | FR-THM-001, FR-THM-002 |
 | `surface.2` | decorative | `{surface.subtle}` | `{surface.subtle}` | FR-TOK-003 AC-1, FR-THM-001 AC-2 |
-| `surface.raised` | decorative | `#141d2a` | `#fbfcfd` | FR-THM-001, FR-THM-002 |
+| `surface.raised` | decorative | `#141d2a` | `#fcfdfe` | FR-THM-001, FR-THM-002 |
 | `surface.elevated` | decorative | `#192535` | `#ffffff` | FR-THM-001, FR-THM-002 |
 | `surface.overlay` | decorative | `rgba(4, 7, 12, 0.78)` | `rgba(12, 18, 28, 0.45)` | FR-CMP-006, FR-THM-002 |
-| `surface.glass` | decorative | `rgba(16, 23, 34, 0.82)` | `rgba(251, 252, 253, 0.86)` | FR-THM-002 예외 처리 |
+| `surface.glass` | decorative | `rgba(16, 23, 34, 0.82)` | `rgba(252, 253, 254, 0.86)` | FR-THM-002 예외 처리 |
 | `surface.tint.1` | decorative | `rgba(109, 124, 255, 0.11)` | `rgba(79, 91, 213, 0.10)` | CR-031 ambient indigo glow |
 | `surface.tint.2` | decorative | `rgba(20, 184, 166, 0.055)` | `rgba(4, 120, 87, 0.05)` | CR-031 ambient teal glow |
-| `surface.timeline` | decorative | `#0d141f` | `#f1f4f8` | FR-CMP-005 |
+| `surface.timeline` | decorative | `#0d141f` | `#f6f7f9` | FR-CMP-005 |
 
 표면 토큰이 `decorative`인 이유: 표면은 대비 검사의 **배경 인자**이지 전경이 아니다. 표면 자체의 대비는 그 위에 놓인 텍스트·경계 쌍으로 검사된다(8절).
 
@@ -428,11 +428,11 @@ FR-TOK-007 AC-4는 제목이 `font.size.xl` 이상과 `clamp()` 기반 반응형
 
 | 토큰 키 | 용도 | 다크 값 | 라이트 값 | 관련 FR |
 | --- | --- | --- | --- | --- |
-| `elevation.raised` | decorative | `0 12px 30px rgba(0, 0, 0, 0.18)` | `0 12px 30px rgba(12, 18, 28, 0.08)` | FR-THM-002 AC-4 |
-| `elevation.hover` | decorative | `0 18px 46px rgba(0, 0, 0, 0.26)` | `0 18px 46px rgba(12, 18, 28, 0.12)` | FR-THM-002 AC-4, FR-CMP-003 AC-2 |
-| `elevation.overlay` | decorative | `0 24px 64px rgba(0, 0, 0, 0.45), 0 0 0 1px {border.strong}` | `0 24px 64px rgba(12, 18, 28, 0.2), 0 0 0 1px {border.strong}` | FR-THM-002 AC-4, FR-CMP-006 |
+| `elevation.raised` | decorative | `0 12px 30px rgba(0, 0, 0, 0.18)` | `0 1px 2px rgba(12, 18, 28, 0.05), 0 4px 12px rgba(12, 18, 28, 0.05)` | FR-THM-002 AC-4 (CR-066) |
+| `elevation.hover` | decorative | `0 18px 46px rgba(0, 0, 0, 0.26)` | `0 2px 4px rgba(12, 18, 28, 0.06), 0 12px 28px rgba(12, 18, 28, 0.1)` | FR-THM-002 AC-4, FR-CMP-003 AC-2 (CR-066) |
+| `elevation.overlay` | decorative | `0 24px 64px rgba(0, 0, 0, 0.45), 0 0 0 1px {border.strong}` | `0 4px 12px rgba(12, 18, 28, 0.08), 0 20px 48px rgba(12, 18, 28, 0.16), 0 0 0 1px {border.strong}` | FR-THM-002 AC-4, FR-CMP-006 (CR-066) |
 
-세 토큰의 라이트 alpha(0.08 / 0.12 / 0.20)는 다크 alpha(0.18 / 0.26 / 0.45)와 전부 다르다 — FR-THM-002 AC-4의 "동일 값 재사용 금지"를 만족한다. 파생 근거는 6.4절에 있다.
+세 토큰의 라이트 값은 다크 값과 전부 다르다 — FR-THM-002 AC-4의 "동일 값 재사용 금지"를 만족한다. CR-066부터 라이트는 접촉 그림자와 주변 그림자 두 층이다. 근거는 6.4절에 있다.
 
 ### 5.11 상호작용
 
@@ -448,11 +448,11 @@ FR-TOK-007 AC-4는 제목이 `font.size.xl` 이상과 `clamp()` 기반 반응형
 
 | 표면 | 다크 합성색 | 다크 대비 | 라이트 합성색 | 라이트 대비 |
 | --- | --- | --- | --- | --- |
-| `surface.base` | `#5965d0` | 3.93:1 | `#6e78db` | 3.30:1 |
+| `surface.base` | `#5965d0` | 3.93:1 | `#6f79db` | 3.42:1 |
 | `surface.raised` | `#5b69d4` | 3.56:1 | `#717bdd` | 3.66:1 |
 | `surface.elevated` | `#5c6bd7` | 3.34:1 | `#727cdd` | 3.72:1 |
 
-여섯 조합이 모두 3:1을 넘는다. 다크에서는 표면이 밝아질수록 대비가 내려가고 라이트에서는 올라간다 — 링 색이 두 팔레트에서 반대 방향으로 표면에 접근하기 때문이다. 최저값 3.30:1(라이트 `surface.base`)이 전체 여유를 결정한다.
+여섯 조합이 모두 3:1을 넘는다. 다크에서는 표면이 밝아질수록 대비가 내려가고 라이트에서는 올라간다 — 링 색이 두 팔레트에서 반대 방향으로 표면에 접근하기 때문이다. 최저값 3.34:1(다크 `surface.elevated`)이 전체 여유를 결정한다(CR-066 전에는 라이트 `surface.base`의 3.30:1).
 
 대비 측정 기준: 포커스 링이 덮는 픽셀의 focus 전후 색을 비교한다. focus 전 그 픽셀의 색은 링이 놓인 표면이다. alpha 0.80은 표면에 따라 합성색이 달라지므로 표면별로 따로 계산한다.
 
@@ -556,15 +556,15 @@ FR-THM-002는 라이트 테마가 다크 테마와 **동일한 semantic 키 집�
 
 ### 6.1 표면: 명도 서열 반전 후 상단 압축
 
-**규칙**: 다크 표면 5단계의 깊이 서열(base가 가장 어둡고 elevated가 가장 밝다)을 유지한 채, 명도 축을 반전한다. 반전 후 라이트 표면은 base가 가장 어둡고 elevated가 가장 밝다 — 즉 **서열 인덱스는 그대로이고 절대 명도만 옮긴다.** 흰색이 천장이므로 상대 휘도를 `[0.83, 1.00]` 구간에 압축한다. 이 구간 폭(0.17)은 다크의 구간 폭(0.00335 ~ 0.01787)보다 넓다. 인간의 명도 지각이 어두운 쪽에서 더 예민하기 때문이며, 좁은 구간을 그대로 반전하면 라이트 표면 5단계가 서로 구분되지 않는다.
+**규칙**: 다크 표면 5단계의 깊이 서열(base가 가장 어둡고 elevated가 가장 밝다)을 유지한 채, 명도 축을 반전한다. 반전 후 라이트 표면은 base가 가장 어둡고 elevated가 가장 밝다 — 즉 **서열 인덱스는 그대로이고 절대 명도만 옮긴다.** 흰색이 천장이므로 상대 휘도를 `[0.88, 1.00]` 구간에 압축한다(CR-066 전 `[0.83, 1.00]`). CR-066은 같은 220° 색상각에서 채도도 낮췄다 — 이전 바탕은 청회색 막처럼 읽혔다. 토큰 시험이 서열(단조 증가, 중복 없음)과 바탕 하한(≥ 0.87)을 지킨다. 이 구간 폭(0.12, CR-066 전 0.17)은 다크의 구간 폭(0.00335 ~ 0.01787)보다 넓다. 인간의 명도 지각이 어두운 쪽에서 더 예민하기 때문이며, 좁은 구간을 그대로 반전하면 라이트 표면 5단계가 서로 구분되지 않는다.
 
 | semantic 키 | 다크 | 다크 상대 휘도 | 라이트 | 라이트 상대 휘도 | primitive |
 | --- | --- | --- | --- | --- | --- |
-| `surface.base` | `#080b12` | 0.00335 | `#e8ecf2` | 0.83558 | `{ink.200}` |
-| `surface.canvas` | `#0b101a` | 0.00516 | `#eef1f6` | 0.87742 | `{ink.150}` |
-| `surface.timeline` | `#0d141f` | 0.00685 | `#f1f4f8` | 0.90179 | `{ink.100}` |
-| `surface.subtle` | `#101722` | 0.00838 | `#f3f6f9` | 0.91806 | `{ink.75}` |
-| `surface.raised` | `#141d2a` | 0.01195 | `#fbfcfd` | 0.97222 | `{ink.25}` |
+| `surface.base` | `#080b12` | 0.00335 | `#eff1f5` | 0.87854 | `{ink.200}` |
+| `surface.canvas` | `#0b101a` | 0.00516 | `#f3f5f8` | 0.91137 | `{ink.150}` |
+| `surface.timeline` | `#0d141f` | 0.00685 | `#f6f7f9` | 0.92954 | `{ink.100}` |
+| `surface.subtle` | `#101722` | 0.00838 | `#f8f9fb` | 0.94673 | `{ink.75}` |
+| `surface.raised` | `#141d2a` | 0.01195 | `#fcfdfe` | 0.98102 | `{ink.25}` |
 | `surface.elevated` | `#192535` | 0.01787 | `#ffffff` | 1.00000 | `{ink.0}` |
 
 두 테마 모두 상대 휘도가 base → elevated 방향으로 단조 증가한다. `surface.timeline`은 다크에서 canvas와 subtle 사이에 있고, 라이트에서도 같은 자리를 유지한다.
@@ -573,7 +573,7 @@ FR-THM-002는 라이트 테마가 다크 테마와 **동일한 semantic 키 집�
 
 ### 6.2 텍스트: 명도 축 반사, 대비 목표 고정
 
-**규칙**: 각 텍스트 토큰이 다크에서 `surface.base` 위에 만들어내던 대비율을 목표치로 삼고, 라이트 `surface.base`(`#e8ecf2`) 위에서 같은 등급에 도달하는 값을 `ink.*` ramp에서 고른다. 등급은 "통과 여부"이지 소수점 일치가 아니다 — 명도 지각의 비선형성 때문에 두 테마에서 동일한 대비율을 만드는 것은 색상 왜곡 없이는 불가능하다.
+**규칙**: 각 텍스트 토큰이 다크에서 `surface.base` 위에 만들어내던 대비율을 목표치로 삼고, 라이트 `surface.base`(CR-066 전 `#e8ecf2`, 지금 `#eff1f5` — 바탕이 밝아져 대비는 올라가기만 했다) 위에서 같은 등급에 도달하는 값을 `ink.*` ramp에서 고른다. 등급은 "통과 여부"이지 소수점 일치가 아니다 — 명도 지각의 비선형성 때문에 두 테마에서 동일한 대비율을 만드는 것은 색상 왜곡 없이는 불가능하다.
 
 | semantic 키 | 다크 값 / `surface.base` 대비 | 라이트 값 / `surface.base` 대비 | primitive | 판정 |
 | --- | --- | --- | --- | --- |
@@ -607,10 +607,10 @@ FR-THM-002는 라이트 테마가 다크 테마와 **동일한 semantic 키 집�
 
 | semantic 키 | `usage` | 라이트 값 | `surface.base` 위 합성색 / 대비 | `surface.raised` 위 합성색 / 대비 | `surface.elevated` 위 합성색 / 대비 | 다크 (`surface.raised` 위) |
 | --- | --- | --- | --- | --- | --- | --- |
-| `border.subtle` | decorative | `rgba(12, 18, 28, 0.07)` | `#d9dde3` / 1.15:1 | `#eaeced` / 1.15:1 | `#eeeeef` / 1.16:1 | 1.17:1 |
-| `border.default` | decorative | `rgba(12, 18, 28, 0.12)` | `#ced2d8` / 1.28:1 | `#dee0e2` / 1.29:1 | `#e2e3e4` / 1.29:1 | 1.37:1 |
-| `border.strong` | decorative | `rgba(12, 18, 28, 0.2)` | `#bcc0c7` / 1.54:1 | `#cbcdd0` / 1.55:1 | `#ced0d2` / 1.55:1 | 1.75:1 |
-| `border.control` | nonText | `rgba(12, 18, 28, 0.5)` | `#7a7f87` / 3.40:1 | `#84878d` / 3.51:1 | `#86898e` / 3.51:1 | 3.23:1 |
+| `border.subtle` | decorative | `rgba(12, 18, 28, 0.07)` | `#dfe1e6` / 1.16:1 | `#ebedee` / 1.15:1 | `#eeeeef` / 1.16:1 | 1.17:1 |
+| `border.default` | decorative | `rgba(12, 18, 28, 0.12)` | `#d4d6db` / 1.29:1 | `#dfe1e3` / 1.29:1 | `#e2e3e4` / 1.29:1 | 1.37:1 |
+| `border.strong` | decorative | `rgba(12, 18, 28, 0.2)` | `#c2c4ca` / 1.54:1 | `#ccced1` / 1.55:1 | `#ced0d2` / 1.55:1 | 1.75:1 |
+| `border.control` | nonText | `rgba(12, 18, 28, 0.5)` | `#7e8289` / 3.41:1 | `#84888d` / 3.50:1 | `#86898e` / 3.51:1 | 3.23:1 |
 
 세 표면 모두에서 subtle < default < strong < 3:1 ≤ control이고, 장식 경계 세 키는 같은 키의 다크 무게를 넘지 않는다(토큰 시험이 두 조건을 지킨다). `border.control`은 CP-016 ~ CP-018로 세 표면 모두 3:1을 넘는다. 컨트롤 경계가 장식 경계보다 뚜렷하다는 서열은 다크와 같다. 반투명이므로 선택·호버처럼 색이 얹힌 표면 위에서도 같은 무게로 읽힌다.
 
@@ -620,30 +620,30 @@ FR-THM-002는 라이트 테마가 다크 테마와 **동일한 semantic 키 집�
 
 | 표면 | 라이트 합성색 | 대비 | 판정 |
 | --- | --- | --- | --- |
-| `surface.base` `#e8ecf2` | `#6e78db` | 3.30:1 | 통과 |
-| `surface.canvas` `#eef1f6` | `#6f79dc` | 3.41:1 | 통과 |
-| `surface.subtle` `#f3f6f9` | `#707adc` | 3.52:1 | 통과 |
-| `surface.raised` `#fbfcfd` | `#717bdd` | 3.66:1 | 통과 |
+| `surface.base` `#eff1f5` | `#6f79db` | 3.42:1 | 통과 |
+| `surface.canvas` `#f3f5f8` | `#707adc` | 3.49:1 | 통과 |
+| `surface.subtle` `#f8f9fb` | `#717bdd` | 3.57:1 | 통과 |
+| `surface.raised` `#fcfdfe` | `#727bdd` | 3.69:1 | 통과 |
 | `surface.elevated` `#ffffff` | `#727cdd` | 3.72:1 | 통과 |
 
-다섯 표면 모두 3:1을 넘는다. 라이트에서는 표면이 밝아질수록 링과 표면의 명도 차가 벌어져 대비가 올라간다. 다크에서는 반대로 내려간다(3.93 → 3.34). 두 테마의 최저값은 라이트 `surface.base`의 3.30:1이며, 이 값이 `focusRing` 전체의 여유를 결정한다.
+다섯 표면 모두 3:1을 넘는다. 라이트에서는 표면이 밝아질수록 링과 표면의 명도 차가 벌어져 대비가 올라간다. 다크에서는 반대로 내려간다(3.93 → 3.34). 라이트 최저값은 `surface.base`의 3.42:1이다(CR-066 전 3.30:1). 두 테마 전체의 최저값은 다크 `surface.elevated`의 3.34:1이다.
 
-### 6.4 고도: 색을 바꾸고 alpha를 낮춘다
+### 6.4 고도: 색을 바꾸고 접촉 그림자를 더한다
 
 다크 그림자는 순수 검정(`rgb(0,0,0)`)이다. 어두운 표면 위에서 검정 그림자는 표면과 색상이 같아 자연스럽다. 라이트 표면 위에 같은 검정을 쓰면 회색 얼룩으로 읽히고 팔레트의 청색 편향과 어긋난다.
 
 **규칙 두 가지.**
 
 1. **색상 교체**: 그림자 기저색을 `rgb(0, 0, 0)`에서 `rgb(12, 18, 28)`(= `{ink.880}`의 RGB)로 바꾼다. 표면 색상각과 일치한다.
-2. **alpha 축소**: 라이트 alpha = 다크 alpha × 0.45 (raised, hover) / × 0.44 (overlay), 소수 둘째 자리 반올림. 계수가 1 미만인 이유는 밝은 표면이 잃을 수 있는 휘도 여유가 크기 때문이다 — 같은 alpha를 쓰면 라이트에서 그림자가 다크보다 훨씬 짙게 지각된다.
+2. **두 층 (CR-066)**: 라이트 그림자는 짧고 또렷한 접촉 그림자(블러 ≤ 12px) 위에 넓고 옅은 주변 그림자를 얹는다. 다크에서는 넓은 블러 하나가 어두운 바탕에 녹아 깊이로 읽히지만, 밝은 바탕에서는 같은 기하가 카드 아래 회색 번짐으로 읽힌다(CR-066 전 값이 그랬다). 기하는 테마마다 다를 수 있다 — 밝은 바탕에서 가장자리를 만드는 것은 블러가 아니라 접촉 그림자다.
 
-| semantic 키 | 다크 alpha | 계산 | 라이트 alpha | 라이트 값 |
-| --- | --- | --- | --- | --- |
-| `elevation.raised` | 0.18 | 0.18 × 0.45 = 0.081 | 0.08 | `0 12px 30px rgba(12, 18, 28, 0.08)` |
-| `elevation.hover` | 0.26 | 0.26 × 0.45 = 0.117 | 0.12 | `0 18px 46px rgba(12, 18, 28, 0.12)` |
-| `elevation.overlay` | 0.45 | 0.45 × 0.44 = 0.198 | 0.20 | `0 24px 64px rgba(12, 18, 28, 0.2), 0 0 0 1px {border.strong}` |
+| semantic 키 | 다크 | 라이트 (CR-066) | CR-066 전 라이트 |
+| --- | --- | --- | --- |
+| `elevation.raised` | `0 12px 30px rgba(0, 0, 0, 0.18)` | `0 1px 2px rgba(12, 18, 28, 0.05), 0 4px 12px rgba(12, 18, 28, 0.05)` | `0 12px 30px rgba(12, 18, 28, 0.08)` |
+| `elevation.hover` | `0 18px 46px rgba(0, 0, 0, 0.26)` | `0 2px 4px rgba(12, 18, 28, 0.06), 0 12px 28px rgba(12, 18, 28, 0.1)` | `0 18px 46px rgba(12, 18, 28, 0.12)` |
+| `elevation.overlay` | `0 24px 64px rgba(0, 0, 0, 0.45), 0 0 0 1px {border.strong}` | `0 4px 12px rgba(12, 18, 28, 0.08), 0 20px 48px rgba(12, 18, 28, 0.16), 0 0 0 1px {border.strong}` | `0 24px 64px rgba(12, 18, 28, 0.2), 0 0 0 1px {border.strong}` |
 
-세 라이트 alpha(0.08, 0.12, 0.20)가 세 다크 alpha(0.18, 0.26, 0.45)와 모두 다르므로 FR-THM-002 AC-4를 만족한다. 오프셋과 블러 반경(`12px 30px`, `18px 46px`, `24px 64px`)은 테마 무관하게 유지한다 — 기하 구조는 광원 모델이지 색이 아니다.
+라이트 값은 다크 값과 모두 다르므로 FR-THM-002 AC-4를 만족한다. 단계 서열(raised < hover < overlay)은 두 테마에서 같다. 토큰 시험이 라이트 세 값 모두 첫 층의 블러가 12px 이하이고 층이 둘 이상임을 지킨다.
 
 `elevation.overlay`의 두 번째 그림자 `0 0 0 1px {border.strong}`은 semantic 참조다. 라이트에서 자동으로 `rgba(12, 18, 28, 0.2)`로 해석된다(CR-065 이전 `#5b6879`). 오버레이 경계는 장식이며, 패널은 `surface.elevated`와 첫 번째 그림자가 가림막 위에서 식별한다.
 
@@ -651,7 +651,7 @@ FR-THM-002는 라이트 테마가 다크 테마와 **동일한 semantic 키 집�
 
 `surface.overlay`는 가림막(scrim)이다. 다크에서 `rgba(4, 7, 12, 0.78)`. 라이트에서도 **가림막은 어두워야 한다** — 밝은 막은 아래 내용을 가리지 못한다. 색을 `rgb(12, 18, 28)`로 바꾸고 alpha를 0.45로 낮춘다. 라이트 `surface.base` 위 합성 결과는 `#858a92`로, `text.primary`(`#0c121c`)와 5.40:1이다. 가림막 위에 텍스트를 올리지 않으므로 이 값은 `decorative`다. 가림막의 목적은 배후 내용을 판독 불가로 만드는 것이며, `Dialog` 패널은 `surface.elevated`(`#ffffff`) 위에 그려진다.
 
-`surface.glass`는 다루기 더 어렵다. 다크 `rgba(16, 23, 34, 0.82)`는 `backdrop-filter: blur(18px)`와 함께 쓰여 배후를 흐리면서 어둡게 눌러 패널 경계를 만든다. 라이트에서 `rgba(251, 252, 253, 0.86)`를 `surface.base`(`#e8ecf2`) 위에 합성하면 `#f8fafb`가 되고 배경과의 대비는 1.13:1이다. **패널 경계가 사실상 사라진다.**
+`surface.glass`는 다루기 더 어렵다. 다크 `rgba(16, 23, 34, 0.82)`는 `backdrop-filter: blur(18px)`와 함께 쓰여 배후를 흐리면서 어둡게 눌러 패널 경계를 만든다. 라이트에서 `rgba(252, 253, 254, 0.86)`를 `surface.base`(`#eff1f5`) 위에 합성하면 `#fafbfd`가 되고 배경과의 대비는 1.09:1이다(CR-066 전 `#e8ecf2` 위 1.13:1). **패널 경계가 사실상 사라진다.**
 
 FR-THM-002 예외 처리는 이 경우를 예상하고 규정했다: "다크 전용 시각 장치(글래스 배경, 글로우)가 라이트에서 판독 불가하면, 해당 컴포넌트 토큰을 라이트 팔레트에서 solid 대안 값으로 재정의한다. 컴포넌트 코드는 수정하지 않는다."
 
@@ -669,7 +669,7 @@ FR-THM-002 예외 처리는 이 경우를 예상하고 규정했다: "다크 전
 **규칙**: 색상각(hue)과 의미를 유지하고 명도만 조정한다. 조정 목표는 아래 두 가지를 동시에 만족하는 것이다.
 
 1. 채움으로 쓸 때: `text.inverse`(라이트에서 `#f4f7fb`)를 얹어 본문 4.5:1 이상.
-2. 전경·테두리로 쓸 때: `surface.raised`(`#fbfcfd`) 위에서 해당 토큰의 `usage` 기준 이상. `body` 토큰은 4.5:1, `nonText` 토큰은 3:1이다.
+2. 전경·테두리로 쓸 때: `surface.raised`(`#fcfdfe`, CR-066 전 `#fbfcfd`) 위에서 해당 토큰의 `usage` 기준 이상. `body` 토큰은 4.5:1, `nonText` 토큰은 3:1이다.
 
 `usage` 분류는 SRS 12.1절이 확정했고 라이트도 그대로 상속한다. 따라서 규칙 2의 기준은 토큰마다 다르다 — `status.running` ~ `status.danger`와 `meter.*`는 4.5:1, `status.queued`와 `status.neutralEnd`는 3:1이다.
 
@@ -1032,34 +1032,34 @@ CP-025는 CR-006으로 선언 목록에서 제거되었다. **ID는 재사용하
 
 | ID | 전경 | 배경 | usage | 기준 | 다크 | 라이트 |
 | --- | --- | --- | --- | --- | --- | --- |
-| CP-001 | `text.primary` | `surface.base` | body | 4.5 | 18.32 pass | 15.83 pass |
-| CP-002 | `text.primary` | `surface.raised` | body | 4.5 | 15.77 pass | 18.27 pass |
+| CP-001 | `text.primary` | `surface.base` | body | 4.5 | 18.32 pass | 16.60 pass |
+| CP-002 | `text.primary` | `surface.raised` | body | 4.5 | 15.77 pass | 18.43 pass |
 | CP-003 | `text.primary` | `surface.elevated` | body | 4.5 | 14.40 pass | 18.77 pass |
-| CP-004 | `text.secondary` | `surface.raised` | body | 4.5 | 10.77 pass | 10.00 pass |
+| CP-004 | `text.secondary` | `surface.raised` | body | 4.5 | 10.77 pass | 10.09 pass |
 | CP-005 | `text.secondary` | `surface.elevated` | body | 4.5 | 9.83 pass | 10.27 pass |
-| CP-006 | `text.muted` | `surface.base` | body | 4.5 | 6.06 pass | 5.90 pass |
+| CP-006 | `text.muted` | `surface.base` | body | 4.5 | 6.06 pass | 6.18 pass |
 | CP-007 | `text.muted` | `surface.elevated` | body | 4.5 | 4.76 pass | 6.99 pass |
-| CP-008 | `text.monoPayload` | `surface.raised` | body | 4.5 | 13.44 pass | 14.96 pass |
-| CP-009 | `accent` | `surface.base` | body | 4.5 | 5.60 pass | 4.67 pass |
-| CP-010 | `accent` | `surface.raised` | body | 4.5 | 4.82 pass | 5.39 pass |
+| CP-008 | `text.monoPayload` | `surface.raised` | body | 4.5 | 13.44 pass | 15.09 pass |
+| CP-009 | `accent` | `surface.base` | body | 4.5 | 5.60 pass | 4.90 pass |
+| CP-010 | `accent` | `surface.raised` | body | 4.5 | 4.82 pass | 5.44 pass |
 | CP-011 | `text.inverse` | `accent` | body | 4.5 | 5.39 pass | 5.16 pass |
-| CP-012 | `accent.strong` | `surface.base` | nonText | 3.0 | 4.36 pass | 6.00 pass |
-| CP-013 | `focusRing` | `surface.base` | nonText | 3.0 | 3.93 pass | 3.30 pass |
-| CP-014 | `focusRing` | `surface.raised` | nonText | 3.0 | 3.56 pass | 3.66 pass |
+| CP-012 | `accent.strong` | `surface.base` | nonText | 3.0 | 4.36 pass | 6.29 pass |
+| CP-013 | `focusRing` | `surface.base` | nonText | 3.0 | 3.93 pass | 3.42 pass |
+| CP-014 | `focusRing` | `surface.raised` | nonText | 3.0 | 3.56 pass | 3.69 pass |
 | CP-015 | `focusRing` | `surface.elevated` | nonText | 3.0 | 3.34 pass | 3.72 pass |
-| CP-016 | `border.control` | `surface.base` | nonText | 3.0 | 3.39 pass | 3.40 pass |
-| CP-017 | `border.control` | `surface.raised` | nonText | 3.0 | 3.23 pass | 3.51 pass |
+| CP-016 | `border.control` | `surface.base` | nonText | 3.0 | 3.39 pass | 3.41 pass |
+| CP-017 | `border.control` | `surface.raised` | nonText | 3.0 | 3.23 pass | 3.50 pass |
 | CP-018 | `border.control` | `surface.elevated` | nonText | 3.0 | 3.11 pass | 3.51 pass |
-| CP-019 | `status.running` | `surface.raised` | body | 4.5 | 4.82 pass | 5.39 pass |
-| CP-020 | `status.waiting` | `surface.raised` | body | 4.5 | 7.89 pass | 4.89 pass |
-| CP-021 | `status.success` | `surface.raised` | body | 4.5 | 6.68 pass | 5.34 pass |
-| CP-022 | `status.partial` | `surface.raised` | body | 4.5 | 8.84 pass | 4.79 pass |
-| CP-023 | `status.danger` | `surface.raised` | body | 4.5 | 4.50 pass | 5.59 pass |
-| CP-024 | `status.queued` | `surface.raised` | nonText | 3.0 | 3.56 pass | 6.17 pass |
+| CP-019 | `status.running` | `surface.raised` | body | 4.5 | 4.82 pass | 5.44 pass |
+| CP-020 | `status.waiting` | `surface.raised` | body | 4.5 | 7.89 pass | 4.93 pass |
+| CP-021 | `status.success` | `surface.raised` | body | 4.5 | 6.68 pass | 5.38 pass |
+| CP-022 | `status.partial` | `surface.raised` | body | 4.5 | 8.84 pass | 4.83 pass |
+| CP-023 | `status.danger` | `surface.raised` | body | 4.5 | 4.50 pass | 5.63 pass |
+| CP-024 | `status.queued` | `surface.raised` | nonText | 3.0 | 3.56 pass | 6.22 pass |
 | ~~CP-025~~ | ~~`status.neutralEnd`~~ | ~~`surface.raised`~~ | — | — | 제거됨 (CR-006) | 제거됨 (CR-006) |
-| CP-026 | `meter.normal` | `surface.raised` | body | 4.5 | 8.82 pass | 5.34 pass |
-| CP-027 | `meter.warning` | `surface.raised` | body | 4.5 | 10.15 pass | 4.89 pass |
-| CP-028 | `meter.exceeded` | `surface.raised` | body | 4.5 | 6.13 pass | 4.70 pass |
+| CP-026 | `meter.normal` | `surface.raised` | body | 4.5 | 8.82 pass | 5.38 pass |
+| CP-027 | `meter.warning` | `surface.raised` | body | 4.5 | 10.15 pass | 4.93 pass |
+| CP-028 | `meter.exceeded` | `surface.raised` | body | 4.5 | 6.13 pass | 4.74 pass |
 | CP-029 | `badge.severity.text` | `severity.read` | body | 4.5 | 4.67 pass | 4.67 pass |
 | CP-030 | `badge.severity.text` | `severity.write` | body | 4.5 | 4.82 pass | 4.82 pass |
 | CP-031 | `badge.severity.text` | `severity.destructive` | body | 4.5 | 6.02 pass | 6.02 pass |
@@ -1069,11 +1069,11 @@ CP-025는 CR-006으로 선언 목록에서 제거되었다. **ID는 재사용하
 | CP-035 | `badge.fill.text` | `status.success` | body | 4.5 | 7.46 pass | 5.10 pass |
 | CP-036 | `badge.fill.text` | `status.partial` | body | 4.5 | 9.87 pass | 4.58 pass |
 | CP-037 | `badge.fill.text` | `status.danger` | body | 4.5 | 5.03 pass | 5.34 pass |
-| CP-038 | `badge.marker.text` | `badge.marker.background` | body | 4.5 | 15.77 pass | 18.27 pass |
-| CP-039 | `badge.marker.dot` (`status.queued`) | `badge.marker.background` | nonText | 3.0 | 3.56 pass | 6.17 pass |
+| CP-038 | `badge.marker.text` | `badge.marker.background` | body | 4.5 | 15.77 pass | 18.43 pass |
+| CP-039 | `badge.marker.dot` (`status.queued`) | `badge.marker.background` | nonText | 3.0 | 3.56 pass | 6.22 pass |
 | CP-040 | `text.muted` | `state.disabled` | body | 4.5 | 5.05 pass | 5.67 pass |
 | CP-041 | `button.policyDisabled.text` | `state.disabledPolicy` | body | 4.5 | 5.27 pass | 5.81 pass |
-| CP-042 | `status.neutralEnd` | `badge.marker.background` | nonText | 3.0 | 6.61 pass | 8.58 pass |
+| CP-042 | `status.neutralEnd` | `badge.marker.background` | nonText | 3.0 | 6.61 pass | 8.65 pass |
 
 CP-043 ~ CP-117: dataviz 25키 × 3표면(`surface.base`·`surface.canvas`·`surface.raised`) = 75쌍, 두 테마. 개별 수치는 `dist/contrast-report.json`이며 그룹별 실측 범위는 아래와 같다(전 쌍 3:1 이상, 5.14절).
 
@@ -1099,9 +1099,9 @@ FR-THM-005가 강제한 두 교정이 9건의 미달을 제거했다. `focusRing
 | CP-013 `focusRing` / `surface.base` (다크) | 1.50 (alpha 0.30) | **3.93** (alpha 0.80) | 3.0 |
 | CP-014 `focusRing` / `surface.raised` (다크) | 1.55 (alpha 0.30) | **3.56** | 3.0 |
 | CP-015 `focusRing` / `surface.elevated` (다크) | 1.54 (alpha 0.30) | **3.34** | 3.0 |
-| CP-013 ~ CP-015 (라이트) | 1.50 / 1.53 / 1.54 | **3.30 / 3.66 / 3.72** | 3.0 |
+| CP-013 ~ CP-015 (라이트) | 1.50 / 1.53 / 1.54 | **3.42 / 3.69 / 3.72** (CR-066 전 3.30 / 3.66 / 3.72) | 3.0 |
 | CP-016 ~ CP-018 `border.control` (다크) | 1.30 / 1.37 / 1.38 (`border.default` 사용 시) | **3.39 / 3.23 / 3.11** | 3.0 |
-| CP-016 ~ CP-018 `border.control` (라이트) | 4.36 (`border.default` 사용 시) | **3.40 / 3.51 / 3.51** (CR-065 전 4.01 / 4.63 / 4.76) | 3.0 |
+| CP-016 ~ CP-018 `border.control` (라이트) | 4.36 (`border.default` 사용 시) | **3.41 / 3.50 / 3.51** (CR-065 전 4.01 / 4.63 / 4.76) | 3.0 |
 
 라이트에서 `border.default`는 이미 불투명 값이라 3:1을 넘었다. `border.control`을 도입한 실익은 다크에 있다. 그러나 토큰 키는 두 테마에 대칭으로 존재해야 하므로(FR-QA-001 AC-1) 라이트에도 대응 값을 정의했다.
 
