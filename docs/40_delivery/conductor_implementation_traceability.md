@@ -661,5 +661,5 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | FR 매핑 | FR-THM-002 AC-3·AC-5 → `palette.light.ts`, `components.css`, 시험 `palette.light.test.ts`(CR-065 5건), `test/bundle.test.ts`(CR-065), `component-css.browser.test.tsx`(CR-065 표 머리글). FR-CMP-013 AC-6 → `interaction.css`, `test/bundle.test.ts`(CR-065 Tabs 3건), `component-css.browser.test.tsx`(CR-065 Tabs) |
 | 시험 | 토큰 6건(경계 사다리 3표면, 다크보다 무겁지 않음 3키), 번들 4건 추가·1건 수정(배지 칩), 브라우저 2건(두 테마). 수정 전 소스로 되돌린 빌드에서 토큰·번들 11건과 브라우저 2건이 모두 실패함을 확인했다 |
 | 편차 | DEV-062 (FR-THM-002 AC-3 ↔ FR-THM-005 AC-4 충돌, 라이트 장식 경계 무게) |
-| 검증 (로컬) | 게이트 12종 통과(단위 831/831, a11y 356 통과·1 skip, check:contrast 244/244), 문서 E2E 69/69. 시각 회귀는 CI가 판정한다 |
+| 검증 (로컬) | 게이트 12종 통과(단위 831/831, a11y 356 통과·1 skip, check:contrast 244/244), 문서 E2E 69/69. 시각 회귀: PR CI(head `b0cb2c1`)에서 라이트 Card·Table·Timeline·Banner 4장이 의도한 변화로 임계를 넘어, DEV-045 방법으로 그 4장만 갱신했다. 같은 조건에서 27장 모두 통과 |
 
