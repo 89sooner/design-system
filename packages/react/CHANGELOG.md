@@ -1,5 +1,12 @@
 # @conductor-by-89soone/react
 
+## 0.15.2
+
+### Patch Changes
+
+- Updated dependencies [add634b]
+  - @conductor-by-89soone/css@0.15.2
+
 ## 0.15.1
 
 ### Patch Changes
