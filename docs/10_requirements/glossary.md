@@ -1,6 +1,6 @@
 # Conductor Design System 용어집
 
-> 상태: review | 버전: v0.6 | 갱신일: 2026-10-13
+> 상태: review | 버전: v0.7 | 갱신일: 2026-10-23
 
 ## 1. 목적
 
@@ -45,6 +45,7 @@
 | 심각도 | `severity` | 동작이 외부에 미치는 영향 등급(read·write·destructive·blocked) | 위험도, 레벨, 등급 | FR-TOK-005 |
 | 밀도 | `density` | 단위 면적당 정보량. Conductor는 본문 14px·행 높이 1.5 기준의 조밀한 운영 화면을 기준 밀도로 삼는다 | 컴팩트니스, 촘촘함 | FR-CSS-002 |
 | 포커스 링 | `focus ring` | 키보드 포커스를 표시하는 외곽선. 모든 대화형 요소에 동일한 토큰이 적용된다 | 아웃라인, 포커스 테두리 | FR-A11Y-001 |
+| 강제 색 모드 | `forced colors` | 운영체제가 페이지 색을 사용자의 시스템 팔레트로 바꾸는 표시 모드(Windows 고대비). 배경과 그림자가 지워지고, 작성자는 `Highlight`·`HighlightText`·`CanvasText` 같은 시스템 색으로만 표시를 다시 그린다. 고대비 테마(제외 항목)와 다르다 | 고대비 모드, WHCM | FR-A11Y-001, FR-A11Y-003 |
 | 헤드리스 프리미티브 | `headless primitive` | 접근성 동작만 제공하고 시각 스타일을 갖지 않는 외부 컴포넌트. Conductor는 Radix UI를 사용한다 | 언스타일드 컴포넌트, 베이스 컴포넌트 | ADR-004 |
 | 프리미티브 컴포넌트 | `primitive component` | 도메인 지식을 갖지 않는 재사용 컴포넌트. Conductor가 배포하는 단위 | 공통 컴포넌트, 아톰 | FR-CMP-001 |
 | 컴포넌트 계약 | `component contract` | 컴포넌트의 props, variant, 이벤트, 접근성 책임을 고정한 공개 규격 | 인터페이스, 스펙, API | API-CMP-001 |

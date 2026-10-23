@@ -1,6 +1,6 @@
 # Conductor Design System UI 컴포넌트 명세서
 
-> 상태: review | 버전: v0.19 | 갱신일: 2026-10-22
+> 상태: review | 버전: v0.20 | 갱신일: 2026-10-23
 
 ## 0. 문서 위치와 범위
 
@@ -765,6 +765,7 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
 - **접근성 책임**: 라벨 연결은 **Conductor**의 `Field`(C-050)가 수행한다. `Field` 없이 렌더하고 `aria-label`도 없으면 **Conductor**가 개발 빌드에서 `console.warn`을 출력한다(FR-CMP-007 AC-3). role은 **네이티브 요소**가 제공한다.
 - **사용 규칙**: `type="checkbox"`와 `type="radio"`에는 사용하지 않는다. 체크박스는 `Checkbox`(C-055)를 쓴다.
 - **금지**: `outline: none`을 대체 포커스 표시 없이 선언하지 않는다(FR-A11Y-001 AC-2). 오류를 색상만으로 표현하지 않는다.
+- **강제 색 모드 (CR-071, FR-A11Y-001 AC-5·FR-A11Y-003 AC-5)**: 포커스 규칙은 `outline`을 지우지 않고 `border.width.emphasis` 두께의 투명 외곽선으로 둔다. 강제 색이 그림자 링을 지우면 브라우저가 이 외곽선을 시스템 색으로 그린다. 배경·그림자로 그리던 상태는 `@media (forced-colors: active)`에서 시스템 색으로 다시 그린다. 켬·선택·강조 항목은 `Highlight` 채움 + `HighlightText` 글자(자손 포함) + `forced-color-adjust: none`(채움 위 글자의 `Canvas` 배경판을 끈다)이고, 그 항목에 포커스가 오면 `CanvasText` 외곽선을 `border.width.emphasis`만큼 떨어뜨린다. 풍부한 내용을 담는 현재 항목(`Timeline` 단계, `NavList` 항목)은 `Highlight` 레일, 선택된 표 행은 `Highlight` 안쪽 외곽선이다. 새 상태 표시를 배경이나 그림자로만 그리지 않는다.
 - **관련**: FR-CMP-007, FR-A11Y-001, FR-A11Y-003 / W-020, W-021.
 
 #### C-052 TextArea
@@ -1291,6 +1292,7 @@ component 토큰은 semantic 토큰만 참조한다(FR-TOK-002 AC-3). 아래 표
 - **결정 (CR-064)**: 분할 레이아웃의 `WorkbenchLayout` 패널은 `position: sticky`와 자체 스크롤을 갖는다. `AppShell` 안에서는 `--cdt-top-bar-min-height` 아래에 붙는다. **breakpoint.md** 미만에서는 결과 아래로 쌓이고 고정하지 않는다.
 - **결정 (CR-065, FR-CMP-013 AC-6)**: `Tabs`의 활성 표시는 채운 상자가 아니다. 목록은 `border.default` 구분선과 `space.1` 아래 여백을 갖고, 각 트리거의 `::after`(높이 `border.width.emphasis`, `radius.pill`)가 `space.1 + hairline`만큼 내려가 구분선 위에 정확히 놓인다. 활성 탭은 그 선이 `accent`이고 글자가 `text.primary`이며 배경·그림자가 없다. 호버는 `state.hover` 면이며 구분선에 닿지 않는다. 세로 방향은 같은 선을 inline-end 구분선 위에 둔다. 강제 색 모드에서는 `Highlight`로 다시 그린다. 이전에는 활성 탭이 `surface.2` 상자 안에 `inset 0 -1px` 밑줄을 그렸는데, 안쪽 그림자가 둥근 아래 모서리를 따라 휘어 `border.control` 구분선 위에 두 번째 선으로 떴다.
 - **결정 (CR-067, FR-CMP-013 AC-6 정정)**: 기본 `Tabs.List`는 세그먼트형이다. 목록은 `surface.base` 트랙(**radius.md**, 안쪽 여백 `space.1 - hairline`)이고, 선택 탭은 `surface.elevated` 알약에 `border.default` 1px 고리를 두르며 글자는 `text.primary`다. 목록 아래 구분선과 표시선은 없다. 모든 탭의 글자 굵기는 500으로 같아 선택이 너비를 바꾸지 않는다. 호버는 선택되지 않은 탭에만 `state.hover` 면을 깐다. 위 CR-065 밑줄형은 `variant="line"`(`cdt-tabs__list--line`)으로 유지한다 — shadcn/ui(기본 세그먼트형 + `line` 변형), Radix Themes(Tabs = 밑줄, SegmentedControl = 알약), Mantine(`default`·`outline`·`pills`), Primer(UnderlineNav = 페이지 이동, SegmentedControl = 보기 전환)를 비교한 결과다. 포커스된 탭의 링은 `.cdt-tabs__list .cdt-tabs__trigger:focus-visible`(명시도 0,3,0)로 두 선택 상태 규칙을 이겨, 포커스된 선택 탭에서 알약 고리 대신 링이 보인다.
+- **결정 (CR-071, FR-CMP-013 AC-6 정정 · FR-A11Y-003 AC-5)**: 강제 색 모드에서 세그먼트형 선택 탭은 `Highlight` 외곽선이 아니라 `Highlight` 채움에 `HighlightText` 글자다(`forced-color-adjust: none`). 외곽선은 포커스 표시에 남겨, 포커스된 선택 탭에 `CanvasText` 외곽선이 채움에서 떨어져 보인다. 밑줄형 표시선은 `Highlight` 그대로다.
 
 신규 계약은 Tabs·Popover·Collapsible/Accordion, 검색 입력/필터 칩·DataTable·Workbench/Inspector·경로 탐색, 관계 그래프/목록, 운영 단계 표현이다. 각 공개 export의 타입·ref·이름·disabled/busy·이벤트 전달과 반복 ID를 검증한다. 실제 최종 API와 예제는 패키지 README와 API report를 함께 본다.
 

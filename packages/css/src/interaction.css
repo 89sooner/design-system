@@ -35,7 +35,7 @@
   .cdt-tabs__list--line[data-orientation="vertical"] { padding: 0 var(--cdt-space-1) 0 0; border-block-end: 0; border-inline-end: var(--cdt-border-width-hairline) solid var(--cdt-border-default); }
   .cdt-tabs__list--line[data-orientation="vertical"] .cdt-tabs__trigger::after { inset-block: 0; inset-inline: auto calc(var(--cdt-tabs-indicator-offset) * -1); block-size: auto; inline-size: var(--cdt-border-width-emphasis); }
 
-  .cdt-tabs__trigger:focus-visible, .cdt-collapsible__trigger:focus-visible, .cdt-tabs__content:focus-visible { outline: none; box-shadow: var(--cdt-focus-ring); }
+  .cdt-tabs__trigger:focus-visible, .cdt-collapsible__trigger:focus-visible, .cdt-tabs__content:focus-visible { outline: var(--cdt-border-width-emphasis) solid transparent; box-shadow: var(--cdt-focus-ring); }
   /*
    * A focused tab keeps the ring over its selected pill edge (and over the line variant's
    * `box-shadow: none`). Specificity (0,3,0) wins against both selected-state rules wherever the
@@ -43,10 +43,15 @@
    */
   .cdt-tabs__list .cdt-tabs__trigger:focus-visible { box-shadow: var(--cdt-focus-ring); }
 
-  /* Forced colours drop backgrounds and shadows, so the selection is redrawn in the system highlight. */
+  /*
+   * Forced colours drop backgrounds and shadows, so the selection is redrawn in the system highlight.
+   * The segmented pill fills as in components.css, so the focus outline still shows on the selected
+   * tab (CR-071); the line variant keeps only its indicator.
+   */
   @media (forced-colors: active) {
-    .cdt-tabs__trigger[data-state="active"] { outline: var(--cdt-border-width-emphasis) solid Highlight; outline-offset: calc(var(--cdt-border-width-emphasis) * -1); }
-    .cdt-tabs__list--line .cdt-tabs__trigger[data-state="active"] { outline: none; }
+    .cdt-tabs__list:not(.cdt-tabs__list--line) .cdt-tabs__trigger[data-state="active"] { forced-color-adjust: none; border-color: Highlight; background: Highlight; color: HighlightText; }
+    .cdt-tabs__list:not(.cdt-tabs__list--line) .cdt-tabs__trigger[data-state="active"] * { border-color: HighlightText; background-color: transparent; color: HighlightText; }
+    .cdt-tabs__list:not(.cdt-tabs__list--line) .cdt-tabs__trigger[data-state="active"]:focus-visible { outline-color: CanvasText; outline-offset: var(--cdt-border-width-emphasis); }
     .cdt-tabs__list--line .cdt-tabs__trigger[data-state="active"]::after { background: Highlight; forced-color-adjust: none; }
   }
   .cdt-popover { transform-origin: var(--radix-popover-content-transform-origin); z-index: var(--cdt-z-overlay); max-inline-size: min(calc(100vw - var(--cdt-space-8)), var(--radix-popover-content-available-width)); max-block-size: var(--radix-popover-content-available-height); overflow: auto; padding: var(--cdt-space-4); border: var(--cdt-border-width-hairline) solid var(--cdt-border-control); border-radius: var(--cdt-radius-md); background: var(--cdt-surface-raised); color: var(--cdt-text-primary); box-shadow: var(--cdt-elevation-overlay); }

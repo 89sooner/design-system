@@ -1,6 +1,6 @@
 # Conductor Design System 최종 요구사항 정의서
 
-> 상태: baseline | 버전: v1.21 | 갱신일: 2026-10-23
+> 상태: baseline | 버전: v1.22 | 갱신일: 2026-10-23
 
 ## 1. 문서 개요
 
@@ -36,12 +36,12 @@ Conductor는 `agent-ai-platform/packages/web`의 시각 언어를 3개 npm 패�
 
 1. 3계층 디자인 토큰 소스와 CSS/TypeScript/JSON 산출 빌드 — FR-TOK-001 ~ FR-TOK-009
 2. 다크(기준) 및 라이트 테마, 시스템 설정 연동, 테마별 대비 검증, 소스 계승 토큰의 접근성 교정 — FR-THM-001 ~ FR-THM-005
-3. 캐스케이드 레이어 기반 프레임워크 비종속 스타일시트 — FR-CSS-001 ~ FR-CSS-005 (CR-069 보강 FR-CSS-001 AC-5, §30)
+3. 캐스케이드 레이어 기반 프레임워크 비종속 스타일시트 — FR-CSS-001 ~ FR-CSS-005 (CR-069 보강 FR-CSS-001 AC-5, §30; CR-071 정정 FR-CSS-002 AC-3, §32)
 4. React 프리미티브 컴포넌트 — 기존 FR-CMP-001 ~ FR-CMP-009 및 CR-041 확장 FR-CMP-010 ~ FR-CMP-013 (§17, review)
-5. 정적 문서 사이트 — FR-DOC-001 ~ FR-DOC-007 및 CR-048 확장 FR-DOC-008 (§18), CR-051 확장 FR-DOC-009 (§19), CR-052 확장 FR-DOC-010 (§20), CR-053 보강 FR-DOC-001 AC-5·FR-CMP-013 AC-5 (§21), CR-054 확장 FR-CMP-014 (§22), CR-060 확장 FR-CMP-015 (§24), CR-061 확장 FR-CMP-016 (§25), CR-063 보강 FR-CMP-015 AC-7 (§26), CR-064 보강 FR-THM-005 AC-8·FR-CMP-004 AC-7·FR-CMP-010 AC-6 (§27), CR-065 정정·보강 FR-THM-002 AC-3·AC-5·FR-CMP-013 AC-6 (§28), CR-067 정정 FR-CMP-013 AC-6 (§29)
-6. WCAG 2.1 AA 접근성 기준선 — FR-A11Y-001 ~ FR-A11Y-005
+5. 정적 문서 사이트 — FR-DOC-001 ~ FR-DOC-007 및 CR-048 확장 FR-DOC-008 (§18), CR-051 확장 FR-DOC-009 (§19), CR-052 확장 FR-DOC-010 (§20), CR-053 보강 FR-DOC-001 AC-5·FR-CMP-013 AC-5 (§21), CR-054 확장 FR-CMP-014 (§22), CR-060 확장 FR-CMP-015 (§24), CR-061 확장 FR-CMP-016 (§25), CR-063 보강 FR-CMP-015 AC-7 (§26), CR-064 보강 FR-THM-005 AC-8·FR-CMP-004 AC-7·FR-CMP-010 AC-6 (§27), CR-065 정정·보강 FR-THM-002 AC-3·AC-5·FR-CMP-013 AC-6 (§28), CR-067 정정 FR-CMP-013 AC-6 (§29), CR-071 정정 FR-CMP-013 AC-6 (§32)
+6. WCAG 2.1 AA 접근성 기준선 — FR-A11Y-001 ~ FR-A11Y-005 (CR-071 보강 FR-A11Y-001 AC-5·FR-A11Y-003 AC-5, §32)
 7. 모노레포 빌드, 타입 배포, 진입점 선언, SSR 안전성, 버저닝 — FR-DX-001 ~ FR-DX-005
-8. 토큰 계약·단위·접근성·시각 회귀 검사 — FR-QA-001 ~ FR-QA-004 (CR-068 정정·확대 FR-QA-004, §30)
+8. 토큰 계약·단위·접근성·시각 회귀 검사 — FR-QA-001 ~ FR-QA-004 (CR-068 정정·확대 FR-QA-004, §30; CR-071 보강 FR-QA-004 AC-6, §32)
 
 ### 4.2 Conditional Scope
 
@@ -60,7 +60,7 @@ FR-QA-004(시각 회귀)와 FR-CMP-009(셸 컴포넌트군)는 2026-07-10에 OD-
 | Tailwind preset | ADR-002가 Vanilla CSS + 커스텀 프로퍼티를 확정했다. preset은 소비자를 Tailwind에 결속한다 |
 | 자체 아이콘 세트 제작 | `lucide-react`를 peer dependency로 둔다 |
 | 범용 차트 엔진·그래프 편집 | CR-041의 읽기 전용 관계 그래프(FR-CMP-011)만 예외로 포함한다. 임의 차트·편집 엔진은 제외 |
-| 고대비(High Contrast) 테마 | 팔레트 3벌 유지 비용을 회피한다 |
+| 고대비(High Contrast) 테마 | 팔레트 3벌 유지 비용을 회피한다. 운영체제의 강제 색 모드(Windows 고대비)에서 포커스와 상태가 보이게 하는 일은 이 제외에 들지 않는다. 그 모드는 사용자의 시스템 팔레트를 쓰므로 Conductor가 팔레트를 더 두지 않고, 배경·그림자로 그리던 표시만 시스템 색으로 다시 그린다(FR-A11Y-001 AC-5, FR-A11Y-003 AC-5, CR-071) |
 | 다국어 문자열 시스템 | 컴포넌트는 문자열을 props로 받는다 |
 | 런타임 토큰 편집기 | 토큰 소스를 바꾸는 편집기는 제외한다. 문서 사이트는 테마 토글과, 미리보기 영역에만 재정의를 거는 테마 플레이그라운드(FR-DOC-010, CR-052)까지 포함한다 (DEV-055) |
 | agent-ai-platform 도메인 컴포넌트 이식 | `.thread-page`, `.approval-card-*`, `.run-summary`, `.tool-grid`는 도메인 결합이다 |
@@ -377,7 +377,7 @@ FR-QA-004(시각 회귀)와 FR-CMP-009(셸 컴포넌트군)는 2026-07-10에 OD-
 | 우선순위 | Must |
 | 출처 | F-CSS-002 / SRC-AAP `app.css:2-128` |
 | 요구사항 | 시스템은 항상 `cdt.reset` 레이어에서 박스 모델, 폼 요소 폰트 상속, 포커스 표시, 스크롤바, 선택 영역 스타일을 정규화하여야 한다. |
-| 수용 기준 | AC-1: `box-sizing: border-box`가 전역 적용된다. AC-2: `button`, `input`, `textarea`, `select`가 `font: inherit`를 받는다. AC-3: `:focus-visible`이 `--cdt-focus-ring` 토큰의 그림자를 받고 `outline`은 제거된다. AC-4: 산출물에 `@import url()` 또는 `src: url(http...)` 형태의 원격 폰트 참조가 0건이다. AC-5: `sr-only` 및 `skip-link` 유틸리티 클래스가 `cdt.utility` 레이어에 존재한다. |
+| 수용 기준 | AC-1: `box-sizing: border-box`가 전역 적용된다. AC-2: `button`, `input`, `textarea`, `select`가 `font: inherit`를 받는다. AC-3 (CR-071 정정): `:focus-visible`이 `--cdt-focus-ring` 토큰의 그림자를 받고, `outline`은 `border.width.emphasis` 두께의 투명 외곽선으로 둔다. 평소에는 아무것도 그리지 않고, 강제 색 모드에서 그림자가 지워지면 브라우저가 이 외곽선을 시스템 색으로 그린다. AC-4: 산출물에 `@import url()` 또는 `src: url(http...)` 형태의 원격 폰트 참조가 0건이다. AC-5: `sr-only` 및 `skip-link` 유틸리티 클래스가 `cdt.utility` 레이어에 존재한다. |
 | 검증 방법 | test |
 | 관련 화면 | 없음(간접 노출: 모든 문서 사이트 화면) |
 | 관련 API/데이터 | API-PKG-002 / — |
@@ -663,7 +663,7 @@ FR-QA-004(시각 회귀)와 FR-CMP-009(셸 컴포넌트군)는 2026-07-10에 OD-
 | 우선순위 | Must |
 | 출처 | F-A11Y-001 / SRC-AAP `app.css:39-42` |
 | 요구사항 | 대화형 요소가 키보드 포커스를 받으면, 시스템은 `--cdt-focus-ring` 토큰의 시각 표시를 적용하여야 한다. |
-| 수용 기준 | AC-1: 모든 공개 컴포넌트의 대화형 요소가 `:focus-visible`에서 동일한 `box-shadow` 계산값을 갖는다. AC-2: `outline: none`이 `:focus-visible` 대체 표시 없이 선언된 규칙이 0건이다. AC-3: 포커스 링이 두 테마 모두에서 배경 대비 3:1 이상이다. AC-4: 마우스 클릭으로 포커스를 얻은 경우 포커스 링이 표시되지 않는다. |
+| 수용 기준 | AC-1: 모든 공개 컴포넌트의 대화형 요소가 `:focus-visible`에서 동일한 `box-shadow` 계산값을 갖는다. AC-2: `outline: none`이 `:focus-visible` 대체 표시 없이 선언된 규칙이 0건이다. AC-3: 포커스 링이 두 테마 모두에서 배경 대비 3:1 이상이다. AC-4: 마우스 클릭으로 포커스를 얻은 경우 포커스 링이 표시되지 않는다. AC-5 (CR-071): 강제 색 모드(`forced-colors: active`)에서 모든 공개 컴포넌트의 대화형 요소가 `:focus-visible`일 때 너비 1px 이상의 보이는 외곽선을 갖는다. 시스템 색으로 채운 선택 항목에 포커스가 오면 그 외곽선은 `CanvasText`로, 채움에서 떨어져 그려진다. |
 | 검증 방법 | test |
 | 관련 화면 | W-050 |
 | 관련 API/데이터 | API-PKG-002 / ENT-THM-001 |
@@ -691,7 +691,7 @@ FR-QA-004(시각 회귀)와 FR-CMP-009(셸 컴포넌트군)는 2026-07-10에 OD-
 | 우선순위 | Must |
 | 출처 | F-A11Y-003 / SRC-WCAG 1.4.1 |
 | 요구사항 | 시스템은 항상 상태, 심각도, 유효성 정보를 색상 외에 아이콘 또는 텍스트로 동시에 전달하여야 한다. |
-| 수용 기준 | AC-1: `StatusBadge`와 `SeverityTag`가 아이콘과 텍스트를 함께 렌더한다. AC-2: 폼 오류 상태가 색상 외에 오류 메시지 텍스트와 `aria-invalid`를 갖는다. AC-3: `Meter`의 임계 초과 상태가 색상 외에 수치 텍스트를 표시한다. AC-4: 컴포넌트 전수를 그레이스케일로 렌더한 스냅샷에서 상태 구분이 유지된다. |
+| 수용 기준 | AC-1: `StatusBadge`와 `SeverityTag`가 아이콘과 텍스트를 함께 렌더한다. AC-2: 폼 오류 상태가 색상 외에 오류 메시지 텍스트와 `aria-invalid`를 갖는다. AC-3: `Meter`의 임계 초과 상태가 색상 외에 수치 텍스트를 표시한다. AC-4: 컴포넌트 전수를 그레이스케일로 렌더한 스냅샷에서 상태 구분이 유지된다. AC-5 (CR-071): 강제 색 모드에서 배경·그림자로만 그리던 상태가 시스템 색으로 남는다. `Switch`·`Checkbox` 켬, `RadioGroup` 선택, `ToggleGroup` 켬, `Pagination` 현재 쪽, 세그먼트형 `Tabs` 선택, 목록·메뉴의 강조 항목(`Select`·`Combobox`·`DropdownMenu`·`CommandPalette`), `DatePicker` 선택 날짜는 `Highlight` 채움과 `HighlightText` 글자로 그린다. `Meter` 채움은 `Highlight`, `Timeline` 현재 단계와 `NavList` 현재 항목은 `Highlight` 레일, 선택된 `DataTable`·관계 표 행은 `Highlight` 안쪽 외곽선으로 그린다. |
 | 검증 방법 | test |
 | 관련 화면 | W-040, W-050 |
 | 관련 API/데이터 | API-CMP-004, API-CMP-008 / — |
@@ -849,7 +849,7 @@ FR-QA-004(시각 회귀)와 FR-CMP-009(셸 컴포넌트군)는 2026-07-10에 OD-
 | 우선순위 | Should |
 | 출처 | F-QA-004 / M-1 |
 | 요구사항 | 시스템은 공개 컴포넌트 전부를 두 테마로 렌더해 기준 이미지와 비교하고, 열린 상태가 따로 있는 오버레이는 열린 상태도 비교하며, 픽셀 차이 1%를 초과하면 실패하여야 한다(CR-068로 12개에서 확대). |
-| 수용 기준 | AC-1 (CR-068 정정): 비교 대상이 `component-meta.json`의 공개 컴포넌트 전부 × 테마 2종이다(2026-10-23 기준 67 × 2 = 134). 기준 이미지가 없는 새 공개 컴포넌트는 실패한다. AC-2: 픽셀 차이 1% 초과 시 CI가 실패하고 차이 이미지를 아티팩트로 남긴다. AC-3: 기준 이미지 갱신이 명시적 커맨드(`pnpm test:visual --update`)로만 가능하다. AC-4: 렌더 환경(브라우저 버전, 폰트)이 컨테이너 이미지로 고정된다. AC-5 (CR-068): 미리보기가 여는 층(Dialog·AlertDialog·Drawer·Tooltip·DropdownMenu·Popover·Select·Combobox·DatePicker·CommandPalette·Toast, 11개)은 사람이 여는 방식으로 연 뒤 그 층 자체를 두 테마로 비교한다(22장). 날짜에 따라 바뀌는 화면이 없도록 시계를 고정한다. |
+| 수용 기준 | AC-1 (CR-068 정정): 비교 대상이 `component-meta.json`의 공개 컴포넌트 전부 × 테마 2종이다(2026-10-23 기준 67 × 2 = 134). 기준 이미지가 없는 새 공개 컴포넌트는 실패한다. AC-2: 픽셀 차이 1% 초과 시 CI가 실패하고 차이 이미지를 아티팩트로 남긴다. AC-3: 기준 이미지 갱신이 명시적 커맨드(`pnpm test:visual --update`)로만 가능하다. AC-4: 렌더 환경(브라우저 버전, 폰트)이 컨테이너 이미지로 고정된다. AC-5 (CR-068): 미리보기가 여는 층(Dialog·AlertDialog·Drawer·Tooltip·DropdownMenu·Popover·Select·Combobox·DatePicker·CommandPalette·Toast, 11개)은 사람이 여는 방식으로 연 뒤 그 층 자체를 두 테마로 비교한다(22장). 날짜에 따라 바뀌는 화면이 없도록 시계를 고정한다. AC-6 (CR-071): 강제 색 모드에서 상태를 그리는 9개 컴포넌트(`Switch`·`Checkbox`·`RadioGroup`·`ToggleGroup`·`Pagination`·`Tabs`·`Timeline`·`NavList`·`Meter`)를 다크 스킴 한 번으로 비교한다(9장). 강제 색은 팔레트 전체를 시스템 색으로 바꾸므로 테마별로 따로 찍지 않는다. |
 | 검증 방법 | test |
 | 관련 화면 | 없음(간접 노출: W-050) |
 | 관련 API/데이터 | — / JOB-CI-003 |
@@ -907,6 +907,7 @@ FR-QA-004(시각 회귀)와 FR-CMP-009(셸 컴포넌트군)는 2026-07-10에 OD-
 | 대형 텍스트 및 비텍스트 대비율 | 3:1 이상 | `pnpm check:contrast` | 포커스 링·경계 포함 |
 | axe-core serious 이상 위반 | 0건 | `pnpm test:a11y` | 컴포넌트 전수 × 테마 2종 |
 | 키보드 도달 가능한 대화형 요소 비율 | 100% | 컴포넌트별 키보드 경로 테스트 | FR-A11Y-002 |
+| 강제 색 모드에서 포커스·상태 표시가 사라지는 컴포넌트 | 0건 | `apps/docs/e2e/forced-colors.spec.ts` (Chromium 강제 색 에뮬레이션) | FR-A11Y-001 AC-5, FR-A11Y-003 AC-5 (CR-071) |
 
 ### NFR-004 운영성
 
@@ -1229,3 +1230,16 @@ v1.20 baseline 이력을 유지한다. 사용자가 2026-10-23 LCP 예산 측정
 | --- | --- |
 | NFR-001 | 문서 사이트 LCP 측정 방법 정정: 로컬 프로덕션 빌드를 배포 대상과 같은 gzip 전송(요청이 gzip을 허용할 때 텍스트 자원을 gzip으로)으로 서빙해 잰다. 예산·스로틀·실행 횟수·백분위는 그대로다. 배포 잡은 배포된 스타일시트가 gzip으로 오는지 확인하고, 아니면 실패한다. p75가 예산의 90%를 넘으면 통과여도 경고하고, 자원별 전송 바이트를 함께 남긴다. |
 
+## 32. CR-071 강제 색 모드 보강 (baseline)
+
+v1.21 baseline 이력을 유지한다. 사용자가 2026-10-23 디자인 시스템 품질 재평가의 권고 1(강제 색 모드)을 CR로 진행하라고 지시했다("1번 CR로 진행해").
+
+재평가에서 Chromium의 강제 색 에뮬레이션으로 공개 컴포넌트 67개와 열린 상태를 찍었다. 강제 색 모드는 배경과 `box-shadow`를 모두 지운다. 그런데 Conductor는 포커스 링과 대부분의 선택 표시를 바로 그 둘로 그렸다. 결과는 둘이었다. ① 모든 포커스 규칙이 `outline: none`과 그림자 링이라, 키보드 포커스가 Button·Switch·Checkbox·Radio·ToggleGroup·Pagination·Collapsible·메뉴 항목 등에서 보이지 않았다(WCAG 2.4.7). ② Switch 손잡이, Radio 선택 점, Meter 채움, ToggleGroup·Pagination·Timeline의 선택·현재 표시, Select·Combobox·DropdownMenu·CommandPalette의 키보드 강조 항목이 사라졌다. 강제 색 규칙은 Tabs 한 곳뿐이었다. §4의 "고대비 테마" 제외는 세 번째 팔레트를 두지 않는다는 뜻이고, 운영체제 강제 색 모드에서 정보가 사라지는 것까지 허용하는 뜻은 아니다. 제외 문구를 그렇게 명확히 하고, 기존 FR에 AC를 더한다. 새 FR은 없다.
+
+| FR | 변경 |
+| --- | --- |
+| FR-CSS-002 | AC-3 정정: `:focus-visible`은 `outline`을 지우지 않고 `border.width.emphasis` 두께의 투명 외곽선으로 둔다. 평소 화면은 바뀌지 않는다(시각 회귀 기존 159장 그대로). |
+| FR-A11Y-001 | AC-5 추가: 강제 색 모드에서 모든 공개 컴포넌트의 포커스 가능한 요소가 보이는 외곽선을 갖는다. 시스템 색으로 채운 선택 항목은 `forced-color-adjust: none`이라 외곽선이 저절로 다시 그려지지 않으므로, 포커스 시 `CanvasText` 외곽선을 채움에서 떨어뜨려 그린다. |
+| FR-A11Y-003 | AC-5 추가: 강제 색 모드의 상태 표시(위 AC 본문의 목록). 채우는 항목은 `forced-color-adjust: none`으로 강제 색의 `Canvas` 글자 배경판을 끄고, 자손 글자까지 `HighlightText`로 둔다. 배경판을 끄지 않으면 채움 위 글자가 검은 상자로 덮인다(실측). |
+| FR-CMP-013 | AC-6 정정: 강제 색 모드에서 세그먼트형 선택 탭은 `Highlight` 외곽선이 아니라 `Highlight` 채움과 `HighlightText` 글자로 그린다. 외곽선은 포커스 표시에 남긴다. 밑줄형 표시선은 그대로 `Highlight`다. |
+| FR-QA-004 | AC-6 추가: 강제 색 기준 이미지 9장. 기준 이미지는 168장이 된다(정지 134 + 열린 상태 22 + 회색조 3 + 강제 색 9). |

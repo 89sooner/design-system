@@ -16,7 +16,7 @@
   /* Conversation — the scrolling log; the "latest" button floats over its bottom edge. */
   .cdt-conversation { position: relative; display: flex; flex-direction: column; min-block-size: 0; }
   .cdt-conversation__viewport { display: flex; flex: 1 1 auto; flex-direction: column; gap: var(--cdt-space-4); min-block-size: 0; padding: var(--cdt-space-4); overflow-y: auto; border-radius: var(--cdt-radius-md); overscroll-behavior: contain; }
-  .cdt-conversation__viewport:focus-visible { outline: none; box-shadow: var(--cdt-focus-ring); }
+  .cdt-conversation__viewport:focus-visible { outline: var(--cdt-border-width-emphasis) solid transparent; box-shadow: var(--cdt-focus-ring); }
   .cdt-conversation__latest { position: absolute; inset-block-end: var(--cdt-space-3); inset-inline-start: 50%; box-shadow: var(--cdt-elevation-raised); transform: translateX(-50%); }
 
   /* Message — the person's turns sit on the accent tint at the end; the agent's read as plain text. */
@@ -40,7 +40,7 @@
   .cdt-prompt-input__textarea { inline-size: 100%; min-block-size: var(--cdt-input-min-height); padding: var(--cdt-input-padding-block) var(--cdt-input-padding-inline); border: var(--cdt-border-width-hairline) solid var(--cdt-input-border); border-radius: var(--cdt-radius-md); background: var(--cdt-input-background); color: var(--cdt-input-text); font: inherit; line-height: var(--cdt-font-line-height-md); resize: none; transition: border-color var(--cdt-motion-fast), background var(--cdt-motion-fast); }
   .cdt-prompt-input__textarea::placeholder { color: var(--cdt-input-placeholder); opacity: 1; }
   .cdt-prompt-input__textarea:hover:not(:disabled) { border-color: var(--cdt-input-border-hover); }
-  .cdt-prompt-input__textarea:focus-visible { border-color: var(--cdt-input-border-focus); outline: none; background: var(--cdt-input-background-focus); box-shadow: var(--cdt-focus-ring); transition: none; }
+  .cdt-prompt-input__textarea:focus-visible { border-color: var(--cdt-input-border-focus); outline: var(--cdt-border-width-emphasis) solid transparent; background: var(--cdt-input-background-focus); box-shadow: var(--cdt-focus-ring); transition: none; }
   .cdt-prompt-input--disabled .cdt-prompt-input__textarea { background: var(--cdt-state-disabled); color: var(--cdt-text-muted); cursor: not-allowed; }
   .cdt-prompt-input__footer { display: flex; align-items: center; justify-content: space-between; gap: var(--cdt-space-2); }
   .cdt-prompt-input__toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--cdt-space-1); min-inline-size: 0; }
@@ -49,7 +49,7 @@
   .cdt-reasoning, .cdt-sources { min-inline-size: 0; max-inline-size: 100%; }
   .cdt-reasoning__trigger, .cdt-tool__trigger, .cdt-sources__trigger { display: inline-flex; align-items: center; gap: var(--cdt-space-2); min-block-size: var(--cdt-button-min-height); padding: var(--cdt-space-1) var(--cdt-space-2); border: 0; border-radius: var(--cdt-radius-sm); background: transparent; color: var(--cdt-text-secondary); font: inherit; font-size: var(--cdt-font-size-sm); cursor: pointer; transition: background var(--cdt-motion-fast), color var(--cdt-motion-fast); }
   .cdt-reasoning__trigger:hover, .cdt-tool__trigger:hover, .cdt-sources__trigger:hover { background: var(--cdt-state-hover); color: var(--cdt-text-primary); }
-  .cdt-reasoning__trigger:focus-visible, .cdt-tool__trigger:focus-visible, .cdt-sources__trigger:focus-visible { outline: none; box-shadow: var(--cdt-focus-ring); transition: none; }
+  .cdt-reasoning__trigger:focus-visible, .cdt-tool__trigger:focus-visible, .cdt-sources__trigger:focus-visible { outline: var(--cdt-border-width-emphasis) solid transparent; box-shadow: var(--cdt-focus-ring); transition: none; }
   .cdt-reasoning__chevron, .cdt-tool__chevron, .cdt-sources__chevron { display: inline-block; font-size: var(--cdt-font-size-xs); transition: transform var(--cdt-motion-fast); }
   .cdt-reasoning__trigger[data-state="open"] .cdt-reasoning__chevron, .cdt-tool__trigger[data-state="open"] .cdt-tool__chevron, .cdt-sources__trigger[data-state="open"] .cdt-sources__chevron { transform: rotate(180deg); }
   /* Radix keeps closed content mounted with `hidden`; a `display` below must not bring it back (CR-062). */
@@ -85,7 +85,7 @@
   /* InlineCitation — a small numbered marker that reads as part of the sentence. */
   .cdt-inline-citation { display: inline-grid; place-items: center; min-inline-size: var(--cdt-space-5); block-size: var(--cdt-space-5); margin-inline: var(--cdt-space-1); padding: 0 var(--cdt-space-1); border: var(--cdt-border-width-hairline) solid var(--cdt-border-default); border-radius: var(--cdt-radius-pill); background: var(--cdt-surface-tint-1); color: var(--cdt-text-secondary); font: inherit; font-size: var(--cdt-font-size-2xs); font-variant-numeric: tabular-nums; line-height: 1; vertical-align: text-top; cursor: pointer; }
   .cdt-inline-citation:hover { border-color: var(--cdt-accent); color: var(--cdt-text-primary); }
-  .cdt-inline-citation:focus-visible { outline: none; box-shadow: var(--cdt-focus-ring); }
+  .cdt-inline-citation:focus-visible { outline: var(--cdt-border-width-emphasis) solid transparent; box-shadow: var(--cdt-focus-ring); }
   .cdt-inline-citation__card { display: grid; gap: var(--cdt-space-1); max-inline-size: min(90vw, calc(var(--cdt-space-8) * 7)); }
   .cdt-inline-citation__title { color: var(--cdt-text-primary); font-weight: 600; }
   .cdt-inline-citation__description { margin: 0; color: var(--cdt-text-secondary); font-size: var(--cdt-font-size-sm); }
@@ -95,6 +95,11 @@
   .cdt-suggestions { display: flex; flex-wrap: wrap; gap: var(--cdt-space-2); }
   .cdt-suggestion { min-block-size: var(--cdt-button-min-height); padding: var(--cdt-space-1) var(--cdt-space-3); border: var(--cdt-border-width-hairline) solid var(--cdt-border-default); border-radius: var(--cdt-radius-pill); background: var(--cdt-surface-raised); color: var(--cdt-text-primary); font: inherit; font-size: var(--cdt-font-size-sm); cursor: pointer; transition: background var(--cdt-motion-fast), border-color var(--cdt-motion-fast); }
   .cdt-suggestion:hover:not(:disabled) { border-color: var(--cdt-accent); background: var(--cdt-accent-soft); }
-  .cdt-suggestion:focus-visible { outline: none; box-shadow: var(--cdt-focus-ring); transition: none; }
+  .cdt-suggestion:focus-visible { outline: var(--cdt-border-width-emphasis) solid transparent; box-shadow: var(--cdt-focus-ring); transition: none; }
   .cdt-suggestion:disabled { color: var(--cdt-button-disabled-text); cursor: not-allowed; }
+
+  /* CR-071: forced colours drop the caret's fill; it keeps the text colour so streaming stays visible. */
+  @media (forced-colors: active) {
+    .cdt-message__caret { background: CanvasText; }
+  }
 }

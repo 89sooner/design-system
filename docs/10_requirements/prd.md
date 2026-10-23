@@ -1,6 +1,6 @@
 # Conductor Design System PRD
 
-> 상태: review | 버전: v0.15 | 갱신일: 2026-10-23
+> 상태: review | 버전: v0.16 | 갱신일: 2026-10-23
 
 ## 1. 문서 개요
 
@@ -81,7 +81,7 @@ Conductor Design System(이하 Conductor)은 `agent-ai-platform`의 `packages/we
 | Tailwind preset | ADR-002가 Vanilla CSS + 커스텀 프로퍼티를 확정했다. preset은 소비자를 Tailwind에 결속한다 |
 | 자체 아이콘 세트 | `lucide-react`를 peer dependency로 둔다. 아이콘 디자인은 v1 목표가 아니다 |
 | 범용 차트/그래프 편집 | CR-041의 읽기 전용 관계 탐색(FR-CMP-011)만 포함한다 |
-| 고대비 테마 | 팔레트 3벌 유지 비용을 회피한다. 다크/라이트 2종으로 확정 |
+| 고대비 테마 | 팔레트 3벌 유지 비용을 회피한다. 다크/라이트 2종으로 확정. 운영체제 강제 색 모드 대응은 제외가 아니다(CR-071) |
 | 다국어 문자열 시스템 | 컴포넌트는 문자열을 props로 받는다. 번역은 소비자 책임이다 |
 | 런타임 테마 편집기 | 문서 사이트의 테마 토글까지만 포함한다 |
 | agent-ai-platform 도메인 컴포넌트 이식 | 두 번째 제품이 같은 패턴을 요구하기 전까지는 재사용 근거가 없다 |
@@ -152,7 +152,7 @@ Conductor Design System(이하 Conductor)은 `agent-ai-platform`의 `packages/we
 | FR-THM-003 | 속성 우선·시스템 설정 후순위로 테마를 결정한다 | Must | F-THM-003 |
 | FR-THM-004 | 테마별 대비율을 빌드 시 검증한다 | Must | F-THM-004 |
 | FR-CSS-001 | 캐스케이드 레이어 5단을 선언하고 `!important`를 쓰지 않는다. reset 없는 진입점은 소비자 reset을 `cdt` 아래 레이어에 두는 법을 안내한다(CR-069) | Must | F-CSS-001 |
-| FR-CSS-002 | 리셋/베이스 레이어를 제공한다 | Must | F-CSS-002 |
+| FR-CSS-002 | 리셋/베이스 레이어를 제공한다. 포커스 규칙은 외곽선을 지우지 않고 투명하게 둔다(CR-071) | Must | F-CSS-002 |
 | FR-CSS-003 | 레이아웃 프리미티브 클래스를 제공한다 | Must | F-CSS-003 |
 | FR-CSS-004 | 컴포넌트 클래스를 `cdt-` 접두사로 제공한다 | Must | F-CSS-004 |
 | FR-CSS-005 | 모션 감소 설정을 존중한다 | Must | F-CSS-005 |
@@ -178,9 +178,9 @@ Conductor Design System(이하 Conductor)은 `agent-ai-platform`의 `packages/we
 | FR-DOC-008 | DESIGN.md·llms.txt·컴포넌트 Markdown을 같은 출처에서 생성한다 (CR-048) | Should | F-DOC-008 |
 | FR-DOC-009 | 빈 상태·필터 테이블·설정 폼 블록 예제를 공개 컴포넌트만으로 제공한다 (CR-051) | Should | F-DOC-009 |
 | FR-DOC-010 | accent·반경·밀도를 바꿔 미리 보고 대비를 즉시 다시 재며 CSS 재정의를 복사한다 (CR-052) | Should | F-DOC-010 |
-| FR-A11Y-001 | 모든 대화형 요소에 동일 포커스 링을 적용한다 | Must | F-A11Y-001 |
+| FR-A11Y-001 | 모든 대화형 요소에 동일 포커스 링을 적용한다. 강제 색 모드에서도 포커스가 보인다(CR-071) | Must | F-A11Y-001 |
 | FR-A11Y-002 | 키보드만으로 모든 대화형 요소에 도달한다 | Must | F-A11Y-002 |
-| FR-A11Y-003 | 색 외에 아이콘과 텍스트로 상태를 전달한다 | Must | F-A11Y-003 |
+| FR-A11Y-003 | 색 외에 아이콘과 텍스트로 상태를 전달한다. 강제 색 모드에서 선택·강조·현재 상태를 시스템 색으로 다시 그린다(CR-071) | Must | F-A11Y-003 |
 | FR-A11Y-004 | WCAG 2.1 AA 대비율을 두 테마에서 만족한다 | Must | F-A11Y-004 |
 | FR-A11Y-005 | 스크린리더에 role/name/state를 노출한다 | Must | F-A11Y-005 |
 | FR-DX-001 | 모노레포를 의존 순서대로 빌드한다 | Must | F-DX-001 |
@@ -191,7 +191,7 @@ Conductor Design System(이하 Conductor)은 `agent-ai-platform`의 `packages/we
 | FR-QA-001 | 테마 간 토큰 키 대칭을 검사한다 | Must | F-QA-001 |
 | FR-QA-002 | 컴포넌트 단위 테스트가 AC를 인용한다 | Must | F-QA-002 |
 | FR-QA-003 | axe-core 위반 0건을 CI에서 강제한다 | Must | F-QA-003 |
-| FR-QA-004 | 시각 회귀 차이를 CI에서 보고한다. 공개 컴포넌트 전부 × 두 테마와 오버레이 열린 상태를 비교한다(CR-068) | Should | F-QA-004 |
+| FR-QA-004 | 시각 회귀 차이를 CI에서 보고한다. 공개 컴포넌트 전부 × 두 테마와 오버레이 열린 상태를 비교한다(CR-068). 상태 컴포넌트 9개는 강제 색 모드로도 비교한다(CR-071) | Should | F-QA-004 |
 
 ## 8. 비기능 요구사항 요약
 

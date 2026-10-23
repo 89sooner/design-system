@@ -42,4 +42,11 @@
     .cdt-workbench__inspector, .cdt-workbench[data-inspecting] .cdt-workbench__inspector, .cdt-app-shell .cdt-workbench[data-inspecting] .cdt-workbench__inspector { position: static; max-block-size: none; overflow: visible; border-inline-start: none; border-block-start: var(--cdt-border-width-hairline) solid var(--cdt-border-default); }
     .cdt-workbench__resize { display: none; }
   }
+
+  /* CR-071: forced colours drop these fills; the highlighted option fills as in components.css and a selected row takes an inset outline. */
+  @media (forced-colors: active) {
+    .cdt-combobox__options [data-highlighted] { forced-color-adjust: none; border-color: Highlight; background: Highlight; color: HighlightText; }
+    .cdt-combobox__options [data-highlighted] * { border-color: HighlightText; background-color: transparent; color: HighlightText; }
+    .cdt-data-table [data-selected] { outline: var(--cdt-border-width-emphasis) solid Highlight; outline-offset: calc(var(--cdt-border-width-emphasis) * -1); }
+  }
 }
