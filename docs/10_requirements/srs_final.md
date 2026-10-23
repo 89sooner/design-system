@@ -907,7 +907,7 @@ FR-QA-004(시각 회귀)와 FR-CMP-009(셸 컴포넌트군)는 2026-07-10에 OD-
 | 대형 텍스트 및 비텍스트 대비율 | 3:1 이상 | `pnpm check:contrast` | 포커스 링·경계 포함 |
 | axe-core serious 이상 위반 | 0건 | `pnpm test:a11y` | 컴포넌트 전수 × 테마 2종 |
 | 키보드 도달 가능한 대화형 요소 비율 | 100% | 컴포넌트별 키보드 경로 테스트 | FR-A11Y-002 |
-| 강제 색 모드에서 포커스·상태 표시가 사라지는 컴포넌트 | 0건 | `apps/docs/e2e/forced-colors.spec.ts` (Chromium 강제 색 에뮬레이션) | FR-A11Y-001 AC-5, FR-A11Y-003 AC-5 (CR-071) |
+| 강제 색 모드에서 포커스·상태 표시가 사라지는 컴포넌트 | 0건 | `apps/docs/e2e/forced-colors.spec.ts` (Chromium 강제 색 에뮬레이션, 로컬 문서 E2E — CI는 `bundle.test.ts`와 강제 색 기준 이미지가 막는다, DEV-063) | FR-A11Y-001 AC-5, FR-A11Y-003 AC-5 (CR-071) |
 
 ### NFR-004 운영성
 
