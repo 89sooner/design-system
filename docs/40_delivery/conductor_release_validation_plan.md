@@ -1,6 +1,6 @@
 # Conductor Design System 릴리스 검증 계획
 
-> 상태: review | 버전: v0.9 | 갱신일: 2026-10-09
+> 상태: review | 버전: v0.10 | 갱신일: 2026-10-23
 
 ## 1. 목적과 범위
 
@@ -18,7 +18,7 @@ Conductor Design System은 `@conductor-by-89soone/tokens`, `@conductor-by-89soon
 | e2e (문서 사이트 Playwright) | FR-DOC-001~007, FR-THM-003 | `pnpm test:e2e` | 문서 사이트가 `@conductor-by-89soone/react`·`@conductor-by-89soone/css`를 소비자로 설치해 사용한다(소스 상대경로 import 0건). Foundations 5개 화면 값이 `tokens.json`에서 생성되고 하드코딩 토큰 값이 0건이다. 공개 컴포넌트 중 카탈로그 화면이 없는 항목이 0건이다. 테마 토글 후 새로고침해도 선택이 유지된다 | PR, main | Coding Agent |
 | 접근성 (axe-core, 수동 키보드) | FR-A11Y-001~005, FR-QA-003, JOB-CI-002 | `pnpm test:a11y` + 수동 키보드 점검(Tab 순서, Escape 이탈 경로, 포커스 복귀) | axe-core serious 이상 위반 0건(공개 컴포넌트 전수 × 테마 2종). 포커스 링이 두 테마 모두에서 배경 대비 3:1 이상이다. 키보드로 도달 가능한 대화형 요소 비율 100% | PR, main | Accessibility Reviewer |
 | 성능 (번들 크기, Lighthouse CI) | NFR-001, FR-DX-003 AC-3, JOB-CI-004 | `pnpm size` + Lighthouse CI | `Button` 단독 import gzip 4KB 이하(React 제외). `@conductor-by-89soone/css` 전체 gzip 20KB 이하. 문서 사이트 LCP p75 2.5초 이하(로컬 프로덕션 빌드, Fast 3G 스로틀). 테마 전환 후 재페인트 완료 100ms 이하 | PR(번들 크기), release(Lighthouse) | System Maintainer |
-| 시각 회귀 | FR-QA-004, JOB-CI-003 | `pnpm test:visual` (`--update`는 기준 이미지 갱신 전용 명령으로만 허용) | 기준 컴포넌트 12개 × 테마 2종 = 24개 스냅샷을 비교하고 픽셀 차이 1% 초과 시 실패, 차이 이미지를 아티팩트로 남긴다 | PR (OD-002가 v1 포함을 확정한 경우에만 실행) | QA |
+| 시각 회귀 | FR-QA-004, JOB-CI-003 | `pnpm test:visual` (`--update`는 기준 이미지 갱신 전용 명령으로만 허용) | 공개 컴포넌트 전부 × 테마 2종과 오버레이 열린 상태 11개 × 2를 비교하고(CR-068) 픽셀 차이 1% 초과 시 실패, 차이 이미지를 아티팩트로 남긴다 | PR (REL-004 이후 매 PR) | QA |
 | 보안 (pnpm audit, 시크릿 스캔) | NFR-002 | `pnpm audit --audit-level high` + 시크릿 스캐너 CI 잡 | 의존성 취약점 severity high 이상 0건. 산출물에 포함된 비밀값 0건. npm 배포 인증이 OIDC 기반이며 장기 토큰을 사용하지 않는다 | 시크릿 스캔: PR. audit·OIDC 검사: release | System Maintainer |
 | 호환성 (React 18·19, Node 20·22 매트릭스) | NFR-005 | CI 매트릭스 실행 (React 18/19 × Node 20/22) | 매트릭스 전 조합에서 `pnpm test`와 `pnpm build`가 통과한다 | main | Coding Agent |
 | 운영 (릴리스 리허설, 롤백 리허설) | NFR-004, JOB-REL-001 | §4 롤아웃 절차 리허설 + §5 롤백 절차 리허설 | 릴리스 리허설이 실행 순서대로 완주한다. 롤백 리허설이 10분 이내에 완료된다. 순환 패키지 의존 0건. 파괴 변경 릴리스의 마이그레이션 노트 동반률 100% | release | System Maintainer |

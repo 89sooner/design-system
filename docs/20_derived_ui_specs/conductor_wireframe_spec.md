@@ -1,6 +1,6 @@
 # Conductor Design System 와이어프레임 사양서
 
-> 상태: review | 버전: v0.10 | 갱신일: 2026-10-13
+> 상태: review | 버전: v0.11 | 갱신일: 2026-10-23
 
 ## 1. 문서 위치와 책임
 
@@ -264,6 +264,7 @@ C-010 Card(대화형, `href` 지정), C-011 CardGrid, C-012 Panel, C-020 Badge, 
 | 공개 진입점 | `exports`에 선언된 경로, `sideEffects` 선언, 부분 진입점 `./component.css` | FR-DX-003 AC-2, AC-3, AC-4 |
 | 캐스케이드 레이어 순서 | `@layer cdt.reset, cdt.base, cdt.layout, cdt.component, cdt.utility` 한 줄과 소비자 오버라이드 규칙 | FR-CSS-001 AC-1, AC-3, AC-4 |
 | Radix 인라인 스타일 예외 | `--radix-*` 속성은 레이어 대상이 아니다 | FR-CSS-001 예외/실패 처리 |
+| 소비자 reset 레이어 (CR-069) | 06단계 안: `component.css`를 쓰는 소비자의 import 순서 코드, `@layer app.reset, cdt;`와 `@layer app.reset { … }` 코드, 레이어 밖 전역 요소 규칙이 Conductor 규칙을 덮는다는 경고 배너. 단계 수와 `h2`는 바뀌지 않는다 | FR-CSS-001 AC-5 |
 | 서버 렌더링 | `<head>` 인라인 테마 결정 스니펫과 삽입 위치 | FR-THM-003 예외/실패 처리, FR-DX-004 예외/실패 처리 |
 | 빌드 순서 | `tokens → css → react → docs` 단방향 | FR-DX-001 |
 

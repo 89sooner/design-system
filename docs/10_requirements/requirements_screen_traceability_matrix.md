@@ -1,6 +1,6 @@
 # 요구사항-화면 추적 매트릭스
 
-> 상태: review | 버전: v0.14 | 갱신일: 2026-10-22
+> 상태: review | 버전: v0.15 | 갱신일: 2026-10-23
 
 ## 1. 목적
 
@@ -73,7 +73,7 @@ UI가 없는 요구사항은 아래 표면 중 하나에 간접 노출된다.
 | FR-THM-003 | Must | W-001, W-030 | SFC-PKG | FLOW-002 | 테마 결정 우선순위 |
 | FR-THM-004 | Must | W-030, W-050 | SFC-CLI, SFC-CI | FLOW-003 | 대비 검사 |
 | FR-THM-005 | Must | W-030, W-050 | SFC-CLI, SFC-PKG | FLOW-003 | 소스 계승 토큰 교정 (OD-001 종결); placeholder 역할 토큰과 CP-122·CP-123 (CR-064) |
-| FR-CSS-001 | Must | W-002 | SFC-PKG | — | 캐스케이드 레이어 |
+| FR-CSS-001 | Must | W-002 | SFC-PKG | — | 캐스케이드 레이어; 소비자 reset 레이어 안내 (CR-069, AC-5) |
 | FR-CSS-002 | Must | — | SFC-PKG, 전 화면 | — | 리셋/베이스 |
 | FR-CSS-003 | Must | W-012 | SFC-PKG | — | 레이아웃 프리미티브 |
 | FR-CSS-004 | Must | W-020, W-021 | SFC-PKG | — | 컴포넌트 클래스 |
@@ -110,7 +110,7 @@ UI가 없는 요구사항은 아래 표면 중 하나에 간접 노출된다.
 | FR-QA-001 | Must | — | SFC-CLI, SFC-CI, W-030 | FLOW-003 | 토큰 계약 |
 | FR-QA-002 | Must | — | SFC-CI, W-050 | FLOW-003 | 단위 검사 |
 | FR-QA-003 | Must | W-050 | SFC-CI | FLOW-003 | 접근성 검사 |
-| FR-QA-004 | Should | — | SFC-CI | FLOW-003 | 시각 회귀 (OD-002 종결: `deferred`, REL-004 이월) |
+| FR-QA-004 | Should | — | SFC-CI | FLOW-003 | 시각 회귀 (OD-002로 REL-004 이월 뒤 구현; CR-068로 `approved`, 공개 컴포넌트 전부 × 두 테마 + 오버레이 열린 상태 11개) |
 
 ## 5.1 비기능 요구사항 → 표면 매트릭스
 

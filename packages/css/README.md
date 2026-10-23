@@ -34,6 +34,29 @@ The stylesheet declares this fixed order:
 @layer cdt.reset, cdt.base, cdt.layout, cdt.component, cdt.utility;
 ```
 
+### Keep your reset below Conductor
+
+Unlayered rules outrank every layer. That is what makes your own class overrides easy, and it is also
+why an unlayered element reset such as `button { font: inherit; }` silently replaces the weight, size
+and line height of every Conductor button, tab and input. Put element-wide rules in a layer that you
+declare before `cdt`, in a file imported before the Conductor stylesheet:
+
+```css
+/* layers.css — import this before @conductor-by-89soone/css/component.css */
+@layer app.reset, cdt;
+```
+
+```css
+/* your global stylesheet */
+@layer app.reset {
+  button, input, textarea, select { font: inherit; }
+}
+```
+
+Layer order is fixed by the first declaration the browser sees, so `app.reset` now sits under every
+`cdt.*` layer: your own elements still inherit the font, and Conductor elements keep theirs. Keep
+unlayered rules for your own class names.
+
 No JavaScript runtime is included.
 
 ## Requirements

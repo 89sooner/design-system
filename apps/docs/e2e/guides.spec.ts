@@ -1,4 +1,4 @@
-// Refs: WP-022 FR-DOC-006 FR-DOC-007 FR-A11Y-003 FR-QA-003
+// Refs: WP-022 CR-069 FR-CSS-001 FR-DOC-006 FR-DOC-007 FR-A11Y-003 FR-QA-003
 import { expect, test } from "@playwright/test";
 import { docsPath } from "./routes";
 
@@ -13,6 +13,10 @@ test("SCN-001 / QA-015 through QA-018: Getting Started documents the complete co
   await expect(page.getByText("development builds warn once in the console", { exact: false })).toBeVisible();
   await expect(page.getByText("Components avoid browser globals during server rendering", { exact: false })).toBeVisible();
   await expect(page.getByText('@layer cdt.reset, cdt.base, cdt.layout, cdt.component, cdt.utility;', { exact: true })).toBeVisible();
+  // CR-069: a consumer that brings its own reset is told where to put it.
+  const layersStep = page.getByRole("heading", { name: "Cascade layers" }).locator("..");
+  await expect(layersStep.locator(".cdt-code-block").filter({ hasText: "@layer app.reset, cdt;" })).toBeVisible();
+  await expect(layersStep.getByText("outranks every Conductor layer", { exact: false })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Render a component" }).locator("..").locator(".cdt-code-block")).toContainText('return <Button variant="primary">Save changes</Button>');
 });
 

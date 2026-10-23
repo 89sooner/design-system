@@ -1,4 +1,4 @@
-// Refs: CR-042 WP-019 FR-CSS-001 FR-DX-001 FR-DX-003 FR-DX-004 W-002
+// Refs: CR-042 CR-069 WP-019 FR-CSS-001 FR-DX-001 FR-DX-003 FR-DX-004 W-002
 //
 // W-002 as a numbered path: eight steps on one rail, each with its own copyable code block.
 // The `h2` texts and their order are asserted by `e2e/guides.spec.ts`, so the step number lives
@@ -17,6 +17,8 @@ const agentStyleCode = 'import "@conductor-by-89soone/css/agent.css"; // only wi
 const themeCode = '<html data-cdt-theme="dark">';
 const renderCode = 'import { Button } from "@conductor-by-89soone/react";\n\nexport function SaveAction() {\n  return <Button variant="primary">Save changes</Button>;\n}';
 const layersCode = "@layer cdt.reset, cdt.base, cdt.layout, cdt.component, cdt.utility;";
+const componentEntryCode = 'import "./layers.css"; // first: fixes the layer order\nimport "@conductor-by-89soone/css/component.css"; // no cdt.reset\nimport "./app.css";';
+const consumerLayersCode = "/* layers.css */\n@layer app.reset, cdt;\n\n/* app.css */\n@layer app.reset {\n  button, input, textarea, select { font: inherit; }\n}";
 const ssrThemeCode = 'try {\n  const saved = localStorage.getItem("conductor-theme");\n  document.documentElement.dataset.cdtTheme = saved === "light" || saved === "dark" ? saved : matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";\n} catch {\n  document.documentElement.dataset.cdtTheme = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";\n}';
 
 const requirements = [
@@ -116,6 +118,10 @@ export function GettingStarted() {
           <p className="docs-step-item__note">The generated stylesheet fixes this declaration as its first line. Your own unlayered rules always win, so overrides never need specificity tricks.</p>
           <DocsCode language="css" code={layersCode} />
           <Banner tone="info"><span>Radix CSS custom properties such as <code>--radix-*</code> are inline runtime values, not Conductor layer rules.</span></Banner>
+          <p className="docs-step-item__note">Bringing your own global reset? Import <code>component.css</code>, which leaves out <code>cdt.reset</code>, and keep your element rules in a layer declared before <code>cdt</code>. The first declaration fixes the order, so that layer sits under every Conductor layer.</p>
+          <DocsCode language="ts" code={componentEntryCode} />
+          <DocsCode language="css" code={consumerLayersCode} />
+          <Banner tone="warning"><span>An unlayered element rule such as <code>button {"{ font: inherit; }"}</code> outranks every Conductor layer and silently replaces the weight and size of Conductor buttons, tabs and inputs. Keep unlayered rules for your own class names.</span></Banner>
         </Step>
 
         <Step id="ssr" number="07" title="SSR first paint">

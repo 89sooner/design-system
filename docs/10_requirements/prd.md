@@ -1,6 +1,6 @@
 # Conductor Design System PRD
 
-> 상태: review | 버전: v0.13 | 갱신일: 2026-10-22
+> 상태: review | 버전: v0.14 | 갱신일: 2026-10-23
 
 ## 1. 문서 개요
 
@@ -151,7 +151,7 @@ Conductor Design System(이하 Conductor)은 `agent-ai-platform`의 `packages/we
 | FR-THM-002 | 라이트 테마를 동일 키 집합으로 정의한다. 라이트 경계는 다크와 같은 무게 사다리를 지키고, 표 머리글·배지 채움은 테마 명도 방향을 따른다 (CR-065) | Must | F-THM-002 |
 | FR-THM-003 | 속성 우선·시스템 설정 후순위로 테마를 결정한다 | Must | F-THM-003 |
 | FR-THM-004 | 테마별 대비율을 빌드 시 검증한다 | Must | F-THM-004 |
-| FR-CSS-001 | 캐스케이드 레이어 5단을 선언하고 `!important`를 쓰지 않는다 | Must | F-CSS-001 |
+| FR-CSS-001 | 캐스케이드 레이어 5단을 선언하고 `!important`를 쓰지 않는다. reset 없는 진입점은 소비자 reset을 `cdt` 아래 레이어에 두는 법을 안내한다(CR-069) | Must | F-CSS-001 |
 | FR-CSS-002 | 리셋/베이스 레이어를 제공한다 | Must | F-CSS-002 |
 | FR-CSS-003 | 레이아웃 프리미티브 클래스를 제공한다 | Must | F-CSS-003 |
 | FR-CSS-004 | 컴포넌트 클래스를 `cdt-` 접두사로 제공한다 | Must | F-CSS-004 |
@@ -191,7 +191,7 @@ Conductor Design System(이하 Conductor)은 `agent-ai-platform`의 `packages/we
 | FR-QA-001 | 테마 간 토큰 키 대칭을 검사한다 | Must | F-QA-001 |
 | FR-QA-002 | 컴포넌트 단위 테스트가 AC를 인용한다 | Must | F-QA-002 |
 | FR-QA-003 | axe-core 위반 0건을 CI에서 강제한다 | Must | F-QA-003 |
-| FR-QA-004 | 시각 회귀 차이를 CI에서 보고한다 | Should | F-QA-004 |
+| FR-QA-004 | 시각 회귀 차이를 CI에서 보고한다. 공개 컴포넌트 전부 × 두 테마와 오버레이 열린 상태를 비교한다(CR-068) | Should | F-QA-004 |
 
 ## 8. 비기능 요구사항 요약
 

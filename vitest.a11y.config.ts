@@ -13,7 +13,7 @@ export default defineConfig({
   },
   test: {
     root: fromRoot("./packages/react"),
-    include: ["src/testing/a11y.browser.test.tsx", "src/testing/hydration.browser.test.tsx", "src/testing/component-css.browser.test.tsx"],
+    include: ["src/testing/a11y.browser.test.tsx", "src/testing/hydration.browser.test.tsx", "src/testing/component-css.browser.test.tsx", "src/testing/consumer-layers.browser.test.tsx"],
     fileParallelism: false,
     testTimeout: 30_000,
     hookTimeout: 30_000,

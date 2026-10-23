@@ -1,6 +1,6 @@
 # Conductor Design System 최종 요구사항 정의서
 
-> 상태: baseline | 버전: v1.19 | 갱신일: 2026-10-22
+> 상태: baseline | 버전: v1.20 | 갱신일: 2026-10-23
 
 ## 1. 문서 개요
 
@@ -36,12 +36,12 @@ Conductor는 `agent-ai-platform/packages/web`의 시각 언어를 3개 npm 패�
 
 1. 3계층 디자인 토큰 소스와 CSS/TypeScript/JSON 산출 빌드 — FR-TOK-001 ~ FR-TOK-009
 2. 다크(기준) 및 라이트 테마, 시스템 설정 연동, 테마별 대비 검증, 소스 계승 토큰의 접근성 교정 — FR-THM-001 ~ FR-THM-005
-3. 캐스케이드 레이어 기반 프레임워크 비종속 스타일시트 — FR-CSS-001 ~ FR-CSS-005
+3. 캐스케이드 레이어 기반 프레임워크 비종속 스타일시트 — FR-CSS-001 ~ FR-CSS-005 (CR-069 보강 FR-CSS-001 AC-5, §30)
 4. React 프리미티브 컴포넌트 — 기존 FR-CMP-001 ~ FR-CMP-009 및 CR-041 확장 FR-CMP-010 ~ FR-CMP-013 (§17, review)
 5. 정적 문서 사이트 — FR-DOC-001 ~ FR-DOC-007 및 CR-048 확장 FR-DOC-008 (§18), CR-051 확장 FR-DOC-009 (§19), CR-052 확장 FR-DOC-010 (§20), CR-053 보강 FR-DOC-001 AC-5·FR-CMP-013 AC-5 (§21), CR-054 확장 FR-CMP-014 (§22), CR-060 확장 FR-CMP-015 (§24), CR-061 확장 FR-CMP-016 (§25), CR-063 보강 FR-CMP-015 AC-7 (§26), CR-064 보강 FR-THM-005 AC-8·FR-CMP-004 AC-7·FR-CMP-010 AC-6 (§27), CR-065 정정·보강 FR-THM-002 AC-3·AC-5·FR-CMP-013 AC-6 (§28), CR-067 정정 FR-CMP-013 AC-6 (§29)
 6. WCAG 2.1 AA 접근성 기준선 — FR-A11Y-001 ~ FR-A11Y-005
 7. 모노레포 빌드, 타입 배포, 진입점 선언, SSR 안전성, 버저닝 — FR-DX-001 ~ FR-DX-005
-8. 토큰 계약·단위·접근성·시각 회귀 검사 — FR-QA-001 ~ FR-QA-004
+8. 토큰 계약·단위·접근성·시각 회귀 검사 — FR-QA-001 ~ FR-QA-004 (CR-068 정정·확대 FR-QA-004, §30)
 
 ### 4.2 Conditional Scope
 
@@ -49,7 +49,7 @@ Conductor는 `agent-ai-platform/packages/web`의 시각 언어를 3개 npm 패�
 | --- | --- | --- | --- |
 | 없음 | F-CMP-010 조건은 CR-041 사용자 요청으로 해소, FR-CMP-010으로 추적 | 2026-09-13 | OD-003 (resolved scope) |
 
-FR-QA-004(시각 회귀)와 FR-CMP-009(셸 컴포넌트군)는 2026-07-10에 OD-002·OD-004가 종결되어 조건부 범위에서 빠졌다. FR-QA-004는 REL-004로 이월된 `deferred` 항목이고, FR-CMP-009는 `@conductor-by-89soone/react`에 포함되는 승인 항목이다. 14.1절 참조.
+FR-QA-004(시각 회귀)와 FR-CMP-009(셸 컴포넌트군)는 2026-07-10에 OD-002·OD-004가 종결되어 조건부 범위에서 빠졌다. FR-QA-004는 REL-004로 이월된 `deferred` 항목이었고 WP-026에서 구현된 뒤 CR-068(§30)이 상태를 `approved`로 정정했다. FR-CMP-009는 `@conductor-by-89soone/react`에 포함되는 승인 항목이다. 14.1절 참조.
 
 ### 4.3 Out of Scope
 
@@ -363,7 +363,7 @@ FR-QA-004(시각 회귀)와 FR-CMP-009(셸 컴포넌트군)는 2026-07-10에 OD-
 | 우선순위 | Must |
 | 출처 | F-CSS-001 / R-4 |
 | 요구사항 | 시스템은 항상 자체 스타일 전부를 `@layer cdt.reset, cdt.base, cdt.layout, cdt.component, cdt.utility` 안에 선언하고 `!important`를 사용하지 않아야 한다. |
-| 수용 기준 | AC-1: `@conductor-by-89soone/css` 산출물의 모든 규칙이 위 5개 레이어 중 하나에 속한다. AC-2: 산출물의 `!important` 출현 횟수가 0건이다. AC-3: 레이어 밖에서 선언된 소비자 규칙이 동일 명시도에서 Conductor 규칙을 덮어쓴다. AC-4: 레이어 선언 순서가 산출물 최상단 한 줄에 고정된다. |
+| 수용 기준 | AC-1: `@conductor-by-89soone/css` 산출물의 모든 규칙이 위 5개 레이어 중 하나에 속한다. AC-2: 산출물의 `!important` 출현 횟수가 0건이다. AC-3: 레이어 밖에서 선언된 소비자 규칙이 동일 명시도에서 Conductor 규칙을 덮어쓴다. AC-4: 레이어 선언 순서가 산출물 최상단 한 줄에 고정된다. AC-5 (CR-069, §30): reset 없는 진입점(`component.css`)의 안내(W-002, `packages/css/README.md`)가 레이어 밖 전역 요소 규칙이 Conductor 컴포넌트 규칙을 덮는다는 점과, 소비자 reset을 `cdt`보다 먼저 선언한 레이어(`@layer app.reset, cdt;`)에 두는 방법을 보여 준다. 그 레이어의 reset은 Conductor 컴포넌트의 글자 굵기·크기를 바꾸지 않는다. |
 | 검증 방법 | test |
 | 관련 화면 | 없음(간접 노출: W-002 설치 안내) |
 | 관련 API/데이터 | API-PKG-002 / — |
@@ -845,11 +845,11 @@ FR-QA-004(시각 회귀)와 FR-CMP-009(셸 컴포넌트군)는 2026-07-10에 OD-
 
 | 항목 | 내용 |
 | --- | --- |
-| 상태 | deferred (OD-002, 2026-07-10 종결: REL-004로 이월. v1 릴리스 게이트에 포함하지 않는다) |
+| 상태 | approved (CR-068, §30. OD-002가 2026-07-10 REL-004로 이월했고 WP-026이 구현했다. PR CI의 `visual regression` 잡으로 실행된다) |
 | 우선순위 | Should |
 | 출처 | F-QA-004 / M-1 |
-| 요구사항 | 시각 회귀 검사가 활성화된 경우, 시스템은 기준 컴포넌트 12개를 두 테마로 렌더해 기준 이미지와 비교하고 픽셀 차이 1%를 초과하면 실패하여야 한다. |
-| 수용 기준 | AC-1: 비교 대상이 컴포넌트 12개 × 테마 2종 = 24개 스냅샷이다. AC-2: 픽셀 차이 1% 초과 시 CI가 실패하고 차이 이미지를 아티팩트로 남긴다. AC-3: 기준 이미지 갱신이 명시적 커맨드(`pnpm test:visual --update`)로만 가능하다. AC-4: 렌더 환경(브라우저 버전, 폰트)이 컨테이너 이미지로 고정된다. |
+| 요구사항 | 시스템은 공개 컴포넌트 전부를 두 테마로 렌더해 기준 이미지와 비교하고, 열린 상태가 따로 있는 오버레이는 열린 상태도 비교하며, 픽셀 차이 1%를 초과하면 실패하여야 한다(CR-068로 12개에서 확대). |
+| 수용 기준 | AC-1 (CR-068 정정): 비교 대상이 `component-meta.json`의 공개 컴포넌트 전부 × 테마 2종이다(2026-10-23 기준 67 × 2 = 134). 기준 이미지가 없는 새 공개 컴포넌트는 실패한다. AC-2: 픽셀 차이 1% 초과 시 CI가 실패하고 차이 이미지를 아티팩트로 남긴다. AC-3: 기준 이미지 갱신이 명시적 커맨드(`pnpm test:visual --update`)로만 가능하다. AC-4: 렌더 환경(브라우저 버전, 폰트)이 컨테이너 이미지로 고정된다. AC-5 (CR-068): 미리보기가 여는 층(Dialog·AlertDialog·Drawer·Tooltip·DropdownMenu·Popover·Select·Combobox·DatePicker·CommandPalette·Toast, 11개)은 사람이 여는 방식으로 연 뒤 그 층 자체를 두 테마로 비교한다(22장). 날짜에 따라 바뀌는 화면이 없도록 시계를 고정한다. |
 | 검증 방법 | test |
 | 관련 화면 | 없음(간접 노출: W-050) |
 | 관련 API/데이터 | — / JOB-CI-003 |
@@ -962,8 +962,8 @@ OD-001(2026-07-10 종결)이 확정한 정책이다. 소스 팔레트를 실측�
 ## 13. 우선순위와 릴리스 전략
 
 - **Must**: FR-TOK-001 ~ FR-TOK-007, FR-THM-001 ~ FR-THM-005, FR-CSS-001 ~ FR-CSS-005, FR-CMP-001 ~ FR-CMP-008, FR-DOC-001 ~ FR-DOC-005, FR-A11Y-001 ~ FR-A11Y-005, FR-DX-001 ~ FR-DX-004, FR-QA-001 ~ FR-QA-003
-- **Should**: FR-TOK-008, FR-TOK-009, FR-CMP-009, FR-DOC-006, FR-DOC-007, FR-DOC-008, FR-DOC-009, FR-DOC-010, FR-CMP-014, FR-CMP-015, FR-CMP-016, FR-DX-005
-- **Deferred (REL-004)**: FR-QA-004 — OD-002에 따라 v1 릴리스 게이트에서 제외
+- **Should**: FR-QA-004 (CR-068, §30), FR-TOK-008, FR-TOK-009, FR-CMP-009, FR-DOC-006, FR-DOC-007, FR-DOC-008, FR-DOC-009, FR-DOC-010, FR-CMP-014, FR-CMP-015, FR-CMP-016, FR-DX-005
+- **Deferred**: 없음. FR-QA-004는 OD-002에 따라 REL-004로 이월된 뒤 구현됐고 CR-068로 Should에 돌아왔다
 - **Could**: 없음
 - **Won't (이번 범위)**: 4.3 Out of Scope 표 전체
 
@@ -1205,3 +1205,16 @@ v1.18 baseline 이력을 유지한다. CR-065 뒤에도 사용자가 2026-10-22 
 | FR | 변경 |
 | --- | --- |
 | FR-CMP-013 | AC-6 정정: `Tabs.List`는 `variant?: "segmented" \| "line"`(기본 `segmented`)을 받는다. `segmented`는 `surface.base` 트랙 안에서 선택 탭을 `surface.elevated` 알약(장식 경계 1px 고리)으로 그리며, 목록 아래 구분선과 표시선이 없다. 두 테마 모두 알약이 트랙보다 밝다. 글자 굵기는 선택 여부와 무관하게 같아 선택이 이웃 탭을 밀지 않는다. `line`은 CR-065의 모양 — 목록 구분선(`border.default`) 위에 정확히 놓인 2px `accent` 표시선 — 을 유지한다. 포커스 링은 포커스된 선택 탭에서도 선택 표시보다 우선해 보인다. 강제 색 모드에서는 세그먼트형 선택을 `Highlight` 외곽선으로, 밑줄형 표시선을 `Highlight`로 다시 그린다. |
+
+## 30. CR-068 정정·확대, CR-069 보강 (baseline)
+
+v1.19 baseline 이력을 유지한다. 사용자가 2026-10-23 디자인 시스템 품질 평가의 두 권고를 CR로 진행하라고 지시했다("1번 2번 둘 다 CR로 보강해서 진행해").
+
+CR-068: 시각 회귀는 WP-026에서 구현돼 PR마다 실행됐지만, 비교 대상이 대표 컴포넌트 12개뿐이었다. 그 사이 공개 컴포넌트는 67개가 됐다. Tabs의 어색한 모양(CR-065·CR-067)은 시험이 아니라 사용자 눈으로 세 번 발견됐다. Tabs에는 개별 기준 이미지가 없었고, 회색조 전체 카탈로그 한 장이 다크 테마에서만 그 영역을 담았다. 비교 대상을 공개 컴포넌트 전부와 오버레이의 열린 상태로 넓히고, 이미 구현된 FR의 `deferred` 상태를 정정한다. 새 FR은 없다.
+
+CR-069: reset 없는 `component.css` 안내는 "자체 reset이 있으면 이 진입점을 쓰라"고만 했다. 첫 소비자 agent-ai-platform의 레이어 밖 `button, input, textarea, select { font: inherit; }`가 모든 `cdt.*` 레이어를 이겨 Conductor 버튼·탭·입력 29개의 굵기·크기를 지웠고, 이것을 몇 주 동안 아무도 알아채지 못했다(그 저장소의 DS-PILOT-21). AC-3이 보장하는 성질(레이어 밖 소비자 규칙이 이긴다)이 전역 요소 셀렉터에서는 함정이 된다는 점과, 이 앱이 쓴 해결책을 안내로 올린다. 새 FR은 없다.
+
+| FR | 변경 |
+| --- | --- |
+| FR-QA-004 | 상태 `deferred` → `approved`, 우선순위 Should(§13). 요구사항과 AC-1 정정: 대표 12개 대신 `component-meta.json`의 공개 컴포넌트 전부 × 두 테마. AC-5 추가: 오버레이 11개의 열린 상태 × 두 테마, 고정 시계. 회색조 3장(FR-A11Y-003 AC-4·FR-CMP-004 AC-5)은 그대로다. 기준 이미지는 2026-10-23 기준 159장이다(정지 134 + 열린 상태 22 + 회색조 3). |
+| FR-CSS-001 | AC-5 추가: `component.css` 안내가 레이어 밖 전역 요소 규칙의 위험과 `@layer app.reset, cdt;` 패턴을 보여 주고, 그 레이어의 reset이 Conductor 타이포그래피를 바꾸지 않음을 브라우저 시험이 확인한다. |

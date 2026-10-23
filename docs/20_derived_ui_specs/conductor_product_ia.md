@@ -1,6 +1,6 @@
 # Conductor Design System 제품 IA 문서
 
-> 상태: review | 버전: v0.9 | 갱신일: 2026-10-13
+> 상태: review | 버전: v0.10 | 갱신일: 2026-10-23
 
 ## 1. 문서 범위와 상위 문서
 
@@ -164,7 +164,7 @@ FR-CMP-009는 우선순위 Should이며 OD-004가 열려 있다. OD-004가 (b) �
 | 화면 ID | 화면명 | 경로 | 목적 | 우선순위 | 관련 요구사항 |
 | --- | --- | --- | --- | --- | --- |
 | W-001 | Overview | `/` | 세 패키지의 역할과 다음 단계를 제시하고, 셸과 테마 토글을 노출한다 | P0 | FR-THM-003, FR-CMP-009, FR-DOC-001, FR-DOC-005 |
-| W-002 | Getting Started | `/getting-started` | 설치·import·테마 속성·진입점·SSR 스니펫을 제시한다 | P0 | FR-CSS-001, FR-DX-001, FR-DX-003, FR-DX-004 |
+| W-002 | Getting Started | `/getting-started` | 설치·import·테마 속성·진입점·SSR 스니펫과 소비자 reset 레이어 안내(CR-069)를 제시한다 | P0 | FR-CSS-001, FR-DX-001, FR-DX-003, FR-DX-004 |
 | W-010 | Foundations · Color | `/foundations/color` | 시맨틱 색 토큰과 상태·심각도·미터 토큰을 계층과 함께 조회한다 | P1 | FR-TOK-002, FR-TOK-005, FR-THM-001, FR-THM-002, FR-DOC-002 |
 | W-011 | Foundations · Typography | `/foundations/typography` | 글자 크기 7단계와 행 높이 토큰을 조회한다 | P1 | FR-TOK-007, FR-DOC-002 |
 | W-012 | Foundations · Spacing & Layout | `/foundations/spacing` | 간격 토큰, 브레이크포인트 3단계, 레이아웃 프리미티브 클래스를 조회한다 | P1 | FR-TOK-009, FR-CSS-003, FR-DOC-002 |
