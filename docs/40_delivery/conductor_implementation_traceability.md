@@ -1,6 +1,6 @@
 # Conductor Design System 구현 추적 원장
 
-> 상태: review | 버전: v0.56 | 갱신일: 2026-10-23
+> 상태: review | 버전: v0.57 | 갱신일: 2026-10-23
 
 ## 1. 목적과 갱신 규칙
 
@@ -705,4 +705,13 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | 시험 | 브라우저 2건(레이어 안 reset은 Conductor 타이포그래피 유지, 레이어 밖 reset은 400·16px로 덮음), 문서 E2E 1건 보강 |
 | 검증 (로컬) | 게이트 12종 통과(단위 837/837, a11y·브라우저 359 통과·1 skip), 문서 E2E 69/69 |
 | 검증 (CI) | PR #82 head `f4fa1b5`: verify(node 20·22) 통과. CR-069 closed |
+
+### CR-070 LCP 측정을 배포와 같은 gzip 전송으로 (2026-10-23)
+
+| 범위 | 결과 |
+| --- | --- |
+| 스크립트·워크플로 | `scripts/static-server.mjs`(신규, gzip·`Vary`·SPA 폴백), `scripts/check-lighthouse.mjs`(이 서버 사용, 전송 바이트 출력, 90% 여유 경고, `CONDUCTOR_LH_COMPRESS=0`), `.github/workflows/deploy-docs.yml`(배포 스타일시트 gzip 확인) |
+| FR 매핑 | NFR-001(측정 방법) → 위 세 파일, 시험 `scripts/static-server.test.mjs`(CR-070 5건) |
+| 시험 | 스크립트 시험 5건, 배포 확인 셸 양·음성 실행, LCP 음성 픽스처 exit 1 |
+| 검증 (로컬) | gzip p75 1,805ms / 비압축 p75 2,663ms(같은 빌드) |
 

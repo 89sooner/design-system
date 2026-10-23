@@ -1,6 +1,6 @@
 # Conductor Design System PRD
 
-> 상태: review | 버전: v0.14 | 갱신일: 2026-10-23
+> 상태: review | 버전: v0.15 | 갱신일: 2026-10-23
 
 ## 1. 문서 개요
 
@@ -195,7 +195,7 @@ Conductor Design System(이하 Conductor)은 `agent-ai-platform`의 `packages/we
 
 ## 8. 비기능 요구사항 요약
 
-- **성능**: `Button` 단독 import gzip 4KB 이하(React 제외). 문서 사이트 첫 화면 LCP p75 2.5초 이하(로컬 프로덕션 빌드, Fast 3G 스로틀). `pnpm build` 전체 3분 이하.
+- **성능**: `Button` 단독 import gzip 4KB 이하(React 제외). 문서 사이트 첫 화면 LCP p75 2.5초 이하(로컬 프로덕션 빌드, Fast 3G 스로틀, 배포 대상과 같은 gzip 전송 — CR-070). `pnpm build` 전체 3분 이하.
 - **접근성**: WCAG 2.1 AA. 본문 대비 4.5:1, 대형 텍스트·비텍스트 3:1. axe-core serious 이상 위반 0건.
 - **보안**: 배포 산출물에 원격 폰트·원격 스크립트·네트워크 요청 0건. 의존성 취약점 high 이상 0건.
 - **호환성**: 최근 2개 메이저 버전의 Chrome/Firefox/Safari/Edge. React 18 및 19. Node 20 이상.

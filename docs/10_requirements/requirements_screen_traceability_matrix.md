@@ -1,6 +1,6 @@
 # 요구사항-화면 추적 매트릭스
 
-> 상태: review | 버전: v0.15 | 갱신일: 2026-10-23
+> 상태: review | 버전: v0.16 | 갱신일: 2026-10-23
 
 ## 1. 목적
 
@@ -118,7 +118,7 @@ NFR은 화면 하나에 귀속되지 않는다. 각 NFR이 어디서 측정되�
 
 | 요구사항 ID | 직접 노출 화면 | 간접 노출 표면 | 측정 지점 | 관련 잡 |
 | --- | --- | --- | --- | --- |
-| NFR-001 성능 | W-001 (LCP 측정 대상) | SFC-CI, SFC-PKG | 번들 크기 리포트, Lighthouse CI, 빌드 소요 시간 | JOB-CI-004, JOB-BUILD-001, JOB-BUILD-004 |
+| NFR-001 성능 | W-001 (LCP 측정 대상, CR-070: 배포와 같은 gzip 전송) | SFC-CI, SFC-PKG | 번들 크기 리포트, Lighthouse CI, 빌드 소요 시간 | JOB-CI-004, JOB-BUILD-001, JOB-BUILD-004 |
 | NFR-002 보안 | 없음 | SFC-CI, SFC-REL | `pnpm audit`, 시크릿 스캔, 배포 산출물 네트워크 요청 관찰 | JOB-REL-001 |
 | NFR-003 접근성 | W-050 | SFC-CI, SFC-CLI | 대비 리포트, axe 결과, 키보드 경로 테스트 | JOB-CI-001, JOB-CI-002 |
 | NFR-004 운영성 | 없음 | SFC-REL, SFC-CI | CI 소요 시간, 롤백 리허설, 공개 API 추출 리포트 | JOB-REL-001 |

@@ -1,18 +1,20 @@
 #!/usr/bin/env node
-// Refs: WP-028 FR-DOC-001 NFR-001 NFR-002 JOB-BUILD-004
+// Refs: WP-028 CR-070 FR-DOC-001 NFR-001 NFR-002 JOB-BUILD-004
 // 문서 사이트 정적 산출물(apps/docs/dist)을 서버 런타임 없이 서빙해
 //   1. 렌더가 동작하고(FR-DOC-001 AC-3)
 //   2. 외부 도메인 네트워크 요청이 0건이며(FR-DOC-001 AC-4, QA-209)
 //   3. Lighthouse LCP p75가 예산 이내(NFR-001, 기본 2.5초)
-// 임을 검증한다. CONDUCTOR_LH_FIXTURE=1이면 예산을 1ms로 좁혀 게이트가 실제로
+// 임을 검증한다. 정적 서버는 배포 대상처럼 텍스트 자원을 gzip으로 보낸다(CR-070,
+// `static-server.mjs`). CONDUCTOR_LH_COMPRESS=0이면 압축 없이 재서 비교할 수 있다. CONDUCTOR_LH_FIXTURE=1이면 예산을 1ms로 좁혀 게이트가 실제로
 // 실패하는지 실증한다.
 import { createServer } from "node:http";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { extname, join, normalize, resolve } from "node:path";
+import { existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { join, resolve } from "node:path";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import lighthouse from "lighthouse";
 import { chromium } from "playwright";
+import { createStaticServer } from "./static-server.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const DIST = resolve(ROOT, "apps/docs/dist");
@@ -21,39 +23,17 @@ const DIST = resolve(ROOT, "apps/docs/dist");
 const RUNS = 7;
 const LCP_BUDGET_MS = process.env.CONDUCTOR_LH_FIXTURE === "1" ? 1 : 2500;
 const CLS_BUDGET = 0.1;
+// p75가 예산의 90%를 넘으면 통과여도 경고한다. 예산 끝에 붙은 뒤에야 알게 되면
+// 무관한 PR이 러너 소음으로 빨개진다(CR-070).
+const LCP_HEADROOM_WARNING = 0.9;
+const COMPRESS = process.env.CONDUCTOR_LH_COMPRESS !== "0";
 
 if (!existsSync(join(DIST, "index.html"))) {
   console.error("error[LH-NO-DIST]: apps/docs/dist가 없다. 먼저 `pnpm --filter docs build`를 실행한다.");
   process.exit(1);
 }
 
-const MIME = {
-  ".html": "text/html; charset=utf-8",
-  ".js": "text/javascript",
-  ".css": "text/css",
-  ".json": "application/json",
-  ".svg": "image/svg+xml",
-  ".png": "image/png",
-  ".ico": "image/x-icon",
-  ".txt": "text/plain",
-  ".woff2": "font/woff2",
-};
-
-// 정적 파일 + SPA 폴백만 있는 서버. 서버 런타임 로직이 없음이 곧 FR-DOC-001 AC-3의
-// 검증 환경이다.
-const server = createServer((request, response) => {
-  const path = normalize(decodeURIComponent(new URL(request.url, "http://localhost").pathname)).replace(/^([/\\])+/, "");
-  const target = join(DIST, path);
-  const file = existsSync(target) && extname(target) !== "" ? target : join(DIST, "index.html");
-  try {
-    const body = readFileSync(file);
-    response.writeHead(200, { "content-type": MIME[extname(file)] ?? "application/octet-stream" });
-    response.end(body);
-  } catch {
-    response.writeHead(404);
-    response.end();
-  }
-});
+const server = createStaticServer(DIST, { compress: COMPRESS });
 
 await new Promise((ready) => server.listen(0, "127.0.0.1", ready));
 const origin = `http://127.0.0.1:${server.address().port}`;
@@ -139,18 +119,28 @@ try {
   const clsP75 = percentile75(clsValues);
   const performanceScore = Math.round((lastReport?.categories?.performance?.score ?? 0) * 100);
 
+  // 마지막 실행의 자원별 전송 바이트. LCP가 움직이면 어느 자원이 무거워졌는지 바로 보인다.
+  const transfer = {};
+  for (const item of lastReport?.audits?.["network-requests"]?.details?.items ?? []) {
+    transfer[item.resourceType] = (transfer[item.resourceType] ?? 0) + (item.transferSize ?? 0);
+  }
+  const transferText = Object.entries(transfer).map(([type, bytes]) => `${type} ${(bytes / 1024).toFixed(1)}KB`).join(", ");
   mkdirSync(resolve(ROOT, "test-results"), { recursive: true });
   writeFileSync(
     resolve(ROOT, "test-results/lighthouse.json"),
-    JSON.stringify({ lcpRunsMs: lcpValues, lcpP75Ms: p75, budgetMs: LCP_BUDGET_MS, clsRuns: clsValues, clsP75, clsBudget: CLS_BUDGET, performanceScore }, null, 2),
+    JSON.stringify({ compressed: COMPRESS, transferBytes: transfer, lcpRunsMs: lcpValues, lcpP75Ms: p75, budgetMs: LCP_BUDGET_MS, clsRuns: clsValues, clsP75, clsBudget: CLS_BUDGET, performanceScore }, null, 2),
   );
 
+  console.log(`[lighthouse] transfer (${COMPRESS ? "gzip" : "identity"}): ${transferText}`);
   console.log(`[lighthouse] LCP runs(ms): ${lcpValues.map((value) => Math.round(value)).join(", ")}`);
   if (p75 > LCP_BUDGET_MS) {
     console.error(`error[LH-LCP-BUDGET]: LCP p75 ${Math.round(p75)}ms > ${LCP_BUDGET_MS}ms (NFR-001)`);
     failed = true;
   } else {
     console.log(`[lighthouse] PASS LCP p75 ${Math.round(p75)}ms / ${LCP_BUDGET_MS}ms, performance ${performanceScore}`);
+    if (p75 > LCP_BUDGET_MS * LCP_HEADROOM_WARNING) {
+      console.log(`::warning::LCP p75 ${Math.round(p75)}ms is within ${Math.round(LCP_BUDGET_MS * (1 - LCP_HEADROOM_WARNING))}ms of the ${LCP_BUDGET_MS}ms budget (NFR-001). Look at the transfer line before it starts failing unrelated PRs.`);
+    }
   }
 
   // 랜딩 프리렌더는 브라우저가 셸을 먼저 칠하게 만든다. 이어서 클라이언트가 같은
