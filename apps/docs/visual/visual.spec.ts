@@ -31,6 +31,10 @@ const OPEN_STATES: Readonly<Record<string, (page: Page, preview: Locator) => Pro
     return page.getByRole("dialog", { name: "Drawer" });
   },
   Tooltip: async (page, preview) => {
+    // The glass tooltip opens over the preview's label bar, and backdrop blur of that text rasterises
+    // differently across GPU stacks (CI moved 38 pixels). Hide the bar so plain surface sits behind the glass;
+    // it holds no focus, so the tooltip stays open.
+    await page.addStyleTag({ content: ".docs-stage__bar { visibility: hidden; }" });
     await preview.getByRole("button", { name: "Tooltip trigger" }).focus();
     return page.locator(".cdt-tooltip");
   },
