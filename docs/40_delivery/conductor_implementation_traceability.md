@@ -1,6 +1,6 @@
 # Conductor Design System 구현 추적 원장
 
-> 상태: review | 버전: v0.55 | 갱신일: 2026-10-22
+> 상태: review | 버전: v0.56 | 갱신일: 2026-10-23
 
 ## 1. 목적과 갱신 규칙
 
@@ -214,7 +214,7 @@ PR Search 소비처의 `DEV-380`이 트리거다: 화면 계약이 최대 20계�
 | FR-THM-003 | `src/token-source.ts`, `src/build/emit-css.ts`, `apps/docs/src/theme.ts` | `src/build/emit-css.test.ts`, `apps/docs/e2e/shell.spec.ts` | WP-010, WP-018 | 검증됨 (CSS 명시 속성 우선·OS 폴백·무효값 다크, 문서 사이트 토글이 속성만 변경하고 컴포넌트를 재마운트하지 않음) |
 | FR-THM-004 | `src/contrast-pairs.ts`, `src/contrast-cli.ts` | `src/contrast-pairs.test.ts`, `src/contrast/check.test.ts` | WP-007, WP-010 | 검증됨 (AC-1~AC-4. 두 테마 232/232 통과(dataviz CP-043~CP-117 포함, CR-036), alpha 합성 포함. 금지 조합 FP-001·FP-002는 별칭 종점까지 해석해 `TOK-CP-FORBIDDEN`으로 차단하고 매 실행에 재측정한다 — CR-035. CR-064로 244/244(CP-122·CP-123 추가)) |
 | FR-THM-005 | `src/palette.dark.ts`, `src/contrast-pairs.ts`, `src/lint-cli.ts` | `src/palette.dark.test.ts`, `src/contrast-pairs.test.ts` | WP-002, WP-006, WP-007 | 검증됨 (AC-1 focusRing 3.93/3.56, AC-2 border.control 3.23, AC-3 lint 차단 + 금지쌍 FP-001 실증, AC-4~AC-7 usage 분류. CR-035 반영: `status.neutralEnd`=nonText `#94a3b8`, CP-042로 다크 6.61 · 라이트 8.58, CP-025는 영구 결번. CR-064: AC-8 `text.placeholder`(body, `text.muted`와 같은 값) → `input.placeholder`, CP-122 다크 5.22·라이트 6.81, CP-123 다크 6.06·라이트 6.99, 브라우저 시험이 TextField·TextArea·NumberInput·PromptInput의 계산된 placeholder 대비를 두 테마에서 확인) |
-| FR-CSS-001 | `packages/css/src/layers.css`, `src/reset.css`, `src/base.css`, `src/utility.css`, `packages/css/checks.mjs`, `build.mjs` | `packages/css/test/bundle.test.ts`, `test/checks.test.ts`, `packages/react/src/testing/a11y.browser.test.tsx` | WP-008, WP-024 | 검증됨 (AC-1~AC-4 + Radix 예외. 산출물 첫 줄이 5레이어 선언, `!important` 0건, 레이어 밖 규칙 0건. 음성 테스트로 `CSS-IMPORTANT`·`CSS-UNLAYERED`·`CSS-UNKNOWN-LAYER` 각각 exit 1 실증. AC-3은 Chromium에서 unlayered 소비자 규칙이 `cdt.component` Button 규칙을 덮는 계산값으로 확인) |
+| FR-CSS-001 | `packages/css/src/layers.css`, `src/reset.css`, `src/base.css`, `src/utility.css`, `packages/css/checks.mjs`, `build.mjs` | `packages/css/test/bundle.test.ts`, `test/checks.test.ts`, `packages/react/src/testing/a11y.browser.test.tsx` | WP-008, WP-024 | 검증됨 (AC-1~AC-4 + Radix 예외. 산출물 첫 줄이 5레이어 선언, `!important` 0건, 레이어 밖 규칙 0건. 음성 테스트로 `CSS-IMPORTANT`·`CSS-UNLAYERED`·`CSS-UNKNOWN-LAYER` 각각 exit 1 실증. AC-3은 Chromium에서 unlayered 소비자 규칙이 `cdt.component` Button 규칙을 덮는 계산값으로 확인) **CR-069**: AC-5 소비자 reset 레이어 안내 — `packages/css/README.md`, W-002, 시험 `consumer-layers.browser.test.tsx` |
 | FR-CSS-002 | `packages/css/src/reset.css`, `src/utility.css` | `packages/css/test/bundle.test.ts` | WP-008 | 검증됨 (AC-1~AC-5 + 예외 처리. `box-sizing: border-box`가 `*`·`::before`·`::after`에, `font: inherit`가 `button`·`input`·`textarea`·`select`에, `:focus-visible`이 `var(--cdt-focus-ring)` 그림자와 `outline: none`에 적용. 원격 폰트 참조 0건을 두 단계(리졸버·AST)에서 차단. `cdt-sr-only`·`cdt-skip-link`가 `cdt.utility`에 존재. 예외 처리인 `./component.css`(리셋 제외 산출물)를 실제로 산출) |
 | FR-CSS-003 | `packages/css/src/layout.css`, `packages/css/build.mjs` | `packages/css/test/bundle.test.ts` | WP-009 | 검증됨 (AC-1~AC-4. 5개 클래스가 `cdt.layout`에 존재, split 800px·card-grid 560px 반응형 단일 컬럼, 최소 열 토큰 값 320px의 `auto-fill`, 색상 속성 0건) |
 | FR-CSS-004 | `packages/css/src/components.css`, `packages/react/src/action.tsx`, `src/surface.tsx` | `packages/css/test/bundle.test.ts`, `packages/react/src/testing/action.test.tsx`, `surface.test.tsx`, `a11y.browser.test.tsx` | WP-012, WP-024 | 검증됨 (AC-1~AC-4. 접두사/BEM·구조 셀렉터 금지를 정적 검사하고, raw `cdt-btn cdt-btn--primary`와 React `Button variant="primary"`의 핵심 계산 스타일이 Chromium에서 일치) |
@@ -254,7 +254,7 @@ PR Search 소비처의 `DEV-380`이 트리거다: 화면 계약이 최대 20계�
 | FR-QA-001 | `src/theme-contract.ts`, `src/token-source.ts` | `src/theme-contract.test.ts` | WP-006, WP-010 | 검증됨 (AC-1~AC-3. 실제 dark/light semantic·component 키 대칭과 `themeSpecific` 예외를 검사. `derivePalette`가 base에 없는 override 키를 `TOK-THEME-KEY`로 막아, 키 집합 비교만으로는 보이지 않는 오타 경로를 닫는다 — CR-035) |
 | FR-QA-002 | `packages/react/src/testing/public-components.ts`, `src/testing/contract.tsx` | `src/testing/public-components.test.ts`, `src/testing/contract.test.tsx`, `src/testing/shell.test.tsx` | WP-011, WP-012~017, WP-023 | 검증됨 (AC-1 공개 30개 전수 테스트 파일·SSR registry, AC-2 FR/AC 명명, AC-3 공유 스위트와 컴포넌트군별 상호작용 테스트를 검증.) |
 | FR-QA-003 | `vitest.a11y.config.ts`, `packages/react/src/testing/a11y-scenarios.tsx`, `axe-allowlist.json`, `.github/workflows/ci.yml` | `packages/react/src/testing/a11y.browser.test.tsx` | WP-024 | 검증됨 (공개 30개를 덮는 49개 기본/disabled/error/interactive/open scenario × 다크·라이트 = 98 axe 실행, serious/critical 0건. 유한 진입 animation 완료 뒤 안정 상태를 감사하고 무한 Spinner는 대기만 제외한다. 정상 164 passed/1 negative fixture skipped를 4회 연속 확인. fixture 활성화 시 `button-name(critical)` 검출과 exit 1을 실증. JSON report와 실패 screenshot을 30일 보존) |
-| FR-QA-004 | `Dockerfile.visual`, `compose.visual.yml`, `scripts/test-visual.mjs`, `apps/docs/playwright.visual.config.ts`, `.github/workflows/ci.yml` | `apps/docs/visual/visual.spec.ts`, 기준 이미지 24장 | WP-026 | 검증됨 (REL-004 이월 구현. AC-1~AC-4: 12개×2테마, 1% 상한, 명시적 `--update`, Playwright 1.61.1 Noble digest 고정. 정상 3회 flake 0, 36% 음성 픽스처 exit 1과 diff 아티팩트 실증) **CR-034 기준 이미지 갱신 (2026-08-06)**: `h2`·`h3` 헤딩 스케일이 들어가면서 27장 중 16장이 1% 상한을 넘었다. 환경 요인을 배제하기 위해 같은 컨테이너에서 `main`(35f0d3b)을 먼저 돌려 27/27 통과를 확인했다. 16장의 diff는 전부 (a) 헤딩이 실제로 커진 것과 (b) 그 아래 내용이 세로로 밀리며 글리프·헤어라인이 재래스터화된 것이었고, 색·치수·형태 변화는 없었다. `pnpm test:visual --update`(FR-QA-004 AC-3)로 갱신한 뒤, 원래 통과하던 11장은 되돌렸다 — `--update-snapshots=all`이 그 11장까지 다시 쓰기 때문이다. **함께 발견된 사실**: Card-light 기준 이미지는 `surface.tint.1`이 존재하기 전(8e4d446)에 만들어졌고, 당시 `.cdt-card`의 `background` 단축 속성은 정의되지 않은 커스텀 프로퍼티 탓에 computed-value 시점에 무효가 되어 카드에 배경이 아예 없었다(옛 이미지의 좌상단·우하단이 모두 Panel 색 `(241,244,248)`). CR-031이 토큰을 추가해 고쳤지만 기준 이미지는 갱신되지 않았고, pixelmatch의 지각 허용치가 옅은 tint를 흡수해 게이트가 이를 잡지 못했다. 카드가 보이는 나머지 기준 이미지(Card-dark 등)도 같은 이유로 낡아 있으며, 통과 중이라 이번 커밋에서는 건드리지 않았다. |
+| FR-QA-004 | `Dockerfile.visual`, `compose.visual.yml`, `scripts/test-visual.mjs`, `apps/docs/playwright.visual.config.ts`, `.github/workflows/ci.yml` | `apps/docs/visual/visual.spec.ts`, 기준 이미지 159장(CR-068: 공개 컴포넌트 67 × 2 + 열린 상태 11 × 2 + 회색조 3) | WP-026, CR-068 | 검증됨 (**CR-068 (2026-10-23)**: 상태 `approved`, AC-1을 공개 컴포넌트 전부로 정정, AC-5 열린 상태 추가. REL-004 이월 구현. AC-1~AC-4: 12개×2테마, 1% 상한, 명시적 `--update`, Playwright 1.61.1 Noble digest 고정. 정상 3회 flake 0, 36% 음성 픽스처 exit 1과 diff 아티팩트 실증) **CR-034 기준 이미지 갱신 (2026-08-06)**: `h2`·`h3` 헤딩 스케일이 들어가면서 27장 중 16장이 1% 상한을 넘었다. 환경 요인을 배제하기 위해 같은 컨테이너에서 `main`(35f0d3b)을 먼저 돌려 27/27 통과를 확인했다. 16장의 diff는 전부 (a) 헤딩이 실제로 커진 것과 (b) 그 아래 내용이 세로로 밀리며 글리프·헤어라인이 재래스터화된 것이었고, 색·치수·형태 변화는 없었다. `pnpm test:visual --update`(FR-QA-004 AC-3)로 갱신한 뒤, 원래 통과하던 11장은 되돌렸다 — `--update-snapshots=all`이 그 11장까지 다시 쓰기 때문이다. **함께 발견된 사실**: Card-light 기준 이미지는 `surface.tint.1`이 존재하기 전(8e4d446)에 만들어졌고, 당시 `.cdt-card`의 `background` 단축 속성은 정의되지 않은 커스텀 프로퍼티 탓에 computed-value 시점에 무효가 되어 카드에 배경이 아예 없었다(옛 이미지의 좌상단·우하단이 모두 Panel 색 `(241,244,248)`). CR-031이 토큰을 추가해 고쳤지만 기준 이미지는 갱신되지 않았고, pixelmatch의 지각 허용치가 옅은 tint를 흡수해 게이트가 이를 잡지 못했다. 카드가 보이는 나머지 기준 이미지(Card-dark 등)도 같은 이유로 낡아 있으며, 통과 중이라 이번 커밋에서는 건드리지 않았다. |
 
 상태값: `미착수` / `부분` / `구현됨` / `검증됨`
 
@@ -683,4 +683,22 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | 시험 | 단위 1건, 번들 4건, 브라우저 2건. 수정 전 소스에서 새 시험 5건 실패 확인 |
 | 검증 (로컬) | 게이트 12종 통과(단위 837/837, a11y 357 통과·1 skip), 문서 E2E 69/69, 시각 회귀 27장(회색조 카탈로그 1장 갱신) |
 | 검증 (CI) | PR #80 head `46856ed`: verify(node 20·22), visual regression 통과. CR-067 closed |
+
+### CR-068 시각 회귀를 공개 컴포넌트 전부로 확대 (2026-10-23)
+
+| 범위 | 결과 |
+| --- | --- |
+| 시험 코드 | `apps/docs/visual/visual.spec.ts` — `component-meta.json`의 공개 컴포넌트 67개 × 두 테마(정지 상태), 오버레이 11개 × 두 테마(열린 상태), 회색조 3장, 고정 시계. `Dialog-*.png` → `Dialog-open-*.png` 이름 변경 |
+| FR 매핑 | FR-QA-004 AC-1(정정)·AC-5(추가) → `visual.spec.ts`, 기준 이미지 159장 |
+| 시험 | 열린 상태 목록 검사 1건. 음성 확인: Button 차이 픽스처 실패(ratio 0.11), Tabs 목록에 1px 아래 테두리를 더한 임시 빌드에서 Tabs 실패(ratio 0.03) |
+| 검증 (로컬) | DEV-045 조건에서 기준 이미지 132장을 만든 뒤 갱신 없이 160/160 두 번 연속 통과. 기존 27장은 바뀌지 않았다 |
+
+### CR-069 component.css 소비자 레이어 안내 (2026-10-23)
+
+| 범위 | 결과 |
+| --- | --- |
+| 패키지·문서 | `packages/css/README.md`("Keep your reset below Conductor"), W-002 06단계(`apps/docs/src/getting-started.tsx`) |
+| FR 매핑 | FR-CSS-001 AC-5 → README, `getting-started.tsx`, 시험 `packages/react/src/testing/consumer-layers.browser.test.tsx`(CR-069 2건), `apps/docs/e2e/guides.spec.ts`(SCN-001 보강) |
+| 시험 | 브라우저 2건(레이어 안 reset은 Conductor 타이포그래피 유지, 레이어 밖 reset은 400·16px로 덮음), 문서 E2E 1건 보강 |
+| 검증 (로컬) | 게이트 12종 통과(단위 837/837, a11y·브라우저 359 통과·1 skip), 문서 E2E 69/69 |
 

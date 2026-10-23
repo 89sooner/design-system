@@ -1,6 +1,6 @@
 # Conductor Design System 구현 로드맵
 
-> 상태: review | 버전: v0.3 | 갱신일: 2026-09-13
+> 상태: review | 버전: v0.4 | 갱신일: 2026-10-23
 
 ## 1. 목적
 
@@ -20,7 +20,7 @@
 | REL-001 | 토큰 기반과 빌드 파이프라인 | FR-TOK-001 ~ FR-TOK-009, FR-THM-001, FR-THM-004, FR-THM-005, FR-A11Y-004, FR-DX-001, FR-DX-002, FR-QA-001(다크 한정) | `@conductor-by-89soone/tokens` 패키지, `tokens.css`/`tokens.js`/`tokens.d.ts`/`tokens.json`, `buildTokens`·`checkContrast` CLI, `lint:tokens` | `pnpm build`가 토큰 산출물 4종을 생성한다. 다크 팔레트가 소스 `tokens.css`의 모든 키를 덮는다. 순환 참조·접두사 누락·역방향 참조가 빌드를 실패시킨다. `pnpm check:contrast`가 다크 테마 미달 0건을 보고한다. FR-THM-005의 교정 값(`focusRing` alpha 0.80, 신규 `border.control`)이 적용된다 |
 | REL-002 | 스타일 레이어, 라이트 테마, 컴포넌트 라이브러리 | FR-THM-002, FR-THM-003, FR-CSS-001 ~ FR-CSS-005, FR-CMP-001 ~ FR-CMP-008, FR-A11Y-001 ~ FR-A11Y-003, FR-A11Y-005, FR-DX-003, FR-DX-004, FR-QA-001, FR-QA-002 | `@conductor-by-89soone/css`, `@conductor-by-89soone/react`, 컴포넌트 C-001 ~ C-064 | 두 테마의 시맨틱 키 집합 차이 0개. React 없이 `cdt-*` 클래스만으로 동일 시각이 나온다. 공유 계약 테스트 스위트가 공개 컴포넌트 전수를 통과한다. `renderToString`이 전 컴포넌트에서 예외 0건 |
 | REL-003 | 문서 사이트와 접근성 검사 | FR-DOC-001 ~ FR-DOC-007, FR-CMP-009(조건부), FR-QA-003, FR-DX-003 AC-3 | `apps/docs` 정적 사이트, 화면 W-001 ~ W-050, `JOB-CI-002`, `JOB-CI-004` | 문서 사이트가 `@conductor-by-89soone/react`를 소비자로서 설치해 렌더한다(소스 상대경로 import 0건). 공개 컴포넌트 중 카탈로그에 없는 것이 0건. axe serious 이상 위반 0건(두 테마). `Button` 단독 gzip 4KB 이하 |
-| REL-004 | 릴리스 자동화와 시각 회귀 | FR-DX-005, FR-QA-004(조건부), JOB-BUILD-004, JOB-REL-001 | Changesets, npm OIDC 배포 워크플로, `JOB-CI-003`, 문서 사이트 배포 | 파괴 변경이 major를 올린다. 롤백 리허설이 10분 이내에 끝난다. 시각 회귀가 활성화된 경우 24개 스냅샷의 픽셀 차이 1% 이하 |
+| REL-004 | 릴리스 자동화와 시각 회귀 | FR-DX-005, FR-QA-004(조건부), JOB-BUILD-004, JOB-REL-001 | Changesets, npm OIDC 배포 워크플로, `JOB-CI-003`, 문서 사이트 배포 | 파괴 변경이 major를 올린다. 롤백 리허설이 10분 이내에 끝난다. 시각 회귀 스냅샷의 픽셀 차이 1% 이하(CR-068 이후 공개 컴포넌트 전부 × 2테마 + 오버레이 열린 상태) |
 
 ## 4. Slice Definition
 
