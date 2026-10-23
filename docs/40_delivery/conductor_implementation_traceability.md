@@ -694,6 +694,7 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | 검증 (로컬) | DEV-045 조건에서 기준 이미지 132장을 만든 뒤 갱신 없이 160/160 두 번 연속 통과. 기존 27장은 바뀌지 않았다 |
 | CI 1차 | 157/160. CopyButton 2장(미리보기 `<code>`가 UA `monospace`)과 Tooltip 열린 상태 다크 1장(라벨 글자 위 배경 흐림)이 환경 차이로 실패 → `.docs-preview code` 토큰 mono 스택, Tooltip 캡처 전 라벨 막대 숨김. 4장 재생성, 로컬 160/160 두 번 |
 | CI 2차 | 159/160. CopyButton 라이트 553픽셀: 컨테이너의 `monospace`가 WenQuanYi Zen Hei Mono(DejaVu Sans Mono 없음). 로컬 fontconfig에서 Inter와 DejaVu Sans Mono를 빼면 CI가 재현된다(551픽셀) → 그 조건에서 CopyButton 2장 재생성, 160/160 두 번. DEV-045 재현 조건 보강 |
+| 검증 (CI) | PR #82 head `f4fa1b5`: visual regression 160/160, verify(node 20·22) 통과(node 20은 LCP 예산 변동으로 한 번 재실행). CR-068 closed |
 
 ### CR-069 component.css 소비자 레이어 안내 (2026-10-23)
 
@@ -703,4 +704,5 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | FR 매핑 | FR-CSS-001 AC-5 → README, `getting-started.tsx`, 시험 `packages/react/src/testing/consumer-layers.browser.test.tsx`(CR-069 2건), `apps/docs/e2e/guides.spec.ts`(SCN-001 보강) |
 | 시험 | 브라우저 2건(레이어 안 reset은 Conductor 타이포그래피 유지, 레이어 밖 reset은 400·16px로 덮음), 문서 E2E 1건 보강 |
 | 검증 (로컬) | 게이트 12종 통과(단위 837/837, a11y·브라우저 359 통과·1 skip), 문서 E2E 69/69 |
+| 검증 (CI) | PR #82 head `f4fa1b5`: verify(node 20·22) 통과. CR-069 closed |
 
