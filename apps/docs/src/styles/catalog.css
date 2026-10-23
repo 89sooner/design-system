@@ -115,6 +115,8 @@
   background: var(--cdt-surface-timeline);
 }
 .docs-component-tile__stage > .docs-preview { margin-top: 0; min-width: 0; }
+/* CR-068: inline code in a preview uses the token mono stack, never the UA `monospace` default, whose face and 13px size follow the host font configuration. Lives here, not in base.css, so the landing stylesheet does not grow. */
+.docs-preview code { color: var(--cdt-text-mono-payload); font-family: var(--cdt-font-mono); font-size: var(--cdt-font-size-sm); }
 /* AppShell previews are viewport-tall (sticky 100vh nav); the tile shows a fading thumbnail instead. */
 .docs-component-tile__stage--clipped { max-height: calc(var(--cdt-space-8) * 5); overflow: hidden; mask-image: linear-gradient(to bottom, currentcolor 70%, transparent); }
 
