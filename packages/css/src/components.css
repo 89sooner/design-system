@@ -8,10 +8,12 @@
    * scroll regions, code blocks, timeline steps and the summaries and links the package renders
    * (DEV-057). `:where()` keeps it at the reset's zero specificity, so any later component rule
    * that sets box-shadow still wins, exactly as it did over the reset; the shadow-bearing
-   * controls restate the full ring below.
+   * controls restate the full ring below. Every focus rule keeps a transparent outline rather than
+   * `outline: none`: it paints nothing until forced colours, which drop the shadow and draw the
+   * outline in the system colour (CR-071).
    */
   :where([class*="cdt-"], [class*="cdt-"] *):focus-visible {
-    outline: none;
+    outline: var(--cdt-border-width-emphasis) solid transparent;
     box-shadow: var(--cdt-focus-ring);
   }
 
@@ -1430,4 +1432,39 @@
     }
   }
 
+  /*
+   * Forced colours (Windows high contrast) drop every background and box-shadow, and with them the
+   * states those painted: a checked switch, the highlighted menu or list option, the current step,
+   * the active nav item, a meter's fill. Each is redrawn in system colours (CR-071).
+   *
+   * A selected or highlighted item fills with `Highlight`. It opts out of forcing
+   * (`forced-color-adjust: none`), because forced colours would paint a `Canvas` backplate behind
+   * its text; its descendants then take `HighlightText` explicitly. Opting out also stops the
+   * transparent focus outline from being redrawn, so a focused filled item gets a `CanvasText`
+   * outline offset from the fill. A current item inside richer content takes a `Highlight` rail
+   * instead and keeps forced text colours.
+   */
+  @media (forced-colors: active) {
+    .cdt-switch[data-state="checked"],
+    .cdt-checkbox[data-state="checked"],
+    .cdt-checkbox[data-state="indeterminate"] { forced-color-adjust: none; border-color: Highlight; background: Highlight; color: HighlightText; }
+    .cdt-switch__thumb { background: CanvasText; }
+    .cdt-switch[data-state="checked"] .cdt-switch__thumb { background: HighlightText; }
+
+    .cdt-menu__item[data-highlighted],
+    .cdt-select__item[data-highlighted] { forced-color-adjust: none; border-color: Highlight; background: Highlight; color: HighlightText; }
+    .cdt-menu__item[data-highlighted] *,
+    .cdt-select__item[data-highlighted] * { border-color: HighlightText; background-color: transparent; color: HighlightText; }
+
+    .cdt-switch[data-state="checked"]:focus-visible,
+    .cdt-checkbox[data-state="checked"]:focus-visible,
+    .cdt-checkbox[data-state="indeterminate"]:focus-visible { outline-color: CanvasText; outline-offset: var(--cdt-border-width-emphasis); }
+
+    .cdt-timeline__step[aria-current="step"] { border-inline-start: var(--cdt-border-width-rail) solid Highlight; }
+    .cdt-nav-list__item--active::before { background: Highlight; }
+
+    .cdt-meter__fill,
+    .cdt-meter--warning .cdt-meter__fill,
+    .cdt-meter--exceeded .cdt-meter__fill { background: Highlight; }
+  }
 }

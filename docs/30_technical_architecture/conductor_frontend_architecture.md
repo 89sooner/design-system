@@ -1,6 +1,6 @@
 # Conductor Design System 프론트엔드 아키텍처
 
-> 상태: review | 버전: v0.7 | 갱신일: 2026-10-23
+> 상태: review | 버전: v0.8 | 갱신일: 2026-10-23
 
 ## 1. 목적과 두 개의 프론트엔드
 
@@ -170,7 +170,8 @@ Radix가 소유하는 DOM에는 구조 셀렉터를 쓰지 않고 `data-state`, 
 | 공통 계약 | 공유 스위트가 공개 export 전수 순회 | ref, className, 속성 통과, 타입 확장 | FR-CMP-001 AC-5 |
 | SSR | Node 환경 `renderToString` | 예외 0건, hydration 경고 0건 | FR-DX-004 AC-1, AC-3 |
 | 접근성 | Vitest 브라우저 모드(Playwright chromium) + axe-core 4.x | 컴포넌트 × 상태 × 테마 2종 | FR-QA-003, JOB-CI-002 |
-| 시각 회귀 | Playwright 1.61.1 스냅샷, 고정 컨테이너 이미지 | 공개 컴포넌트 전부 × 테마 2종 + 오버레이 열린 상태 11개 × 2 (CR-068) | FR-QA-004, JOB-CI-003 |
+| 시각 회귀 | Playwright 1.61.1 스냅샷, 고정 컨테이너 이미지 | 공개 컴포넌트 전부 × 테마 2종 + 오버레이 열린 상태 11개 × 2 (CR-068) + 상태 컴포넌트 9개 강제 색 (CR-071) | FR-QA-004, JOB-CI-003 |
+| 강제 색 모드 | Playwright `emulateMedia({ forcedColors: "active" })`, 계산값 판정 (`apps/docs/e2e/forced-colors.spec.ts`) | 공개 컴포넌트 전부의 포커스 외곽선 + 상태 표시 15건 (CR-071, 로컬 문서 E2E — CI 미실행, DEV-063) | FR-A11Y-001 AC-5, FR-A11Y-003 AC-5 |
 | 토큰 계약 | Vitest | 두 테마 semantic 키 대칭 | FR-QA-001 |
 | 타입 | `tsc --noEmit` + api-extractor 7.x | `any` 0건, 내부 타입 누출 0건 | FR-DX-002 |
 

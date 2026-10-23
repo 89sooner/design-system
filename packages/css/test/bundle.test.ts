@@ -84,10 +84,10 @@ describe("FR-CSS-002 reset and base layers", () => {
     }
   });
 
-  test("FR-CSS-002 AC-3: :focus-visible takes the focus-ring token shadow and drops the outline", () => {
+  test("FR-CSS-002 AC-3 (CR-071): :focus-visible takes the focus-ring token shadow over a transparent outline", () => {
     const rule = ruleFor(index, "cdt.reset", /:focus-visible/);
     expect(rule?.decls["box-shadow"]).toBe("var(--cdt-focus-ring)");
-    expect(rule?.decls["outline"]).toBe("none");
+    expect(rule?.decls["outline"]).toMatch(/^(?=.*\bsolid\b)(?=.*\btransparent\b)(?=.*var\(--cdt-border-width-emphasis\))/);
   });
 
   test.each(bundles)("FR-CSS-002 AC-4: %s references zero remote fonts", (name, css) => {
@@ -1033,14 +1033,105 @@ describe("CR-065 · CR-067 tabs and light-theme surfaces", () => {
     expect(rule(".cdt-tabs__list .cdt-tabs__trigger:focus-visible")?.decls["box-shadow"]).toBe("var(--cdt-focus-ring)");
   });
 
-  test("CR-065 · CR-067: forced colours redraw the selection in the system highlight", () => {
+  test("CR-065 · CR-067 · CR-071: forced colours redraw the selection in the system highlight", () => {
     const forced = mediaRules(index, "cdt.component", /forced-colors: ?active/);
     const find = (selector: string) => forced.find((candidate) => candidate.selector.split(",").map(normal).includes(normal(selector)));
-    expect(find(".cdt-tabs__trigger[data-state=active]")?.decls.outline?.toLowerCase()).toContain("highlight");
+    // CR-071: the segmented pill fills instead of outlining, so a focused selected tab still shows its focus outline.
+    const pill = find(".cdt-tabs__list:not(.cdt-tabs__list--line) .cdt-tabs__trigger[data-state=active]");
+    expect(pill?.decls.background?.toLowerCase()).toBe("highlight");
+    expect(pill?.decls["forced-color-adjust"]).toBe("none");
+    expect(pill?.decls.outline).toBeUndefined();
     expect(find(".cdt-tabs__list--line .cdt-tabs__trigger[data-state=active]:after")?.decls.background?.toLowerCase()).toBe("highlight");
   });
 
   test("CR-065: the table header steps toward the text colour, so it is darker than the rows in light", () => {
     expect(rule(".cdt-table__head")?.decls.background).toBe("color-mix(in srgb, var(--cdt-text-primary) 3%, var(--cdt-surface-timeline))");
+  });
+});
+
+describe("CR-071 forced colours", () => {
+  // The minifier drops attribute quotes and writes `::before` as `:before`, and may merge rules.
+  const normal = (selector: string) => selector.replaceAll('"', "").replaceAll("::", ":").trim();
+  const forcedIn = (css: string) =>
+    ["cdt.component"].flatMap((layer) => mediaRules(css, layer, /forced-colors: ?active/));
+  const decl = (css: string, selector: string, property: string): string | undefined =>
+    forcedIn(css)
+      .filter((candidate) => candidate.selector.split(",").map(normal).includes(normal(selector)))
+      .map((candidate) => candidate.decls[property])
+      .find((value) => value !== undefined)
+      ?.toLowerCase();
+
+  test.each(bundles)("FR-A11Y-001 AC-5: no :focus-visible rule in %s removes the outline", (_name, css) => {
+    const focusRules = ["cdt.reset", "cdt.base", "cdt.component", "cdt.utility"]
+      .flatMap((layer) => rulesInLayer(css, layer))
+      .filter((rule) => rule.selector.includes(":focus-visible") && rule.decls.outline !== undefined);
+    expect(focusRules.length).toBeGreaterThan(0);
+    expect(focusRules.filter((rule) => /^(none|0)$/.test(rule.decls.outline ?? ""))).toEqual([]);
+  });
+
+  test("FR-A11Y-001 AC-5: the agent stylesheet keeps the same outline on focus", () => {
+    const focusRules = rulesInLayer(agent, "cdt.component").filter((rule) => rule.selector.includes(":focus-visible") && rule.decls.outline !== undefined);
+    expect(focusRules.length).toBeGreaterThan(0);
+    expect(focusRules.filter((rule) => !/transparent/.test(rule.decls.outline ?? ""))).toEqual([]);
+  });
+
+  /** Selections that fill with the system highlight and opt out of forcing so no backplate covers their text. */
+  const filled = [
+    ".cdt-switch[data-state=checked]",
+    ".cdt-checkbox[data-state=checked]",
+    ".cdt-checkbox[data-state=indeterminate]",
+    ".cdt-radio__control[data-state=checked]",
+    ".cdt-toggle-group__item[data-state=on]",
+    ".cdt-pagination__page[aria-current=page]",
+    ".cdt-menu__item[data-highlighted]",
+    ".cdt-select__item[data-highlighted]",
+    ".cdt-command__item[data-highlighted]",
+    ".cdt-combobox__options [data-highlighted]",
+    ".cdt-date-picker__selected .cdt-date-picker__day-button",
+  ];
+
+  test.each(filled)("FR-A11Y-003 AC-5: %s fills with Highlight and HighlightText", (selector) => {
+    expect(decl(index, selector, "background")).toBe("highlight");
+    expect(decl(index, selector, "color")).toBe("highlighttext");
+    expect(decl(index, selector, "forced-color-adjust")).toBe("none");
+  });
+
+  test.each([
+    ".cdt-menu__item[data-highlighted] *",
+    ".cdt-select__item[data-highlighted] *",
+    ".cdt-command__item[data-highlighted] *",
+    ".cdt-combobox__options [data-highlighted] *",
+    ".cdt-toggle-group__item[data-state=on] *",
+    ".cdt-pagination__page[aria-current=page] *",
+  ])("FR-A11Y-003 AC-5: descendants of %s read HighlightText on a clear background", (selector) => {
+    expect(decl(index, selector, "color")).toBe("highlighttext");
+    // The minifier may write `transparent` as `#0000`.
+    expect(["transparent", "#0000"]).toContain(decl(index, selector, "background-color")); /* cdt-allow-literal: the minifier's spelling of transparent */
+  });
+
+  test.each([
+    [".cdt-switch__thumb", "background", "canvastext"],
+    [".cdt-switch[data-state=checked] .cdt-switch__thumb", "background", "highlighttext"],
+    [".cdt-radio__indicator", "background", "highlighttext"],
+    [".cdt-meter__fill", "background", "highlight"],
+    [".cdt-meter--exceeded .cdt-meter__fill", "background", "highlight"],
+    [".cdt-nav-list__item--active:before", "background", "highlight"],
+  ])("FR-A11Y-003 AC-5: %s keeps its mark as %s %s", (selector, property, value) => {
+    expect(decl(index, selector, property)).toBe(value);
+  });
+
+  test("FR-A11Y-003 AC-5: the current timeline step and a selected data row take a Highlight rail or outline", () => {
+    expect(decl(index, ".cdt-timeline__step[aria-current=step]", "border-inline-start")).toMatch(/solid highlight$/);
+    expect(decl(index, ".cdt-data-table [data-selected]", "outline")).toMatch(/solid highlight$/);
+  });
+
+  test.each([
+    ".cdt-switch[data-state=checked]:focus-visible",
+    ".cdt-radio__control[data-state=checked]:focus-visible",
+    ".cdt-toggle-group__item[data-state=on]:focus-visible",
+    ".cdt-pagination__page[aria-current=page]:focus-visible",
+  ])("FR-A11Y-001 AC-5: a focused filled control %s draws its outline in CanvasText, off the fill", (selector) => {
+    expect(decl(index, selector, "outline-color")).toBe("canvastext");
+    expect(decl(index, selector, "outline-offset")).toBe("var(--cdt-border-width-emphasis)");
   });
 });

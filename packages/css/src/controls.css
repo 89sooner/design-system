@@ -7,7 +7,7 @@
   /* Toast — a raised card with a tone rail; colour is never the only signal (icon + title). */
   .cdt-toast-viewport { position: fixed; inset-block-end: 0; inset-inline-end: 0; z-index: var(--cdt-z-popover); display: flex; flex-direction: column; gap: var(--cdt-space-2); inline-size: min(100vw, calc(var(--cdt-space-8) * 8)); max-inline-size: 100vw; margin: 0; padding: var(--cdt-space-4); list-style: none; outline: none; }
   .cdt-toast { position: relative; display: flex; align-items: flex-start; gap: var(--cdt-space-3); padding: var(--cdt-space-4); border: var(--cdt-border-width-hairline) solid var(--cdt-border-control); border-inline-start-width: var(--cdt-border-width-rail); border-radius: var(--cdt-radius-md); background: var(--cdt-surface-raised); color: var(--cdt-text-primary); box-shadow: var(--cdt-elevation-overlay); }
-  .cdt-toast:focus-visible { outline: none; box-shadow: var(--cdt-focus-ring), var(--cdt-elevation-overlay); }
+  .cdt-toast:focus-visible { outline: var(--cdt-border-width-emphasis) solid transparent; box-shadow: var(--cdt-focus-ring), var(--cdt-elevation-overlay); }
   .cdt-toast--info { border-inline-start-color: var(--cdt-accent); }
   .cdt-toast--success { border-inline-start-color: var(--cdt-status-success); }
   .cdt-toast--warning { border-inline-start-color: var(--cdt-status-waiting); }
@@ -48,7 +48,7 @@
   .cdt-date-picker__day { padding: 0; text-align: center; }
   .cdt-date-picker__day-button { inline-size: var(--cdt-space-7); block-size: var(--cdt-space-7); padding: 0; border: 0; border-radius: var(--cdt-radius-sm); background: transparent; color: var(--cdt-text-primary); font: inherit; font-variant-numeric: tabular-nums; cursor: pointer; }
   .cdt-date-picker__day-button:hover { background: var(--cdt-state-hover); }
-  .cdt-date-picker__day-button:focus-visible { outline: none; box-shadow: var(--cdt-focus-ring); }
+  .cdt-date-picker__day-button:focus-visible { outline: var(--cdt-border-width-emphasis) solid transparent; box-shadow: var(--cdt-focus-ring); }
   .cdt-date-picker__today .cdt-date-picker__day-button { font-weight: 700; text-decoration: underline; text-underline-offset: 0.2em; }
   .cdt-date-picker__selected .cdt-date-picker__day-button { background: var(--cdt-accent); color: var(--cdt-text-inverse); }
   .cdt-date-picker__outside .cdt-date-picker__day-button { color: var(--cdt-text-muted); }
@@ -92,7 +92,7 @@
   .cdt-radio--disabled { color: var(--cdt-text-muted); cursor: not-allowed; }
   .cdt-radio__control { display: inline-grid; flex: 0 0 auto; place-items: center; inline-size: 20px; block-size: 20px; /* cdt-allow-literal: C-078 radio circle size */ padding: 0; border: var(--cdt-border-width-hairline) solid var(--cdt-input-border); border-radius: var(--cdt-radius-pill); background: var(--cdt-input-background); cursor: inherit; transition: border-color var(--cdt-motion-fast), box-shadow var(--cdt-motion-fast); }
   .cdt-radio__control[data-state="checked"] { border-color: var(--cdt-input-border-focus); background: var(--cdt-accent); }
-  .cdt-radio__control:focus-visible { outline: none; box-shadow: var(--cdt-focus-ring); transition: none; }
+  .cdt-radio__control:focus-visible { outline: var(--cdt-border-width-emphasis) solid transparent; box-shadow: var(--cdt-focus-ring); transition: none; }
   .cdt-radio__control:disabled { opacity: 0.6; }
   .cdt-radio-group--invalid .cdt-radio__control:not([data-state="checked"]) { border-color: var(--cdt-input-border-invalid); }
   .cdt-radio__indicator { display: block; inline-size: var(--cdt-space-2); block-size: var(--cdt-space-2); border-radius: var(--cdt-radius-pill); background: var(--cdt-text-inverse); }
@@ -104,7 +104,7 @@
   .cdt-toggle-group__item { display: inline-flex; align-items: center; justify-content: center; gap: var(--cdt-space-2); min-block-size: calc(var(--cdt-input-min-height) - var(--cdt-space-2) - 2px); /* cdt-allow-literal: track border keeps the group at the control height */ padding-inline: var(--cdt-space-3); border: 0; border-radius: var(--cdt-radius-xs); background: transparent; color: var(--cdt-text-secondary); font: inherit; font-size: var(--cdt-font-size-base); cursor: pointer; transition: background var(--cdt-motion-fast), color var(--cdt-motion-fast); }
   .cdt-toggle-group__item:hover:not(:disabled) { background: var(--cdt-state-hover); color: var(--cdt-text-primary); }
   .cdt-toggle-group__item[data-state="on"] { background: var(--cdt-accent-soft); color: var(--cdt-text-primary); font-weight: 600; }
-  .cdt-toggle-group__item:focus-visible { outline: none; box-shadow: var(--cdt-focus-ring); transition: none; }
+  .cdt-toggle-group__item:focus-visible { outline: var(--cdt-border-width-emphasis) solid transparent; box-shadow: var(--cdt-focus-ring); transition: none; }
   .cdt-toggle-group__item:disabled { color: var(--cdt-button-disabled-text); cursor: not-allowed; }
   .cdt-toggle-group__icon { display: inline-flex; }
   .cdt-toggle-group--sm .cdt-toggle-group__item { min-block-size: calc(34px - var(--cdt-space-2) - 2px); /* cdt-allow-literal: C-051/C-053 compact control height */ font-size: var(--cdt-font-size-sm); }
@@ -125,7 +125,7 @@
   .cdt-number-input--glass .cdt-number-input__field { background: var(--cdt-surface-tint-1); }
   .cdt-number-input__field::-webkit-inner-spin-button, .cdt-number-input__field::-webkit-outer-spin-button { margin: 0; appearance: none; }
   .cdt-number-input__field:hover:not(:disabled) { border-color: var(--cdt-input-border-hover); }
-  .cdt-number-input__field:focus-visible { border-color: var(--cdt-input-border-focus); outline: none; background: var(--cdt-input-background-focus); box-shadow: var(--cdt-focus-ring); transition: none; }
+  .cdt-number-input__field:focus-visible { border-color: var(--cdt-input-border-focus); outline: var(--cdt-border-width-emphasis) solid transparent; background: var(--cdt-input-background-focus); box-shadow: var(--cdt-focus-ring); transition: none; }
   .cdt-number-input__field:disabled { background: var(--cdt-state-disabled); color: var(--cdt-text-muted); cursor: not-allowed; }
   .cdt-number-input--invalid .cdt-number-input__field { border-color: var(--cdt-input-border-invalid); }
   .cdt-number-input--sm .cdt-number-input__field { min-block-size: 34px; /* cdt-allow-literal: C-051/C-053 compact control height */ padding-block: var(--cdt-space-1); }
@@ -139,5 +139,22 @@
     .cdt-radio,
     .cdt-number-input__field { min-block-size: var(--cdt-input-min-height-compact); }
     .cdt-toggle-group__item { min-block-size: calc(var(--cdt-input-min-height-compact) - var(--cdt-space-2) - 2px); /* cdt-allow-literal: track border keeps the group at the control height */ }
+  }
+
+  /* CR-071: forced colours drop these fills; each selection is redrawn as in components.css (fill, explicit descendants, offset focus outline). */
+  @media (forced-colors: active) {
+    .cdt-command__item[data-highlighted],
+    .cdt-pagination__page[aria-current="page"],
+    .cdt-toggle-group__item[data-state="on"],
+    .cdt-date-picker__selected .cdt-date-picker__day-button,
+    .cdt-radio__control[data-state="checked"] { forced-color-adjust: none; border-color: Highlight; background: Highlight; color: HighlightText; }
+    .cdt-command__item[data-highlighted] *,
+    .cdt-pagination__page[aria-current="page"] *,
+    .cdt-toggle-group__item[data-state="on"] * { border-color: HighlightText; background-color: transparent; color: HighlightText; }
+    .cdt-radio__indicator { background: HighlightText; }
+    .cdt-pagination__page[aria-current="page"]:focus-visible,
+    .cdt-toggle-group__item[data-state="on"]:focus-visible,
+    .cdt-date-picker__selected .cdt-date-picker__day-button:focus-visible,
+    .cdt-radio__control[data-state="checked"]:focus-visible { outline-color: CanvasText; outline-offset: var(--cdt-border-width-emphasis); }
   }
 }

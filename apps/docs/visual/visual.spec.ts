@@ -114,8 +114,29 @@ for (const theme of themes) {
   });
 }
 
+/**
+ * Components whose state forced colours (Windows high contrast) used to erase: the checked mark, the selected
+ * item, the current step or page, the meter's fill (CR-071). Forced colours replace the whole palette, so one
+ * dark-scheme pass stands for both themes.
+ */
+const FORCED_STATES = ["Switch", "Checkbox", "RadioGroup", "ToggleGroup", "Pagination", "Tabs", "Timeline", "NavList", "Meter"] as const;
+
+test.describe("forced colours", () => {
+  for (const component of FORCED_STATES) {
+    test(`CR-071 FR-QA-004 AC-6: ${component} forced-colours baseline`, async ({ page }) => {
+      const preview = await openPreview(page, component, "dark");
+      await page.emulateMedia({ colorScheme: "dark", reducedMotion: "reduce", forcedColors: "active" });
+      await expect(preview).toHaveScreenshot(`${component}-forced-colors.png`, SNAPSHOT);
+    });
+  }
+});
+
 test("CR-068 FR-QA-004 AC-5: every overlay with an open state is a public component", () => {
   expect(Object.keys(OPEN_STATES).filter((name) => !PUBLIC_COMPONENTS.includes(name))).toEqual([]);
+});
+
+test("CR-071 FR-QA-004 AC-6: every forced-colours baseline is a public component", () => {
+  expect(FORCED_STATES.filter((name) => !PUBLIC_COMPONENTS.includes(name))).toEqual([]);
 });
 
 test("FR-CSS-005 AC-1: reduced-motion durations resolve to zero in Chromium", async ({ page }) => {

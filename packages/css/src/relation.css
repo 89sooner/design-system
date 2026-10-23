@@ -25,4 +25,9 @@
   .cdt-relation details summary { padding-block: var(--cdt-space-2); cursor: pointer; }
   .cdt-relation .cdt-table__cell { overflow-wrap: anywhere; }
   .cdt-relation [data-selected] .cdt-table__cell { background: var(--cdt-accent-soft); }
+
+  /* CR-071: forced colours drop the selected row's fill; it takes an inset outline instead. */
+  @media (forced-colors: active) {
+    .cdt-relation tr[data-selected] { outline: var(--cdt-border-width-emphasis) solid Highlight; outline-offset: calc(var(--cdt-border-width-emphasis) * -1); }
+  }
 }

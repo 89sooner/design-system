@@ -1,6 +1,6 @@
 # 요구사항-화면 추적 매트릭스
 
-> 상태: review | 버전: v0.16 | 갱신일: 2026-10-23
+> 상태: review | 버전: v0.17 | 갱신일: 2026-10-23
 
 ## 1. 목적
 
@@ -74,7 +74,7 @@ UI가 없는 요구사항은 아래 표면 중 하나에 간접 노출된다.
 | FR-THM-004 | Must | W-030, W-050 | SFC-CLI, SFC-CI | FLOW-003 | 대비 검사 |
 | FR-THM-005 | Must | W-030, W-050 | SFC-CLI, SFC-PKG | FLOW-003 | 소스 계승 토큰 교정 (OD-001 종결); placeholder 역할 토큰과 CP-122·CP-123 (CR-064) |
 | FR-CSS-001 | Must | W-002 | SFC-PKG | — | 캐스케이드 레이어; 소비자 reset 레이어 안내 (CR-069, AC-5) |
-| FR-CSS-002 | Must | — | SFC-PKG, 전 화면 | — | 리셋/베이스 |
+| FR-CSS-002 | Must | — | SFC-PKG, 전 화면 | — | 리셋/베이스; 투명 포커스 외곽선 (CR-071, AC-3 정정) |
 | FR-CSS-003 | Must | W-012 | SFC-PKG | — | 레이아웃 프리미티브 |
 | FR-CSS-004 | Must | W-020, W-021 | SFC-PKG | — | 컴포넌트 클래스 |
 | FR-CSS-005 | Must | W-014 | SFC-PKG | — | 모션 감소 |
@@ -97,9 +97,9 @@ UI가 없는 요구사항은 아래 표면 중 하나에 간접 노출된다.
 | FR-DOC-008 | Should | W-021 | — | FLOW-001 | 에이전트 판독용 문서 (산출물: DESIGN.md, llms.txt, components/*.md) |
 | FR-DOC-009 | Should | W-063, W-064, W-065 | SFC-PKG | FLOW-001 | 블록 예제 (CR-051) |
 | FR-DOC-010 | Should | W-031 | SFC-PKG | FLOW-003 | 테마 플레이그라운드 (CR-052, API-TOK-004) |
-| FR-A11Y-001 | Must | W-050 | 전 화면 | — | 포커스 링 |
+| FR-A11Y-001 | Must | W-050 | 전 화면 | — | 포커스 링; 강제 색 모드 포커스 (CR-071, AC-5) |
 | FR-A11Y-002 | Must | W-050 | 전 화면 | FLOW-004 | 키보드 도달 |
-| FR-A11Y-003 | Must | W-040, W-050 | SFC-PKG | — | 색상 비의존 |
+| FR-A11Y-003 | Must | W-040, W-050 | SFC-PKG | — | 색상 비의존; 강제 색 모드 상태 표시 (CR-071, AC-5) |
 | FR-A11Y-004 | Must | W-030, W-050 | SFC-CLI, SFC-CI | FLOW-003 | 대비율 |
 | FR-A11Y-005 | Must | W-050 | SFC-CI | — | 스크린리더 |
 | FR-DX-001 | Must | W-002 | SFC-CLI | FLOW-003 | 빌드 순서 |
@@ -110,7 +110,7 @@ UI가 없는 요구사항은 아래 표면 중 하나에 간접 노출된다.
 | FR-QA-001 | Must | — | SFC-CLI, SFC-CI, W-030 | FLOW-003 | 토큰 계약 |
 | FR-QA-002 | Must | — | SFC-CI, W-050 | FLOW-003 | 단위 검사 |
 | FR-QA-003 | Must | W-050 | SFC-CI | FLOW-003 | 접근성 검사 |
-| FR-QA-004 | Should | — | SFC-CI | FLOW-003 | 시각 회귀 (OD-002로 REL-004 이월 뒤 구현; CR-068로 `approved`, 공개 컴포넌트 전부 × 두 테마 + 오버레이 열린 상태 11개) |
+| FR-QA-004 | Should | — | SFC-CI | FLOW-003 | 시각 회귀 (OD-002로 REL-004 이월 뒤 구현; CR-068로 `approved`, 공개 컴포넌트 전부 × 두 테마 + 오버레이 열린 상태 11개); CR-071로 강제 색 9장 추가) |
 
 ## 5.1 비기능 요구사항 → 표면 매트릭스
 
