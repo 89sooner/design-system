@@ -843,6 +843,7 @@ CR-041 구현 cascade와 로컬 검증은 2026-09-14에 종료했다. 사용자�
 | 검증 (2026-10-23, 로컬) | DEV-045 조건(Chromium headless shell 1228 + Inter 제외 fontconfig, 이 샌드박스에 Docker 데몬이 없다)에서 기준 이미지를 만든 뒤, 갱신 없이 두 번 연속 160/160 통과(2.7분·2.6분). 기존 27장(이름만 바꾼 Dialog 2장 포함)은 다시 만들지 않고 그대로 통과했다. 최종 판정은 고정 컨테이너에서 도는 PR CI다 |
 | 남은 위험 | 기준 이미지 용량이 2.0MB에서 2.8MB로 늘었다. CI 시각 회귀 잡 시간은 약 1분 늘어난다 |
 | CI 1차 (PR #82, `5b41c1a`) | 고정 컨테이너에서 160개 중 157개 통과, 3개 실패. ① CopyButton 두 테마(643픽셀, 0.02): 미리보기의 맨 `<code>`가 UA 기본 `monospace`를 써서 글꼴과 13px 크기가 호스트 fontconfig를 따랐다. 같은 컨테이너에서 `--cdt-font-mono`를 쓰는 CodeBlock은 통과했다 → 문서 사이트 `.docs-preview code`에 토큰 mono 스택과 `font.size.sm`를 준다(`apps/docs/src/styles/base.css`). ② Tooltip 열린 상태 다크(38픽셀, 0.02): 유리 툴팁이 미리보기 라벨 막대의 글자 위에 열려 그 글자의 배경 흐림이 환경마다 다르게 래스터화됐다 → 캡처 전에 라벨 막대를 숨긴다. 처음 쓴 `toHaveScreenshot`의 `style` 옵션은 이 실행 환경에서 적용되지 않아 `page.addStyleTag`로 바꿨다. 기준 이미지 4장(CopyButton 2, Tooltip 열린 상태 2)만 다시 만들었고, 갱신 없이 160/160 두 번 연속 통과했다 |
+| CI 2차 (`c122c51`) | 159/160. Tooltip과 CopyButton 다크는 통과했고, CopyButton 라이트만 553픽셀(0.02) 달랐다. 원인: 고정 컨테이너에는 DejaVu Sans Mono가 없어 `--cdt-font-mono` 스택의 끝 `monospace`가 WenQuanYi Zen Hei Mono로 풀린다. 이 샌드박스는 DejaVu Sans Mono로 풀린다. fontconfig에서 DejaVu Sans Mono를 함께 빼자 같은 시험이 551픽셀로 실패해 CI를 재현했고, CodeBlock·InlineCitation·Tool·Kbd는 CI처럼 통과했다. 그 조건에서 CopyButton 2장을 다시 만들었고, 같은 조건에서 160/160 두 번 연속 통과했다. DEV-045의 로컬 재현 조건에 "DejaVu Sans Mono 제외"를 더한다 |
 
 ## CR-069 component.css 소비자 레이어 안내 (2026-10-23)
 
