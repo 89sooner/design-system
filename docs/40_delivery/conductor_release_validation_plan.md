@@ -1,6 +1,6 @@
 # Conductor Design System 릴리스 검증 계획
 
-> 상태: review | 버전: v0.10 | 갱신일: 2026-10-23
+> 상태: review | 버전: v0.11 | 갱신일: 2026-10-23
 
 ## 1. 목적과 범위
 
@@ -17,7 +17,7 @@ Conductor Design System은 `@conductor-by-89soone/tokens`, `@conductor-by-89soon
 | 통합 (빌드 파이프라인 end-to-end) | FR-DX-001, FR-TOK-003, JOB-BUILD-001~004 | `pnpm install && pnpm build` | `tokens → css → react → docs` 순서로 완주하고 각 단계가 선행 패키지의 산출물을 소비한다(소스 상대경로 참조 0건). 역방향 의존 발견 시 종료 코드 1. 전체 소요 3분 이하(4코어) | PR, main | Coding Agent |
 | e2e (문서 사이트 Playwright) | FR-DOC-001~007, FR-THM-003 | `pnpm test:e2e` | 문서 사이트가 `@conductor-by-89soone/react`·`@conductor-by-89soone/css`를 소비자로 설치해 사용한다(소스 상대경로 import 0건). Foundations 5개 화면 값이 `tokens.json`에서 생성되고 하드코딩 토큰 값이 0건이다. 공개 컴포넌트 중 카탈로그 화면이 없는 항목이 0건이다. 테마 토글 후 새로고침해도 선택이 유지된다 | PR, main | Coding Agent |
 | 접근성 (axe-core, 수동 키보드) | FR-A11Y-001~005, FR-QA-003, JOB-CI-002 | `pnpm test:a11y` + 수동 키보드 점검(Tab 순서, Escape 이탈 경로, 포커스 복귀) | axe-core serious 이상 위반 0건(공개 컴포넌트 전수 × 테마 2종). 포커스 링이 두 테마 모두에서 배경 대비 3:1 이상이다. 키보드로 도달 가능한 대화형 요소 비율 100% | PR, main | Accessibility Reviewer |
-| 성능 (번들 크기, Lighthouse CI) | NFR-001, FR-DX-003 AC-3, JOB-CI-004 | `pnpm size` + Lighthouse CI | `Button` 단독 import gzip 4KB 이하(React 제외). `@conductor-by-89soone/css` 전체 gzip 20KB 이하. 문서 사이트 LCP p75 2.5초 이하(로컬 프로덕션 빌드, Fast 3G 스로틀). 테마 전환 후 재페인트 완료 100ms 이하 | PR(번들 크기), release(Lighthouse) | System Maintainer |
+| 성능 (번들 크기, Lighthouse CI) | NFR-001, FR-DX-003 AC-3, JOB-CI-004 | `pnpm size` + Lighthouse CI | `Button` 단독 import gzip 4KB 이하(React 제외). `@conductor-by-89soone/css` 전체 gzip 20KB 이하. 문서 사이트 LCP p75 2.5초 이하(로컬 프로덕션 빌드, Fast 3G 스로틀, 배포와 같은 gzip 전송 — CR-070). 테마 전환 후 재페인트 완료 100ms 이하 | PR(번들 크기), release(Lighthouse) | System Maintainer |
 | 시각 회귀 | FR-QA-004, JOB-CI-003 | `pnpm test:visual` (`--update`는 기준 이미지 갱신 전용 명령으로만 허용) | 공개 컴포넌트 전부 × 테마 2종과 오버레이 열린 상태 11개 × 2를 비교하고(CR-068) 픽셀 차이 1% 초과 시 실패, 차이 이미지를 아티팩트로 남긴다 | PR (REL-004 이후 매 PR) | QA |
 | 보안 (pnpm audit, 시크릿 스캔) | NFR-002 | `pnpm audit --audit-level high` + 시크릿 스캐너 CI 잡 | 의존성 취약점 severity high 이상 0건. 산출물에 포함된 비밀값 0건. npm 배포 인증이 OIDC 기반이며 장기 토큰을 사용하지 않는다 | 시크릿 스캔: PR. audit·OIDC 검사: release | System Maintainer |
 | 호환성 (React 18·19, Node 20·22 매트릭스) | NFR-005 | CI 매트릭스 실행 (React 18/19 × Node 20/22) | 매트릭스 전 조합에서 `pnpm test`와 `pnpm build`가 통과한다 | main | Coding Agent |
@@ -66,7 +66,7 @@ Conductor Design System은 `@conductor-by-89soone/tokens`, `@conductor-by-89soon
 - [x] 컴포넌트 카탈로그가 실제 DOM 렌더 프리뷰를 제공하고, export되었으나 화면이 없는 컴포넌트 0건(FR-DOC-003)
 - [x] 토큰 참조 화면이 대비율 수치와 판정을 표시(FR-DOC-004)
 - [x] 테마 토글이 새로고침 후 유지되고 최초 페인트 깜빡임이 없음(FR-DOC-005)
-- [x] 문서 사이트 LCP p75 2.5초 이하(NFR-001) — Fast 3G 최근 7회 p75 1,917ms (CR-017)
+- [x] 문서 사이트 LCP p75 2.5초 이하(NFR-001) — Fast 3G 최근 7회 p75 1,917ms (CR-017). CR-070부터 gzip 전송으로 잰다(로컬 p75 1,805ms, 압축 없이 2,663ms)
 - [x] `pnpm test:a11y`에서 axe-core serious 이상 위반 0건, 다크·라이트 두 테마 모두 검사(FR-QA-003, FR-A11Y-005)
 - [x] 포커스 링이 두 테마 모두에서 배경 대비 3:1 이상(FR-A11Y-001)
 - [x] 컴포넌트 전수에 대한 키보드 경로 테스트 통과(FR-A11Y-002)

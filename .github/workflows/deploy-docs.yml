@@ -84,3 +84,15 @@ jobs:
 
       - id: deployment
         uses: actions/deploy-pages@v4
+
+      # CR-070: `pnpm lighthouse` serves text assets gzip-encoded because Pages does. Check
+      # the deployed stylesheet so the gate stops matching production the day Pages stops.
+      - name: deployed stylesheet is gzip-encoded (CR-070, NFR-001)
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          css="$(curl -fsS "$PAGE_URL" | grep -o 'assets/index-[^"]*\.css' | head -n 1)"
+          test -n "$css" || { echo "::error::no stylesheet link found at $PAGE_URL"; exit 1; }
+          encoding="$(curl -fsS -o /dev/null -D - -H 'Accept-Encoding: gzip' "${PAGE_URL%/}/$css" | tr -d '\r' | awk -F': ' 'tolower($1) == "content-encoding" { print tolower($2) }')"
+          echo "content-encoding for $css: ${encoding:-identity}"
+          test "$encoding" = "gzip" || { echo "::error::Pages served $css without gzip; the Lighthouse gate (scripts/static-server.mjs) no longer matches production"; exit 1; }
