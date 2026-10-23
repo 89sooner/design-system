@@ -714,4 +714,5 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | FR 매핑 | NFR-001(측정 방법) → 위 세 파일, 시험 `scripts/static-server.test.mjs`(CR-070 5건) |
 | 시험 | 스크립트 시험 5건, 배포 확인 셸 양·음성 실행, LCP 음성 픽스처 exit 1 |
 | 검증 (로컬) | gzip p75 1,805ms / 비압축 p75 2,663ms(같은 빌드) |
+| 검증 (CI) | PR #84 head `bd4a08c`: verify(node 20·22)·visual regression 통과. LCP p75 node 20 1,456ms · node 22 1,477ms(gzip 전송 HTML 9.3KB·CSS 18.8KB·JS 137.4KB). CR-070 closed |
 
