@@ -798,4 +798,5 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | 표면 | `etc/public-surface.txt` 추가만(삭제 0), react API 리포트 추가만 |
 | 검증 (로컬) | build, typecheck, test 922/922, lint, lint:tokens, size(Button 1.33 KiB, index.css 15.30 KiB), check:api, check:changesets, test:a11y 387(1 skip), docs e2e 87/87, cross Chromium 4/4, visual 182/182 |
 | changeset | **layout-type-accordion.md**(react·css minor) |
+| CI 정정 | PR #92 첫 CI에서 cross-browser Firefox의 Dialog 시험이 첫 클릭 뒤 대화상자가 열리지 않아 실패했다(PR #91에서는 통과). 로컬 Chromium은 버튼 재마운트가 없고(5/5) Firefox는 이 환경에 없으며, 실패 아티팩트 호스트는 네트워크 정책으로 막혀 trace를 읽지 못했다. 시험의 대상은 Escape·포커스 복귀이므로 여는 단계만 열릴 때까지 클릭을 반복(`toPass`)하게 했다. Escape·포커스 복귀 단정은 그대로다 |
 
