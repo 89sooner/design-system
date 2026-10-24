@@ -969,4 +969,4 @@ CR-041 구현 cascade와 로컬 검증은 2026-09-14에 종료했다. 사용자�
 | 버전 | 같은 이름의 시각 변경과 additive 추가라 css·react minor(OD-006). changeset 첫 줄 `Visual change:` |
 | 후보 운영 가정 | 이 CR을 담은 릴리스가 1.0 후보다. 4주 안에 공개 표면·시각을 바꾸는 minor가 나오면 새 후보로 4주를 다시 센다. 기준 이미지와 공개 표면을 바꾸지 않는 patch는 기간을 끊지 않는다(검증 계획 §1.0 준비도) |
 | 검증 (로컬) | build, typecheck, test 923/923, lint, lint:tokens, check:contrast, size, check:api, test:a11y 389/389, 문서 E2E 87/87, 시각 회귀 182/182 |
-| CI · 종료 | PR CI 녹색 뒤 기록한다. 이 CR은 후보 릴리스까지 open이다 |
+| CI · 종료 | PR #94 head `0df9e55`: verify(node 20·22), docs e2e, visual regression, consumers(React 18·19·Next), cross-browser(Firefox·WebKit) 모두 통과. 이 CR은 후보(css·react 0.18.0) 릴리스와 agent-ai-platform 적용까지 open이다 |

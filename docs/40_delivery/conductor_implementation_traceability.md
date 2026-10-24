@@ -829,4 +829,5 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | 시험 | `component-css.browser.test.tsx` CR-077 2건(고친 CSS를 되돌리면 둘 다 실패, 다시 넣으면 통과), `agent.test.tsx` participant, `bundle.test.ts`(`outline: none` 규칙은 main 하나), `public-surface.test.mjs` `cliArguments`. dist 사용법에서 `--watch`를 지운 변이 → `SURFACE-DRIFT` `- conductor-build-tokens --watch` |
 | 시각 | Message 두 테마 기준 이미지 갱신(참여자 말풍선 추가). 처음 그린 말풍선은 `surface.raised` 채움만이라 두 테마 모두 바탕과 구별되지 않았다 — 테두리를 더했다 |
 | 검증 (로컬) | build, typecheck, test 923/923, lint, lint:tokens, check:contrast, size(Button 1.33KiB, index.css 15.31KiB), check:api, test:a11y 389/389(+1 skip), 문서 E2E 87/87, 시각 회귀 182/182 |
+| 검증 (CI) | PR #94 head `0df9e55`: verify(node 20·22)·docs e2e·visual regression·consumers(React 18·19·Next)·cross-browser(Firefox·WebKit) 통과 |
 | 준비도 | AC-1 ⑦ 충족, AC-4 FR 상태 충족(FR-DX-006 제외), AC-6 충족(0.17.0). AC-5는 후보 적용 뒤 4주 |
