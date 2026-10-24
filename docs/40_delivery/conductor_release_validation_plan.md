@@ -152,7 +152,7 @@ build 후 typecheck; test/lint/lint:deps/lint:tokens/check:contrast/test:a11y/te
 | AC-4 CI 잡 | verify(Node 20·22)·docs e2e·visual regression이 PR #87 head `3b4ea34`에서 녹색 | 충족 | 1.0 후보 커밋에서 다시 |
 | AC-4 NFR-005 매트릭스 | CI는 Node 20·22 × Chromium·React 19만 실행한다. React 18 소비자 검사는 로컬 스크립트이고 CI 잡이 없다. Firefox·Safari·Edge는 실행하지 않는다(DEV-065) | 미충족 | React 18 소비자 잡, 브라우저 매트릭스 |
 | AC-4 FR 상태 | 원장 §3 매핑 표 56행이 모두 `검증됨`. FR-CMP-010 ~ FR-CMP-013은 §3 표 대신 CR-041 WP 표(WP-029 ~ WP-032 `done`)에 있다. FR-DX-006은 이 표가 판정한다 | 부분 | FR-CMP-010 ~ 013을 §3 표로 |
-| AC-4 open DEV | DEV-049(사용자 승인 audit 예외, 패치 없는 개발 도구 전이 의존), DEV-064(CR-073, CI 확인 뒤 닫힘), DEV-065(이 표) | 미충족 | DEV-064·065 해소, DEV-049는 예외 기록 유지 |
+| AC-4 open DEV | DEV-049(사용자 승인 audit 예외, 패치 없는 개발 도구 전이 의존), DEV-065(이 표). DEV-064는 CR-073으로 닫혔다 | 미충족 | DEV-065 해소, DEV-049는 예외 기록 유지 |
 | AC-5 실사용 검증 | agent-ai-platform 한 곳이 0.15.2를 쓴다(DS-PILOT-22). 로컬 재정의 목록은 원장에 없다 | OD-005 대기 | OD-005 결정, 재정의 목록 |
 | AC-6 컴포넌트 범위 | 공개 컴포넌트 67개 | OD-007 대기 | OD-007 결정 |
 | AC-7 버전 정렬 | tokens 0.14.0, css·react 0.15.2, 독립 버전 | OD-008 대기 | OD-008 결정 |
