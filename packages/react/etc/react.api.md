@@ -13,6 +13,7 @@ import { forwardRef } from 'react';
 import { HTMLAttributes } from 'react';
 import { Matcher } from 'react-day-picker';
 import { MouseEventHandler } from 'react';
+import * as RadixAccordion from '@radix-ui/react-accordion';
 import * as RadixAlertDialog from '@radix-ui/react-alert-dialog';
 import * as RadixAvatar from '@radix-ui/react-avatar';
 import * as RadixCheckbox from '@radix-ui/react-checkbox';
@@ -34,6 +35,30 @@ import { Ref } from 'react';
 import { TdHTMLAttributes } from 'react';
 import { ThHTMLAttributes } from 'react';
 import { useDirection } from '@radix-ui/react-direction';
+
+// @public (undocumented)
+export const Accordion: {
+    readonly Root: react.ForwardRefExoticComponent<AccordionRootProps & react.RefAttributes<HTMLDivElement>>;
+    readonly Item: react.ForwardRefExoticComponent<Omit<RadixAccordion.AccordionItemProps & react.RefAttributes<HTMLDivElement>, "ref"> & react.RefAttributes<HTMLDivElement>>;
+    readonly Trigger: react.ForwardRefExoticComponent<Omit<RadixAccordion.AccordionTriggerProps & react.RefAttributes<HTMLButtonElement>, "ref"> & {
+        readonly level?: 2 | 3 | 4 | 5 | 6;
+    } & react.RefAttributes<HTMLButtonElement>>;
+    readonly Content: react.ForwardRefExoticComponent<Omit<RadixAccordion.AccordionContentProps & react.RefAttributes<HTMLDivElement>, "ref"> & react.RefAttributes<HTMLDivElement>>;
+};
+
+// @public (undocumented)
+export type AccordionContentProps = ComponentPropsWithoutRef<typeof RadixAccordion.Content>;
+
+// @public (undocumented)
+export type AccordionItemProps = ComponentPropsWithoutRef<typeof RadixAccordion.Item>;
+
+// @public (undocumented)
+export type AccordionRootProps = ComponentPropsWithoutRef<typeof RadixAccordion.Root>;
+
+// @public (undocumented)
+export type AccordionTriggerProps = ComponentPropsWithoutRef<typeof RadixAccordion.Trigger> & {
+    readonly level?: 2 | 3 | 4 | 5 | 6;
+};
 
 // @public (undocumented)
 export const AlertDialog: {
@@ -638,6 +663,35 @@ export function filterCommands(commands: readonly Command[], query: string): rea
 
 // @public (undocumented)
 export const FilterToolbar: react.ForwardRefExoticComponent<HTMLAttributes<HTMLDivElement> & react.RefAttributes<HTMLDivElement>>;
+
+// @public (undocumented)
+export const Grid: react.ForwardRefExoticComponent<GridProps & react.RefAttributes<HTMLElement>>;
+
+// @public (undocumented)
+export interface GridProps extends HTMLAttributes<HTMLElement> {
+    // Warning: (ae-forgotten-export) The symbol "LayoutElement" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    readonly as?: LayoutElement;
+    readonly columns?: 1 | 2 | 3 | 4 | 5 | 6;
+    readonly gap?: SpaceStep;
+}
+
+// @public (undocumented)
+export const Heading: react.ForwardRefExoticComponent<HeadingProps & react.RefAttributes<HTMLHeadingElement>>;
+
+// @public (undocumented)
+export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
+
+// @public (undocumented)
+export interface HeadingProps extends HTMLAttributes<HTMLHeadingElement> {
+    // (undocumented)
+    readonly level: HeadingLevel;
+    readonly size?: HeadingSize;
+}
+
+// @public
+export type HeadingSize = "page" | "section" | "sub" | "minor";
 
 // @public (undocumented)
 export const IconButton: react.ForwardRefExoticComponent<IconButtonProps & react.RefAttributes<HTMLButtonElement>>;
@@ -1318,6 +1372,16 @@ export type SelectTriggerProps = ComponentPropsWithoutRef<typeof RadixSelect.Tri
     readonly invalid?: boolean;
 };
 
+// @public
+export const Separator: react.ForwardRefExoticComponent<SeparatorProps & react.RefAttributes<HTMLHRElement>>;
+
+// @public (undocumented)
+export interface SeparatorProps extends HTMLAttributes<HTMLHRElement> {
+    readonly decorative?: boolean;
+    // (undocumented)
+    readonly orientation?: "horizontal" | "vertical";
+}
+
 // @public (undocumented)
 export type Severity = "read" | "write" | "destructive" | "blocked";
 
@@ -1374,6 +1438,9 @@ export interface SourcesProps extends Omit<ComponentPropsWithoutRef<typeof Radix
     readonly sources: readonly SourceItem[];
 }
 
+// @public
+export type SpaceStep = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+
 // @public (undocumented)
 export const Spinner: react.ForwardRefExoticComponent<SpinnerProps & react.RefAttributes<HTMLDivElement>>;
 
@@ -1383,6 +1450,22 @@ export interface SpinnerProps extends HTMLAttributes<HTMLDivElement> {
     readonly label: string;
     // (undocumented)
     readonly size?: "sm" | "md";
+}
+
+// @public (undocumented)
+export const Stack: react.ForwardRefExoticComponent<StackProps & react.RefAttributes<HTMLElement>>;
+
+// @public (undocumented)
+export interface StackProps extends HTMLAttributes<HTMLElement> {
+    // (undocumented)
+    readonly align?: "start" | "center" | "end" | "stretch" | "baseline";
+    // (undocumented)
+    readonly as?: LayoutElement;
+    readonly direction?: "column" | "row";
+    readonly gap?: SpaceStep;
+    // (undocumented)
+    readonly justify?: "start" | "center" | "end" | "between";
+    readonly wrap?: boolean;
 }
 
 // @public (undocumented)
@@ -1483,6 +1566,10 @@ export type TabsListProps = ComponentPropsWithoutRef<typeof RadixTabs.List> & {
 export type TabsRootProps = ComponentPropsWithoutRef<typeof RadixTabs.Root>;
 
 // @public (undocumented)
+const Text_2: react.ForwardRefExoticComponent<TextProps & react.RefAttributes<HTMLElement>>;
+export { Text_2 as Text }
+
+// @public (undocumented)
 export const TextArea: react.ForwardRefExoticComponent<TextAreaProps & react.RefAttributes<HTMLTextAreaElement>>;
 
 // @public (undocumented)
@@ -1507,6 +1594,23 @@ export interface TextFieldProps extends Omit<ComponentPropsWithoutRef<"input">, 
     // (undocumented)
     readonly variant?: "solid" | "glass";
 }
+
+// @public (undocumented)
+export interface TextProps extends HTMLAttributes<HTMLElement> {
+    // (undocumented)
+    readonly as?: "p" | "span" | "div";
+    readonly mono?: boolean;
+    readonly size?: TextSize;
+    readonly tone?: TextTone;
+    // (undocumented)
+    readonly weight?: "regular" | "medium" | "semibold";
+}
+
+// @public
+export type TextSize = "2xs" | "xs" | "sm" | "base" | "md" | "lg" | "xl";
+
+// @public (undocumented)
+export type TextTone = "primary" | "secondary" | "muted" | "faint";
 
 // Warning: (ae-forgotten-export) The symbol "TimelineComponent" needs to be exported by the entry point index.d.ts
 //
