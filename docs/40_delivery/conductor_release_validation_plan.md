@@ -1,6 +1,6 @@
 # Conductor Design System 릴리스 검증 계획
 
-> 상태: review | 버전: v0.13 | 갱신일: 2026-10-24
+> 상태: review | 버전: v0.15 | 갱신일: 2026-10-24
 
 ## 1. 목적과 범위
 
@@ -70,6 +70,7 @@ Conductor Design System은 `@conductor-by-89soone/tokens`, `@conductor-by-89soon
 - [x] `pnpm test:a11y`에서 axe-core serious 이상 위반 0건, 다크·라이트 두 테마 모두 검사(FR-QA-003, FR-A11Y-005)
 - [x] 포커스 링이 두 테마 모두에서 배경 대비 3:1 이상(FR-A11Y-001)
 - [x] 강제 색 모드에서 모든 공개 컴포넌트의 포커스 외곽선과 상태 표시가 보임(FR-A11Y-001 AC-5, FR-A11Y-003 AC-5, CR-071)
+- [x] RTL 문서에서 Radix 루트 방향·화살표 이동·이동 미러링·코드 LTR 고정이 시험으로 확인됨(FR-CSS-006, CR-074)
 - [x] 컴포넌트 전수에 대한 키보드 경로 테스트 통과(FR-A11Y-002)
 - [x] 그레이스케일 렌더 스냅샷에서 공개 30개 컴포넌트와 상태 7종·심각도 4종 구분이 유지됨(FR-A11Y-003)
 - [x] OD-002 결정에 따라 시각 회귀 검사를 REL-004로 이월했다(CR-005, §8)
@@ -136,3 +137,22 @@ Conductor Design System은 `@conductor-by-89soone/tokens`, `@conductor-by-89soon
 ## CR-041 검증 게이트
 
 build 후 typecheck; test/lint/lint:deps/lint:tokens/check:contrast/test:a11y/test:visual/size/check:api/check:changesets/check:secrets를 실제 root script 계약으로 실행한다. Button gzip 4KB·CSS gzip20KB 상한을 유지한다. tarball 3패키지 일관 설치 후 React18/19 Vite와 Next App Router build/hydration/E2E를 따로 기록한다. 세 합성 흐름의 탐색·선택·복귀·관계 해석과 상태/테마/폭 matrix는 단위 검사와 별개다. 정식 handoff baseline 부재와 미실행 환경 게이트를 통과로 바꾸지 않는다.
+
+## 1.0 준비도 (CR-075, FR-DX-006)
+
+1.0.0은 아래 표가 모두 `충족`이고 OD-005 ~ OD-008이 닫힌 뒤, 사용자 지시로만 발행한다(REL-005). 2026-10-24 측정이다.
+
+| 기준 | 현재 상태 | 판정 | 남은 일 |
+| --- | --- | --- | --- |
+| AC-1·AC-2 ① `exports` 진입점 | css는 `packages/css/test/exports.test.ts`가 선언·해석을 시험한다. tokens·react는 크기 검사와 로컬 소비자 스크립트(`scripts/check-consumer.mjs`)가 간접으로만 닿는다 | 부분 | tokens·react `exports` 시험 |
+| AC-1·AC-2 ② React export·props, ③ 토큰 키·`--cdt-*` 이름 | `pnpm check:api`가 CI verify 잡에서 커밋된 리포트(**react.api.md**, **tokens.api.md**, **tokens-breakpoints.api.md**)와 대조한다 | 충족 | — |
+| AC-1·AC-2 ④ `cdt-*` 클래스 이름 | `class-contract.test.ts`는 React와 CSS가 서로 맞는지만 본다. 커밋된 클래스 목록 기준이 없어, 컴포넌트와 규칙을 함께 지우거나 이름을 바꾸면 CI가 잡지 못한다 | 미충족 | 클래스 목록 기준 리포트와 대조 검사 |
+| AC-1 ⑤ `data-*`, ⑥ `@layer`, ⑦ CLI | `data-cdt-theme`(API-THM-001)과 레이어 순서(`bundle.test.ts`)는 시험된다. 문서화된 `data-*` 상태 속성 목록과 CLI 옵션의 기준은 없다 | 부분 | 목록화 |
+| AC-3 폐기 절차 | API 계약 §6.4가 절차를 정한다. `@deprecated`가 붙은 공개 API는 0건이고, 개발 빌드 폐기 경고 장치는 없다 | 미충족 (해당 시) | 첫 폐기 때 경고 장치 |
+| AC-4 CI 잡 | verify(Node 20·22)·docs e2e·visual regression이 PR #87 head `3b4ea34`에서 녹색 | 충족 | 1.0 후보 커밋에서 다시 |
+| AC-4 NFR-005 매트릭스 | CI는 Node 20·22 × Chromium·React 19만 실행한다. React 18 소비자 검사는 로컬 스크립트이고 CI 잡이 없다. Firefox·Safari·Edge는 실행하지 않는다(DEV-065) | 미충족 | React 18 소비자 잡, 브라우저 매트릭스 |
+| AC-4 FR 상태 | 원장 §3 매핑 표 56행이 모두 `검증됨`. FR-CMP-010 ~ FR-CMP-013은 §3 표 대신 CR-041 WP 표(WP-029 ~ WP-032 `done`)에 있다. FR-DX-006은 이 표가 판정한다 | 부분 | FR-CMP-010 ~ 013을 §3 표로 |
+| AC-4 open DEV | DEV-049(사용자 승인 audit 예외, 패치 없는 개발 도구 전이 의존), DEV-064(CR-073, CI 확인 뒤 닫힘), DEV-065(이 표) | 미충족 | DEV-064·065 해소, DEV-049는 예외 기록 유지 |
+| AC-5 실사용 검증 | agent-ai-platform 한 곳이 0.15.2를 쓴다(DS-PILOT-22). 로컬 재정의 목록은 원장에 없다 | OD-005 대기 | OD-005 결정, 재정의 목록 |
+| AC-6 컴포넌트 범위 | 공개 컴포넌트 67개 | OD-007 대기 | OD-007 결정 |
+| AC-7 버전 정렬 | tokens 0.14.0, css·react 0.15.2, 독립 버전 | OD-008 대기 | OD-008 결정 |

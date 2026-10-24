@@ -28,7 +28,10 @@
   .cdt-toast[data-swipe="cancel"] { transform: translateX(0); transition: transform var(--cdt-motion-fast); }
   .cdt-toast[data-swipe="end"] { animation: cdt-toast-exit var(--cdt-motion-exit) forwards; }
   @keyframes cdt-toast-enter { from { opacity: 0; transform: translateY(var(--cdt-space-3)); } to { opacity: 1; transform: none; } }
-  @keyframes cdt-toast-exit { from { opacity: 1; } to { opacity: 0; transform: translateX(var(--cdt-space-4)); } }
+  /* The viewport sits at the inline end, so a leaving toast drifts toward it: right, or left in RTL (CR-074). */
+  .cdt-toast { --cdt-toast-exit-shift: var(--cdt-space-4); }
+  .cdt-toast:dir(rtl) { --cdt-toast-exit-shift: calc(var(--cdt-space-4) * -1); }
+  @keyframes cdt-toast-exit { from { opacity: 1; } to { opacity: 0; transform: translateX(var(--cdt-toast-exit-shift)); } }
 
   /* DatePicker — the trigger looks like a field; the calendar sits in the shared popover surface. */
   .cdt-date-picker { display: inline-flex; align-items: center; justify-content: flex-start; inline-size: 100%; text-align: start; cursor: pointer; font: inherit; }
@@ -67,7 +70,8 @@
   .cdt-command__item { display: flex; align-items: center; justify-content: space-between; gap: var(--cdt-space-3); padding: var(--cdt-space-2) var(--cdt-space-3); border-radius: var(--cdt-radius-sm); color: var(--cdt-text-primary); cursor: pointer; }
   .cdt-command__item[data-highlighted] { background: var(--cdt-accent-soft); box-shadow: inset var(--cdt-border-width-emphasis) 0 0 var(--cdt-accent); }
   .cdt-command__item[data-disabled] { color: var(--cdt-text-muted); cursor: not-allowed; }
-  .cdt-command__shortcut { display: inline-flex; gap: var(--cdt-space-1); }
+  /* A shortcut reads left to right in any document, like the key caps inside it (CR-074). */
+  .cdt-command__shortcut { display: inline-flex; gap: var(--cdt-space-1); direction: ltr; }
   .cdt-command__empty { margin: 0; padding: var(--cdt-space-4); color: var(--cdt-text-muted); text-align: center; }
 
   /* Pagination — native buttons; the current page carries aria-current and a filled style. */

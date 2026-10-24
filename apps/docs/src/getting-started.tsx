@@ -19,6 +19,7 @@ const renderCode = 'import { Button } from "@conductor-by-89soone/react";\n\nexp
 const layersCode = "@layer cdt.reset, cdt.base, cdt.layout, cdt.component, cdt.utility;";
 const componentEntryCode = 'import "./layers.css"; // first: fixes the layer order\nimport "@conductor-by-89soone/css/component.css"; // no cdt.reset\nimport "./app.css";';
 const consumerLayersCode = "/* layers.css */\n@layer app.reset, cdt;\n\n/* app.css */\n@layer app.reset {\n  button, input, textarea, select { font: inherit; }\n}";
+const rtlCode = 'import { DirectionProvider } from "@conductor-by-89soone/react";\n\n// <html dir="rtl" lang="ar">\nexport function App({ children }) {\n  return <DirectionProvider dir="rtl">{children}</DirectionProvider>;\n}';
 const ssrThemeCode = 'try {\n  const saved = localStorage.getItem("conductor-theme");\n  document.documentElement.dataset.cdtTheme = saved === "light" || saved === "dark" ? saved : matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";\n} catch {\n  document.documentElement.dataset.cdtTheme = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";\n}';
 
 const requirements = [
@@ -130,7 +131,13 @@ export function GettingStarted() {
           <Banner tone="warning"><span>Place this snippet in <code>&lt;head&gt;</code> before application JavaScript to avoid a theme flash.</span></Banner>
         </Step>
 
-        <Step id="build-order" number="08" title="Build order">
+        <Step id="rtl" number="08" title="Right-to-left">
+          <p className="docs-step-item__note">Set <code>dir="rtl"</code> on the document and wrap the app in <code>DirectionProvider</code>. The stylesheet mirrors from <code>dir</code> alone; the provider tells Radix-based components, whose arrow keys and layout would otherwise stay left to right. Code, key caps and monospaced values keep reading left to right.</p>
+          <DocsCode language="tsx" code={rtlCode} />
+          <Banner tone="info"><span><code>Toast.Provider</code> does not read the direction: pass <code>swipeDirection="left"</code> so a toast is swiped toward the edge it sits on.</span></Banner>
+        </Step>
+
+        <Step id="build-order" number="09" title="Build order">
           <p className="docs-step-item__note">Each package consumes only the one before it. A reverse reference is a build error, which keeps the stylesheet usable without React.</p>
           <ol className="docs-chain" role="list" aria-label="Build order">
             {buildOrder.map((name, index) => (

@@ -1,6 +1,6 @@
 # Conductor Design System 프론트엔드 아키텍처
 
-> 상태: review | 버전: v0.9 | 갱신일: 2026-10-24
+> 상태: review | 버전: v0.10 | 갱신일: 2026-10-24
 
 ## 1. 목적과 두 개의 프론트엔드
 
@@ -172,6 +172,7 @@ Radix가 소유하는 DOM에는 구조 셀렉터를 쓰지 않고 `data-state`, 
 | 접근성 | Vitest 브라우저 모드(Playwright chromium) + axe-core 4.x | 컴포넌트 × 상태 × 테마 2종 | FR-QA-003, JOB-CI-002 |
 | 시각 회귀 | Playwright 1.61.1 스냅샷, 고정 컨테이너 이미지 | 공개 컴포넌트 전부 × 테마 2종 + 오버레이 열린 상태 11개 × 2 (CR-068) + 상태 컴포넌트 9개 강제 색 (CR-071) | FR-QA-004, JOB-CI-003 |
 | 강제 색 모드 | Playwright `emulateMedia({ forcedColors: "active" })`, 계산값 판정 (`apps/docs/e2e/forced-colors.spec.ts`) | 공개 컴포넌트 전부의 포커스 외곽선 + 상태 표시 15건 (CR-071, JOB-CI-005 — CR-072) | FR-A11Y-001 AC-5, FR-A11Y-003 AC-5 |
+| 읽기 방향 (RTL) | Vitest jsdom(`direction.test.tsx`) + Vitest 브라우저(`component-css.browser.test.tsx`) | Radix 루트 `dir`·RTL 화살표 이동·DatePicker 달력 방향, Switch 손잡이 미러링, 코드·키 캡·고정폭·도구 이름 `ltr isolate` (CR-074) | FR-CSS-006 |
 | 토큰 계약 | Vitest | 두 테마 semantic 키 대칭 | FR-QA-001 |
 | 타입 | `tsc --noEmit` + api-extractor 7.x | `any` 0건, 내부 타입 누출 0건 | FR-DX-002 |
 

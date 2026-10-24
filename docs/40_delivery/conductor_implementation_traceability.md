@@ -1,6 +1,6 @@
 # Conductor Design System 구현 추적 원장
 
-> 상태: review | 버전: v0.60 | 갱신일: 2026-10-24
+> 상태: review | 버전: v0.62 | 갱신일: 2026-10-24
 
 ## 1. 목적과 갱신 규칙
 
@@ -219,6 +219,7 @@ PR Search 소비처의 `DEV-380`이 트리거다: 화면 계약이 최대 20계�
 | FR-CSS-003 | `packages/css/src/layout.css`, `packages/css/build.mjs` | `packages/css/test/bundle.test.ts` | WP-009 | 검증됨 (AC-1~AC-4. 5개 클래스가 `cdt.layout`에 존재, split 800px·card-grid 560px 반응형 단일 컬럼, 최소 열 토큰 값 320px의 `auto-fill`, 색상 속성 0건) |
 | FR-CSS-004 | `packages/css/src/components.css`, `packages/react/src/action.tsx`, `src/surface.tsx` | `packages/css/test/bundle.test.ts`, `packages/react/src/testing/action.test.tsx`, `surface.test.tsx`, `a11y.browser.test.tsx` | WP-012, WP-024 | 검증됨 (AC-1~AC-4. 접두사/BEM·구조 셀렉터 금지를 정적 검사하고, raw `cdt-btn cdt-btn--primary`와 React `Button variant="primary"`의 핵심 계산 스타일이 Chromium에서 일치) |
 | FR-CSS-005 | `packages/css/src/base.css`, `src/components.css` | `packages/css/test/bundle.test.ts`, `apps/docs/visual/visual.spec.ts` | WP-008, WP-026 | 검증됨 (AC-1~AC-4 및 예외 처리. CR-014로 컴포넌트 전환을 live `--cdt-motion-*`에 연결하고 테마 선언보다 감소 모드 재정의 명시도를 높였다. standalone Chromium에서 media match=true, 모션 토큰·transition·animation 계산값 전부 0s를 확인) |
+| FR-CSS-006 | `packages/css/src/components.css`, `src/controls.css`, `src/agent.css`, `src/utility.css`, `packages/react/src/direction.tsx`, `src/date-picker.tsx`, `apps/docs/src/getting-started.tsx` | `packages/react/src/testing/direction.test.tsx`, `src/testing/component-css.browser.test.tsx`, `apps/docs/e2e/guides.spec.ts` | CR-074 | 검증됨 (AC-1~AC-5, 로컬. Radix 루트 `dir`·RTL ArrowLeft 다음 탭·DatePicker 달력 방향은 공급자를 뺀 빌드에서 실패함을 확인, Switch 손잡이 부호·`ltr isolate` 네 클래스는 브라우저 계산값) |
 | FR-CMP-001 | `packages/react/src/cx.ts`, `src/types.ts`, `src/testing/contract.tsx`, `src/testing/public-components.ts` | `src/testing/contract.test.tsx`, `src/testing/public-components.test.ts`, 컴포넌트군별 테스트 | WP-011, WP-012~017, WP-023 | 검증됨 (공개 30개 전수에 ref 전달·className 병합·data/aria 통과·네이티브 props 공유 계약을 실행하고 registry가 테스트 파일·SSR을 강제) |
 | FR-CMP-002 | `packages/react/src/action.tsx`, `packages/css/src/components.css` | `packages/react/src/testing/action.test.tsx`, `packages/css/test/bundle.test.ts` | WP-012 | 검증됨 (AC-1~AC-5 및 loading+disabled 예외. Button 3 variant, loading click 차단, IconButton aria-label 타입, native disabled/blocked) |
 | FR-CMP-003 | `packages/react/src/surface.tsx`, `packages/css/src/components.css`, `src/data.tsx` | `packages/react/src/testing/surface.test.tsx`, `data.test.tsx`, `packages/css/test/bundle.test.ts` | WP-012, WP-014 | 검증됨 (AC-1~AC-4. Card의 대화형 요소 전환·상승·중첩 경고와 Table 자체 스크롤 컨테이너를 검증.) |
@@ -251,6 +252,7 @@ PR Search 소비처의 `DEV-380`이 트리거다: 화면 계약이 최대 20계�
 | FR-DX-003 | `packages/tokens/package.json`, `packages/css/package.json`, `packages/react/package.json`, `packages/react/tsup.config.ts`, `scripts/check-size.mjs`, `.github/workflows/ci.yml` | `packages/tokens/src/index.test.ts`, `packages/css/test/exports.test.ts`, `packages/react/src/index.test.ts`, `pnpm size` 음성 픽스처 | WP-003, WP-008, WP-011, WP-025 | 검증됨 (AC-1~AC-4 및 예외 처리. 공개 exports·peer 선언과 React `sideEffects: false`·CSS `*.css` 보존을 검증한다. 멀티 엔트리 청크에서 Button 단독 gzip 527바이트/4KB, CSS 전체 7,720바이트/20KB이며 초과 시 exit 1과 기여 모듈을 출력한다.) |
 | FR-DX-004 | `packages/react/src/testing/ssr.tsx`, `src/testing/public-components.ts`, `apps/docs/src/main.tsx`, `App.tsx` | `ssr.test.tsx`, `hydration.browser.test.tsx`, `apps/docs/e2e/shell.spec.ts` | WP-011, WP-018, WP-023 | 검증됨 (AC-1 공개 30개 renderToString 예외 0, AC-2 browser-global 접근 0, AC-3 공개 30개 server root 보존·recoverable error 0. 문서 `/` 프리렌더 DOM 보존과 딥링크 불일치 client mount 경계를 실제 Chromium에서 검증) |
 | FR-DX-005 | `.changeset/config.json`, `scripts/check-changesets.mjs`, `scripts/is-version-packages-commit.mjs`, `scripts/check-api.mjs`, `scripts/check-release-tags.mjs`, `scripts/release-rollback.mjs`, `.github/workflows/release.yml` | `check:changesets`·version commit 양성/음성 분류·`check:api` 음성 픽스처, `changeset version`, 0.1.0/0.1.1 OIDC publish·provenance, annotated tag local/remote 검증, npm rollback 실증 | WP-027 | 검증됨 (AC-1 드리프트 exit 1 + major 규약, AC-2 CHANGELOG Refs와 LF/CRLF 동일 파싱, AC-3 react-only 0.1.1 bump 실증, AC-4 마이그레이션 노트 강제. 일반 commit의 `status --since`는 유지하고 이미 Changeset을 소비한 bot version commit만 구조 검증 후 skip. Release runs 29569125471·29586062062와 323.8초 실제 롤백으로 외부 경로까지 확인) |
+| FR-DX-006 | — (기준 정의, CR-075) | 검증 계획 §1.0 준비도 표 | REL-005 | 미착수 (1.0 미발행. 준비도 표 미충족 4·부분 3·OD 대기 3, OD-005 ~ OD-008 open) |
 | FR-QA-001 | `src/theme-contract.ts`, `src/token-source.ts` | `src/theme-contract.test.ts` | WP-006, WP-010 | 검증됨 (AC-1~AC-3. 실제 dark/light semantic·component 키 대칭과 `themeSpecific` 예외를 검사. `derivePalette`가 base에 없는 override 키를 `TOK-THEME-KEY`로 막아, 키 집합 비교만으로는 보이지 않는 오타 경로를 닫는다 — CR-035) |
 | FR-QA-002 | `packages/react/src/testing/public-components.ts`, `src/testing/contract.tsx` | `src/testing/public-components.test.ts`, `src/testing/contract.test.tsx`, `src/testing/shell.test.tsx` | WP-011, WP-012~017, WP-023 | 검증됨 (AC-1 공개 30개 전수 테스트 파일·SSR registry, AC-2 FR/AC 명명, AC-3 공유 스위트와 컴포넌트군별 상호작용 테스트를 검증.) |
 | FR-QA-003 | `vitest.a11y.config.ts`, `packages/react/src/testing/a11y-scenarios.tsx`, `axe-allowlist.json`, `.github/workflows/ci.yml` | `packages/react/src/testing/a11y.browser.test.tsx` | WP-024 | 검증됨 (공개 30개를 덮는 49개 기본/disabled/error/interactive/open scenario × 다크·라이트 = 98 axe 실행, serious/critical 0건. 유한 진입 animation 완료 뒤 안정 상태를 감사하고 무한 Spinner는 대기만 제외한다. 정상 164 passed/1 negative fixture skipped를 4회 연속 확인. fixture 활성화 시 `button-name(critical)` 검출과 exit 1을 실증. JSON report와 실패 screenshot을 30일 보존) |
@@ -264,6 +266,7 @@ PR Search 소비처의 `DEV-380`이 트리거다: 화면 계약이 최대 20계�
 
 | DEV ID | 발견일 | 유형 | 내용 | 관련 ID | 처리 CR | 상태 |
 | --- | --- | --- | --- | --- | --- | --- |
+| DEV-065 | 2026-10-24 | 검증 편차 | **NFR-005 호환성 매트릭스의 일부가 CI에서 실행되지 않는다.** NFR-005와 검증 계획 §2는 React 18·19와 지원 브라우저(Chrome·Firefox·Safari·Edge 최근 2개 메이저)를 CI 매트릭스로 잰다고 적는다. `ci.yml`의 매트릭스는 Node 20·22뿐이고, 저장소 개발 의존성은 React 19.2.7, 브라우저 시험은 Chromium뿐이다. React 18 설치 소비자 검사(`scripts/check-consumer.mjs`의 `vite18` 고정 장치)는 있지만 CI 잡과 `package.json` 스크립트에 연결돼 있지 않다 | NFR-005, FR-DX-006 AC-4 | CR-075 | open |
 | DEV-064 | 2026-10-24 | 구현 편차 | **문서 사이트 컴포넌트 페이지에서 폭 약 850px 미만일 때 Table 예제 오른쪽이 잘리고 닿을 수 없었다.** `.docs-stage > .docs-preview`가 grid 항목 기본값 `min-width: auto`로 표의 800px 최소 폭까지 넓어져 스테이지의 `overflow: hidden`에 잘렸다. 표 자체 스크롤러는 동작하지 않았다. 2026-10-24 품질 재평가의 320·560·800px 측정에서 발견 | FR-DOC-003, FR-CMP-005 | CR-073 | open |
 | DEV-063 | 2026-10-23 | 문서/CI 불일치 | **검증 계획은 문서 사이트 Playwright E2E(`pnpm test:e2e`)를 PR·main 게이트로 적었지만, `.github/workflows/ci.yml`은 그 명령을 실행하지 않는다.** CI의 `verify`는 `pnpm test`·`test:a11y`·`lighthouse` 등을 돌리고, `visual regression`은 `test:visual`만 돌린다. 그래서 `apps/docs/e2e/*.spec.ts`(CR-071의 `forced-colors.spec.ts` 포함 86건)는 로컬에서만 실행돼 왔다. CR-071의 PR #85 CI 로그를 확인하다 발견. CR-071의 강제 색 상태는 CI에서 `bundle.test.ts`(선언)와 강제 색 기준 이미지 9장이 막고, 계산값 판정과 67개 컴포넌트 포커스 전수는 로컬 게이트다. 해결(CI에 문서 E2E 잡 추가 또는 검증 계획 정정)은 사용자 결정 대기. 잡을 추가하면 `screens.spec.ts` QA-003·QA-004 포커스 순서 시험(로컬 23~26초, 기본 한도 30초)의 시간 여유부터 다뤄야 한다 | FR-DOC-001~007, FR-A11Y-001 AC-5, FR-A11Y-003 AC-5 | CR-072 (DEV-048의 중복. CR-071이 기록) | closed |
 | DEV-062 | 2026-10-22 | 문서/코드 불일치 | **SRS 두 조항이 라이트 장식 경계에 서로 다른 것을 요구했고, 구현은 어느 쪽도 온전히 따르지 않았다.** FR-THM-002 AC-3은 라이트 `border.subtle`·`default`·`strong`에 비텍스트 3:1을, FR-THM-005 AC-4(OD-001)는 같은 토큰을 대비 검사 제외로 정했다. 토큰 명세 6.3은 AC-3을 따라 `border.default`·`border.strong`을 불투명 중간 회색(`surface.raised` 위 4.36·5.52)으로 정해 다크(1.37·1.75)의 세 배 무게가 되었고 컨트롤 경계(4.63)와 구분되지 않았다. 그러면서 `border.subtle` `#e2e8f0`은 1.04~1.23으로 AC-3도 지키지 못했다. 이를 검사하는 시험은 없었다. 사용자 지적(2026-10-22, 라이트 테두리가 어정쩡하다)에서 발견 | FR-THM-002, FR-THM-005 | CR-065 | closed |
@@ -746,3 +749,23 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | 문서 사이트 | `apps/docs/src/styles/catalog.css`(`.docs-stage > .docs-preview { min-width: 0 }`) |
 | 시험 | `apps/docs/e2e/catalog.spec.ts` CR-073 1건(320px에서 67개 미리보기가 스테이지 안, Table 스크롤러 스크롤 가능·`tabindex=0`). 수정 전 빌드에서 실패, 수정 후 통과 |
 
+### CR-074 오른쪽→왼쪽(RTL) 문서 (2026-10-24)
+
+| 범위 | 결과 |
+| --- | --- |
+| 요구사항 | SRS v1.24 §34 FR-CSS-006(Should) 신설. PRD v0.17, RTM v0.18, 용어집 v0.8(읽기 방향) |
+| css | `components.css`(Switch 손잡이 `--cdt-switch-thumb-travel`, 모바일 내비게이션 `--cdt-shell-enter-shift`, 코드 블록·키 캡 `ltr isolate`), `controls.css`(토스트 퇴장 `--cdt-toast-exit-shift`, 단축키 `direction: ltr`), `agent.css`(최신으로 버튼 물리 가운데 정렬, 도구 이름 `ltr isolate`), `utility.css`(건너뛰기 링크 논리 속성, `cdt-mono` `ltr isolate`) |
+| react | `src/direction.tsx`(`DirectionProvider`·`useDirection` 재수출, `"use client"` 진입점), `src/index.ts`, `tsup.config.ts`, `src/date-picker.tsx`(`useDirection()`을 DayPicker `dir`로), `package.json`(`@radix-ui/react-direction@1.1.4`, lockfile에 이미 있던 단일 버전), `etc/react.api.md` |
+| 문서 사이트 | `apps/docs/src/getting-started.tsx` 08 Right-to-left 단계(Build order는 09), `packages/react/README.md`·`packages/css/README.md` RTL 안내 |
+| 시험 | `direction.test.tsx` 4건(공급자 없음 `ltr`, 공급자 아래 Tabs·RadioGroup·ToggleGroup `rtl`, 세 탭에서 ArrowLeft 다음·ArrowRight 이전, DatePicker 달력 `rtl`). `component-css.browser.test.tsx` 2건(Switch 손잡이 LTR·RTL 부호 반대, 코드 블록·키 캡·`cdt-mono`·도구 이름 `ltr isolate`이고 둘레 블록은 `rtl`). `guides.spec.ts` Getting Started RTL 단계 |
+| changeset | **rtl-direction-provider.md**(react minor), **rtl-mirroring.md**(css patch) |
+| 검증 (로컬) | build, typecheck, test 877/877, lint, lint:tokens, size(Button 1.33 KiB, index.css 14.51 KiB), check:api, check:changesets, test:a11y 361 통과(1 skip) |
+
+### CR-075 1.0 안정화 기준 (2026-10-24)
+
+| 범위 | 결과 |
+| --- | --- |
+| 요구사항 | SRS v1.25 §35 FR-DX-006(Should) 신설, §14 OD-005 ~ OD-008 open. PRD v0.18, RTM v0.19, 용어집 v0.9(공개 계약) |
+| 전달 | 로드맵 v0.5 REL-005, 검증 계획 v0.15 §1.0 준비도 표, API 계약 v0.15 §6.5 |
+| 편차 | DEV-065 open(NFR-005 매트릭스 CI 미실행). 기준 정의 중 문서와 CI를 대조해 발견했다 |
+| 코드 | 없음. 1.0 발행 없음 |

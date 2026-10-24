@@ -7,6 +7,7 @@ import * as RadixPopover from "@radix-ui/react-popover";
 import { DayFlag, DayPicker, SelectionState, UI, type DayPickerProps, type Matcher } from "react-day-picker";
 import { forwardRef, useContext, useState, type ButtonHTMLAttributes } from "react";
 import { cx } from "./cx";
+import { useDirection } from "./direction";
 import { FieldContext, useFieldControl } from "./form";
 import { DEFAULT_DATE_PICKER_LABELS, type DatePickerLabels } from "./labels";
 
@@ -44,6 +45,8 @@ export const DatePicker = forwardRef<HTMLButtonElement, DatePickerProps>(functio
   const field = useContext(FieldContext);
   const control = useFieldControl(invalid, ariaDescribedBy);
   const [open, setOpen] = useState(defaultOpen);
+  // The calendar's arrow keys and month buttons follow the reading direction (FR-CSS-006, CR-074).
+  const direction = useDirection();
   return <RadixPopover.Root open={open} onOpenChange={setOpen}>
     <RadixPopover.Trigger asChild>
       <button
@@ -69,6 +72,7 @@ export const DatePicker = forwardRef<HTMLButtonElement, DatePickerProps>(functio
           startMonth={startMonth}
           endMonth={endMonth}
           locale={locale}
+          dir={direction}
           defaultMonth={value}
           autoFocus
           classNames={CLASS_NAMES}

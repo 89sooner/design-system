@@ -618,6 +618,19 @@
     font-family: var(--cdt-font-mono);
   }
 
+  /*
+   * Code, key caps and monospaced values read left to right in any document. Without this a right-to-left page
+   * reordered their punctuation and digits by the bidi algorithm: `"limit": 5` rendered as `limit": 5"`, `⌘K` as
+   * `K⌘` (CR-074, FR-CSS-006). `isolate` keeps them from reordering the text around them.
+   */
+  .cdt-code-block__pre,
+  .cdt-kbd {
+    direction: ltr;
+    unicode-bidi: isolate;
+  }
+
+  .cdt-code-block__pre { text-align: left; }
+
   .cdt-code-block__code {
     font-family: inherit;
   }
@@ -1049,11 +1062,18 @@
     border-radius: var(--cdt-radius-pill);
     background: var(--cdt-text-primary);
     box-shadow: 0 1px 2px var(--cdt-surface-overlay); /* cdt-allow-literal: source thumb shadow geometry */
-    transform: translateX(-9px); /* cdt-allow-literal: source switch unchecked thumb offset */
+    transform: translateX(calc(var(--cdt-switch-thumb-travel) * -1));
     transition: transform var(--cdt-motion-bounce);
   }
 
-  .cdt-switch__thumb[data-state="checked"] { transform: translateX(9px); /* cdt-allow-literal: source switch checked thumb offset */ }
+  /*
+   * The thumb travels along the inline axis: off at the inline start, on at the inline end. `translateX` is
+   * physical, so the travel flips sign in a right-to-left document (CR-074, FR-CSS-006).
+   */
+  .cdt-switch { --cdt-switch-thumb-travel: 9px; /* cdt-allow-literal: source switch thumb offset */ }
+  .cdt-switch:dir(rtl) { --cdt-switch-thumb-travel: -9px; /* cdt-allow-literal: source switch thumb offset, mirrored */ }
+
+  .cdt-switch__thumb[data-state="checked"] { transform: translateX(var(--cdt-switch-thumb-travel)); }
 
   .cdt-switch[data-state="checked"] .cdt-switch__thumb {
     background: var(--cdt-text-inverse);
@@ -1368,8 +1388,15 @@
     display: none;
   }
 
+  /*
+   * The mobile navigation sits at the inline start, so it slides in from the left, or from the right in RTL (CR-074).
+   * It renders in a portal outside `.cdt-app-shell`, so the shift lives on the navigation itself.
+   */
+  .cdt-app-shell__nav[data-mobile] { --cdt-shell-enter-shift: -105%; }
+  .cdt-app-shell__nav[data-mobile]:dir(rtl) { --cdt-shell-enter-shift: 105%; }
+
   @keyframes cdt-shell-enter {
-    from { transform: translateX(-105%); }
+    from { transform: translateX(var(--cdt-shell-enter-shift)); }
     to { transform: translateX(0); }
   }
 

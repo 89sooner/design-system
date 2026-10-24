@@ -1,6 +1,6 @@
 # Conductor Design System 최종 요구사항 정의서
 
-> 상태: baseline | 버전: v1.23 | 갱신일: 2026-10-24
+> 상태: baseline | 버전: v1.25 | 갱신일: 2026-10-24
 
 ## 1. 문서 개요
 
@@ -36,11 +36,11 @@ Conductor는 `agent-ai-platform/packages/web`의 시각 언어를 3개 npm 패�
 
 1. 3계층 디자인 토큰 소스와 CSS/TypeScript/JSON 산출 빌드 — FR-TOK-001 ~ FR-TOK-009
 2. 다크(기준) 및 라이트 테마, 시스템 설정 연동, 테마별 대비 검증, 소스 계승 토큰의 접근성 교정 — FR-THM-001 ~ FR-THM-005
-3. 캐스케이드 레이어 기반 프레임워크 비종속 스타일시트 — FR-CSS-001 ~ FR-CSS-005 (CR-069 보강 FR-CSS-001 AC-5, §30; CR-071 정정 FR-CSS-002 AC-3, §32)
+3. 캐스케이드 레이어 기반 프레임워크 비종속 스타일시트 — FR-CSS-001 ~ FR-CSS-005 (CR-069 보강 FR-CSS-001 AC-5, §30; CR-071 정정 FR-CSS-002 AC-3, §32) 및 CR-074 확장 FR-CSS-006 오른쪽→왼쪽(RTL) 문서 (§34)
 4. React 프리미티브 컴포넌트 — 기존 FR-CMP-001 ~ FR-CMP-009 및 CR-041 확장 FR-CMP-010 ~ FR-CMP-013 (§17, review)
 5. 정적 문서 사이트 — FR-DOC-001 ~ FR-DOC-007 및 CR-048 확장 FR-DOC-008 (§18), CR-051 확장 FR-DOC-009 (§19), CR-052 확장 FR-DOC-010 (§20), CR-053 보강 FR-DOC-001 AC-5·FR-CMP-013 AC-5 (§21), CR-054 확장 FR-CMP-014 (§22), CR-060 확장 FR-CMP-015 (§24), CR-061 확장 FR-CMP-016 (§25), CR-063 보강 FR-CMP-015 AC-7 (§26), CR-064 보강 FR-THM-005 AC-8·FR-CMP-004 AC-7·FR-CMP-010 AC-6 (§27), CR-065 정정·보강 FR-THM-002 AC-3·AC-5·FR-CMP-013 AC-6 (§28), CR-067 정정 FR-CMP-013 AC-6 (§29), CR-071 정정 FR-CMP-013 AC-6 (§32)
 6. WCAG 2.1 AA 접근성 기준선 — FR-A11Y-001 ~ FR-A11Y-005 (CR-071 보강 FR-A11Y-001 AC-5·FR-A11Y-003 AC-5, §32)
-7. 모노레포 빌드, 타입 배포, 진입점 선언, SSR 안전성, 버저닝 — FR-DX-001 ~ FR-DX-005
+7. 모노레포 빌드, 타입 배포, 진입점 선언, SSR 안전성, 버저닝 — FR-DX-001 ~ FR-DX-005 및 CR-075 확장 FR-DX-006 1.0 안정화 기준 (§35)
 8. 토큰 계약·단위·접근성·시각 회귀 검사 — FR-QA-001 ~ FR-QA-004 (CR-068 정정·확대 FR-QA-004, §30; CR-071 보강 FR-QA-004 AC-6, §32)
 
 ### 4.2 Conditional Scope
@@ -963,7 +963,7 @@ OD-001(2026-07-10 종결)이 확정한 정책이다. 소스 팔레트를 실측�
 ## 13. 우선순위와 릴리스 전략
 
 - **Must**: FR-TOK-001 ~ FR-TOK-007, FR-THM-001 ~ FR-THM-005, FR-CSS-001 ~ FR-CSS-005, FR-CMP-001 ~ FR-CMP-008, FR-DOC-001 ~ FR-DOC-005, FR-A11Y-001 ~ FR-A11Y-005, FR-DX-001 ~ FR-DX-004, FR-QA-001 ~ FR-QA-003
-- **Should**: FR-QA-004 (CR-068, §30), FR-TOK-008, FR-TOK-009, FR-CMP-009, FR-DOC-006, FR-DOC-007, FR-DOC-008, FR-DOC-009, FR-DOC-010, FR-CMP-014, FR-CMP-015, FR-CMP-016, FR-DX-005
+- **Should**: FR-QA-004 (CR-068, §30), FR-TOK-008, FR-TOK-009, FR-CMP-009, FR-DOC-006, FR-DOC-007, FR-DOC-008, FR-DOC-009, FR-DOC-010, FR-CMP-014, FR-CMP-015, FR-CMP-016, FR-DX-005, FR-CSS-006 (CR-074, §34), FR-DX-006 (CR-075, §35)
 - **Deferred**: 없음. FR-QA-004는 OD-002에 따라 REL-004로 이월된 뒤 구현됐고 CR-068로 Should에 돌아왔다
 - **Could**: 없음
 - **Won't (이번 범위)**: 4.3 Out of Scope 표 전체
@@ -976,6 +976,10 @@ OD-001(2026-07-10 종결)이 확정한 정책이다. 소스 팔레트를 실측�
 | OD-002 | 시각 회귀 검사를 v1 릴리스 게이트에 포함하는가? | FR-QA-004 (Should) | QA | REL-003 착수 시점 | **closed (2026-07-10)** |
 | OD-003 | 필터/칩 컴포넌트군(F-CMP-010)을 v1에 넣는가? | FR-CMP-010 / CR-041 | Product | 2026-09-13 | resolved scope |
 | OD-004 | 셸 컴포넌트군을 `@conductor-by-89soone/react`에 넣는가, 문서 사이트 내부 컴포넌트로 두는가? | FR-CMP-009 (Should) | System Maintainer | REL-003 착수 시점 | **closed (2026-07-10)** |
+| OD-005 | 1.0의 실사용 검증에 소비자가 몇 곳, 얼마 동안 필요한가? 지금은 agent-ai-platform 한 곳이다 | FR-DX-006 AC-5 | Product (사용자) | REL-005 착수 전 | open |
+| OD-006 | 1.0 이후 같은 이름의 토큰 값·시각 변경(색·간격·반경·그림자)을 minor로 내는가, major로 내는가? | FR-DX-006 AC-1 | System Maintainer (사용자) | REL-005 착수 전 | open |
+| OD-007 | 1.0 전에 어떤 컴포넌트를 더하는가? 후보: Slider, Accordion, FileUpload, Tree, ContextMenu, Separator, Stack·Grid 레이아웃, Heading·Text 타이포그래피 | FR-DX-006 AC-6 | Product (사용자) | REL-005 착수 전 | open |
+| OD-008 | 세 패키지를 1.0.0으로 함께 올리고 이후에도 같은 버전으로 묶는가(lockstep), 지금처럼 패키지별로 올리는가? | FR-DX-006 AC-7 | System Maintainer (사용자) | REL-005 착수 전 | open |
 
 ### 14.1 종결된 결정
 
@@ -985,7 +989,7 @@ OD-001(2026-07-10 종결)이 확정한 정책이다. 소스 팔레트를 실측�
 
 ### 14.2 baseline 전 확인
 
-- **OD-001이 종결되어 Must FR인 FR-THM-004와 FR-A11Y-004를 더 이상 차단하지 않는다.** 모든 Must 우선순위 FR에 차단하는 open OD가 없다.
+- **OD-001이 종결되어 Must FR인 FR-THM-004와 FR-A11Y-004를 더 이상 차단하지 않는다.** 모든 Must 우선순위 FR에 차단하는 open OD가 없다. OD-005 ~ OD-008(CR-075)은 Should인 FR-DX-006의 1.0 발행만 막고, 0.x 릴리스는 막지 않는다.
 - OD-003의 범위 조건은 CR-041 요청으로 해소했고, 사용자가 2026-09-14에 확장 FR의 baseline을 승인했다.
 - 이 문서의 `baseline` 승격은 사용자 승인으로만 이루어진다.
 
@@ -1251,4 +1255,44 @@ v1.22 baseline 이력을 유지한다. 사용자가 2026-10-24 DEV-063을 "CI에
 | NFR | 변경 |
 | --- | --- |
 | NFR-003 | 강제 색 모드 지표의 측정 방법: `forced-colors.spec.ts`가 로컬이 아니라 PR마다 CI 잡 JOB-CI-005에서 실행된다 |
+
+## 34. CR-074 확장 요구 (baseline)
+
+v1.23 baseline 이력을 유지한다. 사용자가 2026-10-24 품질 재평가의 남은 한계를 추천 순서대로 개선하라고 지시했다("그대로 남은 한계를 개선하기 위해 추천 순서대로 작업 진행 하라"). 권고 2가 오른쪽→왼쪽(RTL) 문서였다.
+
+재평가에서 공개 컴포넌트 67개를 `dir="rtl"` 문서에 그려 쟀다. 배치는 대부분 논리 속성이라 Pagination·Breadcrumb·Meter·NavList·Banner·NumberInput·Drawer는 바르게 뒤집혔다(DEV-035·DEV-037이 앞서 고친 부분 포함). 그러나 넷이 틀렸다. ① Radix는 방향을 받지 못하면 `dir="ltr"`을 직접 써서, Tabs·RadioGroup·ToggleGroup·Select가 RTL 문서 안에서 왼쪽→오른쪽으로 그려지고 화살표 키가 거꾸로 움직였다. ② 코드 블록·키 캡·도구 이름이 양방향 알고리즘에 재배열됐다(`"limit": 5`가 `limit": 5"`로, `⌘K`가 `K⌘`로). ③ Switch 손잡이가 물리 `translateX`라 켜도 왼쪽에 머물렀다. ④ 모바일 내비게이션 진입·토스트 퇴장·대화의 "최신으로" 버튼 가운데 정렬·건너뛰기 링크가 물리 방향이었다. 요구가 없던 영역이라 새 FR을 둔다. 다국어 문자열 시스템 제외(§4.3)는 그대로다. 문구는 지금처럼 props로 받는다.
+
+#### FR-CSS-006 오른쪽→왼쪽(RTL) 문서
+
+| 항목 | 내용 |
+| --- | --- |
+| 상태 | approved |
+| 우선순위 | Should |
+| 출처 | CR-074 / 2026-10-24 사용자 실행 지시, 품질 재평가 권고 2 |
+| 요구사항 | 문서나 상위 요소가 `dir="rtl"`인 동안, 시스템은 모든 공개 컴포넌트의 배치·이동·키보드 방향을 읽기 방향에 맞춰 뒤집고, 코드·키 조합·고정폭 값은 왼쪽→오른쪽으로 유지하여야 한다. |
+| 수용 기준 | AC-1: 스타일시트는 배치를 논리 속성으로 두고, 물리 축이 필요한 이동(`translateX`)은 `:dir(rtl)`에서 부호를 뒤집는다. Switch 손잡이, Drawer 진입·퇴장, 모바일 내비게이션 진입, 토스트 퇴장이 대상이다. 가운데 정렬처럼 방향과 무관한 배치는 물리 `left: 50%`로 둔다. AC-2: `@conductor-by-89soone/react`는 `DirectionProvider`와 `useDirection`을 export한다(Radix `@radix-ui/react-direction` 재수출, 모든 Radix 패키지와 같은 인스턴스). 그 아래에서 Radix 루트(Tabs·RadioGroup·ToggleGroup·Select 등)는 `dir="rtl"`이 되고, DatePicker 달력도 같은 방향을 받는다. 공급자가 없으면 지금처럼 `ltr`이다. AC-3: RTL에서 가로 롤빙 포커스는 ArrowLeft가 다음 항목, ArrowRight가 이전 항목이다(Radix 위임, ADR-004). AC-4: `cdt-code-block__pre`·`cdt-kbd`·`cdt-mono`·`cdt-tool__name`은 `direction: ltr; unicode-bidi: isolate`이고, `cdt-command__shortcut`은 `direction: ltr`이다. 둘레 블록은 문서 방향을 유지한다. AC-5: 사용 안내(문서 사이트 Getting Started 또는 패키지 README)는 `<html dir="rtl">`과 `<DirectionProvider dir="rtl">`을 함께 두는 법과, `Toast.Provider`의 `swipeDirection`을 소비자가 정한다는 점을 적는다. |
+| 검증 방법 | test |
+| 관련 화면 | W-020, W-021 |
+| 관련 API/데이터 | API-CMP-013, API-PKG-002 / — |
+| 예외/실패 처리 | 문서 사이트 자체를 RTL로 번역하거나 RTL 시각 기준 이미지를 두는 일, 아이콘 글리프(화살표·셰브런) 미러링, 양방향 텍스트 입력의 커서 동작은 이 FR 범위가 아니다. `:dir()`을 지원하지 않는 브라우저(Chromium 120 미만, Safari 16.4 미만)에서는 AC-1의 이동이 LTR 방향으로 남는다. 새 런타임 의존성 `@radix-ui/react-direction@1.1.4`는 lockfile에 이미 있던 단일 버전으로 정확히 고정한다(보안 아키텍처 3.1, CR-058). |
+
+## 35. CR-075 확장 요구 (baseline)
+
+v1.24 baseline 이력을 유지한다. 사용자가 2026-10-24 품질 재평가의 남은 한계를 추천 순서대로 개선하라고 지시했다. 권고 3은 1.0 기준이었다. 세 패키지는 0.x(tokens 0.14.0, css·react 0.15.2)이고, SRS에는 1.0이 무엇을 약속하는지와 언제 1.0을 내는지가 없었다. 0.x에서는 minor가 시각을 바꿔 왔고(CR-064·066·067), 소비자는 어떤 변경이 깨질 수 있는지 버전만으로 알 수 없다. CR-075는 1.0의 공개 계약 범위·품질 게이트·실사용 검증을 정한다. 사용자만 정할 수 있는 넷은 OD-005 ~ OD-008로 남긴다. 이 FR은 1.0을 발행하지 않는다. 발행은 REL-005이고, 네 OD가 닫힌 뒤 사용자 지시로만 한다.
+
+#### FR-DX-006 1.0 안정화 기준
+
+| 항목 | 내용 |
+| --- | --- |
+| 상태 | approved |
+| 우선순위 | Should |
+| 출처 | CR-075 / 2026-10-24 사용자 실행 지시, 품질 재평가 권고 3 |
+| 요구사항 | 세 패키지의 1.0.0을 발행하기 전에, 시스템은 AC-1의 공개 계약을 검출 가능하게 고정하고 AC-4의 품질 게이트와 AC-5의 실사용 검증을 충족하여야 하며, 1.0.0 이후 공개 계약의 제거·이름 변경·의미 변경은 major 릴리스로만 내야 한다. |
+| 수용 기준 | AC-1 (공개 계약): ① 세 패키지 `package.json`의 `exports` 진입점, ② `@conductor-by-89soone/react`의 공개 export와 props 타입, ③ `@conductor-by-89soone/tokens`의 JS 키와 그 값이 가리키는 `--cdt-*` 커스텀 프로퍼티 이름, ④ 스타일시트의 `cdt-*` 클래스 이름, ⑤ `data-cdt-theme`과 문서화된 `data-*` 상태 속성, ⑥ `@layer cdt.*` 레이어 이름과 순서, ⑦ CLI 이름과 옵션. `cdt-` 클래스가 없는 DOM 구조와 Radix 내부 마크업은 계약이 아니다. 같은 이름의 토큰 값·시각 변경을 어느 버전으로 내는지는 OD-006이 정한다. AC-2 (검출): ①은 패키지별 `exports` 시험, ②·③은 `pnpm check:api`의 커밋된 API 리포트, ④는 커밋된 클래스 목록 기준과의 대조로 CI가 잡는다. 제거나 이름 변경이 major changeset 없이 들어오면 CI가 실패한다. AC-3 (폐기): 지울 공개 API는 최소 한 minor 동안 `@deprecated` JSDoc과 개발 빌드 1회 경고로 남기고, 다음 major에서 지운다. 클래스·커스텀 프로퍼티의 폐기는 changeset과 CHANGELOG에 적고 같은 기간 동안 유지한다. AC-4 (품질 게이트): 1.0 후보 커밋에서 CI의 verify(Node 20·22)·docs e2e·visual regression이 녹색이고, NFR-005 호환성 매트릭스(React 18·19, 지원 브라우저)가 CI에서 실행돼 통과하고, Must·Should FR이 모두 원장에서 `검증됨`이고, open DEV가 0건이다. 사용자가 명시적으로 예외를 승인한 DEV는 원장에 그 결정과 함께 남긴다. AC-5 (실사용 검증): 1.0 후보 버전을 OD-005가 정한 수의 소비자가 정한 기간 동안 쓰고, 각 소비자가 Conductor 클래스를 덮어쓴 로컬 재정의 목록을 원장에 남긴다. 재정의가 컴포넌트 결함을 가리키면 1.0 전에 고친다. AC-6 (범위): 1.0 컴포넌트 목록은 OD-007이 정한다. 목록 밖 컴포넌트는 1.0 이후 minor로 더한다. AC-7 (버전 정렬): 세 패키지의 버전 묶음 방식은 OD-008이 정한다. |
+| 검증 방법 | inspection, test |
+| 관련 화면 | 없음(간접 노출: CHANGELOG, W-002) |
+| 관련 API/데이터 | API-PKG-001 ~ API-PKG-003, API-CMP-001 ~ API-CMP-013 / JOB-REL-001 |
+| 예외/실패 처리 | 기준을 하나라도 채우지 못하면 1.0.0을 발행하지 않고 0.x를 이어 간다. 1.0.0 이후 계약 위반이 발행본에서 발견되면 그 변경을 되돌리는 patch를 내거나, 되돌릴 수 없으면 major와 마이그레이션 노트를 낸다(FR-DX-005 AC-4). |
+
+2026-10-24 현재 충족 상태는 검증 계획 §1.0 준비도 표가 기록한다. 이 절은 기준만 정한다.
 

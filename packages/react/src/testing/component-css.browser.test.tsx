@@ -1,4 +1,4 @@
-// Refs: CR-056 DEV-057 CR-057 CR-058 CR-062 CR-063 CR-064 CR-065 CR-066 CR-067 DEV-061 FR-A11Y-001 FR-CSS-002 FR-THM-005 FR-CMP-004 FR-CMP-010
+// Refs: CR-074 FR-CSS-006 CR-056 DEV-057 CR-057 CR-058 CR-062 CR-063 CR-064 CR-065 CR-066 CR-067 DEV-061 FR-A11Y-001 FR-CSS-002 FR-THM-005 FR-CMP-004 FR-CMP-010
 //
 // `@conductor-by-89soone/css/component.css` leaves out cdt.reset for consumers that bring their
 // own global reset. The focus ring must not depend on that reset: every keyboard stop that is a
@@ -7,12 +7,12 @@ import { page, userEvent } from "@vitest/browser/context";
 import { cleanup, render } from "@testing-library/react";
 import { afterEach, expect, test } from "vitest";
 import { NumberInput } from "../number-input";
-import { TextArea, TextField } from "../form";
+import { Switch, TextArea, TextField } from "../form";
 import { Badge, StatusBadge } from "../status";
 import { DataTable, DetailInspector, WorkbenchLayout } from "../workbench";
-import { PromptInput } from "../agent";
+import { PromptInput, Tool } from "../agent";
 import { Tabs } from "../interaction";
-import { Table } from "../data";
+import { CodeBlock, Kbd, Table } from "../data";
 import "@conductor-by-89soone/css/component.css";
 import "@conductor-by-89soone/css/agent.css";
 import { a11yScenarios } from "./a11y-scenarios";
@@ -310,3 +310,41 @@ test("CR-065: a table header steps toward the text colour — lighter than the r
   }
 });
 
+
+test("CR-074 FR-CSS-006 AC-1: in a right-to-left document the switch thumb travels the other way", () => {
+  const thumbX = (dir: "ltr" | "rtl", checked: boolean): number => {
+    const { container } = render(<div dir={dir}><Switch aria-label="Notify" checked={checked} onCheckedChange={() => {}} /></div>);
+    const thumb = container.querySelector(".cdt-switch__thumb");
+    if (thumb === null) throw new Error("no thumb");
+    const x = new DOMMatrix(getComputedStyle(thumb).transform).m41;
+    cleanup();
+    return x;
+  };
+  expect(thumbX("ltr", false)).toBeLessThan(0);
+  expect(thumbX("ltr", true)).toBeGreaterThan(0);
+  expect(thumbX("rtl", false)).toBe(-thumbX("ltr", false));
+  expect(thumbX("rtl", true)).toBe(-thumbX("ltr", true));
+});
+
+test("CR-074 FR-CSS-006 AC-4: code, key caps and tool names stay left to right and isolated in an rtl document", () => {
+  const { container } = render(
+    <div dir="rtl">
+      <CodeBlock code={'{ "limit": 5 }'} aria-label="Arguments" />
+      <Kbd>⌘K</Kbd>
+      <span className="cdt-mono">a1b2c3</span>
+      <Tool name="github.search_code" status="completed" />
+    </div>,
+  );
+  const read = (selector: string) => {
+    const element = container.querySelector(selector);
+    if (element === null) throw new Error(`missing ${selector}`);
+    const style = getComputedStyle(element);
+    return `${style.direction} ${style.unicodeBidi}`;
+  };
+  expect(read(".cdt-code-block__pre")).toBe("ltr isolate");
+  expect(read(".cdt-kbd")).toBe("ltr isolate");
+  expect(read(".cdt-mono")).toBe("ltr isolate");
+  expect(read(".cdt-tool__name")).toBe("ltr isolate");
+  // The surrounding block keeps the document's direction.
+  expect(getComputedStyle(container.querySelector(".cdt-code-block")!).direction).toBe("rtl");
+});

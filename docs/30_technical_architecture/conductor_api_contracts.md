@@ -1,6 +1,6 @@
 # Conductor Design System 패키지 공개 API 계약
 
-> 상태: review | 버전: v0.13 | 갱신일: 2026-10-22
+> 상태: review | 버전: v0.15 | 갱신일: 2026-10-24
 
 ## 0. 문서 재해석
 
@@ -43,6 +43,7 @@ Conductor Design System에는 HTTP API, 요청/응답 엔드포인트, 인증 �
 | API-CMP-010 | TS interface | 알림·날짜·명령·페이지(`Toast`, `DatePicker`, `CommandPalette`, `Pagination`, `filterCommands`, `paginationRange`) | FR-CMP-014 (CR-054) |
 | API-CMP-011 | TS interface | 확인·선택·식별·숫자 입력(`AlertDialog`, `RadioGroup`, `ToggleGroup`, `Avatar`, `NumberInput`, `avatarInitials`) | FR-CMP-015 (CR-060) |
 | API-CMP-012 | TS interface | 에이전트 대화(`Conversation`, `Message`, `PromptInput`, `Reasoning`, `Tool`, `Confirmation`, `Sources`, `InlineCitation`, `Suggestions`, `Suggestion`, `Shimmer`) | FR-CMP-016 (CR-061) |
+| API-CMP-013 | TS export | 읽기 방향(`DirectionProvider`, `useDirection`) | FR-CSS-006 (CR-074) |
 | API-DOC-001 | 정적 라우트 계약 | 문서 사이트 W-001~W-050 | 라우트/데이터 출처 매핑 | FR-DOC-001~007 |
 | API-DOC-002 | 에이전트 판독용 산출물 계약 | AI 코딩 에이전트, 소비자 | 정적 Markdown·텍스트 파일 경로와 구조 | FR-DOC-008 |
 
@@ -520,6 +521,8 @@ error[<CODE>]: <한 줄 요약>
 3. **비파괴 변경.** 신규 토큰/컴포넌트/props(선택적, 기본값 존재) 추가, 버그 수정으로 인한 시각적 보정(기존 토큰 키 유지).
 4. **deprecation 절차(FR-DX-005).** deprecated 대상에 `@deprecated` JSDoc 태그와 대체 경로를 명시하고 문서 사이트에 지원 종료 표식을 노출한다. 최소 1회의 minor 릴리스 동안 동작을 유지한 뒤, 다음 major에서 제거한다. 제거 시 `CHANGELOG`에 마이그레이션 노트를 포함한다(AC-4). 변경 이력이 없는 패키지는 버전을 올리지 않는다(AC-3).
 
+5. **1.0 이후 (CR-075, FR-DX-006).** 2의 파괴 변경 정의는 0.x에서도 major changeset을 요구하지만, 0.x 동안 의도된 시각 재설계는 minor로 냈다(CR-064·CR-066·CR-067). 1.0 이후 같은 이름의 값·시각 변경을 어느 버전으로 내는지는 OD-006이 정한다. 3의 버그 수정 보정은 그 결정과 무관하게 patch다.
+
 ## CR-041 확장 영향 (FR-CMP-010~013)
 
 API-PKG-003에 FR-CMP-010~013의 additive 표현 API를 추가한다. 검색 AST·서버 정렬·인가·URL/커서·관계 판정은 소비자 API다. Graph node/edge ID와 source/target을 소비자가 제공하고 라벨·근거는 텍스트로 렌더한다. 모든 export의 실제 서명은 생성 API report와 일치해야 한다.
@@ -631,3 +634,13 @@ export type TabsListProps = ComponentPropsWithoutRef<typeof RadixTabs.List> & {
 ```
 
 선택 prop과 새 타입 export만 있는 비파괴 추가라 react minor다. 새 클래스 `cdt-tabs__list--line`은 css minor다. 기본 모양이 밑줄형에서 세그먼트형으로 바뀌는 것은 이름이 같은 시각 변경이며, 밑줄형을 유지하려는 소비자는 `variant="line"`을 준다.
+
+## CR-074 API-CMP-013 (FR-CSS-006)
+
+```ts
+// @radix-ui/react-direction@1.1.4 재수출. 모든 Radix 프리미티브가 읽는 것과 같은 컨텍스트다.
+export { DirectionProvider, useDirection } from "@radix-ui/react-direction";
+// <DirectionProvider dir="rtl"> → Tabs·RadioGroup·ToggleGroup·Select 등의 루트가 dir="rtl", DatePicker 달력도 같은 방향
+```
+
+`direction` 진입점은 `"use client"` 경계를 가진다(FR-DX-004). 새 export만 있는 비파괴 변경이라 react minor다. `@conductor-by-89soone/css`의 RTL 미러링·LTR 고정은 클래스와 커스텀 프로퍼티 이름을 바꾸지 않으므로 css patch다. 새 런타임 의존성은 `@radix-ui/react-direction@1.1.4` 하나이고, 기존 Radix 패키지가 이미 같은 버전을 전이 의존으로 쓰고 있었다.

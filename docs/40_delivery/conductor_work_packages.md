@@ -1,6 +1,6 @@
 # Conductor Design System 작업 패키지
 
-> 상태: review | 버전: v0.15 | 갱신일: 2026-10-18
+> 상태: review | 버전: v0.16 | 갱신일: 2026-10-24
 
 ## 1. 목적
 
@@ -816,3 +816,52 @@ design-system/
 - 완료 기준(DoD): FR-CMP-016 AC-1~AC-10을 단위·브라우저 시험으로 증명한다.
 - 검증 방법: `testing/agent.test.tsx`, a11y·component-css 브라우저 시험(axe·키보드·포커스 링·커서)
 - 기록: 구현 원장 WP-039, FR-CMP-016 매핑
+
+## WP-040 오른쪽→왼쪽(RTL) 문서 (CR-074)
+
+- 릴리스: REL-004 (CR-074, react minor·css patch)
+- 관련 요구사항: FR-CSS-006
+- 관련 화면: W-002, W-020, W-021
+- 선행 WP: WP-039
+- 구현 범위: `components.css`·`controls.css`·`agent.css`·`utility.css`의 방향 변수와 `:dir(rtl)`, 코드·키 캡·고정폭 `ltr isolate`, `direction.tsx`(`DirectionProvider`·`useDirection` 재수출), DatePicker `dir`, Getting Started 08 단계, 두 패키지 README
+- 제외: 문서 사이트 RTL 번역, RTL 시각 기준 이미지, 아이콘 글리프 미러링, 양방향 입력 커서
+- 완료 기준(DoD): FR-CSS-006 AC-1~AC-5를 단위·브라우저·E2E 시험으로 증명한다.
+- 검증 방법: `testing/direction.test.tsx`, `component-css.browser.test.tsx` CR-074 2건, `e2e/guides.spec.ts`
+- 기록: 구현 원장 CR-074, FR-CSS-006 매핑
+
+## WP-041 공개 계약 검출 (CR-075)
+
+- 릴리스: REL-005
+- 관련 요구사항: FR-DX-006 AC-1·AC-2
+- 관련 화면: 없음
+- 선행 WP: WP-040
+- 구현 범위: 스타일시트 `cdt-*` 클래스 목록 기준 리포트와 대조 검사(`check:api`와 같은 갱신 방식), tokens·react `exports` 진입점 시험, 문서화된 `data-*` 상태 속성과 CLI 옵션 목록
+- 제외: 1.0 발행, 토큰 값 변경 등급 판정(OD-006)
+- 완료 기준(DoD): 클래스 하나를 지우거나 이름을 바꾼 변이에서 검사가 실패하고, 기준 갱신 명령으로만 통과한다.
+- 검증 방법: 변이 시험, CI verify 잡
+- 기록: 검증 계획 §1.0 준비도 표, 구현 원장 FR-DX-006
+
+## WP-042 NFR-005 호환성 매트릭스 CI (CR-075, DEV-065)
+
+- 릴리스: REL-005
+- 관련 요구사항: NFR-005, FR-DX-006 AC-4
+- 관련 화면: 없음
+- 선행 WP: 없음
+- 구현 범위: React 18 설치 소비자 검사(`scripts/check-consumer.mjs`)를 CI 잡으로, 문서 E2E 또는 브라우저 시험의 Firefox·WebKit 실행
+- 제외: 실기기 Safari·Edge 판매 채널 검사, 시각 기준 이미지의 브라우저별 복제
+- 완료 기준(DoD): PR CI에서 React 18·19 소비자와 지원 브라우저 엔진이 실행돼 통과하고, DEV-065를 닫는다.
+- 검증 방법: CI 실행 기록
+- 기록: 구현 원장 DEV-065, 검증 계획 §1.0 준비도 표
+
+## WP-043 1.0.0 발행 (CR-075)
+
+- 릴리스: REL-005
+- 관련 요구사항: FR-DX-006 AC-4 ~ AC-7, FR-DX-005
+- 관련 화면: W-002 (CHANGELOG 간접)
+- 선행 WP: WP-041, WP-042, OD-005 ~ OD-008 종결
+- 구현 범위: OD-005가 정한 실사용 검증 기록(소비자별 로컬 재정의 목록), OD-007 범위 확인, OD-008에 맞춘 major changeset과 마이그레이션 노트, 1.0 후보 커밋의 전 게이트 실행
+- 제외: 1.0 이후 컴포넌트 추가(minor)
+- 완료 기준(DoD): 검증 계획 §1.0 준비도 표가 모두 충족이고 사용자가 발행을 지시했다.
+- 검증 방법: inspection, CI 전 잡, JOB-REL-001 실행 기록
+- 기록: 구현 원장 REL-005, 변경 대장 CR-075 종료
+

@@ -1,6 +1,6 @@
 # 요구사항-화면 추적 매트릭스
 
-> 상태: review | 버전: v0.17 | 갱신일: 2026-10-23
+> 상태: review | 버전: v0.19 | 갱신일: 2026-10-24
 
 ## 1. 목적
 
@@ -78,6 +78,7 @@ UI가 없는 요구사항은 아래 표면 중 하나에 간접 노출된다.
 | FR-CSS-003 | Must | W-012 | SFC-PKG | — | 레이아웃 프리미티브 |
 | FR-CSS-004 | Must | W-020, W-021 | SFC-PKG | — | 컴포넌트 클래스 |
 | FR-CSS-005 | Must | W-014 | SFC-PKG | — | 모션 감소 |
+| FR-CSS-006 | Should | W-002, W-020, W-021 | SFC-PKG | — | RTL 문서: 이동 미러링, `DirectionProvider`, 코드·키 조합 LTR 고정 (CR-074) |
 | FR-CMP-001 | Must | W-021 | SFC-PKG | — | 공통 계약 |
 | FR-CMP-002 | Must | W-020, W-021 | SFC-PKG | FLOW-001 | 액션 |
 | FR-CMP-003 | Must | W-020, W-021 | SFC-PKG | FLOW-001 | 표면 |
@@ -107,6 +108,7 @@ UI가 없는 요구사항은 아래 표면 중 하나에 간접 노출된다.
 | FR-DX-003 | Must | W-002 | SFC-PKG | — | 진입점/부수효과 |
 | FR-DX-004 | Must | W-002 | SFC-PKG | — | SSR 안전성 |
 | FR-DX-005 | Should | — | SFC-REL | — | 버저닝 |
+| FR-DX-006 | Should | W-002 | SFC-REL, SFC-CI | — | 1.0 안정화 기준; OD-005 ~ OD-008 open (CR-075) |
 | FR-QA-001 | Must | — | SFC-CLI, SFC-CI, W-030 | FLOW-003 | 토큰 계약 |
 | FR-QA-002 | Must | — | SFC-CI, W-050 | FLOW-003 | 단위 검사 |
 | FR-QA-003 | Must | W-050 | SFC-CI | FLOW-003 | 접근성 검사 |
