@@ -1,0 +1,138 @@
+/*
+ * CR-076 FR-CMP-017: Separator, Stack, Grid, Heading, Text and Accordion.
+ * Layout and type primitives read only space, font and text tokens, so a consumer without React gets the
+ * same result from the classes alone (FR-CSS-004 AC-3). Accordion behaviour is owned by Radix.
+ */
+@layer cdt.component {
+  /* Separator: a native <hr> with the UA bevel removed. */
+  .cdt-separator {
+    flex-shrink: 0;
+    align-self: stretch;
+    margin: 0;
+    border: 0;
+    border-block-start: var(--cdt-border-width-hairline) solid var(--cdt-border-subtle);
+  }
+
+  .cdt-separator--vertical {
+    border-block-start: 0;
+    border-inline-start: var(--cdt-border-width-hairline) solid var(--cdt-border-subtle);
+    min-block-size: 1em;
+  }
+
+  /* Stack: one axis, a gap from the space scale. */
+  .cdt-stack { display: flex; min-inline-size: 0; flex-direction: column; gap: var(--cdt-space-3); }
+  .cdt-stack--row { flex-direction: row; }
+  .cdt-stack--wrap { flex-wrap: wrap; }
+  .cdt-stack--gap-1 { gap: var(--cdt-space-1); }
+  .cdt-stack--gap-2 { gap: var(--cdt-space-2); }
+  .cdt-stack--gap-3 { gap: var(--cdt-space-3); }
+  .cdt-stack--gap-4 { gap: var(--cdt-space-4); }
+  .cdt-stack--gap-5 { gap: var(--cdt-space-5); }
+  .cdt-stack--gap-6 { gap: var(--cdt-space-6); }
+  .cdt-stack--gap-7 { gap: var(--cdt-space-7); }
+  .cdt-stack--gap-8 { gap: var(--cdt-space-8); }
+  .cdt-stack--align-start { align-items: flex-start; }
+  .cdt-stack--align-center { align-items: center; }
+  .cdt-stack--align-end { align-items: flex-end; }
+  .cdt-stack--align-stretch { align-items: stretch; }
+  .cdt-stack--align-baseline { align-items: baseline; }
+  .cdt-stack--justify-start { justify-content: flex-start; }
+  .cdt-stack--justify-center { justify-content: center; }
+  .cdt-stack--justify-end { justify-content: flex-end; }
+  .cdt-stack--justify-between { justify-content: space-between; }
+
+  /*
+   * Grid: without a column count, as many columns as fit at the card grid's minimum width (the same rule
+   * as `.cdt-card-grid`). A list element keeps its semantics and loses its markers and indent.
+   */
+  .cdt-grid {
+    display: grid;
+    min-inline-size: 0;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--cdt-card-grid-min-column)), 1fr));
+    gap: var(--cdt-space-5);
+  }
+
+  :is(ul, ol):is(.cdt-stack, .cdt-grid) { margin: 0; padding: 0; list-style: none; }
+  .cdt-grid--cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+  .cdt-grid--cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cdt-grid--cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .cdt-grid--cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .cdt-grid--cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .cdt-grid--cols-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .cdt-grid--gap-1 { gap: var(--cdt-space-1); }
+  .cdt-grid--gap-2 { gap: var(--cdt-space-2); }
+  .cdt-grid--gap-3 { gap: var(--cdt-space-3); }
+  .cdt-grid--gap-4 { gap: var(--cdt-space-4); }
+  .cdt-grid--gap-5 { gap: var(--cdt-space-5); }
+  .cdt-grid--gap-6 { gap: var(--cdt-space-6); }
+  .cdt-grid--gap-7 { gap: var(--cdt-space-7); }
+  .cdt-grid--gap-8 { gap: var(--cdt-space-8); }
+
+  /* A fixed column count collapses to one column on narrow screens (WCAG 1.4.10 reflow). */
+  @media (max-width: {breakpoint.md}) {
+    .cdt-grid--cols-2, .cdt-grid--cols-3, .cdt-grid--cols-4, .cdt-grid--cols-5, .cdt-grid--cols-6 { grid-template-columns: minmax(0, 1fr); }
+  }
+
+  /* Heading: the document heading sizes from the page tokens, plus `minor` for h4–h6. */
+  .cdt-heading { margin: 0; color: var(--cdt-text-primary); font-weight: 650; text-wrap: balance; }
+  .cdt-heading--page { font-size: var(--cdt-page-heading-size); line-height: var(--cdt-page-heading-line-height); letter-spacing: -0.035em; }
+  .cdt-heading--section { font-size: var(--cdt-page-section-heading-size); line-height: var(--cdt-page-section-heading-line-height); letter-spacing: -0.018em; }
+  .cdt-heading--sub { font-size: var(--cdt-page-sub-heading-size); line-height: var(--cdt-page-sub-heading-line-height); letter-spacing: -0.018em; }
+  .cdt-heading--minor { font-size: var(--cdt-font-size-lg); line-height: var(--cdt-font-line-height-lg); }
+
+  /* Text: one step of the type scale and one text tone. */
+  .cdt-text { margin: 0; text-wrap: pretty; }
+  .cdt-text--2xs { font-size: var(--cdt-font-size-2xs); line-height: var(--cdt-font-line-height-2xs); }
+  .cdt-text--xs { font-size: var(--cdt-font-size-xs); line-height: var(--cdt-font-line-height-xs); }
+  .cdt-text--sm { font-size: var(--cdt-font-size-sm); line-height: var(--cdt-font-line-height-sm); }
+  .cdt-text--base { font-size: var(--cdt-font-size-base); line-height: var(--cdt-font-line-height-base); }
+  .cdt-text--md { font-size: var(--cdt-font-size-md); line-height: var(--cdt-font-line-height-md); }
+  .cdt-text--lg { font-size: var(--cdt-font-size-lg); line-height: var(--cdt-font-line-height-lg); }
+  .cdt-text--xl { font-size: var(--cdt-font-size-xl); line-height: var(--cdt-font-line-height-xl); }
+  .cdt-text--primary { color: var(--cdt-text-primary); }
+  .cdt-text--secondary { color: var(--cdt-text-secondary); }
+  .cdt-text--muted { color: var(--cdt-text-muted); }
+  .cdt-text--faint { color: var(--cdt-text-faint); }
+  .cdt-text--medium { font-weight: 500; }
+  .cdt-text--semibold { font-weight: 600; }
+
+  /* Accordion: a list of sections divided by hairlines. */
+  .cdt-accordion { min-inline-size: 0; border-block: var(--cdt-border-width-hairline) solid var(--cdt-border-subtle); }
+  .cdt-accordion__item + .cdt-accordion__item { border-block-start: var(--cdt-border-width-hairline) solid var(--cdt-border-subtle); }
+  .cdt-accordion__header { margin: 0; font-size: inherit; line-height: inherit; letter-spacing: normal; }
+
+  .cdt-accordion__trigger {
+    display: flex;
+    inline-size: 100%;
+    min-block-size: var(--cdt-button-min-height);
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--cdt-space-3);
+    padding: var(--cdt-space-3) var(--cdt-space-2);
+    border: 0;
+    border-radius: var(--cdt-radius-sm);
+    background: transparent;
+    color: var(--cdt-text-primary);
+    font: inherit;
+    font-weight: 600;
+    text-align: start;
+    cursor: pointer;
+    transition: background var(--cdt-motion-fast);
+  }
+
+  .cdt-accordion__trigger:hover:not(:disabled) { background: var(--cdt-surface-subtle); }
+  .cdt-accordion__trigger:focus-visible { outline: var(--cdt-border-width-emphasis) solid transparent; box-shadow: var(--cdt-focus-ring); }
+  .cdt-accordion__trigger:disabled { color: var(--cdt-button-disabled-text); cursor: not-allowed; }
+  .cdt-accordion__label { min-inline-size: 0; }
+  .cdt-accordion__chevron { display: inline-block; color: var(--cdt-text-muted); font-size: var(--cdt-font-size-xs); transition: transform var(--cdt-motion-fast); }
+  .cdt-accordion__trigger[data-state="open"] .cdt-accordion__chevron { transform: rotate(180deg); }
+
+  .cdt-accordion__content { padding: 0 var(--cdt-space-2) var(--cdt-space-4); color: var(--cdt-text-secondary); }
+  .cdt-accordion__content[data-state="closed"] { display: none; }
+  .cdt-accordion__content[data-state="open"] { animation: cdt-panel-reveal var(--cdt-motion-standard); }
+
+  /* The open marker is a glyph rotation; forced colours keep it, and the focus outline above. */
+  @media (forced-colors: active) {
+    .cdt-separator, .cdt-separator--vertical, .cdt-accordion, .cdt-accordion__item + .cdt-accordion__item { border-color: CanvasText; }
+  }
+}

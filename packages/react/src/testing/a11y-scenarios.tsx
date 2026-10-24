@@ -1,6 +1,6 @@
 // Refs: WP-024 FR-QA-003 FR-A11Y-002 FR-A11Y-005
 import { useRef, useState, type ReactElement } from "react";
-import { AlertDialog, Avatar, CommandPalette, Confirmation, Conversation, InlineCitation, Message, PromptInput, Reasoning, Shimmer, Sources, Suggestion, Suggestions, Tool, DatePicker, NumberInput, Pagination, RadioGroup, Toast, ToggleGroup } from "../index";
+import { AlertDialog, Avatar, CommandPalette, Confirmation, Conversation, InlineCitation, Message, PromptInput, Reasoning, Shimmer, Sources, Suggestion, Suggestions, Tool, DatePicker, NumberInput, Pagination, RadioGroup, Toast, ToggleGroup, Accordion, Grid, Heading, Separator, Stack, Text } from "../index";
 import {
   AppShell, AppShellNavTrigger, Tabs, Popover, Collapsible, Combobox, MultiSelect, FilterChip, FilterToolbar, DataTable, WorkbenchLayout, DetailInspector, PathList, Breadcrumb, Skeleton, CopyButton, ProcessingStatus, RelationGraph,
   Badge,
@@ -188,6 +188,13 @@ export const a11yScenarios: readonly A11yScenario[] = [
   { component: "RadioGroup", state: "error", render: () => <RadioFixture invalid /> },
   { component: "ToggleGroup", state: "default", keyboard: { kind: "steps", steps: [{ target: "[role=radio][data-state=on]", keys: "{ArrowRight}", check: "[data-view]", expected: "list" }, { target: "[role=radio][data-state=off]", keys: " ", check: "[data-view]", expected: "board" }] }, render: () => <ToggleFixture /> },
   { component: "Avatar", state: "default", keyboard: { kind: "static" }, render: () => <><Avatar name="Ada Lovelace" /><Avatar name="Grace Hopper" size="lg" /></> },
+  { component: "Separator", state: "default", keyboard: { kind: "static" }, render: () => <><p>Above</p><Separator /><p>Below</p><Separator orientation="vertical" /><Separator decorative /></> },
+  { component: "Stack", state: "default", keyboard: { kind: "static" }, render: () => <Stack as="ul" direction="row" gap={2}><li>One</li><li>Two</li></Stack> },
+  { component: "Grid", state: "default", keyboard: { kind: "static" }, render: () => <Grid columns={2}><p>One</p><p>Two</p></Grid> },
+  { component: "Heading", state: "default", keyboard: { kind: "static" }, render: () => <><Heading level={2}>Section</Heading><Heading level={3} size="minor">Subsection</Heading></> },
+  { component: "Text", state: "default", keyboard: { kind: "static" }, render: () => <><Text>Body text.</Text><Text size="sm" tone="secondary">Secondary detail.</Text><Text size="xs" tone="muted" mono>run_8f2c</Text></> },
+  { component: "Accordion", state: "default", keyboard: { kind: "steps", steps: [{ target: "button", keys: "{Enter}", check: "button", attribute: "aria-expanded", expected: "true" }] }, render: () => <Accordion.Root type="single" collapsible><Accordion.Item value="limits"><Accordion.Trigger {...keyboardTarget}>Run limits</Accordion.Trigger><Accordion.Content>Fifty steps per run.</Accordion.Content></Accordion.Item><Accordion.Item value="audit"><Accordion.Trigger>Audit</Accordion.Trigger><Accordion.Content>Every step is recorded.</Accordion.Content></Accordion.Item></Accordion.Root> },
+  { component: "Accordion", state: "open", render: () => <Accordion.Root type="multiple" defaultValue={["limits"]}><Accordion.Item value="limits"><Accordion.Trigger>Run limits</Accordion.Trigger><Accordion.Content>Fifty steps per run.</Accordion.Content></Accordion.Item><Accordion.Item value="audit" disabled><Accordion.Trigger>Audit</Accordion.Trigger><Accordion.Content>Every step is recorded.</Accordion.Content></Accordion.Item></Accordion.Root> },
   { component: "NumberInput", state: "default", keyboard: { kind: "steps", steps: [{ target: "input[type=number]", keys: "{ArrowUp}", check: "[data-count]", expected: "11" }] }, render: () => <NumberFixture /> },
   { component: "NumberInput", state: "error", render: () => <NumberFixture invalid /> },
   { component: "Conversation", state: "default", keyboard: { kind: "steps", steps: [{ target: "[role=log]", keys: "{ArrowDown}", check: "[role=log]", attribute: "tabindex", expected: "0" }] }, render: () => <ConversationFixture /> },

@@ -2053,5 +2053,155 @@
       "The text stays readable; the shimmer is a gradient over the same words.",
       "The animation stops under prefers-reduced-motion."
     ]
+  },
+  "Stack": {
+    "purpose": "Lays out children along one axis with a gap from the space scale.",
+    "use": [
+      "Use it for any run of items that needs even spacing: form actions, a badge and its label, a column of cards.",
+      "Pick the gap by step (1 to 8) instead of writing margins on the children.",
+      "Render it as ul or ol with as when the items are a list, so the list semantics stay."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it for a two-dimensional arrangement of tiles.",
+        "instead": "Grid"
+      },
+      {
+        "rule": "Do not nest Stacks only to add one extra gap; set the gap on the Stack you already have."
+      }
+    ],
+    "keyboard": "static",
+    "accessibility": [
+      "Stack adds no role; the element passed in as keeps its own semantics.",
+      "Visual order follows source order, so focus order matches what is seen."
+    ]
+  },
+  "Grid": {
+    "purpose": "Arranges children in columns: as many as fit, or a fixed number that collapses to one on narrow screens.",
+    "use": [
+      "Leave columns out for card-like tiles; the grid fits as many as the card grid's minimum width allows.",
+      "Set columns for a fixed comparison layout, such as three summary panels.",
+      "Choose the gap by step; the default matches the card grid."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it for rows of data with headers.",
+        "instead": "Table"
+      },
+      {
+        "rule": "Do not use it for a single row of buttons.",
+        "instead": "Stack"
+      }
+    ],
+    "keyboard": "static",
+    "accessibility": [
+      "Grid adds no role and never reorders children, so reading and focus order follow the source.",
+      "Fixed column counts collapse to one column below the md breakpoint, so content reflows at 320px."
+    ]
+  },
+  "Separator": {
+    "purpose": "A thin rule that divides content, horizontally or vertically.",
+    "use": [
+      "Use it between groups whose relationship is not already clear from spacing.",
+      "Mark it decorative when it only separates items visually, such as between inline metadata."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it as the only cue between sections that need headings.",
+        "instead": "Heading"
+      },
+      {
+        "rule": "Do not stack separators to make thicker lines."
+      }
+    ],
+    "keyboard": "static",
+    "accessibility": [
+      "It is a native hr, whose role is separator; a vertical one announces aria-orientation.",
+      "A decorative separator is hidden from assistive technology."
+    ]
+  },
+  "Heading": {
+    "purpose": "A section heading whose level sets the document outline and whose size can be set apart from it.",
+    "use": [
+      "Pick level by the outline of the page: one level 1 per page, then levels in order.",
+      "Set size only when the visual weight should differ from the level, for example a small level 2 inside a card.",
+      "Keep heading text short and specific; it is how screen-reader users skim a page."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not pick a level for its size; set size instead and keep the level the outline needs."
+      },
+      {
+        "rule": "Do not use it for emphasis inside running text.",
+        "instead": "Text"
+      }
+    ],
+    "keyboard": "static",
+    "accessibility": [
+      "Renders h1 to h6, so headings navigation and the page outline work.",
+      "Size never changes the level, so the outline stays correct when the look changes."
+    ]
+  },
+  "Text": {
+    "purpose": "Body and supporting text on the type scale, with a text tone and an optional monospaced face.",
+    "use": [
+      "Use secondary or muted tone for supporting detail next to primary text.",
+      "Use mono for identifiers, hashes and run IDs; it reads left to right in any document.",
+      "Render as span inside a line of other content, and as p for a paragraph."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use the faint tone for text people need to read; it is below 4.5:1."
+      },
+      {
+        "rule": "Do not use a large size to make a heading.",
+        "instead": "Heading"
+      }
+    ],
+    "keyboard": "static",
+    "accessibility": [
+      "Primary, secondary and muted tones meet 4.5:1 for body text in both themes.",
+      "Text adds no role; the element passed in as keeps its own semantics."
+    ]
+  },
+  "Accordion": {
+    "purpose": "A stack of sections that open and close in place, one or several at a time, built on Radix Accordion.",
+    "use": [
+      "Use it for FAQ-style detail or settings groups that most people scan by title.",
+      "Set type single to keep one section open, or multiple to let several stay open.",
+      "Set level on each trigger to fit the page outline; it defaults to 3."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it for a single show-and-hide section.",
+        "instead": "Collapsible"
+      },
+      {
+        "rule": "Do not use it to switch between peer views of the same content.",
+        "instead": "Tabs"
+      },
+      {
+        "rule": "Do not hide content that is required to complete the task."
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Enter / Space",
+        "action": "Opens or closes the focused section."
+      },
+      {
+        "keys": "Arrow Down / Arrow Up",
+        "action": "Moves focus to the next or previous trigger."
+      },
+      {
+        "keys": "Home / End",
+        "action": "Moves focus to the first or last trigger."
+      }
+    ],
+    "accessibility": [
+      "Each trigger is a button inside a heading, with aria-expanded and aria-controls set by Radix.",
+      "Each open section is a region named by its trigger.",
+      "Closed sections are hidden from assistive technology."
+    ]
   }
 }

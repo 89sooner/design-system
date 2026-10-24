@@ -25,6 +25,9 @@ import { AlertDialog } from "../alert-dialog";
 import { RadioGroup, ToggleGroup } from "../selection";
 import { Avatar } from "../avatar";
 import { NumberInput } from "../number-input";
+import { Grid, Separator, Stack } from "../layout";
+import { Heading, Text } from "../typography";
+import { Accordion } from "../accordion";
 import { Confirmation, Conversation, InlineCitation, Message, PromptInput, Reasoning, Shimmer, Sources, Suggestion, Suggestions, Tool } from "../agent";
 
 export interface PublicComponent {
@@ -34,6 +37,12 @@ export interface PublicComponent {
 }
 
 export const publicComponents: readonly PublicComponent[] = [
+  { name: "Separator", testFile: "testing/primitives.test.tsx", render: () => createElement(Separator) },
+  { name: "Stack", testFile: "testing/primitives.test.tsx", render: () => createElement(Stack) },
+  { name: "Grid", testFile: "testing/primitives.test.tsx", render: () => createElement(Grid) },
+  { name: "Heading", testFile: "testing/primitives.test.tsx", render: () => createElement(Heading, { level: 2 }, "Heading") },
+  { name: "Text", testFile: "testing/primitives.test.tsx", render: () => createElement(Text, null, "Text") },
+  { name: "Accordion", testFile: "testing/primitives.test.tsx", render: () => createElement(Accordion.Root, { type: "single", children: null }) },
   { name: "Combobox", testFile: "testing/workbench.test.tsx", render: () => createElement(Combobox, {label: "Combo", options: [], query: "", value: null, onQueryChange() {}, onValueChange() {}}) },
   { name: "MultiSelect", testFile: "testing/workbench.test.tsx", render: () => createElement(MultiSelect, {label: "Multi", options: [], value: [], onValueChange() {}}) },
   { name: "FilterChip", testFile: "testing/workbench.test.tsx", render: () => createElement(FilterChip, {children: "Chip", removeLabel: "Remove", onRemove() {}}) },
