@@ -130,6 +130,42 @@ jobs:
             exit 1
           fi
 
+  docs-e2e:
+    name: docs e2e (playwright)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # The docs site imports the packages' built output, so the packages build first.
+      - run: pnpm build
+
+      - run: pnpm exec playwright install --with-deps chromium
+
+      # JOB-CI-005: the docs site's Playwright suite (FR-DOC-001~010, the screen QA checks,
+      # forced colours). The release validation plan always listed it as a PR gate, but no
+      # job ran it, so it was a local gate only (DEV-048, DEV-063). Refs: CR-072
+      - run: pnpm test:e2e
+
+      - name: upload docs e2e results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-e2e-results
+          path: apps/docs/test-results/**
+          if-no-files-found: ignore
+          retention-days: 30
+
   visual:
     name: visual regression (playwright 1.61.1)
     runs-on: ubuntu-latest
