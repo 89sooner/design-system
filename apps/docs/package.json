@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "pretypecheck": "node scripts/build-component-catalog.mjs && node scripts/build-contrast-report.mjs && node scripts/build-site-stats.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:cross": "playwright test -c playwright.cross.config.ts"
   },
   "dependencies": {
     "@conductor-by-89soone/css": "workspace:*",

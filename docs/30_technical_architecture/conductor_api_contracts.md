@@ -1,6 +1,6 @@
 # Conductor Design System 패키지 공개 API 계약
 
-> 상태: review | 버전: v0.15 | 갱신일: 2026-10-24
+> 상태: review | 버전: v0.16 | 갱신일: 2026-10-24
 
 ## 0. 문서 재해석
 
@@ -44,6 +44,7 @@ Conductor Design System에는 HTTP API, 요청/응답 엔드포인트, 인증 �
 | API-CMP-011 | TS interface | 확인·선택·식별·숫자 입력(`AlertDialog`, `RadioGroup`, `ToggleGroup`, `Avatar`, `NumberInput`, `avatarInitials`) | FR-CMP-015 (CR-060) |
 | API-CMP-012 | TS interface | 에이전트 대화(`Conversation`, `Message`, `PromptInput`, `Reasoning`, `Tool`, `Confirmation`, `Sources`, `InlineCitation`, `Suggestions`, `Suggestion`, `Shimmer`) | FR-CMP-016 (CR-061) |
 | API-CMP-013 | TS export | 읽기 방향(`DirectionProvider`, `useDirection`) | FR-CSS-006 (CR-074) |
+| API-CMP-014 | TS interface | 레이아웃·타이포그래피·구획(`Separator`, `Stack`, `Grid`, `Heading`, `Text`, `Accordion`) | FR-CMP-017 (CR-076) |
 | API-DOC-001 | 정적 라우트 계약 | 문서 사이트 W-001~W-050 | 라우트/데이터 출처 매핑 | FR-DOC-001~007 |
 | API-DOC-002 | 에이전트 판독용 산출물 계약 | AI 코딩 에이전트, 소비자 | 정적 Markdown·텍스트 파일 경로와 구조 | FR-DOC-008 |
 
@@ -521,7 +522,7 @@ error[<CODE>]: <한 줄 요약>
 3. **비파괴 변경.** 신규 토큰/컴포넌트/props(선택적, 기본값 존재) 추가, 버그 수정으로 인한 시각적 보정(기존 토큰 키 유지).
 4. **deprecation 절차(FR-DX-005).** deprecated 대상에 `@deprecated` JSDoc 태그와 대체 경로를 명시하고 문서 사이트에 지원 종료 표식을 노출한다. 최소 1회의 minor 릴리스 동안 동작을 유지한 뒤, 다음 major에서 제거한다. 제거 시 `CHANGELOG`에 마이그레이션 노트를 포함한다(AC-4). 변경 이력이 없는 패키지는 버전을 올리지 않는다(AC-3).
 
-5. **1.0 이후 (CR-075, FR-DX-006).** 2의 파괴 변경 정의는 0.x에서도 major changeset을 요구하지만, 0.x 동안 의도된 시각 재설계는 minor로 냈다(CR-064·CR-066·CR-067). 1.0 이후 같은 이름의 값·시각 변경을 어느 버전으로 내는지는 OD-006이 정한다. 3의 버그 수정 보정은 그 결정과 무관하게 patch다.
+5. **1.0 이후 (CR-075, FR-DX-006).** 2의 파괴 변경 정의는 0.x에서도 major changeset을 요구하지만, 0.x 동안 의도된 시각 재설계는 minor로 냈다(CR-064·CR-066·CR-067). 1.0 이후 같은 이름의 값·시각 변경은 minor다(OD-006, CR-076). 그 changeset은 본문 첫 줄을 `Visual change:`로 시작하고 같은 PR에 갱신된 시각 기준 이미지를 담는다. 3의 버그 수정 보정은 patch다. 1.0.0부터 세 패키지는 같은 버전을 쓴다(changesets `fixed`, OD-008). 공개 표면 중 API 리포트가 보지 않는 부분(entry point·CLI·`cdt-*` 클래스·`data-*` 선택자·레이어 순서)은 **public-surface.txt**(`etc/`)가 기준이다(WP-041).
 
 ## CR-041 확장 영향 (FR-CMP-010~013)
 

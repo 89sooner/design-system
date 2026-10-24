@@ -93,7 +93,8 @@
 | CR-072 | 2026-10-24 | correction | 사용자 결정 (2026-10-24): "DEV-063은 CI에 문서 E2E 잡 추가로 진행해" | **문서 사이트 Playwright E2E를 PR·main CI 잡(JOB-CI-005)으로 실행한다.** 검증 계획은 처음부터 이 검사를 PR 게이트로 적었지만 실행하는 잡이 없었다(DEV-048·DEV-063). `ci.yml`에 `docs e2e` 잡, 루트 `pnpm test:e2e`, Playwright `forbidOnly`·실패 trace를 두고, 30초 기본 한도에 걸리던 화면 전체 Tab 순서 시험의 한도를 90초로 둔다. 패키지 변경 없음 | NFR-003, FR-DOC-001~007 | SRS v1.23(§33, NFR-003), 비동기 작업 v0.11(JOB-CI-005), 검증 계획 v0.13, 프런트엔드 v0.9, 보안 v0.8, 시스템 v0.4, 인프라 운영 v0.10, 구현 요청 v0.4, 원장 v0.59(DEV-048·DEV-063 closed), `.github/workflows/ci.yml`, `package.json`, `apps/docs/playwright.config.ts`, `apps/docs/e2e/screens.spec.ts` | closed |
 | CR-073 | 2026-10-24 | correction | 사용자 지시 (2026-10-24): "그대로 남은 한계를 개선하기 위해 추천 순서대로 작업 진행 하라" — 품질 재평가 권고 1 | **문서 사이트 컴포넌트 페이지에서 넓은 예제가 좁은 폭에 잘리던 문제를 고친다.** `.docs-stage > .docs-preview`에 `min-width: 0`이 없어, 800px Table 예제가 미리보기를 스테이지 밖으로 넓히고 스테이지의 `overflow: hidden`에 잘렸다. 폭 약 850px 미만에서 표 오른쪽에 닿을 수 없었다(DEV-064). 67개 페이지를 320px에서 검사하는 E2E를 더한다 | FR-DOC-003 | `apps/docs/src/styles/catalog.css`, `apps/docs/e2e/catalog.spec.ts`, QA 체크리스트 v0.9, 원장 v0.60(DEV-064) | closed |
 | CR-074 | 2026-10-24 | scope | 사용자 지시 (2026-10-24): "그대로 남은 한계를 개선하기 위해 추천 순서대로 작업 진행 하라" — 품질 재평가 권고 2 | **오른쪽→왼쪽(RTL) 문서를 지원한다.** Radix가 방향을 받지 못해 Tabs·RadioGroup·ToggleGroup·Select가 RTL 문서에서 `dir="ltr"`로 그려지고 화살표 키가 거꾸로 움직였고, 코드·키 캡이 양방향 알고리즘에 재배열됐고, Switch 손잡이·모바일 내비게이션·토스트 퇴장이 물리 방향이었다. FR-CSS-006을 신설하고 `DirectionProvider`·`useDirection`을 export한다 | FR-CSS-006 (신설) | SRS v1.24(§34), PRD v0.17, 용어집 v0.8, RTM v0.18, UI 컴포넌트 명세 v0.21, API 계약 v0.14(API-CMP-013), 프런트엔드 v0.10, 보안 v0.9, QA 체크리스트 v0.10(QA-218~220), 검증 계획 v0.14, 원장 v0.61, `packages/css/src/*`, `packages/react/src/direction.tsx`, `apps/docs/src/getting-started.tsx` | closed |
-| CR-075 | 2026-10-24 | scope | 사용자 지시 (2026-10-24): "그대로 남은 한계를 개선하기 위해 추천 순서대로 작업 진행 하라" — 품질 재평가 권고 3 | **1.0의 공개 계약·검출·폐기 절차·품질 게이트·실사용 검증을 정한다.** SRS에 1.0 기준이 없어, 소비자가 버전만으로 깨질 수 있는 변경을 알 수 없었다. FR-DX-006을 신설하고, 사용자 결정이 필요한 넷을 OD-005 ~ OD-008로 연다. 1.0을 발행하지 않는다. 기준과 CI를 대조하다 NFR-005 매트릭스 공백을 DEV-065로 등록했다 | FR-DX-006 (신설), NFR-005 | SRS v1.25(§35, §14), PRD v0.18, 용어집 v0.9, RTM v0.19, API 계약 v0.15(§6.5), 로드맵 v0.5(REL-005), 검증 계획 v0.15(§1.0 준비도), 원장 v0.62(DEV-065) | open |
+| CR-075 | 2026-10-24 | scope | 사용자 지시 (2026-10-24): "그대로 남은 한계를 개선하기 위해 추천 순서대로 작업 진행 하라" — 품질 재평가 권고 3 | **1.0의 공개 계약·검출·폐기 절차·품질 게이트·실사용 검증을 정한다.** SRS에 1.0 기준이 없어, 소비자가 버전만으로 깨질 수 있는 변경을 알 수 없었다. FR-DX-006을 신설하고, 사용자 결정이 필요한 넷을 OD-005 ~ OD-008로 연다. 1.0을 발행하지 않는다. 기준과 CI를 대조하다 NFR-005 매트릭스 공백을 DEV-065로 등록했다 | FR-DX-006 (신설), NFR-005 | SRS v1.25(§35, §14), PRD v0.18, 용어집 v0.9, RTM v0.19, API 계약 v0.15(§6.5), 로드맵 v0.5(REL-005), 검증 계획 v0.15(§1.0 준비도), 원장 v0.62(DEV-065) | closed |
+| CR-076 | 2026-10-24 | scope | 사용자 결정 (2026-10-24): "OD-005 ~ 008까지 모두 너의 추천대로 진행하라 그리고 WP-041 042도 진행" | **1.0 기준의 미결정 넷을 닫고, 공개 표면 검출과 호환성 매트릭스를 CI에 둔다.** OD-005 소비자 한 곳·4주·재정의 0건, OD-006 같은 이름의 시각 변경은 minor, OD-007 기본 단위 6종(FR-CMP-017 신설), OD-008 1.0부터 lockstep. WP-041: 공개 표면 기준 **public-surface.txt**와 `check:api` 대조. WP-042: consumers·cross-browser CI 잡. 낡은 소비자 검사 스크립트를 고쳤다(DEV-067) | FR-DX-006, FR-CMP-017 (신설), NFR-005 | SRS v1.26(§14.1, §35, §36), PRD v0.19, RTM v0.20, UI 컴포넌트 명세 v0.22(C-093 ~ C-098), API 계약 v0.16(API-CMP-014, §6.5), 비동기 작업 v0.12(JOB-CI-006·007), 프런트엔드 v0.11, QA 체크리스트 v0.11(QA-221 ~ 223), 로드맵 v0.6, WP v0.17(WP-044), 검증 계획 v0.16, 원장 v0.64(DEV-067), `scripts/*`, `etc/public-surface.txt`, `.github/workflows/ci.yml`, `apps/docs/e2e-cross/*` | closed |
 
 유형: `scope`(범위 변경), `design`(설계 변경), `implementation`(구현 편차 DEV-### 처리), `correction`(문서 오류 수정)
 
@@ -936,9 +937,21 @@ CR-041 구현 cascade와 로컬 검증은 2026-09-14에 종료했다. 사용자�
 
 | 항목 | 기록 |
 | --- | --- |
-| 유형 / 상태 | scope / open |
+| 유형 / 상태 | scope / closed (CR-076이 OD를 닫고 이어받음) |
 | 변경 근거 | 세 패키지는 0.x다(tokens 0.14.0, css·react 0.15.2). SRS·PRD에 1.0 기준이 없었다. 0.x에서 의도된 시각 재설계를 minor로 냈고(CR-064·066·067), API 계약 §6은 파괴 변경을 정의하지만 1.0이 무엇을 약속하는지와 언제 내는지는 정하지 않았다 |
 | 범위 판정 | 새 FR(FR-DX-006, Should). 기준만 정하고 1.0을 발행하지 않는다. 1.0 발행은 REL-005, 사용자 지시로만 한다 |
 | 사용자 결정 대기 | OD-005 실사용 검증의 소비자 수·기간, OD-006 1.0 이후 같은 이름의 값·시각 변경의 버전 등급, OD-007 1.0 컴포넌트 범위, OD-008 버전 정렬(lockstep 여부) |
 | 측정 | 검증 계획 §1.0 준비도 표 12행: 충족 2, 부분 3, 미충족 4, OD 대기 3 |
 | 편차 | DEV-065: NFR-005가 CI 매트릭스로 잰다고 적은 React 18과 Chromium 밖 브라우저가 CI에서 실행되지 않는다 |
+
+## CR-076 OD-005 ~ OD-008 종결, 공개 표면 검출, 호환성 매트릭스 (2026-10-24)
+
+| 항목 | 기록 |
+| --- | --- |
+| 유형 / 상태 | scope / closed |
+| 결정 | OD-005: agent-ai-platform 한 곳, 1.0 후보 4주, 재정의 0건(또는 각 항목 앱 고유 판정). OD-006: 같은 이름의 값·시각 변경은 minor, changeset 첫 줄 `Visual change:`, 같은 PR의 기준 이미지. OD-007: Separator·Stack·Grid·Heading·Text·Accordion을 1.0 범위로(FR-CMP-017), 나머지 후보는 1.0 이후. OD-008: 1.0부터 `fixed` |
+| 범위 판정 | 새 FR 하나(FR-CMP-017, Should). FR-DX-006 AC-1·AC-5·AC-6·AC-7 확정. 패키지 코드 변경 없음(검사·CI·스크립트만) |
+| WP-041 설계 | API Extractor가 보지 않는 표면(entry point·CLI 이름·`cdt-*` 클래스·`data-*` 선택자·레이어 순서)을 빌드 산출물에서 뽑아 **public-surface.txt**로 고정하고 `check:api`가 대조한다. 차이는 스타일시트·패키지 구역별로 보고해, 한 스타일시트에서만 빠진 클래스도 잡는다 |
+| WP-042 설계 | consumers 잡은 기존 `check-consumer.mjs`(tarball → React 18·19·Next 소비자)를 CI에 올린다. cross-browser 잡은 Firefox·WebKit에서 엔진 공통 동작만 보는 스모크 4건이다. 픽셀·강제 색 검사는 Chromium 잡이 계속 맡는다 |
+| 편차 | DEV-065 closed, DEV-067 closed |
+| CI · 종료 | PR #91 head `d2ce28a`: consumers(React 18·19·Next) 통과, cross-browser Firefox·WebKit 8/8 통과(첫 실행), verify(node 20·22)·docs e2e·visual regression 통과. 패키지 변경이 없어 릴리스는 없다. 1.0 준비도 표 12행: 충족 6(승인 예외 1 포함), 부분 1(CLI 플래그), 미충족 4(FR 상태·실사용 검증·컴포넌트 범위는 WP-043·WP-044, 폐기 절차는 첫 폐기 때), 1.0 발행 PR에서 1(버전 정렬) |

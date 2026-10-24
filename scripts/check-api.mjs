@@ -4,10 +4,11 @@
 // 파괴 변경 후보이므로 CI가 실패하고, 의도된 변경이라면 `--update`로 기준을 갱신한
 // 뒤 그에 맞는 changeset(파괴 변경이면 major + 마이그레이션 노트)을 함께 커밋한다.
 // 리포트에 `any`가 나타나도 실패한다 (FR-DX-002 AC-2, NFR-004 지표).
-import { mkdirSync, readFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Extractor, ExtractorConfig } from "@microsoft/api-extractor";
+import { renderSurface, surfaceDiff } from "./public-surface.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const update = process.argv.includes("--update");
@@ -60,5 +61,39 @@ if (!failed) {
   }
 }
 
+// The surface API Extractor cannot see: entry points, CLI names, `cdt-*` classes, `data-*` selectors and layer
+// order (CR-075 FR-DX-006 AC-2, WP-041). Read from the built stylesheets, so it runs after `pnpm build`.
+const SURFACE_REPORT = "etc/public-surface.txt";
+const PACKAGES = ["tokens", "css", "react"];
+const STYLESHEETS = ["index.css", "component.css", "agent.css"];
+const missingBuild = STYLESHEETS.filter((file) => !existsSync(resolve(ROOT, "packages/css/dist", file)));
+if (missingBuild.length > 0) {
+  console.error(`error[SURFACE-BUILD]: packages/css/dist에 ${missingBuild.join(", ")}가 없다. \`pnpm build\` 뒤에 실행한다`);
+  process.exit(1);
+}
+const surface = renderSurface({
+  packages: PACKAGES.map((pkg) => {
+    const manifest = JSON.parse(readFileSync(resolve(ROOT, "packages", pkg, "package.json"), "utf8"));
+    return { name: manifest.name, manifest };
+  }),
+  stylesheets: STYLESHEETS.map((file) => ({ file: `@conductor-by-89soone/css/${file}`, css: readFileSync(resolve(ROOT, "packages/css/dist", file), "utf8") })),
+});
+const surfacePath = resolve(ROOT, SURFACE_REPORT);
+mkdirSync(dirname(surfacePath), { recursive: true });
+if (update) {
+  writeFileSync(surfacePath, surface);
+} else {
+  const baseline = existsSync(surfacePath) ? readFileSync(surfacePath, "utf8") : "";
+  if (baseline !== surface) {
+    const { removed, added } = surfaceDiff(baseline, surface);
+    console.error(`error[SURFACE-DRIFT]: ${SURFACE_REPORT}가 현재 공개 표면과 다르다`);
+    for (const entry of removed) console.error(`  - ${entry}`);
+    for (const entry of added) console.error(`  + ${entry}`);
+    console.error("  의도된 변경이면 `pnpm check:api --update`로 기준을 갱신한다. 지우거나 이름을 바꾼 항목(-)은");
+    console.error("  파괴 변경이다: 1.0 이후에는 major changeset과 마이그레이션 노트가 함께 있어야 한다 (FR-DX-006 AC-1, AC-3).");
+    failed = true;
+  }
+}
+
 if (failed) process.exit(1);
-console.log(`[check:api] ${CONFIGS.length} report(s) ${update ? "updated" : "verified"}, \`any\` 0건`);
+console.log(`[check:api] ${CONFIGS.length} report(s) and ${SURFACE_REPORT} ${update ? "updated" : "verified"}, \`any\` 0건`);

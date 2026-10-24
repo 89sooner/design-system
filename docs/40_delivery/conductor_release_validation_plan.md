@@ -1,6 +1,6 @@
 # Conductor Design System 릴리스 검증 계획
 
-> 상태: review | 버전: v0.15 | 갱신일: 2026-10-24
+> 상태: review | 버전: v0.16 | 갱신일: 2026-10-24
 
 ## 1. 목적과 범위
 
@@ -20,7 +20,7 @@ Conductor Design System은 `@conductor-by-89soone/tokens`, `@conductor-by-89soon
 | 성능 (번들 크기, Lighthouse CI) | NFR-001, FR-DX-003 AC-3, JOB-CI-004 | `pnpm size` + Lighthouse CI | `Button` 단독 import gzip 4KB 이하(React 제외). `@conductor-by-89soone/css` 전체 gzip 20KB 이하. 문서 사이트 LCP p75 2.5초 이하(로컬 프로덕션 빌드, Fast 3G 스로틀, 배포와 같은 gzip 전송 — CR-070). 테마 전환 후 재페인트 완료 100ms 이하 | PR(번들 크기), release(Lighthouse) | System Maintainer |
 | 시각 회귀 | FR-QA-004, JOB-CI-003 | `pnpm test:visual` (`--update`는 기준 이미지 갱신 전용 명령으로만 허용) | 공개 컴포넌트 전부 × 테마 2종과 오버레이 열린 상태 11개 × 2, 상태 컴포넌트 9개의 강제 색 렌더를 비교하고(CR-068·CR-071) 픽셀 차이 1% 초과 시 실패, 차이 이미지를 아티팩트로 남긴다 | PR (REL-004 이후 매 PR) | QA |
 | 보안 (pnpm audit, 시크릿 스캔) | NFR-002 | `pnpm audit --audit-level high` + 시크릿 스캐너 CI 잡 | 의존성 취약점 severity high 이상 0건. 산출물에 포함된 비밀값 0건. npm 배포 인증이 OIDC 기반이며 장기 토큰을 사용하지 않는다 | 시크릿 스캔: PR. audit·OIDC 검사: release | System Maintainer |
-| 호환성 (React 18·19, Node 20·22 매트릭스) | NFR-005 | CI 매트릭스 실행 (React 18/19 × Node 20/22) | 매트릭스 전 조합에서 `pnpm test`와 `pnpm build`가 통과한다 | main | Coding Agent |
+| 호환성 (React 18·19, Node 20·22, 브라우저 엔진) | NFR-005 | verify 매트릭스(Node 20·22), consumers 잡 JOB-CI-006(React 18·19·Next tarball 소비자), cross-browser 잡 JOB-CI-007(Firefox·WebKit) (CR-075 WP-042) | 매트릭스 전 조합에서 build·test, 세 소비자의 설치·typecheck·빌드·브라우저 구동, 두 엔진의 스모크 시험이 통과한다 | PR | Coding Agent |
 | 운영 (릴리스 리허설, 롤백 리허설) | NFR-004, JOB-REL-001 | §4 롤아웃 절차 리허설 + §5 롤백 절차 리허설 | 릴리스 리허설이 실행 순서대로 완주한다. 롤백 리허설이 10분 이내에 완료된다. 순환 패키지 의존 0건. 파괴 변경 릴리스의 마이그레이션 노트 동반률 100% | release | System Maintainer |
 
 ## 3. REL 게이트 체크리스트
@@ -140,19 +140,19 @@ build 후 typecheck; test/lint/lint:deps/lint:tokens/check:contrast/test:a11y/te
 
 ## 1.0 준비도 (CR-075, FR-DX-006)
 
-1.0.0은 아래 표가 모두 `충족`이고 OD-005 ~ OD-008이 닫힌 뒤, 사용자 지시로만 발행한다(REL-005). 2026-10-24 측정이다.
+1.0.0은 아래 표가 모두 `충족`이 된 뒤 사용자 지시로만 발행한다(REL-005). OD-005 ~ OD-008은 2026-10-24 CR-076으로 닫혔다. 2026-10-24 측정이다.
 
 | 기준 | 현재 상태 | 판정 | 남은 일 |
 | --- | --- | --- | --- |
-| AC-1·AC-2 ① `exports` 진입점 | css는 `packages/css/test/exports.test.ts`가 선언·해석을 시험한다. tokens·react는 크기 검사와 로컬 소비자 스크립트(`scripts/check-consumer.mjs`)가 간접으로만 닿는다 | 부분 | tokens·react `exports` 시험 |
+| AC-1·AC-2 ① `exports` 진입점 | 세 패키지의 entry point 이름은 **public-surface.txt**(`etc/`) 기준과 CI verify의 `pnpm check:api`가 대조한다. 대상 파일이 실제로 배포되는지는 css `exports.test.ts`와 tokens·react `scripts/package-exports.test.mjs`가 본다(WP-041) | 충족 | — |
 | AC-1·AC-2 ② React export·props, ③ 토큰 키·`--cdt-*` 이름 | `pnpm check:api`가 CI verify 잡에서 커밋된 리포트(**react.api.md**, **tokens.api.md**, **tokens-breakpoints.api.md**)와 대조한다 | 충족 | — |
-| AC-1·AC-2 ④ `cdt-*` 클래스 이름 | `class-contract.test.ts`는 React와 CSS가 서로 맞는지만 본다. 커밋된 클래스 목록 기준이 없어, 컴포넌트와 규칙을 함께 지우거나 이름을 바꾸면 CI가 잡지 못한다 | 미충족 | 클래스 목록 기준 리포트와 대조 검사 |
-| AC-1 ⑤ `data-*`, ⑥ `@layer`, ⑦ CLI | `data-cdt-theme`(API-THM-001)과 레이어 순서(`bundle.test.ts`)는 시험된다. 문서화된 `data-*` 상태 속성 목록과 CLI 옵션의 기준은 없다 | 부분 | 목록화 |
+| AC-1·AC-2 ④ `cdt-*` 클래스 이름 | `pnpm check:api`가 빌드된 세 스타일시트(index·component·agent)의 클래스 목록을 기준과 대조한다. dist에서 `cdt-badge__dismiss`를 `cdt-badge__close`로 바꾼 변이에서 `SURFACE-DRIFT`로 실패하고 지운 이름(-)과 더한 이름(+)을 보였다(WP-041) | 충족 | — |
+| AC-1 ⑤ `data-*`, ⑥ `@layer`, ⑦ CLI | 같은 기준이 스타일시트 선택자의 `data-*` 속성 이름, 레이어 순서 문장, tokens CLI 이름 셋을 담는다. CLI 옵션(플래그)은 기준에 없다 | 부분 | CLI 플래그 목록 |
 | AC-3 폐기 절차 | API 계약 §6.4가 절차를 정한다. `@deprecated`가 붙은 공개 API는 0건이고, 개발 빌드 폐기 경고 장치는 없다 | 미충족 (해당 시) | 첫 폐기 때 경고 장치 |
-| AC-4 CI 잡 | verify(Node 20·22)·docs e2e·visual regression이 PR #87 head `3b4ea34`에서 녹색 | 충족 | 1.0 후보 커밋에서 다시 |
-| AC-4 NFR-005 매트릭스 | CI는 Node 20·22 × Chromium·React 19만 실행한다. React 18 소비자 검사는 로컬 스크립트이고 CI 잡이 없다. Firefox·Safari·Edge는 실행하지 않는다(DEV-065) | 미충족 | React 18 소비자 잡, 브라우저 매트릭스 |
-| AC-4 FR 상태 | 원장 §3 매핑 표 56행이 모두 `검증됨`. FR-CMP-010 ~ FR-CMP-013은 §3 표 대신 CR-041 WP 표(WP-029 ~ WP-032 `done`)에 있다. FR-DX-006은 이 표가 판정한다 | 부분 | FR-CMP-010 ~ 013을 §3 표로 |
-| AC-4 open DEV | DEV-049(사용자 승인 audit 예외, 패치 없는 개발 도구 전이 의존), DEV-065(이 표). DEV-064는 CR-073으로 닫혔다 | 미충족 | DEV-065 해소, DEV-049는 예외 기록 유지 |
-| AC-5 실사용 검증 | agent-ai-platform 한 곳이 0.15.2를 쓴다(DS-PILOT-22). 로컬 재정의 목록은 원장에 없다 | OD-005 대기 | OD-005 결정, 재정의 목록 |
-| AC-6 컴포넌트 범위 | 공개 컴포넌트 67개 | OD-007 대기 | OD-007 결정 |
-| AC-7 버전 정렬 | tokens 0.14.0, css·react 0.15.2, 독립 버전 | OD-008 대기 | OD-008 결정 |
+| AC-4 CI 잡 | verify(Node 20·22)·docs e2e·visual regression 녹색(PR #88·#90). WP-042가 consumers·cross-browser 잡을 더한다 | 충족 | 1.0 후보 커밋에서 다시 |
+| AC-4 NFR-005 매트릭스 | consumers 잡(JOB-CI-006)이 Vite+React 18.3.1, Vite+React 19.2.8, Next 16.3.1+React 19.2.8 소비자를 설치·typecheck·빌드·브라우저 구동한다. cross-browser 잡(JOB-CI-007)이 Firefox·WebKit에서 엔진 스모크 4건씩, 8/8 통과(PR #91 첫 실행). Edge는 Chromium 엔진이다 | 충족 | — |
+| AC-4 FR 상태 | 원장 §3 매핑 표의 FR은 `검증됨`이다. FR-CMP-010 ~ FR-CMP-013은 CR-041 WP 표(WP-029 ~ WP-032 `done`)에 있다. FR-CMP-017(WP-044)은 미착수다 | 미충족 | FR-CMP-017 구현, FR-CMP-010 ~ 013을 §3 표로 |
+| AC-4 open DEV | DEV-049 하나. 사용자가 승인한 audit 예외(패치 없는 개발 도구 전이 의존)로 원장에 결정과 함께 남아 있다. DEV-065는 WP-042로 닫혔다 | 충족 (승인 예외) | 1.0 후보 커밋에서 다시 |
+| AC-5 실사용 검증 | 기준 확정(OD-005): agent-ai-platform이 1.0 후보 버전을 main에서 4주 이상 쓰고 로컬 재정의 0건이거나 각 항목이 앱 고유 스타일로 판정. 지금은 0.15.2를 쓰고 재정의 목록이 없다 | 미충족 | 1.0 후보 적용 후 4주, 재정의 판정 |
+| AC-6 컴포넌트 범위 | 기준 확정(OD-007): 공개 컴포넌트 67개 + FR-CMP-017 6종 | 미충족 | WP-044 |
+| AC-7 버전 정렬 | 기준 확정(OD-008): 1.0.0부터 `fixed`. 지금은 tokens 0.14.0, css·react 0.16.0(`linked`) | 1.0 발행 PR에서 | WP-043에서 `fixed`로 전환 |

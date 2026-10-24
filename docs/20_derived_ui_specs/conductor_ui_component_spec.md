@@ -1,6 +1,6 @@
 # Conductor Design System UI 컴포넌트 명세서
 
-> 상태: review | 버전: v0.21 | 갱신일: 2026-10-24
+> 상태: review | 버전: v0.22 | 갱신일: 2026-10-24
 
 ## 0. 문서 위치와 범위
 
@@ -24,6 +24,7 @@
 | 알림·날짜·명령·페이지 (CR-054) | FR-CMP-014 | API-CMP-010 | C-073, C-074, C-075, C-076 |
 | 확인·선택·식별·숫자 입력 (CR-060) | FR-CMP-015 | API-CMP-011 | C-077, C-078, C-079, C-080, C-081 |
 | 에이전트 대화 (CR-061) | FR-CMP-016 | API-CMP-012 | C-082, C-083, C-084, C-085, C-086, C-087, C-088, C-089, C-090, C-091, C-092 |
+| 레이아웃·타이포그래피·구획 (CR-076) | FR-CMP-017 | API-CMP-014 | C-093, C-094, C-095, C-096, C-097, C-098 |
 
 ## 1. 컴포넌트 설계 원칙
 
@@ -1355,3 +1356,17 @@ component 토큰은 semantic 토큰만 참조한다(FR-TOK-002 AC-3). 아래 표
 - **결정**: 가운데 정렬(`.cdt-conversation__latest`)은 방향과 무관하므로 물리 `left: 50%`와 `translateX(-50%)`로 둔다. 논리 `inset-inline-start: 50%`는 RTL에서 오른쪽 기준이 되어 가운데에서 벗어난다.
 - **결정**: 코드 블록·키 캡·`cdt-mono`·도구 이름은 `direction: ltr; unicode-bidi: isolate`다. 단축키 묶음(`cdt-command__shortcut`)은 키 순서만 고정하면 되므로 `direction: ltr`이다.
 - **결정**: Radix 방향은 앱 루트의 `DirectionProvider` 하나로 정한다. 컴포넌트마다 `dir` prop을 받지 않는다. Radix 각 프리미티브의 `dir` prop은 그대로 통과한다. `Toast.Provider`의 `swipeDirection`은 Radix가 방향을 읽지 않으므로 소비자가 정한다.
+
+## CR-076 컴포넌트 (FR-CMP-017)
+
+| ID | 컴포넌트 | 루트 클래스 | 동작 소유 | 주요 props |
+| --- | --- | --- | --- | --- |
+| C-093 | `Separator` | `cdt-separator`, `cdt-separator--vertical` | 정적 `role="separator"`(장식이면 `aria-hidden`) | `orientation`, `decorative` |
+| C-094 | `Stack` | `cdt-stack`, `cdt-stack--row` | 정적 `<div>` | `direction`, `gap`(space 토큰 이름), `align`, `justify`, `wrap`, `as` |
+| C-095 | `Grid` | `cdt-grid` | 정적 `<div>` | `columns` 또는 `minColumnWidth`(토큰), `gap`(space 토큰 이름), `as` |
+| C-096 | `Heading` | `cdt-heading`, `cdt-heading--<size>` | 기본 `<h1>`~`<h6>` | `level`(1~6, 필수), `size`(시각 크기, 기본은 level에서 유도) |
+| C-097 | `Text` | `cdt-text`, `cdt-text--<size>`, `cdt-text--<tone>` | 기본 `<p>` | `size`, `weight`, `tone`(text 토큰), `as` |
+| C-098 | `Accordion` | `cdt-accordion`, `cdt-accordion__item`, `cdt-accordion__trigger`, `cdt-accordion__content` | Radix Accordion(펼침·키보드·`aria-expanded`) | `type`(`single`·`multiple`), `collapsible`, `value`/`defaultValue` |
+
+- **결정**: 간격·크기·톤은 토큰 이름만 받는다. 임의 px·색 prop은 두지 않는다(lint:tokens와 같은 원칙).
+- **결정**: Heading은 문서 구조(`level`)와 시각 크기(`size`)를 나눈다. 같은 화면에서 h2를 작게 그리는 일이 흔하기 때문이다.
