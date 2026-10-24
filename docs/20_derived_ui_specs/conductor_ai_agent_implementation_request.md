@@ -1,6 +1,6 @@
 # Conductor Design System 구현 요청서 for AI Agent
 
-> 상태: review | 버전: v0.3 | 갱신일: 2026-09-13
+> 상태: review | 버전: v0.4 | 갱신일: 2026-10-24
 
 ## 1. 목적과 이 문서의 지위
 
@@ -45,7 +45,7 @@ Conductor는 `agent-ai-platform/packages/web`의 시각 언어를 npm 패키지 
 14. `../30_technical_architecture/conductor_frontend_architecture.md`
 15. `../30_technical_architecture/conductor_api_contracts.md` — `buildTokens`, `checkContrast` CLI 계약과 패키지 진입점 계약
 16. `../30_technical_architecture/conductor_data_model.md` — `TokenDefinition` 스키마와 이름 매핑 표
-17. `../30_technical_architecture/conductor_async_events_jobs.md` — JOB-BUILD-001~004, JOB-CI-001~004, JOB-REL-001
+17. `../30_technical_architecture/conductor_async_events_jobs.md` — JOB-BUILD-001~004, JOB-CI-001~005, JOB-REL-001
 18. `../30_technical_architecture/conductor_security_privacy_architecture.md`
 19. `../30_technical_architecture/conductor_infrastructure_operations.md` — 빌드 파이프라인, 릴리스, 롤백
 20. `../30_technical_architecture/conductor_observability_reliability.md`

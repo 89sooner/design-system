@@ -1,6 +1,6 @@
 # Conductor Design System 인프라 및 운영 아키텍처
 
-> 상태: review | 버전: v0.9 | 갱신일: 2026-09-13
+> 상태: review | 버전: v0.10 | 갱신일: 2026-10-24
 
 ## 1. 범위 재정의: 서버가 없는 인프라
 
@@ -11,7 +11,7 @@ Conductor Design System은 서버 런타임, 컴퓨팅 인스턴스, 오토스�
 | Environment | 목적 | 트리거 | 산출물 | 관련 요구사항 |
 | --- | --- | --- | --- | --- |
 | local | 개발자가 토큰·컴포넌트를 수정하고 빌드/검사를 로컬에서 실행한다 | 개발자 수동 실행 | 로컬 `dist/` 산출물(배포되지 않음) | FR-DX-001 |
-| CI (Pull Request) | 모든 PR에서 빌드와 검사 잡을 실행해 병합 가능 여부를 판정한다 | PR open/synchronize | 테스트 리포트, 대비/접근성/시각 회귀/번들 크기 아티팩트 | JOB-CI-001~004 |
+| CI (Pull Request) | 모든 PR에서 빌드와 검사 잡을 실행해 병합 가능 여부를 판정한다 | PR open/synchronize | 테스트 리포트, 대비/접근성/시각 회귀/번들 크기 아티팩트, 문서 E2E 실패 결과 | JOB-CI-001~005 (JOB-CI-005는 CR-072) |
 | npm registry | 배포된 패키지가 소비자에게 도달하는 대상 | `main` 브랜치의 semver 태그 push | 버전이 부여된 패키지 3종 | JOB-REL-001, FR-DX-005 |
 | 문서 사이트 정적 호스팅 | 소비자와 접근성 검토자가 문서 사이트를 조회하는 대상 | `main` 브랜치 push(문서 산출물 변경 포함) | 정적 파일(HTML/CSS/JS) | JOB-BUILD-004, FR-DOC-001 |
 

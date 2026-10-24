@@ -1,6 +1,6 @@
 # Conductor Design System 최종 요구사항 정의서
 
-> 상태: baseline | 버전: v1.22 | 갱신일: 2026-10-23
+> 상태: baseline | 버전: v1.23 | 갱신일: 2026-10-24
 
 ## 1. 문서 개요
 
@@ -907,7 +907,7 @@ FR-QA-004(시각 회귀)와 FR-CMP-009(셸 컴포넌트군)는 2026-07-10에 OD-
 | 대형 텍스트 및 비텍스트 대비율 | 3:1 이상 | `pnpm check:contrast` | 포커스 링·경계 포함 |
 | axe-core serious 이상 위반 | 0건 | `pnpm test:a11y` | 컴포넌트 전수 × 테마 2종 |
 | 키보드 도달 가능한 대화형 요소 비율 | 100% | 컴포넌트별 키보드 경로 테스트 | FR-A11Y-002 |
-| 강제 색 모드에서 포커스·상태 표시가 사라지는 컴포넌트 | 0건 | `apps/docs/e2e/forced-colors.spec.ts` (Chromium 강제 색 에뮬레이션, 로컬 문서 E2E — CI는 `bundle.test.ts`와 강제 색 기준 이미지가 막는다, DEV-063) | FR-A11Y-001 AC-5, FR-A11Y-003 AC-5 (CR-071) |
+| 강제 색 모드에서 포커스·상태 표시가 사라지는 컴포넌트 | 0건 | `apps/docs/e2e/forced-colors.spec.ts` (Chromium 강제 색 에뮬레이션, CI 문서 E2E 잡 JOB-CI-005 — CR-072) | FR-A11Y-001 AC-5, FR-A11Y-003 AC-5 (CR-071) |
 
 ### NFR-004 운영성
 
@@ -1243,3 +1243,12 @@ v1.21 baseline 이력을 유지한다. 사용자가 2026-10-23 디자인 시스�
 | FR-A11Y-003 | AC-5 추가: 강제 색 모드의 상태 표시(위 AC 본문의 목록). 채우는 항목은 `forced-color-adjust: none`으로 강제 색의 `Canvas` 글자 배경판을 끄고, 자손 글자까지 `HighlightText`로 둔다. 배경판을 끄지 않으면 채움 위 글자가 검은 상자로 덮인다(실측). |
 | FR-CMP-013 | AC-6 정정: 강제 색 모드에서 세그먼트형 선택 탭은 `Highlight` 외곽선이 아니라 `Highlight` 채움과 `HighlightText` 글자로 그린다. 외곽선은 포커스 표시에 남긴다. 밑줄형 표시선은 그대로 `Highlight`다. |
 | FR-QA-004 | AC-6 추가: 강제 색 기준 이미지 9장. 기준 이미지는 168장이 된다(정지 134 + 열린 상태 22 + 회색조 3 + 강제 색 9). |
+
+## 33. CR-072 측정 방법 정정 (baseline)
+
+v1.22 baseline 이력을 유지한다. 사용자가 2026-10-24 DEV-063을 "CI에 문서 E2E 잡 추가로 진행해"라고 결정했다. 문서 사이트 Playwright E2E는 검증 계획에서 PR·main 게이트였지만, 실행하는 CI 잡이 없어 로컬 게이트였다(2026-10-09 DEV-048로 처음 기록, 2026-10-23 DEV-063으로 다시 발견). CR-072는 CI에 그 잡(JOB-CI-005)을 둔다. 새 FR·AC 없음.
+
+| NFR | 변경 |
+| --- | --- |
+| NFR-003 | 강제 색 모드 지표의 측정 방법: `forced-colors.spec.ts`가 로컬이 아니라 PR마다 CI 잡 JOB-CI-005에서 실행된다 |
+

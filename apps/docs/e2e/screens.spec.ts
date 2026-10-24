@@ -123,6 +123,10 @@ for (const theme of ["dark", "light"] as const) {
 
 for (const theme of ["dark", "light"] as const) {
   test(`QA-003, QA-004: ${theme} screen controls follow DOM order and use the focus-ring token`, async ({ page }) => {
+    // One test walks every screen's Tab sequence and every roving group: 23~26s on a quiet machine, against
+    // Playwright's 30s default, and over it under parallel load (CR-072). The walk stays one test so a stop that
+    // breaks the sequence on any screen fails it; the budget is what grows.
+    test.setTimeout(90_000);
     await page.setViewportSize({ width: 1080, height: 900 });
     await page.addInitScript((selectedTheme) => window.localStorage.setItem("conductor-theme", selectedTheme), theme);
 
