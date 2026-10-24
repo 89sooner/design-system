@@ -1,6 +1,6 @@
 # Conductor Design System 구현 추적 원장
 
-> 상태: review | 버전: v0.59 | 갱신일: 2026-10-24
+> 상태: review | 버전: v0.60 | 갱신일: 2026-10-24
 
 ## 1. 목적과 갱신 규칙
 
@@ -264,6 +264,7 @@ PR Search 소비처의 `DEV-380`이 트리거다: 화면 계약이 최대 20계�
 
 | DEV ID | 발견일 | 유형 | 내용 | 관련 ID | 처리 CR | 상태 |
 | --- | --- | --- | --- | --- | --- | --- |
+| DEV-064 | 2026-10-24 | 구현 편차 | **문서 사이트 컴포넌트 페이지에서 폭 약 850px 미만일 때 Table 예제 오른쪽이 잘리고 닿을 수 없었다.** `.docs-stage > .docs-preview`가 grid 항목 기본값 `min-width: auto`로 표의 800px 최소 폭까지 넓어져 스테이지의 `overflow: hidden`에 잘렸다. 표 자체 스크롤러는 동작하지 않았다. 2026-10-24 품질 재평가의 320·560·800px 측정에서 발견 | FR-DOC-003, FR-CMP-005 | CR-073 | open |
 | DEV-063 | 2026-10-23 | 문서/CI 불일치 | **검증 계획은 문서 사이트 Playwright E2E(`pnpm test:e2e`)를 PR·main 게이트로 적었지만, `.github/workflows/ci.yml`은 그 명령을 실행하지 않는다.** CI의 `verify`는 `pnpm test`·`test:a11y`·`lighthouse` 등을 돌리고, `visual regression`은 `test:visual`만 돌린다. 그래서 `apps/docs/e2e/*.spec.ts`(CR-071의 `forced-colors.spec.ts` 포함 86건)는 로컬에서만 실행돼 왔다. CR-071의 PR #85 CI 로그를 확인하다 발견. CR-071의 강제 색 상태는 CI에서 `bundle.test.ts`(선언)와 강제 색 기준 이미지 9장이 막고, 계산값 판정과 67개 컴포넌트 포커스 전수는 로컬 게이트다. 해결(CI에 문서 E2E 잡 추가 또는 검증 계획 정정)은 사용자 결정 대기. 잡을 추가하면 `screens.spec.ts` QA-003·QA-004 포커스 순서 시험(로컬 23~26초, 기본 한도 30초)의 시간 여유부터 다뤄야 한다 | FR-DOC-001~007, FR-A11Y-001 AC-5, FR-A11Y-003 AC-5 | CR-072 (DEV-048의 중복. CR-071이 기록) | closed |
 | DEV-062 | 2026-10-22 | 문서/코드 불일치 | **SRS 두 조항이 라이트 장식 경계에 서로 다른 것을 요구했고, 구현은 어느 쪽도 온전히 따르지 않았다.** FR-THM-002 AC-3은 라이트 `border.subtle`·`default`·`strong`에 비텍스트 3:1을, FR-THM-005 AC-4(OD-001)는 같은 토큰을 대비 검사 제외로 정했다. 토큰 명세 6.3은 AC-3을 따라 `border.default`·`border.strong`을 불투명 중간 회색(`surface.raised` 위 4.36·5.52)으로 정해 다크(1.37·1.75)의 세 배 무게가 되었고 컨트롤 경계(4.63)와 구분되지 않았다. 그러면서 `border.subtle` `#e2e8f0`은 1.04~1.23으로 AC-3도 지키지 못했다. 이를 검사하는 시험은 없었다. 사용자 지적(2026-10-22, 라이트 테두리가 어정쩡하다)에서 발견 | FR-THM-002, FR-THM-005 | CR-065 | closed |
 | DEV-061 | 2026-10-21 | 문서/코드 불일치 | **입력 placeholder의 대비를 입력이 칠하지 않는 표면에서 읽었다.** `components.ts`의 `input.placeholder` 설명과 토큰 명세 7.5절은 "다크 입력은 `surface.base` 위"라고 가정했지만 `.cdt-input`·`.cdt-textarea`·`.cdt-select__trigger`는 `surface.raised`를 칠한다(CR-019). `text.faint` placeholder는 그 위에서 다크 3.22:1·라이트 4.36:1이었다. 함께 `NumberInput` 내부 입력에는 placeholder 규칙이 없어 브라우저 기본 회색(다크 4.27:1)이었다. PR 조사 화면 감사(2026-10-21)와 CR-064 브라우저 시험에서 발견 | FR-THM-005, C-051, C-081 | CR-064 | closed |
@@ -737,3 +738,11 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | 편차 | DEV-048·DEV-063 closed |
 | 검증 (로컬) | `CI=1 pnpm test:e2e` 86/86 두 번 연속, lint·typecheck 통과 |
 | 검증 (CI) | PR #87 head `3b4ea34`: docs e2e 86/86(첫 실행), verify(node 20·22)·visual regression 통과. CR-072 closed |
+
+### CR-073 컴포넌트 페이지 미리보기의 좁은 폭 잘림 (2026-10-24)
+
+| 범위 | 결과 |
+| --- | --- |
+| 문서 사이트 | `apps/docs/src/styles/catalog.css`(`.docs-stage > .docs-preview { min-width: 0 }`) |
+| 시험 | `apps/docs/e2e/catalog.spec.ts` CR-073 1건(320px에서 67개 미리보기가 스테이지 안, Table 스크롤러 스크롤 가능·`tabindex=0`). 수정 전 빌드에서 실패, 수정 후 통과 |
+

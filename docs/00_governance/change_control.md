@@ -91,6 +91,7 @@
 | CR-070 | 2026-10-23 | correction | 사용자 지시 (2026-10-23): "LCP 예산 측정 안정화 CR도 진행해" | **Lighthouse LCP 게이트를 배포 대상과 같은 gzip 전송으로 잰다.** 측정용 정적 서버가 압축하지 않아 첫 페인트가 CSS 127KB·HTML 47KB의 Fast 3G 전송에 묶였고, 문서 사이트가 커지며 p75가 1,917ms(CR-017)에서 2,476ms(main)까지 밀려 무관한 PR이 2503~2509ms로 실패했다. 서버를 `scripts/static-server.mjs`로 떼어 gzip·`Vary`·SPA 폴백을 시험하고, 자원별 전송 바이트와 90% 여유 경고를 출력한다. 배포 잡이 Pages의 gzip 전송을 확인한다. 예산·스로틀·7회 p75는 그대로 | NFR-001 | SRS v1.21(§31, NFR-001 측정 방법), PRD v0.15, RTM v0.16, 프런트엔드 v0.7, 검증 계획 v0.11, 원장 v0.57, `scripts/static-server.mjs`·`.test.mjs`, `scripts/check-lighthouse.mjs`, `.github/workflows/deploy-docs.yml` | closed |
 | CR-071 | 2026-10-23 | correction + scope | 사용자 지시 (2026-10-23): "1번 CR로 진행해" — 품질 재평가 권고 1(강제 색 모드) | **강제 색 모드(Windows 고대비)에서 포커스와 상태 표시가 사라지지 않게 한다.** 그 모드는 배경과 `box-shadow`를 지우는데, Conductor는 포커스 링과 대부분의 선택 표시를 그 둘로 그렸다. 실측에서 키보드 포커스가 Button·Switch·Checkbox·Radio·ToggleGroup·Pagination·Collapsible에서, 상태가 Switch·Radio·Meter·ToggleGroup·Pagination·Timeline과 목록·메뉴 강조 항목에서 사라졌다. 포커스 규칙의 `outline: none`을 투명 외곽선으로 바꾸고, 상태를 시스템 색으로 다시 그린다. 평소 화면은 바뀌지 않는다. FR-CSS-002 AC-3·FR-CMP-013 AC-6 정정, FR-A11Y-001 AC-5·FR-A11Y-003 AC-5·FR-QA-004 AC-6 추가, §4 고대비 제외 문구 명확화. css patch | FR-CSS-002, FR-A11Y-001, FR-A11Y-003, FR-CMP-013, FR-QA-004 | SRS v1.22(§32, §4, NFR-003), PRD v0.16, feature v0.10, 용어집 v0.7, RTM v0.17, 컴포넌트 명세 v0.20, QA 체크리스트 v0.8, 프런트엔드 v0.8, 비동기 작업 v0.10, 검증 계획 v0.12, 원장 v0.58, `packages/css/src/*.css` 6개, `apps/docs/src/styles/base.css`, `packages/css/test/bundle.test.ts`, `apps/docs/e2e/forced-colors.spec.ts`, `apps/docs/visual/visual.spec.ts` + 기준 이미지 9장, Changeset(css patch) | closed |
 | CR-072 | 2026-10-24 | correction | 사용자 결정 (2026-10-24): "DEV-063은 CI에 문서 E2E 잡 추가로 진행해" | **문서 사이트 Playwright E2E를 PR·main CI 잡(JOB-CI-005)으로 실행한다.** 검증 계획은 처음부터 이 검사를 PR 게이트로 적었지만 실행하는 잡이 없었다(DEV-048·DEV-063). `ci.yml`에 `docs e2e` 잡, 루트 `pnpm test:e2e`, Playwright `forbidOnly`·실패 trace를 두고, 30초 기본 한도에 걸리던 화면 전체 Tab 순서 시험의 한도를 90초로 둔다. 패키지 변경 없음 | NFR-003, FR-DOC-001~007 | SRS v1.23(§33, NFR-003), 비동기 작업 v0.11(JOB-CI-005), 검증 계획 v0.13, 프런트엔드 v0.9, 보안 v0.8, 시스템 v0.4, 인프라 운영 v0.10, 구현 요청 v0.4, 원장 v0.59(DEV-048·DEV-063 closed), `.github/workflows/ci.yml`, `package.json`, `apps/docs/playwright.config.ts`, `apps/docs/e2e/screens.spec.ts` | closed |
+| CR-073 | 2026-10-24 | correction | 사용자 지시 (2026-10-24): "그대로 남은 한계를 개선하기 위해 추천 순서대로 작업 진행 하라" — 품질 재평가 권고 1 | **문서 사이트 컴포넌트 페이지에서 넓은 예제가 좁은 폭에 잘리던 문제를 고친다.** `.docs-stage > .docs-preview`에 `min-width: 0`이 없어, 800px Table 예제가 미리보기를 스테이지 밖으로 넓히고 스테이지의 `overflow: hidden`에 잘렸다. 폭 약 850px 미만에서 표 오른쪽에 닿을 수 없었다(DEV-064). 67개 페이지를 320px에서 검사하는 E2E를 더한다 | FR-DOC-003 | `apps/docs/src/styles/catalog.css`, `apps/docs/e2e/catalog.spec.ts`, QA 체크리스트 v0.9, 원장 v0.60(DEV-064) | open |
 
 유형: `scope`(범위 변경), `design`(설계 변경), `implementation`(구현 편차 DEV-### 처리), `correction`(문서 오류 수정)
 
@@ -903,3 +904,14 @@ CR-041 구현 cascade와 로컬 검증은 2026-09-14에 종료했다. 사용자�
 | 검증 (2026-10-24, 로컬) | `CI=1 pnpm test:e2e`(웹 서버가 문서 사이트를 다시 빌드해 서빙) 86/86 두 번 연속. lint·typecheck 통과. 최종 판정은 PR CI의 새 잡이다 |
 | DEV 처리 | DEV-048·DEV-063 → closed(CR-072) |
 | CI · 종료 | PR #87 head `3b4ea34`에서 새 잡 `docs e2e (playwright)`가 처음 실행돼 86/86 통과(2 workers, 3.0분, 재시도 없음). verify(node 20·22)·visual regression도 통과. CR-072를 종료한다. 패키지 변경이 없어 릴리스는 없다 |
+
+## CR-073 컴포넌트 페이지 미리보기의 좁은 폭 잘림 (2026-10-24)
+
+| 항목 | 기록 |
+| --- | --- |
+| 유형 / 상태 | correction / open |
+| 변경 근거 | 2026-10-24 품질 재평가에서 공개 컴포넌트 67개 미리보기를 320·560·800px로 쟀다. 사용자가 권고 순서대로 진행하라고 지시했다 |
+| 원인 (측정) | `.docs-stage`는 grid이고 `overflow: hidden`이다. 그 자식 `.docs-preview`는 grid 항목의 기본값 `min-width: auto`라 내용 폭까지 넓어진다. Table 예제의 표는 `min-width: 800px`라 미리보기가 802px이 됐고, 스테이지(320px에서 286px, 560px에서 526px, 800px에서 750px)가 그 오른쪽을 잘랐다. 표의 자체 스크롤러(`.cdt-table__scroll`, FR-CMP-005 AC-1)는 부모가 좁아지지 않아 스크롤할 것이 없었다. 다른 66개는 세 폭 모두에서 스테이지 안에 들었다. 카탈로그 타일의 미리보기는 이미 `min-width: 0`이었다. 화면 시험(QA-001·002)은 잘린 대화형 요소만 세는데 이 예제에는 대화형 요소가 없어 놓쳤다 |
+| 범위 판정 | 문서 사이트 CSS 정정. 패키지·FR·AC 변경 없음 |
+| 설계 | `.docs-stage > .docs-preview`에 `min-width: 0`. 표의 자체 스크롤러가 넘침을 맡는다(560px에서 보이는 492px / 내용 800px, `tabindex=0`) |
+| 시험 | `catalog.spec.ts`: 320px에서 67개 컴포넌트 페이지의 미리보기 폭이 스테이지 폭 이하이고, Table 예제의 스크롤러가 스크롤 가능하며 키보드로 닿는다. 수정 전 빌드에서 이 시험이 `Table (798px in 286px)`로 실패함을 확인했다 |
