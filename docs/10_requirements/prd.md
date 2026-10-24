@@ -1,6 +1,6 @@
 # Conductor Design System PRD
 
-> 상태: review | 버전: v0.19 | 갱신일: 2026-10-24
+> 상태: review | 버전: v0.20 | 갱신일: 2026-10-25
 
 ## 1. 문서 개요
 
@@ -165,10 +165,10 @@ Conductor Design System(이하 Conductor)은 `agent-ai-platform`의 `packages/we
 | FR-CMP-006 | 오버레이 컴포넌트군을 Radix 위에 제공한다 | Must | F-CMP-006 |
 | FR-CMP-007 | 폼 컴포넌트군을 제공한다 | Must | F-CMP-007 |
 | FR-CMP-008 | 피드백 컴포넌트군을 제공한다 | Must | F-CMP-008 |
-| FR-CMP-009 | 셸 컴포넌트군을 제공한다 | Should | F-CMP-009 |
+| FR-CMP-009 | 셸 컴포넌트군을 제공한다. 프로그램 포커스를 받은 main은 링을 그리지 않는다(CR-077) | Should | F-CMP-009 |
 | FR-CMP-014 | Toast·DatePicker·CommandPalette·Pagination을 제공한다 (CR-054) | Should | F-CMP-014 |
 | FR-CMP-015 | AlertDialog·RadioGroup·ToggleGroup·Avatar·NumberInput을 제공한다 (CR-060). NumberInput은 TextField와 같은 glass 변형을 받는다 (CR-063) | Should | F-CMP-015 |
-| FR-CMP-016 | Conversation·Message·PromptInput·Reasoning·Tool·Confirmation·Sources·InlineCitation·Suggestions·Suggestion·Shimmer를 제공한다 (CR-061) | Should | F-CMP-016 |
+| FR-CMP-016 | Conversation·Message·PromptInput·Reasoning·Tool·Confirmation·Sources·InlineCitation·Suggestions·Suggestion·Shimmer를 제공한다 (CR-061). 공유 대화의 다른 참여자 턴(`participant`)과 행 전체 폭의 에이전트 턴(CR-077) | Should | F-CMP-016 |
 | FR-CMP-017 | Separator·Stack·Grid·Heading·Text·Accordion을 제공한다 (CR-076, OD-007) | Should | CR-076 |
 | FR-DOC-001 | 문서 사이트 셸을 제공한다 | Must | F-DOC-001 |
 | FR-DOC-002 | Foundations 페이지를 빌드 산출물에서 생성한다 | Must | F-DOC-002 |
@@ -180,7 +180,7 @@ Conductor Design System(이하 Conductor)은 `agent-ai-platform`의 `packages/we
 | FR-DOC-008 | DESIGN.md·llms.txt·컴포넌트 Markdown을 같은 출처에서 생성한다 (CR-048) | Should | F-DOC-008 |
 | FR-DOC-009 | 빈 상태·필터 테이블·설정 폼 블록 예제를 공개 컴포넌트만으로 제공한다 (CR-051) | Should | F-DOC-009 |
 | FR-DOC-010 | accent·반경·밀도를 바꿔 미리 보고 대비를 즉시 다시 재며 CSS 재정의를 복사한다 (CR-052) | Should | F-DOC-010 |
-| FR-A11Y-001 | 모든 대화형 요소에 동일 포커스 링을 적용한다. 강제 색 모드에서도 포커스가 보인다(CR-071) | Must | F-A11Y-001 |
+| FR-A11Y-001 | 모든 대화형 요소에 동일 포커스 링을 적용한다. 강제 색 모드에서도 포커스가 보인다(CR-071). 프로그램으로만 포커스를 받는 랜드마크는 대상이 아니다(CR-077) | Must | F-A11Y-001 |
 | FR-A11Y-002 | 키보드만으로 모든 대화형 요소에 도달한다 | Must | F-A11Y-002 |
 | FR-A11Y-003 | 색 외에 아이콘과 텍스트로 상태를 전달한다. 강제 색 모드에서 선택·강조·현재 상태를 시스템 색으로 다시 그린다(CR-071) | Must | F-A11Y-003 |
 | FR-A11Y-004 | WCAG 2.1 AA 대비율을 두 테마에서 만족한다 | Must | F-A11Y-004 |
@@ -190,7 +190,7 @@ Conductor Design System(이하 Conductor)은 `agent-ai-platform`의 `packages/we
 | FR-DX-003 | 공개 진입점과 부수효과를 선언한다 | Must | F-DX-003 |
 | FR-DX-004 | 서버 렌더링 환경에서 동작한다 | Must | F-DX-004 |
 | FR-DX-005 | semver와 변경 이력을 자동 생성한다 | Should | F-DX-005 |
-| FR-DX-006 | 1.0의 공개 계약 범위·검출·폐기 절차·품질 게이트·실사용 검증을 정하고, 1.0 이후 계약 위반은 major로만 낸다(CR-075) | Should | CR-075 |
+| FR-DX-006 | 1.0의 공개 계약 범위·검출·폐기 절차·품질 게이트·실사용 검증을 정하고, 1.0 이후 계약 위반은 major로만 낸다(CR-075). CLI 옵션도 공개 표면 기준으로 검출한다(CR-077) | Should | CR-075 |
 | FR-QA-001 | 테마 간 토큰 키 대칭을 검사한다 | Must | F-QA-001 |
 | FR-QA-002 | 컴포넌트 단위 테스트가 AC를 인용한다 | Must | F-QA-002 |
 | FR-QA-003 | axe-core 위반 0건을 CI에서 강제한다 | Must | F-QA-003 |

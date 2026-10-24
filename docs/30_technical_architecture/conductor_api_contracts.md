@@ -1,6 +1,6 @@
 # Conductor Design System 패키지 공개 API 계약
 
-> 상태: review | 버전: v0.16 | 갱신일: 2026-10-24
+> 상태: review | 버전: v0.17 | 갱신일: 2026-10-25
 
 ## 0. 문서 재해석
 
@@ -518,7 +518,7 @@ error[<CODE>]: <한 줄 요약>
    - 컴포넌트 props의 필수 필드 추가, 기존 필드 타입 축소, prop 삭제
    - `package.json`의 `exports` 경로 삭제 또는 삭제된 것과 동등하게 취급되는 경로 변경
    - CSS 클래스명(`cdt-*`) 삭제 또는 rename
-   - CLI 플래그 삭제, 종료 코드 의미 변경
+   - CLI 플래그 삭제, 종료 코드 의미 변경. CLI 플래그와 위치 인자는 각 CLI가 모르는 인자에 출력하는 사용법 줄에서 읽어 **public-surface.txt**의 `bin arguments` 구역이 고정한다(CR-077, FR-DX-006 AC-1 ⑦). 그 구역의 `-` 줄은 이 항의 파괴 변경이다
 3. **비파괴 변경.** 신규 토큰/컴포넌트/props(선택적, 기본값 존재) 추가, 버그 수정으로 인한 시각적 보정(기존 토큰 키 유지).
 4. **deprecation 절차(FR-DX-005).** deprecated 대상에 `@deprecated` JSDoc 태그와 대체 경로를 명시하고 문서 사이트에 지원 종료 표식을 노출한다. 최소 1회의 minor 릴리스 동안 동작을 유지한 뒤, 다음 major에서 제거한다. 제거 시 `CHANGELOG`에 마이그레이션 노트를 포함한다(AC-4). 변경 이력이 없는 패키지는 버전을 올리지 않는다(AC-3).
 
@@ -595,7 +595,7 @@ export const InlineCitation: ForwardRef<HTMLButtonElement, InlineCitationProps>;
 export const Suggestions: ForwardRef<HTMLDivElement, SuggestionsProps>;
 export const Suggestion: ForwardRef<HTMLButtonElement, SuggestionProps>; // suggestion, onSelect(suggestion)
 export const Shimmer: ForwardRef<HTMLSpanElement, ShimmerProps>;
-export type MessageRole = "user" | "assistant" | "system";
+export type MessageRole = "user" | "participant" | "assistant" | "system"; // participant: CR-077
 export type MessageStatus = "complete" | "streaming" | "error";
 export type PromptInputStatus = "ready" | "submitted" | "streaming" | "error";
 export type ToolStatus = "pending" | "running" | "awaiting-approval" | "completed" | "error";

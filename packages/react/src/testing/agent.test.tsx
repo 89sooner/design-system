@@ -21,6 +21,12 @@ describe("FR-CMP-016 Conversation and Message", () => {
     expect(screen.getByRole("group", { name: "Conductor" }).textContent).toContain("Three services");
   });
 
+  test("AC-1 (CR-077): another person in a shared conversation is a participant group named by them", () => {
+    render(<Conversation><Message from="participant" name="Mina">I saw it too</Message><Message from="participant">Anonymous</Message></Conversation>);
+    expect(screen.getByRole("group", { name: "Mina" }).classList.contains("cdt-message--participant")).toBe(true);
+    expect(screen.getByRole("group", { name: "Participant" }).textContent).toContain("Anonymous");
+  });
+
   test("AC-2: a streaming message is busy and says so; an error message raises an alert", () => {
     const { rerender } = render(<Message from="assistant" status="streaming">Partial answer</Message>);
     const group = screen.getByRole("group", { name: /^Assistant\s*, Responding$/ });

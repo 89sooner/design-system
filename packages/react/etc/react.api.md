@@ -753,6 +753,7 @@ export interface MessageLabels {
     readonly assistant: string;
     // (undocumented)
     readonly error: string;
+    readonly participant: string;
     // (undocumented)
     readonly streaming: string;
     // (undocumented)
@@ -775,8 +776,8 @@ export interface MessageProps extends HTMLAttributes<HTMLDivElement> {
     readonly status?: MessageStatus;
 }
 
-// @public (undocumented)
-export type MessageRole = "user" | "assistant" | "system";
+// @public
+export type MessageRole = "user" | "participant" | "assistant" | "system";
 
 // @public (undocumented)
 export type MessageStatus = "complete" | "streaming" | "error";

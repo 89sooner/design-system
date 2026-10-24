@@ -1,6 +1,6 @@
 # Conductor Design System 구현 추적 원장
 
-> 상태: review | 버전: v0.65 | 갱신일: 2026-10-24
+> 상태: review | 버전: v0.66 | 갱신일: 2026-10-25
 
 ## 1. 목적과 갱신 규칙
 
@@ -228,7 +228,7 @@ PR Search 소비처의 `DEV-380`이 트리거다: 화면 계약이 최대 20계�
 | FR-CMP-006 | `packages/react/src/overlay.tsx`, `packages/css/src/components.css`, `packages/react/package.json` | `packages/react/src/testing/overlay.test.tsx`, `packages/css/test/bundle.test.ts` | WP-015 | 검증됨 (AC-1~AC-5. 정확 고정 Radix Dialog/Tooltip/DropdownMenu wrapper가 Dialog·Drawer의 포커스/Escape/복귀/스크롤 잠금, Tooltip focus/Escape, z 토큰과 자체 접근성 동작 0건을 검증.) |
 | FR-CMP-007 | `packages/react/src/form.tsx`, `packages/css/src/components.css`, `packages/react/package.json` | `packages/react/src/testing/form.test.tsx`, `packages/css/test/bundle.test.ts` | WP-016 | 검증됨 (AC-1~AC-5. Field의 id/설명/오류 연결과 오류 invalid 상태, 이름 없는 입력 경고, Radix Select/Switch/Checkbox의 역할·상태, 40px/compact 42px 스타일 및 공개 공통 계약을 검증.) |
 | FR-CMP-008 | `packages/react/src/feedback.tsx`, `packages/css/src/components.css`, `packages/tokens/src/components.ts` | `packages/react/src/testing/feedback.test.tsx`, `packages/css/test/bundle.test.ts` | WP-017 | 검증됨 (AC-1~AC-5. Banner live role/경고, EmptyState 슬롯, Meter threshold·range·텍스트, ProgressRing/Spinner 대체 텍스트와 reduced motion CSS를 검증.) |
-| FR-CMP-009 | `packages/react/src/shell.tsx`, `packages/css/src/components.css`, `packages/tokens/src/components.ts` | `packages/react/src/testing/shell.test.tsx`, `packages/css/test/bundle.test.ts`, `apps/docs/e2e/shell.spec.ts` | WP-023 | 검증됨 (AC-1~AC-4. renderLink 위임·라우터 의존 0건·800px off-canvas의 scrim/Escape dismissal·skip-link focus 이동과 세 컴포넌트 공통 계약을 단위 및 실브라우저로 검증.) |
+| FR-CMP-009 | `packages/react/src/shell.tsx`, `packages/css/src/components.css`, `packages/tokens/src/components.ts` | `packages/react/src/testing/shell.test.tsx`, `packages/css/test/bundle.test.ts`, `apps/docs/e2e/shell.spec.ts` | WP-023 | 검증됨 (AC-1~AC-4. renderLink 위임·라우터 의존 0건·800px off-canvas의 scrim/Escape dismissal·skip-link focus 이동과 세 컴포넌트 공통 계약을 단위 및 실브라우저로 검증.) CR-077: 포커스를 받은 main은 링·강제 색 외곽선을 그리지 않는다 — `component-css.browser.test.tsx`(건너뛰기 링크 Enter → main → 다음 Tab), `packages/css/test/bundle.test.ts`(`outline: none` 규칙은 main 하나). |
 | FR-DOC-001 | `apps/docs/src/main.tsx`, `App.tsx`, `entry-server.tsx`, `vite.config.ts`, `scripts/prerender.mjs`, `packages/react/src/shell.tsx`, `.github/workflows/deploy-docs.yml` | `apps/docs/e2e/shell.spec.ts`, `scripts/check-lighthouse.mjs` | WP-018, WP-023, WP-028 | 검증됨 (AC-1~AC-4. 모든 W-001~W-050 라우트가 공개 AppShell/NavList/TopBar 안에서 렌더되고 workspace 공개 진입점만 소비한다. AC-3·AC-4는 파일 서빙과 SPA 폴백만 있는 서버에서 셸 렌더와 외부 도메인 요청 0건을 프로덕션 산출물로 실측해 닫았다.) |
 | FR-DOC-002 | `apps/docs/src/foundations.ts`, `App.tsx`, `scripts/check-foundation-tokens.mjs` | `apps/docs/e2e/foundations.spec.ts` | WP-019 | 검증됨 (AC-1~AC-3. generated `tokens.json`을 직접 읽어 그룹별 표·스와치를 생성하고, 키·계층·현재 테마 값·용도를 렌더한다. 설명 누락은 `설명 없음`과 빌드 경고로 처리) |
 | FR-DOC-003 | `apps/docs/scripts/build-component-catalog.mjs`, `src/catalog.tsx`, `App.tsx` | `apps/docs/e2e/catalog.spec.ts` | WP-020, WP-023, WP-033 | 검증됨 (AC-1~AC-5. 공개 30개가 실제 DOM 프리뷰와 상세 라우트를 가지며 `.d.ts`에서 props 표를 생성한다. 프리뷰 누락은 빌드 실패, 렌더 오류는 경계로 격리. CR-048: AC-6 지침 47종과 `DOC-GUIDANCE` 검사, `src/content/component-guidance.json`) |
@@ -237,7 +237,7 @@ PR Search 소비처의 `DEV-380`이 트리거다: 화면 계약이 최대 20계�
 | FR-DOC-010 | `packages/tokens/src/measure.ts`, `src/index.ts`, `apps/docs/src/theme-overrides.ts`, `src/theme-playground.tsx`, `App.tsx`, `shell.tsx` | `packages/tokens/src/measure.test.ts`, `apps/docs/src/theme-overrides.test.ts`, `apps/docs/e2e/playground.spec.ts`, `apps/docs/e2e/workspaces.spec.ts` | WP-036 | 검증됨 (AC-1~AC-5. 미리보기 한정 재정의와 별칭 전파, 기본 설정에서 9쌍이 보고서와 일치, 스니펫, 잘못된 입력 거부와 초기화, 4폭×2테마 axe serious 0·넘침 0) |
 | FR-CMP-014 | `packages/react/src/toast.tsx`, `date-picker.tsx`, `command.tsx`, `pagination.tsx`, `labels.ts`, `packages/css/src/controls.css`, `apps/docs/src/catalog.tsx`(미리보기) | `packages/react/src/testing/controls.test.tsx`, `a11y.browser.test.tsx`(시나리오), `hydration.browser.test.tsx`, `apps/docs/e2e/controls.spec.ts` | WP-037 | 검증됨 (AC-1~AC-5) |
 | FR-CMP-015 | `packages/react/src/alert-dialog.tsx`, `selection.tsx`, `avatar.tsx`, `number-input.tsx`, `labels.ts`, `form.tsx`(Field 라벨 id), `packages/css/src/controls.css`, `apps/docs/src/catalog.tsx`(미리보기) | `packages/react/src/testing/selection.test.tsx`, `a11y.browser.test.tsx`(시나리오), `component-css.browser.test.tsx` | WP-038 | 검증됨 (AC-1~AC-6) |
-| FR-CMP-016 | `packages/react/src/agent.tsx`, `labels.ts`, `packages/css/src/agent.css`, `apps/docs/src/catalog.tsx`(미리보기) | `packages/react/src/testing/agent.test.tsx`, `a11y.browser.test.tsx`(시나리오), `component-css.browser.test.tsx` | WP-039 | 검증됨 (AC-1~AC-10) |
+| FR-CMP-016 | `packages/react/src/agent.tsx`, `labels.ts`, `packages/css/src/agent.css`, `apps/docs/src/catalog.tsx`(미리보기) | `packages/react/src/testing/agent.test.tsx`, `a11y.browser.test.tsx`(시나리오), `component-css.browser.test.tsx` | WP-039 | 검증됨 (AC-1~AC-10) CR-077: `participant` 역할, `assistant`·`system` 본문 행 폭 — `component-css.browser.test.tsx` 계산값 시험, `agent.test.tsx`, Message 두 테마 기준 이미지. |
 | FR-DOC-004 | `apps/docs/src/token-reference.tsx`, `scripts/build-contrast-report.mjs` | `apps/docs/e2e/tokens.spec.ts` | WP-021 | 검증됨 (AC-1~AC-4와 리포트 누락 폴백. 빌드 산출 `tokens.json`·`contrast-report.json`을 소비하며 화면에서 대비율을 재계산하지 않음) |
 | FR-DOC-005 | `apps/docs/index.html`, `src/theme.ts`, `src/App.tsx` | `apps/docs/e2e/shell.spec.ts` | WP-018 | 검증됨 (AC-1~AC-5와 localStorage 차단 폴백. 첫 페인트 스니펫이 React 전 루트 속성을 결정) |
 | FR-DOC-006 | `apps/docs/src/guides.tsx`, `src/catalog.tsx` | `apps/docs/e2e/guides.spec.ts` | WP-022 | 검증됨 (AC-1~AC-3. 성공 공지·2초 복귀, polite live region, Clipboard 미지원 시 disabled/선택 가능 코드) |
@@ -252,8 +252,12 @@ PR Search 소비처의 `DEV-380`이 트리거다: 화면 계약이 최대 20계�
 | FR-DX-003 | `packages/tokens/package.json`, `packages/css/package.json`, `packages/react/package.json`, `packages/react/tsup.config.ts`, `scripts/check-size.mjs`, `.github/workflows/ci.yml` | `packages/tokens/src/index.test.ts`, `packages/css/test/exports.test.ts`, `packages/react/src/index.test.ts`, `pnpm size` 음성 픽스처 | WP-003, WP-008, WP-011, WP-025 | 검증됨 (AC-1~AC-4 및 예외 처리. 공개 exports·peer 선언과 React `sideEffects: false`·CSS `*.css` 보존을 검증한다. 멀티 엔트리 청크에서 Button 단독 gzip 527바이트/4KB, CSS 전체 7,720바이트/20KB이며 초과 시 exit 1과 기여 모듈을 출력한다.) |
 | FR-DX-004 | `packages/react/src/testing/ssr.tsx`, `src/testing/public-components.ts`, `apps/docs/src/main.tsx`, `App.tsx` | `ssr.test.tsx`, `hydration.browser.test.tsx`, `apps/docs/e2e/shell.spec.ts` | WP-011, WP-018, WP-023 | 검증됨 (AC-1 공개 30개 renderToString 예외 0, AC-2 browser-global 접근 0, AC-3 공개 30개 server root 보존·recoverable error 0. 문서 `/` 프리렌더 DOM 보존과 딥링크 불일치 client mount 경계를 실제 Chromium에서 검증) |
 | FR-DX-005 | `.changeset/config.json`, `scripts/check-changesets.mjs`, `scripts/is-version-packages-commit.mjs`, `scripts/check-api.mjs`, `scripts/check-release-tags.mjs`, `scripts/release-rollback.mjs`, `.github/workflows/release.yml` | `check:changesets`·version commit 양성/음성 분류·`check:api` 음성 픽스처, `changeset version`, 0.1.0/0.1.1 OIDC publish·provenance, annotated tag local/remote 검증, npm rollback 실증 | WP-027 | 검증됨 (AC-1 드리프트 exit 1 + major 규약, AC-2 CHANGELOG Refs와 LF/CRLF 동일 파싱, AC-3 react-only 0.1.1 bump 실증, AC-4 마이그레이션 노트 강제. 일반 commit의 `status --since`는 유지하고 이미 Changeset을 소비한 bot version commit만 구조 검증 후 skip. Release runs 29569125471·29586062062와 323.8초 실제 롤백으로 외부 경로까지 확인) |
-| FR-DX-006 | `scripts/check-api.mjs`, `scripts/public-surface.mjs`, `etc/public-surface.txt`, `scripts/check-consumer.mjs`, `.github/workflows/ci.yml`(consumers·cross-browser), `apps/docs/playwright.cross.config.ts` | `scripts/public-surface.test.mjs`, `scripts/package-exports.test.mjs`, `apps/docs/e2e-cross/engines.spec.ts`, 검증 계획 §1.0 준비도 표 | REL-005, WP-041, WP-042 | 진행 중 (AC-1·AC-2 충족(WP-041), AC-4 매트릭스 충족(WP-042, PR #91 CI), AC-5·AC-6 미충족, 1.0 미발행. OD-005 ~ OD-008 closed(CR-076)) |
+| FR-DX-006 | `scripts/check-api.mjs`, `scripts/public-surface.mjs`, `etc/public-surface.txt`, `scripts/check-consumer.mjs`, `.github/workflows/ci.yml`(consumers·cross-browser), `apps/docs/playwright.cross.config.ts` | `scripts/public-surface.test.mjs`, `scripts/package-exports.test.mjs`, `apps/docs/e2e-cross/engines.spec.ts`, 검증 계획 §1.0 준비도 표 | REL-005, WP-041, WP-042 | 진행 중 (AC-1·AC-2 충족(WP-041), AC-4 매트릭스 충족(WP-042, PR #91 CI), AC-5·AC-6 미충족, 1.0 미발행. OD-005 ~ OD-008 closed(CR-076)) CR-077: CLI 옵션·위치 인자를 `bin arguments` 구역으로 검출(`scripts/public-surface.test.mjs` `cliArguments`). |
 | FR-CMP-017 | `packages/react/src/layout.tsx`, `src/typography.tsx`, `src/accordion.tsx`, `packages/css/src/primitives.css` | `packages/react/src/testing/primitives.test.tsx`, `a11y.browser.test.tsx`(시나리오 7), `apps/docs/visual/visual.spec.ts`(기준 12장), `etc/public-surface.txt` | REL-005, WP-044 | 검증됨 (AC-1~AC-7, 로컬. CI는 PR에서 확인) |
+| FR-CMP-010 | `packages/react/src/workbench.tsx`(Combobox·MultiSelect·DataTable·WorkbenchLayout·DetailInspector·PathList·CopyButton), `packages/css/src/components.css` | `packages/react/src/testing/workbench.test.tsx`, `component-css.browser.test.tsx`(CR-064 분할 패널·선택 행), `apps/docs/e2e/workspaces.spec.ts`, `scripts/measure-workspaces.mjs` | WP-030 | 검증됨 (AC-1~AC-6. CR-041 WP 표의 WP-030 `done`을 이 표로 옮겼다. IME 조합·안정 행 ID·닫기 후 복귀·URL 조건은 브라우저 E2E가, 경계 입력 측정은 `workspaces.spec.ts`의 생산 측정이 덮는다. 2026-10-24 CR-077 회차 단위 923·E2E 87 통과) |
+| FR-CMP-011 | `packages/react/src/relation.tsx`(RelationGraph), `packages/css/src/components.css` | `packages/react/src/testing/relation.test.tsx`, `apps/docs/e2e/workspaces.spec.ts` | WP-031 | 검증됨 (AC 전부. CR-041 WP 표의 WP-031 `done`을 옮겼다. 결정적 SVG 배치, 목록 대안, 방향·근거·불확실/해제 상태, 300-node 측정) |
+| FR-CMP-012 | `packages/react/src/workbench.tsx`(ProcessingStatus), `packages/css/src/components.css` | `packages/react/src/testing/workbench.test.tsx`, `apps/docs/e2e/workspaces.spec.ts`(상태·테마·폭 매트릭스, 축소 모션·200% 글자) | WP-032 | 검증됨 (AC 전부. CR-041 WP 표의 WP-032 `done`을 옮겼다. 수신/저장/처리/색인 상태와 권한 기반 합성 행동) |
+| FR-CMP-013 | `packages/react/src/interaction.tsx`(Tabs·Popover·Collapsible), `shell.tsx`(AppShell 트리거 복귀·라우트 main 포커스), `labels.ts`, `packages/css/src/components.css` | `packages/react/src/testing/interaction.test.tsx`, `shell.test.tsx`, `labels.test.tsx`, `component-css.browser.test.tsx`(Tabs CR-065·067), `scripts/check-consumer.mjs`(CI consumers 잡 JOB-CI-006), `apps/docs/e2e/screens.spec.ts` | WP-029, WP-033 | 검증됨 (AC-1~AC-6. CR-041 WP 표의 WP-029 `done`을 옮겼다. AC-4의 React 18·19 Vite와 Next App Router 소비는 WP-042부터 CI consumers 잡이 매 PR 실행한다. AC-5 labels는 CR-053, AC-6 Tabs는 CR-065·067·071 정정 기준) |
 | FR-QA-001 | `src/theme-contract.ts`, `src/token-source.ts` | `src/theme-contract.test.ts` | WP-006, WP-010 | 검증됨 (AC-1~AC-3. 실제 dark/light semantic·component 키 대칭과 `themeSpecific` 예외를 검사. `derivePalette`가 base에 없는 override 키를 `TOK-THEME-KEY`로 막아, 키 집합 비교만으로는 보이지 않는 오타 경로를 닫는다 — CR-035) |
 | FR-QA-002 | `packages/react/src/testing/public-components.ts`, `src/testing/contract.tsx` | `src/testing/public-components.test.ts`, `src/testing/contract.test.tsx`, `src/testing/shell.test.tsx` | WP-011, WP-012~017, WP-023 | 검증됨 (AC-1 공개 30개 전수 테스트 파일·SSR registry, AC-2 FR/AC 명명, AC-3 공유 스위트와 컴포넌트군별 상호작용 테스트를 검증.) |
 | FR-QA-003 | `vitest.a11y.config.ts`, `packages/react/src/testing/a11y-scenarios.tsx`, `axe-allowlist.json`, `.github/workflows/ci.yml` | `packages/react/src/testing/a11y.browser.test.tsx` | WP-024 | 검증됨 (공개 30개를 덮는 49개 기본/disabled/error/interactive/open scenario × 다크·라이트 = 98 axe 실행, serious/critical 0건. 유한 진입 animation 완료 뒤 안정 상태를 감사하고 무한 Spinner는 대기만 제외한다. 정상 164 passed/1 negative fixture skipped를 4회 연속 확인. fixture 활성화 시 `button-name(critical)` 검출과 exit 1을 실증. JSON report와 실패 screenshot을 30일 보존) |
@@ -367,6 +371,19 @@ OD-002(시각 회귀 이월)와 OD-004(셸 컴포넌트군 패키지 포함)는 
 | `font.size.2xs` 제거 | 소비처가 0건이지만 FR-TOK-007 AC-1이 "시스템이 노출하는 유일한 7개"로 스케일을 못 박고 있다. 제거하면 6단이 되어 AC와 어긋난다 | FR-TOK-007 AC-1, WP-005 | 제거 여부를 결정하는 CR을 연다. 결정 전까지 문서에는 "예약됨"이 아니라 **"미사용"**으로 표기한다 |
 | `StatusBadge`·`SeverityTag`의 `icon`을 선택형으로 완화 | FR-CMP-004 AC-1이 색·아이콘·텍스트 **세 채널 동시 렌더**를 요구하고, 컴포넌트 명세 C-021이 "세 채널 중 어느 하나도 생략할 수 없다"고 못 박는다. `icon`을 생략 가능하게 만들면 Conductor가 아이콘 세트를 번들하지 않으므로 아이콘 채널이 실제로 사라진다 — 접근성 AC를 약화하는 제품 결정이다 | FR-CMP-004 AC-1, FR-A11Y-003, C-021, C-022 | 접근성 AC 완화를 승인하는 CR을 연다. 그 전까지 실질 이득(이름 하드코딩 제거)은 `STATUS_ICONS`/`SEVERITY_ICONS` 배포와 `data-cdt-icon` 노출로 확보한다 |
 
+## 5.2 1.0 실사용 검증: 소비자 로컬 재정의 판정 (FR-DX-006 AC-5, WP-043)
+
+agent-ai-platform `packages/web/src/styles/*.css`에서 Conductor 클래스를 덮는 규칙이다. 목록은 그 저장소의 DS-PILOT-23 기록(2026-10-24, Conductor 0.17.0)에서 왔고, 판정은 이 저장소가 한다(CR-077). 후보 버전 적용 뒤 4주 동안 새 재정의가 생기면 이 표에 더한다.
+
+| 대상 | 규칙 | 내용 | 판정 | 조치 |
+| --- | --- | --- | --- | --- |
+| `.cdt-btn` | 7 (`app.css` 593, 767, 857–858, 899, 911–912, 927–934) | 승인 결정 행·페이지 동작·실행 동작·스레드 동작 컨테이너 안의 `flex: 1`, 좁은 화면의 `width: 100%`, 로그인 패널 버튼의 `width: 100%`·위 여백 | **앱 고유** — 버튼 자체(색·크기·모서리·상태)는 바꾸지 않고, 바깥 컨테이너가 자식을 배치하는 규칙이다 | 앱에 남긴다 |
+| `.cdt-message` 폭 | 2 (626–627, 684–685) | 에이전트·시스템 턴과 본문을 `width: 100%`로 편다. 두 대화 화면이 같은 규칙을 반복한다 | **컴포넌트 결함** — 본문이 내용 폭으로 줄어 그 안의 도구 카드가 턴마다 다른 폭이었다 | CR-077: `assistant`·`system` 본문이 행 전체 폭. 앱은 후보 적용 때 규칙을 지운다 |
+| `.thread-message--other` | 3 (689–700) | 다른 참여자의 사용자 메시지를 시작 쪽에 붙이고, 작성자 이름을 시작 정렬하고, 말풍선을 `surface.raised`로 바꾼다 | **컴포넌트 결함** — `from`에 다른 사람을 나타낼 값이 없었다 | CR-077: `from="participant"`. 앱은 그 역할로 바꾸고 규칙을 지운다 |
+| `.cdt-app-shell__main:focus-visible` | 1 (1005) | 라우트 이동·건너뛰기 링크로 포커스를 받은 main의 링과 외곽선을 지운다 | **컴포넌트 결함** — 랜드마크가 공통 포커스 규칙의 링을 그렸다 | CR-077: 컴포넌트가 그리지 않는다. 앱은 규칙을 지운다 |
+
+판정 뒤 남는 재정의는 앱 고유 7규칙이다. AC-5는 후보 버전을 4주 쓴 뒤 이 표가 앱 고유 항목만 담고 있을 때 충족된다.
+
 ## 6. 코드 태깅 규약
 
 - **커밋/PR `Refs:` 줄**: `Refs: WP-### FR-<AREA>-###` 형식을 커밋 메시지 또는 PR 본문에 남긴다. 한 WP가 여러 FR을 구현하면 공백으로 나열한다. 예: `Refs: WP-004 FR-TOK-004 FR-TOK-005`.
@@ -395,6 +412,7 @@ OD-002(시각 회귀 이월)와 OD-004(셸 컴포넌트군 패키지 포함)는 
 | WP-038 | FR-CMP-015 | done | AlertDialog·RadioGroup·ToggleGroup·Avatar·NumberInput(C-077~C-081), `controls.css`, 레지스트리·a11y·SSR 시험, 카탈로그 미리보기·지침. CR-060. |
 | WP-039 | FR-CMP-016 | done | 에이전트 대화 컴포넌트 11종(C-082~C-092), `agent.css`, 레지스트리·a11y·SSR 시험, 카탈로그 미리보기·지침. CR-061. |
 | WP-044 | FR-CMP-017 | done | Separator·Stack·Grid·Heading·Text·Accordion(C-093~C-098), `primitives.css`, 레지스트리·a11y·SSR 시험, 카탈로그 Layout·Typography family와 Accordion, 지침 6종, 시각 기준 12장 (CR-076) |
+| WP-043 | FR-DX-006 AC-4~AC-7, FR-DX-005 | in progress | 1.0 발행. 1단계(CR-077): 소비자 재정의 13규칙 판정(§5.2), 결함 셋 수정(Message 행 폭·`participant`·main 포커스), CLI 옵션 검출, FR-CMP-010~013 §3 이관. 남은 일: 후보 릴리스, 앱 적용과 4주, `fixed` 전환·major changeset·마이그레이션 노트, 사용자 발행 지시. |
 
 착수 문서 validator --report: exit 0, FR49/49, Phase7. 실제 소비자 코드는 읽기만 수행했으며 운영 연동·소비자 마이그레이션은 실행하지 않았다. 공개 기록에는 일반화된 계약과 합성 데이터만 남긴다.
 
@@ -800,3 +818,16 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | changeset | **layout-type-accordion.md**(react·css minor) |
 | CI 정정 | PR #92 첫 CI에서 cross-browser Firefox의 Dialog 시험이 첫 클릭 뒤 대화상자가 열리지 않아 실패했다(PR #91에서는 통과). 로컬 Chromium은 버튼 재마운트가 없고(5/5) Firefox는 이 환경에 없으며, 실패 아티팩트 호스트는 네트워크 정책으로 막혀 trace를 읽지 못했다. 시험의 대상은 Escape·포커스 복귀이므로 여는 단계만 열릴 때까지 클릭을 반복(`toPass`)하게 했다. Escape·포커스 복귀 단정은 그대로다 |
 
+### CR-077 WP-043 1단계: 재정의 판정과 컴포넌트 결함 수정 (2026-10-25)
+
+| 범위 | 결과 |
+| --- | --- |
+| 지시 | "WP-043 실사용 검증 진행해" (2026-10-24) |
+| 판정 | agent-ai-platform 재정의 13규칙(DS-PILOT-23 목록): 앱 고유 7(`.cdt-btn` 배치), 컴포넌트 결함 6 → 결함 셋. §5.2 |
+| 패키지 | `packages/react/src/agent.tsx`(`MessageRole`에 `participant`), `labels.ts`(`MessageLabels.participant` 기본 `Participant`), `packages/css/src/agent.css`(`assistant`·`system` 본문 `flex: 1 1 auto`, `participant` 시작 쪽 말풍선 `surface.raised`+`border.default`), `components.css`(`.cdt-app-shell__main:focus-visible` 링·외곽선 없음) |
+| 검출 | `scripts/public-surface.mjs` `cliArguments`, `scripts/check-api.mjs`(각 bin을 `--cdt-surface-probe`로 실행해 사용법 줄을 읽는다), `etc/public-surface.txt` `bin arguments` 8줄과 `cdt-message--assistant`·`--participant` |
+| 시험 | `component-css.browser.test.tsx` CR-077 2건(고친 CSS를 되돌리면 둘 다 실패, 다시 넣으면 통과), `agent.test.tsx` participant, `bundle.test.ts`(`outline: none` 규칙은 main 하나), `public-surface.test.mjs` `cliArguments`. dist 사용법에서 `--watch`를 지운 변이 → `SURFACE-DRIFT` `- conductor-build-tokens --watch` |
+| 시각 | Message 두 테마 기준 이미지 갱신(참여자 말풍선 추가). 처음 그린 말풍선은 `surface.raised` 채움만이라 두 테마 모두 바탕과 구별되지 않았다 — 테두리를 더했다 |
+| 검증 (로컬) | build, typecheck, test 923/923, lint, lint:tokens, check:contrast, size(Button 1.33KiB, index.css 15.31KiB), check:api, test:a11y 389/389(+1 skip), 문서 E2E 87/87, 시각 회귀 182/182 |
+| 검증 (CI) | PR #94 head `0df9e55`: verify(node 20·22)·docs e2e·visual regression·consumers(React 18·19·Next)·cross-browser(Firefox·WebKit) 통과 |
+| 준비도 | AC-1 ⑦ 충족, AC-4 FR 상태 충족(FR-DX-006 제외), AC-6 충족(0.17.0). AC-5는 후보 적용 뒤 4주 |

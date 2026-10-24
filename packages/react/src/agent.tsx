@@ -113,12 +113,16 @@ Conversation.displayName = "Conversation";
 
 /* ─── Message ──────────────────────────────────────────────────────────────────────────────── */
 
-export type MessageRole = "user" | "assistant" | "system";
+/**
+ * `user` is the person reading, at the end edge. `participant` is another person in a shared
+ * conversation, at the start edge with the same bubble. `assistant` and `system` turns span the row.
+ */
+export type MessageRole = "user" | "participant" | "assistant" | "system";
 export type MessageStatus = "complete" | "streaming" | "error";
 
 export interface MessageProps extends HTMLAttributes<HTMLDivElement> {
   readonly from: MessageRole;
-  /** The sender shown above the text. Defaults to the role label ("You", "Assistant", "System"). */
+  /** The sender shown above the text. Defaults to the role label ("You", "Participant", "Assistant", "System"). */
   readonly name?: ReactNode;
   readonly avatar?: ReactNode;
   readonly status?: MessageStatus;

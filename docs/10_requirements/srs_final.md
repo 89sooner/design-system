@@ -1,6 +1,6 @@
 # Conductor Design System 최종 요구사항 정의서
 
-> 상태: baseline | 버전: v1.26 | 갱신일: 2026-10-24
+> 상태: baseline | 버전: v1.27 | 갱신일: 2026-10-25
 
 ## 1. 문서 개요
 
@@ -39,8 +39,8 @@ Conductor는 `agent-ai-platform/packages/web`의 시각 언어를 3개 npm 패�
 3. 캐스케이드 레이어 기반 프레임워크 비종속 스타일시트 — FR-CSS-001 ~ FR-CSS-005 (CR-069 보강 FR-CSS-001 AC-5, §30; CR-071 정정 FR-CSS-002 AC-3, §32) 및 CR-074 확장 FR-CSS-006 오른쪽→왼쪽(RTL) 문서 (§34)
 4. React 프리미티브 컴포넌트 — 기존 FR-CMP-001 ~ FR-CMP-009 및 CR-041 확장 FR-CMP-010 ~ FR-CMP-013 (§17, review)
 5. 정적 문서 사이트 — FR-DOC-001 ~ FR-DOC-007 및 CR-048 확장 FR-DOC-008 (§18), CR-051 확장 FR-DOC-009 (§19), CR-052 확장 FR-DOC-010 (§20), CR-053 보강 FR-DOC-001 AC-5·FR-CMP-013 AC-5 (§21), CR-054 확장 FR-CMP-014 (§22), CR-060 확장 FR-CMP-015 (§24), CR-061 확장 FR-CMP-016 (§25), CR-063 보강 FR-CMP-015 AC-7 (§26), CR-064 보강 FR-THM-005 AC-8·FR-CMP-004 AC-7·FR-CMP-010 AC-6 (§27), CR-065 정정·보강 FR-THM-002 AC-3·AC-5·FR-CMP-013 AC-6 (§28), CR-067 정정 FR-CMP-013 AC-6 (§29), CR-071 정정 FR-CMP-013 AC-6 (§32)
-6. WCAG 2.1 AA 접근성 기준선 — FR-A11Y-001 ~ FR-A11Y-005 (CR-071 보강 FR-A11Y-001 AC-5·FR-A11Y-003 AC-5, §32)
-7. 모노레포 빌드, 타입 배포, 진입점 선언, SSR 안전성, 버저닝 — FR-DX-001 ~ FR-DX-005 및 CR-075 확장 FR-DX-006 1.0 안정화 기준 (§35, CR-076 확정 §36)
+6. WCAG 2.1 AA 접근성 기준선 — FR-A11Y-001 ~ FR-A11Y-005 (CR-071 보강 FR-A11Y-001 AC-5·FR-A11Y-003 AC-5, §32; CR-077 적용 범위 정정 FR-A11Y-001 AC-2·AC-5, §37)
+7. 모노레포 빌드, 타입 배포, 진입점 선언, SSR 안전성, 버저닝 — FR-DX-001 ~ FR-DX-005 및 CR-075 확장 FR-DX-006 1.0 안정화 기준 (§35, CR-076 확정 §36, CR-077 검출 보강 §37)
 8. 토큰 계약·단위·접근성·시각 회귀 검사 — FR-QA-001 ~ FR-QA-004 (CR-068 정정·확대 FR-QA-004, §30; CR-071 보강 FR-QA-004 AC-6, §32)
 
 ### 4.2 Conditional Scope
@@ -1322,3 +1322,15 @@ v1.25 baseline 이력을 유지한다. 사용자가 2026-10-24 OD-005 ~ OD-008�
 | 관련 API/데이터 | API-CMP-014 / ENT-CMP-001 |
 | 예외/실패 처리 | 반응형 prop 객체(`{ sm, md }`), 임의 CSS 값 prop, 텍스트 말줄임 줄 수 지정은 이 FR 범위가 아니다. 새 런타임 의존성은 기존 Radix 묶음과 맞춘 `@radix-ui/react-accordion` 하나로 한정하고 정확한 버전으로 고정한다(보안 아키텍처 3.1). |
 
+## 37. CR-077 보강 (baseline)
+
+v1.26 baseline 이력을 유지한다. 사용자가 2026-10-24 WP-043 실사용 검증을 진행하라고 지시했다("WP-043 실사용 검증 진행해"). FR-DX-006 AC-5는 소비자 앱이 Conductor 클래스를 덮어쓴 로컬 재정의를 앱 고유 스타일로 판정하거나, 컴포넌트 결함을 가리키면 1.0 전에 고치라고 한다. agent-ai-platform의 재정의는 13규칙이었다(그 저장소의 DS-PILOT-23 기록). 7규칙은 버튼을 둘러싼 컨테이너의 배치(`flex: 1`, 좁은 화면의 `width: 100%`, 로그인 버튼 여백)라 앱 고유로 판정한다. 나머지 6규칙은 결함 셋을 가리켰다. ① 에이전트·시스템 턴의 본문이 내용 폭으로 줄어 안에 든 도구 카드의 줄이 턴마다 달랐다(2규칙, 두 화면에서 반복). ② `Message`의 `from`이 `user`·`assistant`·`system`뿐이라, 공유 스레드에서 다른 사람의 메시지를 그릴 방법이 없었다(3규칙). ③ 건너뛰기 링크와 라우트 이동으로 포커스를 받는 `AppShell`의 main이 공통 포커스 규칙의 링을 그려, 페이지 전체가 선택된 것처럼 보였다(1규칙). 새 FR은 만들지 않고 기존 FR을 보강한다. 준비도 표의 남은 검출 공백(CLI 옵션)도 함께 닫는다.
+
+| FR | 변경 |
+| --- | --- |
+| FR-CMP-016 | AC-1 보강: `from`에 `participant`를 더한다. 공유 대화에서 읽는 사람이 아닌 다른 사람의 턴이다. 시작 쪽에 붙고, 사용자 말풍선과 같은 여백·모서리에 `surface.raised` 채움과 `border.default` 1px 테두리를 갖는다. 그룹 이름은 `name` 또는 기본 문구 `Participant`다(`MessageLabels.participant`). `assistant`·`system` 턴의 본문은 아바타를 뺀 행 전체 폭을 차지해, 짧은 답도 그 안의 블록이 턴마다 같은 폭으로 정렬된다. `user`·`participant` 말풍선은 지금처럼 글 폭으로 줄고 `80ch`를 넘지 않는다. |
+| FR-CMP-009 | AC-4 보강: 건너뛰기 링크나 라우트 이동으로 포커스를 받은 main(`tabIndex=-1`)은 포커스 링과 강제 색 외곽선을 그리지 않는다. main은 조작 대상이 아닌 랜드마크다. 다음 Tab은 main 안의 컨트롤에 닿고, 그 컨트롤이 자기 링을 그린다. |
+| FR-A11Y-001 | AC-2·AC-5 적용 범위 정정: 두 기준은 대화형 요소에 적용한다. 프로그램으로만 포커스를 받는 랜드마크(FR-CMP-009 AC-4의 main)는 대상이 아니며, `outline: none`을 선언한 `:focus-visible` 규칙은 그 하나뿐이어야 한다. |
+| FR-DX-006 | AC-2 보강: AC-1 ⑦의 CLI 옵션도 공개 표면 기준에 든다. 각 CLI가 모르는 인자에 출력하는 사용법 줄에서 옵션과 위치 인자를 읽어 `etc/public-surface.txt`의 `bin arguments` 구역에 고정하고, `pnpm check:api`가 대조한다. 옵션을 지우면 그 줄이 `-`로 보고되고 CI가 실패한다. |
+
+새 컴포넌트·새 런타임 의존성·새 토큰은 없다. `Message`의 바뀐 폭과 새 변형은 같은 이름의 시각 변경이라 minor이고, changeset 첫 줄 `Visual change:`와 같은 PR의 기준 이미지 갱신을 따른다(OD-006).

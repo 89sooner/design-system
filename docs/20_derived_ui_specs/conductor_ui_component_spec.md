@@ -1,6 +1,6 @@
 # Conductor Design System UI 컴포넌트 명세서
 
-> 상태: review | 버전: v0.22 | 갱신일: 2026-10-24
+> 상태: review | 버전: v0.23 | 갱신일: 2026-10-25
 
 ## 0. 문서 위치와 범위
 
@@ -1063,7 +1063,7 @@ Radix가 소유하는 DOM에는 `data-*` 속성 셀렉터만 사용한다(FR-CSS
 - **variant / tone / size**: 없음.
 - **이벤트**: `onNavOpenChange`.
 - **상태**: `default`, `nav-open`(뷰포트 800px 미만). 내비 래퍼에 `[data-open="true"]`가 부여된다.
-- **접근성 책임**: 건너뛰기 링크 렌더와 본문 `<main id>` 연결, 포커스 이동은 **Conductor**가 수행한다(FR-CMP-009 AC-4). 오프캔버스의 포커스 트랩·Escape·포커스 복귀는 **Radix**가 제공한다. `<nav>`와 `<main>` landmark role은 **네이티브 요소**가 제공한다. 링크 문자열은 **소비자**가 제공한다.
+- **접근성 책임**: 건너뛰기 링크 렌더와 본문 `<main id>` 연결, 포커스 이동은 **Conductor**가 수행한다(FR-CMP-009 AC-4). 포커스를 받은 main(`tabIndex=-1`)은 랜드마크라 포커스 링과 강제 색 외곽선을 그리지 않는다(CR-077). 오프캔버스의 포커스 트랩·Escape·포커스 복귀는 **Radix**가 제공한다. `<nav>`와 `<main>` landmark role은 **네이티브 요소**가 제공한다. 링크 문자열은 **소비자**가 제공한다.
 - **사용 규칙**: 페이지당 `AppShell` 1개. 본문 영역의 최대 폭은 셸이 소유한다.
 - **금지**: `AppShell`이 라우팅 상태를 읽지 않는다. 현재 경로 판정은 `NavList`(C-071)의 `items[].active`가 받는다.
 - **관련**: FR-CMP-009, FR-CSS-002, FR-CSS-003, FR-A11Y-002 / W-001, W-021.
@@ -1330,7 +1330,7 @@ component 토큰은 semantic 토큰만 참조한다(FR-TOK-002 AC-3). 아래 표
 | ID | 컴포넌트 | 루트 클래스 | 동작 소유 | 주요 props |
 | --- | --- | --- | --- | --- |
 | C-082 | `Conversation` | `cdt-conversation`, `cdt-conversation__viewport` | `role="log"` 영역, MutationObserver 바닥 고정 | `children`(Message 목록), `labels` |
-| C-083 | `Message` | `cdt-message`, `cdt-message--user`·`--assistant`·`--system`, `cdt-message--error` | 정적 `group` | `from`(필수), `name`, `avatar`, `status`(`complete`·`streaming`·`error`), `actions`, `labels` |
+| C-083 | `Message` | `cdt-message`, `cdt-message--user`·`--participant`·`--assistant`·`--system`, `cdt-message--error` | 정적 `group` | `from`(필수: `user`·`participant`·`assistant`·`system`), `name`, `avatar`, `status`(`complete`·`streaming`·`error`), `actions`, `labels`. `user`는 끝 쪽 강조 말풍선, `participant`는 시작 쪽 `surface.raised`+`border.default` 말풍선, `assistant`·`system` 본문은 행 전체 폭(CR-077) |
 | C-084 | `PromptInput` | `cdt-prompt-input`, `cdt-prompt-input__textarea` | 기본 `<form>`·`<textarea>` | `value`·`onValueChange`·`onSubmit`(필수), `status`(`ready`·`submitted`·`streaming`·`error`), `onStop`, `submitOn`(`enter`·`mod-enter`), `toolbar`, `maxRows`, `placeholder`, `disabled`, `textareaRef`, `labels` |
 | C-085 | `Reasoning` | `cdt-reasoning`, `cdt-reasoning__trigger` | Radix Collapsible | `streaming`, `duration`(초), `open`·`defaultOpen`·`onOpenChange`, `labels` |
 | C-086 | `Tool` | `cdt-tool`, `cdt-tool--<status>`, `cdt-tool__trigger` | Radix Collapsible | `name`·`status`(필수), `input`, `output`, `errorText`, `children`, `labels` |

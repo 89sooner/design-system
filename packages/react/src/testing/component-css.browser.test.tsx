@@ -1,4 +1,4 @@
-// Refs: CR-074 FR-CSS-006 CR-056 DEV-057 CR-057 CR-058 CR-062 CR-063 CR-064 CR-065 CR-066 CR-067 DEV-061 FR-A11Y-001 FR-CSS-002 FR-THM-005 FR-CMP-004 FR-CMP-010
+// Refs: CR-077 FR-CMP-016 FR-CMP-009 CR-074 FR-CSS-006 CR-056 DEV-057 CR-057 CR-058 CR-062 CR-063 CR-064 CR-065 CR-066 CR-067 DEV-061 FR-A11Y-001 FR-CSS-002 FR-THM-005 FR-CMP-004 FR-CMP-010
 //
 // `@conductor-by-89soone/css/component.css` leaves out cdt.reset for consumers that bring their
 // own global reset. The focus ring must not depend on that reset: every keyboard stop that is a
@@ -10,7 +10,8 @@ import { NumberInput } from "../number-input";
 import { Switch, TextArea, TextField } from "../form";
 import { Badge, StatusBadge } from "../status";
 import { DataTable, DetailInspector, WorkbenchLayout } from "../workbench";
-import { PromptInput, Tool } from "../agent";
+import { Conversation, Message, PromptInput, Tool } from "../agent";
+import { AppShell } from "../shell";
 import { Tabs } from "../interaction";
 import { CodeBlock, Kbd, Table } from "../data";
 import "@conductor-by-89soone/css/component.css";
@@ -347,4 +348,63 @@ test("CR-074 FR-CSS-006 AC-4: code, key caps and tool names stay left to right a
   expect(read(".cdt-tool__name")).toBe("ltr isolate");
   // The surrounding block keeps the document's direction.
   expect(getComputedStyle(container.querySelector(".cdt-code-block")!).direction).toBe("rtl");
+});
+
+test("CR-077 FR-CMP-016 AC-1: agent and system turns span the row; the reader's turn ends the row and another person's starts it", () => {
+  document.documentElement.dataset.cdtTheme = "dark";
+  const { container } = render(
+    <div style={{ inlineSize: 640 }}>
+      <Conversation>
+        <Message from="user">Why did it roll back?</Message>
+        <Message from="participant" name="Mina">I saw it too</Message>
+        <Message from="assistant" name="Conductor">Short answer.</Message>
+        <Message from="system">Run started</Message>
+      </Conversation>
+    </div>,
+  );
+  const part = (role: string, selector: string) => container.querySelector(`.cdt-message--${role} ${selector}`)!.getBoundingClientRect();
+  const row = container.querySelector(".cdt-conversation__viewport")!;
+  const padding = parseFloat(getComputedStyle(row).paddingInlineStart);
+  const inner = row.getBoundingClientRect().width - padding * 2;
+  // The body of a short agent or system turn still fills the row, so blocks inside it line up.
+  expect(part("assistant", ".cdt-message__body").width).toBeCloseTo(inner, 0);
+  expect(part("system", ".cdt-message__body").width).toBeCloseTo(inner, 0);
+  // Bubbles shrink to their text: the reader's at the end edge, another person's at the start edge.
+  const start = row.getBoundingClientRect().left + padding;
+  const end = row.getBoundingClientRect().right - padding;
+  expect(part("user", ".cdt-message__content").right).toBeCloseTo(end, 0);
+  expect(part("participant", ".cdt-message__content").left).toBeCloseTo(start, 0);
+  expect(part("participant", ".cdt-message__content").width).toBeLessThan(inner / 2);
+  const background = (role: string) => getComputedStyle(container.querySelector(`.cdt-message--${role} .cdt-message__content`)!).backgroundColor;
+  const raised = (() => {
+    const probe = document.createElement("div");
+    probe.style.background = "var(--cdt-surface-raised)";
+    document.body.append(probe);
+    const color = getComputedStyle(probe).backgroundColor;
+    probe.remove();
+    return color;
+  })();
+  expect(background("participant")).toBe(raised);
+  expect(background("participant")).not.toBe(background("user"));
+  // The raised fill is close to most page backgrounds; the hairline is what makes the bubble visible.
+  expect(parseFloat(getComputedStyle(container.querySelector(".cdt-message--participant .cdt-message__content")!).borderTopWidth)).toBeGreaterThan(0);
+  expect(getComputedStyle(container.querySelector(".cdt-message--participant .cdt-message__author")!).textAlign).not.toBe("end");
+});
+
+test("CR-077 FR-CMP-009 AC-4: main draws no ring when the skip link moves keyboard focus to it", async () => {
+  document.documentElement.dataset.cdtTheme = "dark";
+  render(<AppShell nav={null} skipLinkLabel="Skip to content"><button>Inside</button></AppShell>);
+  await userEvent.tab();
+  expect(document.activeElement?.textContent).toBe("Skip to content");
+  await userEvent.keyboard("{Enter}");
+  const main = document.querySelector<HTMLElement>(".cdt-app-shell__main")!;
+  expect(document.activeElement).toBe(main);
+  expect(main.matches(":focus-visible")).toBe(true);
+  const style = getComputedStyle(main);
+  expect(style.boxShadow).toBe("none");
+  expect(style.outlineStyle).toBe("none");
+  // The next Tab reaches a control inside main, which draws its own ring.
+  await userEvent.tab();
+  expect(document.activeElement?.textContent).toBe("Inside");
+  expect(getComputedStyle(document.activeElement!).boxShadow).toContain(ringColor());
 });

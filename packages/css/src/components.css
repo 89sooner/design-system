@@ -1256,6 +1256,17 @@
     padding: var(--cdt-space-8);
   }
 
+  /*
+   * Main takes focus only from the skip link and from route changes (`tabIndex=-1`, FR-CMP-013
+   * AC-2). It is a landmark, not a control, so it draws no ring and no forced-colours outline: the
+   * whole page framed in the ring read as a selection (CR-077). The next Tab lands on a control
+   * inside main, which shows its own ring.
+   */
+  .cdt-app-shell__main:focus-visible {
+    outline: none;
+    box-shadow: none;
+  }
+
   .cdt-app-shell__overlay {
     display: none;
   }

@@ -1,6 +1,6 @@
 # Conductor Design System 화면 QA 체크리스트
 
-> 상태: review | 버전: v0.12 | 갱신일: 2026-10-24
+> 상태: review | 버전: v0.13 | 갱신일: 2026-10-25
 
 ## 0. 사용 방법
 
@@ -206,6 +206,9 @@ FR-CMP-001은 공개 컴포넌트 전수가 ref 전달(AC-1), className 병합(A
 - [x] QA-222 Firefox·WebKit에서 67개 컴포넌트 페이지가 예외 없이 렌더되고, Dialog Escape 포커스 복귀와 `:dir(rtl)` 미러링이 동작한다 (NFR-005, WP-042) — PR #91 CI 8/8
 - [x] QA-223 React 18·19·Next 설치 소비자가 tarball로 설치·typecheck·빌드·브라우저 구동된다 (NFR-005, WP-042) — 로컬 3/3
 - [x] QA-224 Separator·Stack·Grid·Heading·Text·Accordion이 카탈로그에 있고, 두 테마 시각 기준·axe·Accordion 키보드 경로가 통과한다 (FR-CMP-017, WP-044)
+- [x] QA-225 짧은 에이전트·시스템 턴의 본문이 행 전체 폭이고, 사용자 말풍선은 끝 쪽, `participant` 말풍선은 시작 쪽에 `surface.raised` 채움과 테두리로 그려진다 (FR-CMP-016 AC-1, CR-077) — 계산값 시험, Message 두 테마 기준 이미지
+- [x] QA-226 건너뛰기 링크를 Enter로 눌러 포커스가 main으로 가면 main은 링·외곽선을 그리지 않고, 다음 Tab의 컨트롤은 링을 그린다 (FR-CMP-009 AC-4, CR-077)
+- [x] QA-227 CLI 옵션을 하나 지운 빌드에서 `pnpm check:api`가 `bin arguments`의 지운 줄을 `-`로 보이며 실패한다 (FR-DX-006 AC-2, CR-077)
 - [x] QA-190 픽셀 차이가 1%를 초과하면 CI가 실패하고 차이 이미지가 아티팩트로 남는다 (FR-QA-004 AC-2) — 36% 차이 픽스처 exit 1, actual/expected/diff 생성
 - [x] QA-191 기준 이미지 갱신이 `pnpm test:visual --update` 명시적 커맨드로만 가능하다 (FR-QA-004 AC-3)
 - [x] QA-192 `Button` 단독 import gzip 크기가 4KB 이하다(React 제외) (FR-DX-003 AC-3) — `size-limit` 실측 527바이트

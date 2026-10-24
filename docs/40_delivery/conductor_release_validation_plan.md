@@ -1,6 +1,6 @@
 # Conductor Design System 릴리스 검증 계획
 
-> 상태: review | 버전: v0.17 | 갱신일: 2026-10-24
+> 상태: review | 버전: v0.18 | 갱신일: 2026-10-25
 
 ## 1. 목적과 범위
 
@@ -140,19 +140,21 @@ build 후 typecheck; test/lint/lint:deps/lint:tokens/check:contrast/test:a11y/te
 
 ## 1.0 준비도 (CR-075, FR-DX-006)
 
-1.0.0은 아래 표가 모두 `충족`이 된 뒤 사용자 지시로만 발행한다(REL-005). OD-005 ~ OD-008은 2026-10-24 CR-076으로 닫혔다. 2026-10-24 측정이다.
+1.0.0은 아래 표가 모두 `충족`이 된 뒤 사용자 지시로만 발행한다(REL-005). OD-005 ~ OD-008은 2026-10-24 CR-076으로 닫혔다. 2026-10-25 측정이다(CR-077, WP-043 착수).
+
+**1.0 후보 버전.** CR-077을 담은 다음 릴리스(css·react 0.18.0, tokens 0.14.0)를 1.0 후보로 둔다. AC-5의 4주는 agent-ai-platform main이 그 버전을 쓰기 시작한 날부터 센다. 운영 가정: 4주 안에 공개 표면이나 시각을 바꾸는 minor가 나오면 그 버전이 새 후보가 되고 4주를 다시 센다. 공개 표면 기준(**public-surface.txt**)과 시각 기준 이미지를 바꾸지 않는 patch는 기간을 끊지 않는다.
 
 | 기준 | 현재 상태 | 판정 | 남은 일 |
 | --- | --- | --- | --- |
 | AC-1·AC-2 ① `exports` 진입점 | 세 패키지의 entry point 이름은 **public-surface.txt**(`etc/`) 기준과 CI verify의 `pnpm check:api`가 대조한다. 대상 파일이 실제로 배포되는지는 css `exports.test.ts`와 tokens·react `scripts/package-exports.test.mjs`가 본다(WP-041) | 충족 | — |
 | AC-1·AC-2 ② React export·props, ③ 토큰 키·`--cdt-*` 이름 | `pnpm check:api`가 CI verify 잡에서 커밋된 리포트(**react.api.md**, **tokens.api.md**, **tokens-breakpoints.api.md**)와 대조한다 | 충족 | — |
 | AC-1·AC-2 ④ `cdt-*` 클래스 이름 | `pnpm check:api`가 빌드된 세 스타일시트(index·component·agent)의 클래스 목록을 기준과 대조한다. dist에서 `cdt-badge__dismiss`를 `cdt-badge__close`로 바꾼 변이에서 `SURFACE-DRIFT`로 실패하고 지운 이름(-)과 더한 이름(+)을 보였다(WP-041) | 충족 | — |
-| AC-1 ⑤ `data-*`, ⑥ `@layer`, ⑦ CLI | 같은 기준이 스타일시트 선택자의 `data-*` 속성 이름, 레이어 순서 문장, tokens CLI 이름 셋을 담는다. CLI 옵션(플래그)은 기준에 없다 | 부분 | CLI 플래그 목록 |
+| AC-1 ⑤ `data-*`, ⑥ `@layer`, ⑦ CLI | 같은 기준이 스타일시트 선택자의 `data-*` 속성 이름, 레이어 순서 문장, tokens CLI 이름 셋과 그 옵션·위치 인자 8줄(`bin arguments`)을 담는다. 옵션은 각 CLI가 모르는 인자에 출력하는 사용법 줄에서 읽는다. dist에서 `--watch`를 사용법에서 지운 변이에서 `SURFACE-DRIFT`로 실패하고 지운 줄을 `-`로 보였다(CR-077) | 충족 | — |
 | AC-3 폐기 절차 | API 계약 §6.4가 절차를 정한다. `@deprecated`가 붙은 공개 API는 0건이고, 개발 빌드 폐기 경고 장치는 없다 | 미충족 (해당 시) | 첫 폐기 때 경고 장치 |
 | AC-4 CI 잡 | verify(Node 20·22)·docs e2e·visual regression 녹색(PR #88·#90). WP-042가 consumers·cross-browser 잡을 더한다 | 충족 | 1.0 후보 커밋에서 다시 |
 | AC-4 NFR-005 매트릭스 | consumers 잡(JOB-CI-006)이 Vite+React 18.3.1, Vite+React 19.2.8, Next 16.3.1+React 19.2.8 소비자를 설치·typecheck·빌드·브라우저 구동한다. cross-browser 잡(JOB-CI-007)이 Firefox·WebKit에서 엔진 스모크 4건씩, 8/8 통과(PR #91 첫 실행). Edge는 Chromium 엔진이다 | 충족 | — |
-| AC-4 FR 상태 | 원장 §3 매핑 표의 FR은 FR-DX-006(진행 중)을 빼고 `검증됨`이다. FR-CMP-017은 WP-044로 검증됨. FR-CMP-010 ~ FR-CMP-013은 CR-041 WP 표(WP-029 ~ WP-032 `done`)에 있다 | 부분 | FR-CMP-010 ~ 013을 §3 표로 |
+| AC-4 FR 상태 | 원장 §3 매핑 표의 FR은 FR-DX-006(진행 중)을 빼고 `검증됨`이다. FR-CMP-010 ~ FR-CMP-013을 CR-041 WP 표에서 §3 표로 옮겼다(CR-077). FR-DX-006은 이 표가 모두 충족되고 1.0을 발행할 때 닫힌다 | 충족 (FR-DX-006 제외) | 1.0 후보 커밋에서 다시 |
 | AC-4 open DEV | DEV-049 하나. 사용자가 승인한 audit 예외(패치 없는 개발 도구 전이 의존)로 원장에 결정과 함께 남아 있다. DEV-065는 WP-042로 닫혔다 | 충족 (승인 예외) | 1.0 후보 커밋에서 다시 |
-| AC-5 실사용 검증 | 기준 확정(OD-005): agent-ai-platform이 1.0 후보 버전을 main에서 4주 이상 쓰고 로컬 재정의 0건이거나 각 항목이 앱 고유 스타일로 판정. 지금은 0.15.2를 쓰고 재정의 목록이 없다 | 미충족 | 1.0 후보 적용 후 4주, 재정의 판정 |
-| AC-6 컴포넌트 범위 | 기준 확정(OD-007): 공개 컴포넌트 67개 + FR-CMP-017 6종. WP-044로 6종을 구현했다(공개 73개). 배포는 다음 릴리스 | 충족 (병합 후) | 다음 0.x 릴리스 |
-| AC-7 버전 정렬 | 기준 확정(OD-008): 1.0.0부터 `fixed`. 지금은 tokens 0.14.0, css·react 0.16.0(`linked`) | 1.0 발행 PR에서 | WP-043에서 `fixed`로 전환 |
+| AC-5 실사용 검증 | 기준 확정(OD-005). agent-ai-platform은 0.17.0을 쓴다(그 저장소의 DS-PILOT-23). 재정의 13규칙을 판정했다: `.cdt-btn` 배치 7규칙은 앱 고유(컨테이너의 `flex`·`width`·여백), 나머지 6규칙은 컴포넌트 결함 셋이라 CR-077로 고쳤다(Message 행 폭 2, 다른 참여자 3, main 포커스 1). 원장 §5.2가 판정을 기록한다 | 미충족 | 후보(0.18.0) 릴리스 → 앱이 6규칙을 지우고 적용 → 4주 |
+| AC-6 컴포넌트 범위 | 기준 확정(OD-007): 공개 컴포넌트 67개 + FR-CMP-017 6종. 0.17.0으로 배포했다(공개 73개) | 충족 | — |
+| AC-7 버전 정렬 | 기준 확정(OD-008): 1.0.0부터 `fixed`. 지금은 tokens 0.14.0, css·react 0.17.0(`linked`) | 1.0 발행 PR에서 | WP-043에서 `fixed`로 전환 |

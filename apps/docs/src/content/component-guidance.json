@@ -1777,9 +1777,9 @@
     ]
   },
   "Message": {
-    "purpose": "One turn in a conversation, from the user, the assistant or the system, with an optional avatar, actions, streaming caret and error state.",
+    "purpose": "One turn in a conversation, from the reader, another participant, the assistant or the system, with an optional avatar, actions, streaming caret and error state.",
     "use": [
-      "Set from to the sender and name to the agent's display name.",
+      "Set from to the sender and name to the display name; in a shared thread, use user for the reader's own turns and participant for everyone else's.",
       "Set status to streaming while text arrives and error when the turn failed.",
       "Put copy, retry or feedback buttons in actions."
     ],

@@ -137,7 +137,7 @@ function NumberFixture({ invalid = false }: { readonly invalid?: boolean }): Rea
 
 // CR-061 FR-CMP-016 fixtures.
 function ConversationFixture(): ReactElement {
-  return <Conversation style={{ blockSize: 240 }}><Message from="user">Why did the deploy fail?</Message><Message from="assistant" name="Conductor" status="streaming">The migration step timed out<InlineCitation index={1} source={{ href: "https://example.com/runbook", title: "Deploy runbook" }} /></Message><Reasoning duration={3}>Checked the last three runs.</Reasoning><Tool name="ci.get_logs" status="completed" input={{ run: 42 }} output="Timeout after 600s" /><Sources sources={[{ href: "https://example.com/runbook", title: "Deploy runbook" }]} /><Shimmer>Working…</Shimmer></Conversation>;
+  return <Conversation style={{ blockSize: 240 }}><Message from="user">Why did the deploy fail?</Message><Message from="participant" name="Mina">Same on staging</Message><Message from="assistant" name="Conductor" status="streaming">The migration step timed out<InlineCitation index={1} source={{ href: "https://example.com/runbook", title: "Deploy runbook" }} /></Message><Reasoning duration={3}>Checked the last three runs.</Reasoning><Tool name="ci.get_logs" status="completed" input={{ run: 42 }} output="Timeout after 600s" /><Sources sources={[{ href: "https://example.com/runbook", title: "Deploy runbook" }]} /><Shimmer>Working…</Shimmer></Conversation>;
 }
 function PromptFixture({ streaming = false }: { readonly streaming?: boolean }): ReactElement {
   const [value, setValue] = useState("");

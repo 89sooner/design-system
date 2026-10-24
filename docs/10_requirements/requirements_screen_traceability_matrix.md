@@ -1,6 +1,6 @@
 # 요구사항-화면 추적 매트릭스
 
-> 상태: review | 버전: v0.20 | 갱신일: 2026-10-24
+> 상태: review | 버전: v0.21 | 갱신일: 2026-10-25
 
 ## 1. 목적
 
@@ -87,7 +87,7 @@ UI가 없는 요구사항은 아래 표면 중 하나에 간접 노출된다.
 | FR-CMP-006 | Must | W-020, W-021 | SFC-PKG | FLOW-004 | 오버레이 |
 | FR-CMP-007 | Must | W-020, W-021 | SFC-PKG | FLOW-001 | 폼 |
 | FR-CMP-008 | Must | W-020, W-021 | SFC-PKG | FLOW-001 | 피드백 |
-| FR-CMP-009 | Should | W-001, W-021 | SFC-PKG | FLOW-005 | 셸 (OD-004 종결: 패키지 포함) |
+| FR-CMP-009 | Should | W-001, W-021 | SFC-PKG | FLOW-005 | 셸 (OD-004 종결: 패키지 포함); main 프로그램 포커스는 링 없음 (CR-077) |
 | FR-DOC-001 | Must | W-001 | SFC-CI | FLOW-001 | 문서 셸 |
 | FR-DOC-002 | Must | W-010, W-011, W-012, W-013, W-014 | — | FLOW-001 | Foundations |
 | FR-DOC-003 | Must | W-020, W-021 | — | FLOW-001 | 라이브 프리뷰 |
@@ -98,7 +98,7 @@ UI가 없는 요구사항은 아래 표면 중 하나에 간접 노출된다.
 | FR-DOC-008 | Should | W-021 | — | FLOW-001 | 에이전트 판독용 문서 (산출물: DESIGN.md, llms.txt, components/*.md) |
 | FR-DOC-009 | Should | W-063, W-064, W-065 | SFC-PKG | FLOW-001 | 블록 예제 (CR-051) |
 | FR-DOC-010 | Should | W-031 | SFC-PKG | FLOW-003 | 테마 플레이그라운드 (CR-052, API-TOK-004) |
-| FR-A11Y-001 | Must | W-050 | 전 화면 | — | 포커스 링; 강제 색 모드 포커스 (CR-071, AC-5) |
+| FR-A11Y-001 | Must | W-050 | 전 화면 | — | 포커스 링; 강제 색 모드 포커스 (CR-071, AC-5); 적용 범위는 대화형 요소 (CR-077) |
 | FR-A11Y-002 | Must | W-050 | 전 화면 | FLOW-004 | 키보드 도달 |
 | FR-A11Y-003 | Must | W-040, W-050 | SFC-PKG | — | 색상 비의존; 강제 색 모드 상태 표시 (CR-071, AC-5) |
 | FR-A11Y-004 | Must | W-030, W-050 | SFC-CLI, SFC-CI | FLOW-003 | 대비율 |
@@ -108,7 +108,7 @@ UI가 없는 요구사항은 아래 표면 중 하나에 간접 노출된다.
 | FR-DX-003 | Must | W-002 | SFC-PKG | — | 진입점/부수효과 |
 | FR-DX-004 | Must | W-002 | SFC-PKG | — | SSR 안전성 |
 | FR-DX-005 | Should | — | SFC-REL | — | 버저닝 |
-| FR-DX-006 | Should | W-002 | SFC-REL, SFC-CI | — | 1.0 안정화 기준 (CR-075); OD-005 ~ OD-008 closed (CR-076) |
+| FR-DX-006 | Should | W-002 | SFC-REL, SFC-CI | — | 1.0 안정화 기준 (CR-075); OD-005 ~ OD-008 closed (CR-076); CLI 옵션 검출 (CR-077) |
 | FR-CMP-017 | Should | W-020, W-021 | SFC-PKG | — | Separator·Stack·Grid·Heading·Text·Accordion (CR-076) |
 | FR-QA-001 | Must | — | SFC-CLI, SFC-CI, W-030 | FLOW-003 | 토큰 계약 |
 | FR-QA-002 | Must | — | SFC-CI, W-050 | FLOW-003 | 단위 검사 |
@@ -161,7 +161,7 @@ NFR은 화면 하나에 귀속되지 않는다. 각 NFR이 어디서 측정되�
 | FR-CMP-012 | W-062 / SFC-PKG | WP-032 | 단계 의미, 허용 행동, 부분/미확인 |
 | FR-CMP-014 | W-020, W-021 / SFC-PKG | WP-037 | Toast·DatePicker·CommandPalette·Pagination 동작, axe(열린 상태 포함), 키보드 경로 (CR-054) |
 | FR-CMP-015 | W-020, W-021 / SFC-PKG | WP-038 | AlertDialog·RadioGroup·ToggleGroup·Avatar·NumberInput 동작, axe(열린 상태 포함), 키보드 경로, 쌓임·커서·포커스 링 계약 (CR-060); NumberInput glass 배경이 glass TextField와 같고 포커스·비활성은 solid와 같은지 두 테마 브라우저 시험 (CR-063) |
-| FR-CMP-016 | W-020, W-021 / SFC-PKG | WP-039 | 에이전트 대화 컴포넌트 11종 동작(전송·IME·중단, 스트리밍 상태, 펼침, 승인 결정, 인용), axe(열린 상태 포함), 키보드 경로, 포커스 링·커서 계약 (CR-061) |
+| FR-CMP-016 | W-020, W-021 / SFC-PKG | WP-039 | 에이전트 대화 컴포넌트 11종 동작(전송·IME·중단, 스트리밍 상태, 펼침, 승인 결정, 인용), axe(열린 상태 포함), 키보드 경로, 포커스 링·커서 계약 (CR-061); `participant` 역할과 에이전트 턴 행 폭의 계산값 시험 (CR-077) |
 | FR-CMP-017 | W-020, W-021 / SFC-PKG | WP-044 | 레이아웃·타이포그래피·구획 6종의 공통 계약, Accordion 키보드·`aria-expanded`, axe, 시각 기준, 공개 표면 기준 (CR-076) |
 | FR-CMP-013 | W-060, W-061, W-062 / SFC-PKG / SFC-REL | WP-029 | Radix 키보드·포커스와 tarball 소비; Tabs 활성 표시선 (CR-065), Tabs 세그먼트형 기본·`variant="line"` (CR-067) |
 
