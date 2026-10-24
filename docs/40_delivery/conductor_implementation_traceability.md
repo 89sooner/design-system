@@ -1,6 +1,6 @@
 # Conductor Design System 구현 추적 원장
 
-> 상태: review | 버전: v0.64 | 갱신일: 2026-10-24
+> 상태: review | 버전: v0.65 | 갱신일: 2026-10-24
 
 ## 1. 목적과 갱신 규칙
 
@@ -253,7 +253,7 @@ PR Search 소비처의 `DEV-380`이 트리거다: 화면 계약이 최대 20계�
 | FR-DX-004 | `packages/react/src/testing/ssr.tsx`, `src/testing/public-components.ts`, `apps/docs/src/main.tsx`, `App.tsx` | `ssr.test.tsx`, `hydration.browser.test.tsx`, `apps/docs/e2e/shell.spec.ts` | WP-011, WP-018, WP-023 | 검증됨 (AC-1 공개 30개 renderToString 예외 0, AC-2 browser-global 접근 0, AC-3 공개 30개 server root 보존·recoverable error 0. 문서 `/` 프리렌더 DOM 보존과 딥링크 불일치 client mount 경계를 실제 Chromium에서 검증) |
 | FR-DX-005 | `.changeset/config.json`, `scripts/check-changesets.mjs`, `scripts/is-version-packages-commit.mjs`, `scripts/check-api.mjs`, `scripts/check-release-tags.mjs`, `scripts/release-rollback.mjs`, `.github/workflows/release.yml` | `check:changesets`·version commit 양성/음성 분류·`check:api` 음성 픽스처, `changeset version`, 0.1.0/0.1.1 OIDC publish·provenance, annotated tag local/remote 검증, npm rollback 실증 | WP-027 | 검증됨 (AC-1 드리프트 exit 1 + major 규약, AC-2 CHANGELOG Refs와 LF/CRLF 동일 파싱, AC-3 react-only 0.1.1 bump 실증, AC-4 마이그레이션 노트 강제. 일반 commit의 `status --since`는 유지하고 이미 Changeset을 소비한 bot version commit만 구조 검증 후 skip. Release runs 29569125471·29586062062와 323.8초 실제 롤백으로 외부 경로까지 확인) |
 | FR-DX-006 | `scripts/check-api.mjs`, `scripts/public-surface.mjs`, `etc/public-surface.txt`, `scripts/check-consumer.mjs`, `.github/workflows/ci.yml`(consumers·cross-browser), `apps/docs/playwright.cross.config.ts` | `scripts/public-surface.test.mjs`, `scripts/package-exports.test.mjs`, `apps/docs/e2e-cross/engines.spec.ts`, 검증 계획 §1.0 준비도 표 | REL-005, WP-041, WP-042 | 진행 중 (AC-1·AC-2 충족(WP-041), AC-4 매트릭스 충족(WP-042, PR #91 CI), AC-5·AC-6 미충족, 1.0 미발행. OD-005 ~ OD-008 closed(CR-076)) |
-| FR-CMP-017 | — (WP-044 미착수) | — | REL-005, WP-044 | 미착수 (CR-076 신설) |
+| FR-CMP-017 | `packages/react/src/layout.tsx`, `src/typography.tsx`, `src/accordion.tsx`, `packages/css/src/primitives.css` | `packages/react/src/testing/primitives.test.tsx`, `a11y.browser.test.tsx`(시나리오 7), `apps/docs/visual/visual.spec.ts`(기준 12장), `etc/public-surface.txt` | REL-005, WP-044 | 검증됨 (AC-1~AC-7, 로컬. CI는 PR에서 확인) |
 | FR-QA-001 | `src/theme-contract.ts`, `src/token-source.ts` | `src/theme-contract.test.ts` | WP-006, WP-010 | 검증됨 (AC-1~AC-3. 실제 dark/light semantic·component 키 대칭과 `themeSpecific` 예외를 검사. `derivePalette`가 base에 없는 override 키를 `TOK-THEME-KEY`로 막아, 키 집합 비교만으로는 보이지 않는 오타 경로를 닫는다 — CR-035) |
 | FR-QA-002 | `packages/react/src/testing/public-components.ts`, `src/testing/contract.tsx` | `src/testing/public-components.test.ts`, `src/testing/contract.test.tsx`, `src/testing/shell.test.tsx` | WP-011, WP-012~017, WP-023 | 검증됨 (AC-1 공개 30개 전수 테스트 파일·SSR registry, AC-2 FR/AC 명명, AC-3 공유 스위트와 컴포넌트군별 상호작용 테스트를 검증.) |
 | FR-QA-003 | `vitest.a11y.config.ts`, `packages/react/src/testing/a11y-scenarios.tsx`, `axe-allowlist.json`, `.github/workflows/ci.yml` | `packages/react/src/testing/a11y.browser.test.tsx` | WP-024 | 검증됨 (공개 30개를 덮는 49개 기본/disabled/error/interactive/open scenario × 다크·라이트 = 98 axe 실행, serious/critical 0건. 유한 진입 animation 완료 뒤 안정 상태를 감사하고 무한 Spinner는 대기만 제외한다. 정상 164 passed/1 negative fixture skipped를 4회 연속 확인. fixture 활성화 시 `button-name(critical)` 검출과 exit 1을 실증. JSON report와 실패 screenshot을 30일 보존) |
@@ -394,6 +394,7 @@ OD-002(시각 회귀 이월)와 OD-004(셸 컴포넌트군 패키지 포함)는 
 | WP-037 | FR-CMP-014 | done | Toast·DatePicker·CommandPalette·Pagination(C-073~C-076), `controls.css`, 레지스트리·a11y·SSR 시험, 카탈로그 미리보기·지침. CR-054. |
 | WP-038 | FR-CMP-015 | done | AlertDialog·RadioGroup·ToggleGroup·Avatar·NumberInput(C-077~C-081), `controls.css`, 레지스트리·a11y·SSR 시험, 카탈로그 미리보기·지침. CR-060. |
 | WP-039 | FR-CMP-016 | done | 에이전트 대화 컴포넌트 11종(C-082~C-092), `agent.css`, 레지스트리·a11y·SSR 시험, 카탈로그 미리보기·지침. CR-061. |
+| WP-044 | FR-CMP-017 | done | Separator·Stack·Grid·Heading·Text·Accordion(C-093~C-098), `primitives.css`, 레지스트리·a11y·SSR 시험, 카탈로그 Layout·Typography family와 Accordion, 지침 6종, 시각 기준 12장 (CR-076) |
 
 착수 문서 validator --report: exit 0, FR49/49, Phase7. 실제 소비자 코드는 읽기만 수행했으며 운영 연동·소비자 마이그레이션은 실행하지 않았다. 공개 기록에는 일반화된 계약과 합성 데이터만 남긴다.
 
@@ -785,3 +786,17 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | 검증 (로컬) | `check:api` 통과, scripts 시험 27/27, consumer 3/3(React 18.3.1·19.2.8·Next 16.3.1), `test:cross --project chromium` 4/4. Firefox·WebKit은 이 환경에 브라우저가 없어 CI 첫 실행으로 확인한다 |
 | 편차 | DEV-065 closed, DEV-067 closed |
 | 검증 (CI) | PR #91 head `d2ce28a`: consumers(React 18·19·Next) 통과, cross-browser Firefox·WebKit 8/8 통과(첫 실행), verify(node 20·22)·docs e2e·visual regression 통과 |
+
+### WP-044 레이아웃·타이포그래피·구획 기본 컴포넌트 (2026-10-24)
+
+| 범위 | 결과 |
+| --- | --- |
+| react | `layout.tsx`(Separator: 네이티브 `<hr>`, Stack, Grid — hook 없음), `typography.tsx`(Heading: `level`과 `size` 분리, Text), `accordion.tsx`(Radix Accordion 1.2.20, `"use client"`, Trigger를 heading(`level`, 기본 3) 안에 둔다), `index.ts`, `tsup.config.ts`, `package.json` |
+| css | `primitives.css`(cdt.component): Stack·Grid gap 1~8, Stack 방향·정렬·줄바꿈, Grid 열 1~6(md 미만 한 열), Heading 크기 4종(page 토큰 재사용), Text 크기 7·톤 4·굵기 2, Accordion. 모든 값이 토큰이다. 강제 색에서 구분선은 `CanvasText` |
+| 문서 사이트 | 카탈로그 family Layout(Stack·Grid·Separator)·Typography(Heading·Text), Interaction에 Accordion. 미리보기 6종, 지침 6종(`component-guidance.json`). 공개 컴포넌트 73개 |
+| 시험 | `primitives.test.tsx` 34건(공통 계약 6, 동작 10). a11y 시나리오 7(Accordion 키보드·열린 상태 포함). 클래스 계약에서 `cdt-mono`가 이제 컴포넌트가 내는 클래스라 소비자 전용 목록에서 뺐다. 시각 기준 12장 추가, 카탈로그 회색조 전체 기준 1장은 타일 6개가 늘어 의도적으로 갱신했다 |
+| 표면 | `etc/public-surface.txt` 추가만(삭제 0), react API 리포트 추가만 |
+| 검증 (로컬) | build, typecheck, test 922/922, lint, lint:tokens, size(Button 1.33 KiB, index.css 15.30 KiB), check:api, check:changesets, test:a11y 387(1 skip), docs e2e 87/87, cross Chromium 4/4, visual 182/182 |
+| changeset | **layout-type-accordion.md**(react·css minor) |
+| CI 정정 | PR #92 첫 CI에서 cross-browser Firefox의 Dialog 시험이 첫 클릭 뒤 대화상자가 열리지 않아 실패했다(PR #91에서는 통과). 로컬 Chromium은 버튼 재마운트가 없고(5/5) Firefox는 이 환경에 없으며, 실패 아티팩트 호스트는 네트워크 정책으로 막혀 trace를 읽지 못했다. 시험의 대상은 Escape·포커스 복귀이므로 여는 단계만 열릴 때까지 클릭을 반복(`toPass`)하게 했다. Escape·포커스 복귀 단정은 그대로다 |
+

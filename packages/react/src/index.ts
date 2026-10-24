@@ -67,6 +67,12 @@ export type { AvatarProps } from "./avatar";
 export { NumberInput } from "./number-input";
 export type { NumberInputProps } from "./number-input";
 export type { NumberInputLabels } from "./labels";
+export { Grid, Separator, Stack } from "./layout";
+export type { GridProps, SeparatorProps, SpaceStep, StackProps } from "./layout";
+export { Heading, Text } from "./typography";
+export type { HeadingLevel, HeadingProps, HeadingSize, TextProps, TextSize, TextTone } from "./typography";
+export { Accordion } from "./accordion";
+export type { AccordionContentProps, AccordionItemProps, AccordionRootProps, AccordionTriggerProps } from "./accordion";
 // CR-061 FR-CMP-016: agent and chat interface parts, modelled on Vercel AI Elements, built on Conductor.
 export { Conversation, Message, PromptInput, Reasoning, Tool, Confirmation, Sources, InlineCitation, Suggestions, Suggestion, Shimmer } from "./agent";
 export type { ConfirmationProps, ConfirmationState, ConversationProps, InlineCitationProps, MessageProps, MessageRole, MessageStatus, PromptInputProps, PromptInputStatus, ReasoningProps, ShimmerProps, SourceItem, SourcesProps, SuggestionProps, SuggestionsProps, ToolProps, ToolStatus } from "./agent";
