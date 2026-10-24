@@ -14,8 +14,8 @@
 
   .cdt-skip-link {
     position: fixed;
-    top: var(--cdt-space-3);
-    left: var(--cdt-space-3);
+    inset-block-start: var(--cdt-space-3);
+    inset-inline-start: var(--cdt-space-3);
     z-index: var(--cdt-page-skip-link-z);
     padding: var(--cdt-space-2) var(--cdt-space-3);
     border-radius: var(--cdt-radius-sm);
@@ -35,6 +35,8 @@
   }
 
   .cdt-mono {
+    direction: ltr;
+    unicode-bidi: isolate;
     font-family: var(--cdt-font-mono);
     font-size: var(--cdt-font-size-base);
     color: var(--cdt-text-mono-payload);

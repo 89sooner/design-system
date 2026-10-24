@@ -29,6 +29,18 @@ export function Example() {
 
 Set `data-cdt-theme="dark"` or `data-cdt-theme="light"` on the document root. Development builds warn once when the Conductor stylesheet is missing.
 
+### Right-to-left
+
+Set `dir="rtl"` on the document and wrap the app in `DirectionProvider`. Radix-based components (Tabs, RadioGroup, ToggleGroup, Select, menus) and the DatePicker calendar read their direction from it, including which arrow key moves forward. `Toast.Provider` does not: pass `swipeDirection="left"` in a right-to-left app.
+
+```tsx
+import { DirectionProvider } from "@conductor-by-89soone/react";
+
+export function App({ children }) {
+  return <DirectionProvider dir="rtl">{children}</DirectionProvider>;
+}
+```
+
 ## Requirements
 
 Node.js 20 or newer, React 18 or 19, React DOM 18 or 19, and `lucide-react` 0.400.0 or newer (below 2.0.0).

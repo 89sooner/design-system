@@ -163,7 +163,12 @@
 }
 .docs-stage__bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--cdt-space-3); }
 .docs-stage__bar h2 { margin: 0; font-size: var(--cdt-page-sub-heading-size); line-height: var(--cdt-page-sub-heading-line-height); }
-.docs-stage > .docs-preview { margin-top: 0; padding-block: var(--cdt-space-3); }
+/*
+ * `min-width: 0` lets the preview shrink to the stage (a grid item's default min-width is its content). Without it
+ * a wide example such as the 800px Table grew the preview past the stage, whose overflow is hidden, so below about
+ * 850px the table's right side was cut off and its own scroller never engaged (CR-073, DEV-064).
+ */
+.docs-stage > .docs-preview { min-width: 0; margin-top: 0; padding-block: var(--cdt-space-3); }
 
 /* ---------- Detail: import and class contract ---------- */
 .docs-detail__usage { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: var(--cdt-space-4); }

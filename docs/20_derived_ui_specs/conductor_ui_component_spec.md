@@ -1,6 +1,6 @@
 # Conductor Design System UI 컴포넌트 명세서
 
-> 상태: review | 버전: v0.20 | 갱신일: 2026-10-23
+> 상태: review | 버전: v0.21 | 갱신일: 2026-10-24
 
 ## 0. 문서 위치와 범위
 
@@ -1348,3 +1348,10 @@ component 토큰은 semantic 토큰만 참조한다(FR-TOK-002 AC-3). 아래 표
 - **결정 (CR-062)**: 닫힌 Reasoning·Tool·Sources의 내용 요소는 Radix가 `hidden`으로 남긴다. 이 요소는 `display: none`이어야 하며, 펼침 부품의 `display` 지정이 그것을 덮지 않는다. 모든 시나리오의 `[hidden]` 요소가 자리를 차지하지 않는지 브라우저 시험이 확인한다.
 
 - **결정**: 스타일은 `@conductor-by-89soone/css`의 선택 진입점 `./agent.css`(cdt.component 층)로 따로 배포한다. 에이전트 UI를 쓰는 앱만 메인 스타일시트 다음에 import한다(FR-CMP-016 AC-10). 메인 스타일시트의 토큰을 읽으므로 단독으로는 쓰지 않는다.
+
+## CR-074 읽기 방향 (FR-CSS-006)
+
+- **결정**: 배치는 논리 속성이 맡고, 물리 `translateX`로 움직이는 부품만 `:dir(rtl)`에서 부호를 뒤집는다. 방향은 변수(`--cdt-switch-thumb-travel`, `--cdt-shell-enter-shift`, `--cdt-toast-exit-shift`, 기존 `--cdt-drawer-shift`)로 keyframe에 넘긴다. 모바일 내비게이션은 portal로 `.cdt-app-shell` 밖에 그려지므로 변수를 내비게이션 요소 자체에 둔다.
+- **결정**: 가운데 정렬(`.cdt-conversation__latest`)은 방향과 무관하므로 물리 `left: 50%`와 `translateX(-50%)`로 둔다. 논리 `inset-inline-start: 50%`는 RTL에서 오른쪽 기준이 되어 가운데에서 벗어난다.
+- **결정**: 코드 블록·키 캡·`cdt-mono`·도구 이름은 `direction: ltr; unicode-bidi: isolate`다. 단축키 묶음(`cdt-command__shortcut`)은 키 순서만 고정하면 되므로 `direction: ltr`이다.
+- **결정**: Radix 방향은 앱 루트의 `DirectionProvider` 하나로 정한다. 컴포넌트마다 `dir` prop을 받지 않는다. Radix 각 프리미티브의 `dir` prop은 그대로 통과한다. `Toast.Provider`의 `swipeDirection`은 Radix가 방향을 읽지 않으므로 소비자가 정한다.

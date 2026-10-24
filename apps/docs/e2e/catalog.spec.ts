@@ -72,3 +72,22 @@ test("FR-DOC-003 exception / QA-195: a preview failure is isolated from the rest
   await expect(page.getByRole("table", { name: "Button props" })).toContainText("variant");
   await expect(page.getByRole("button", { name: "Copy code" })).toBeVisible();
 });
+
+test("CR-073 FR-DOC-003 / QA-005: every component preview fits its stage at 320px; wide content scrolls in its own box", async ({ page }) => {
+  test.setTimeout(120_000);
+  await page.setViewportSize({ width: 320, height: 800 });
+  const overflowing: string[] = [];
+  for (const { name } of componentMeta) {
+    await page.goto(docsPath(`/components/${name}`));
+    const preview = page.locator(".docs-stage > .docs-preview");
+    await expect(preview).toBeVisible();
+    const size = await preview.evaluate((element) => ({ preview: element.getBoundingClientRect().width, stage: (element.parentElement as HTMLElement).clientWidth }));
+    if (size.preview > size.stage + 1) overflowing.push(`${name} (${Math.round(size.preview)}px in ${size.stage}px)`);
+  }
+  expect(overflowing).toEqual([]);
+  // The table example is wider than the stage, so its own scroller now holds the overflow and can be reached by keyboard.
+  await page.goto(docsPath("/components/Table"));
+  const scroller = page.locator(".docs-stage .cdt-table__scroll");
+  const scroll = await scroller.evaluate((element) => ({ scrollable: element.scrollWidth > element.clientWidth, tabIndex: element.tabIndex }));
+  expect(scroll).toEqual({ scrollable: true, tabIndex: 0 });
+});

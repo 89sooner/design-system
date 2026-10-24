@@ -17,7 +17,8 @@
   .cdt-conversation { position: relative; display: flex; flex-direction: column; min-block-size: 0; }
   .cdt-conversation__viewport { display: flex; flex: 1 1 auto; flex-direction: column; gap: var(--cdt-space-4); min-block-size: 0; padding: var(--cdt-space-4); overflow-y: auto; border-radius: var(--cdt-radius-md); overscroll-behavior: contain; }
   .cdt-conversation__viewport:focus-visible { outline: var(--cdt-border-width-emphasis) solid transparent; box-shadow: var(--cdt-focus-ring); }
-  .cdt-conversation__latest { position: absolute; inset-block-end: var(--cdt-space-3); inset-inline-start: 50%; box-shadow: var(--cdt-elevation-raised); transform: translateX(-50%); }
+  /* Centred with physical `left` on purpose: `inset-inline-start: 50%` plus `translateX(-50%)` put it off centre in RTL (CR-074). */
+  .cdt-conversation__latest { position: absolute; inset-block-end: var(--cdt-space-3); left: 50%; box-shadow: var(--cdt-elevation-raised); transform: translateX(-50%); }
 
   /* Message — the person's turns sit on the accent tint at the end; the agent's read as plain text. */
   .cdt-message { display: flex; align-items: flex-start; gap: var(--cdt-space-3); max-inline-size: 100%; }
@@ -63,7 +64,7 @@
   .cdt-tool--completed { border-inline-start-color: var(--cdt-status-success); }
   .cdt-tool--error { border-inline-start-color: var(--cdt-status-danger); }
   .cdt-tool__trigger { display: flex; inline-size: 100%; padding: var(--cdt-space-2) var(--cdt-space-3); border-radius: var(--cdt-radius-md); text-align: start; }
-  .cdt-tool__name { flex: 1 1 auto; overflow: hidden; color: var(--cdt-text-primary); font-family: var(--cdt-font-mono); text-overflow: ellipsis; white-space: nowrap; }
+  .cdt-tool__name { flex: 1 1 auto; overflow: hidden; direction: ltr; unicode-bidi: isolate; text-align: start; color: var(--cdt-text-primary); font-family: var(--cdt-font-mono); text-overflow: ellipsis; white-space: nowrap; }
   .cdt-tool__content { display: grid; gap: var(--cdt-space-3); padding: 0 var(--cdt-space-3) var(--cdt-space-3); }
   .cdt-tool__section { display: grid; gap: var(--cdt-space-1); }
   .cdt-tool__heading { margin: 0; color: var(--cdt-text-muted); font-size: var(--cdt-font-size-xs); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }

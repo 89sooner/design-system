@@ -1,6 +1,6 @@
 # Conductor Design System PRD
 
-> 상태: review | 버전: v0.16 | 갱신일: 2026-10-23
+> 상태: review | 버전: v0.18 | 갱신일: 2026-10-24
 
 ## 1. 문서 개요
 
@@ -57,11 +57,11 @@ Conductor Design System(이하 Conductor)은 `agent-ai-platform`의 `packages/we
 | --- | --- |
 | 3계층 디자인 토큰 소스와 CSS/TS/JSON 산출 빌드 | FR-TOK-001 ~ FR-TOK-009 |
 | 다크(기준) + 라이트 테마, 시스템 설정 연동 | FR-THM-001 ~ FR-THM-004 |
-| 캐스케이드 레이어 기반 프레임워크 비종속 스타일시트 | FR-CSS-001 ~ FR-CSS-005 |
+| 캐스케이드 레이어 기반 프레임워크 비종속 스타일시트 | FR-CSS-001 ~ FR-CSS-006 |
 | React 프리미티브 컴포넌트 6개 군 (액션·표면·상태·데이터·오버레이·폼) + 피드백 + 셸 | FR-CMP-001 ~ FR-CMP-009 |
 | 문서 사이트 (Foundations, 컴포넌트 카탈로그, 토큰 참조, 테마 토글, 사용 규칙, 에이전트 판독용 문서, 블록 예제, 테마 플레이그라운드) | FR-DOC-001 ~ FR-DOC-010 |
 | WCAG 2.1 AA 기준선 (포커스·키보드·색상 비의존·대비·스크린리더) | FR-A11Y-001 ~ FR-A11Y-005 |
-| 모노레포 빌드, 타입 배포, 진입점 선언, SSR 안전성, 버저닝 | FR-DX-001 ~ FR-DX-005 |
+| 모노레포 빌드, 타입 배포, 진입점 선언, SSR 안전성, 버저닝, 1.0 안정화 기준 | FR-DX-001 ~ FR-DX-006 |
 | 토큰 계약·단위·접근성·시각 회귀 검사 | FR-QA-001 ~ FR-QA-004 |
 
 ### 5.2 Conditional Scope
@@ -156,6 +156,7 @@ Conductor Design System(이하 Conductor)은 `agent-ai-platform`의 `packages/we
 | FR-CSS-003 | 레이아웃 프리미티브 클래스를 제공한다 | Must | F-CSS-003 |
 | FR-CSS-004 | 컴포넌트 클래스를 `cdt-` 접두사로 제공한다 | Must | F-CSS-004 |
 | FR-CSS-005 | 모션 감소 설정을 존중한다 | Must | F-CSS-005 |
+| FR-CSS-006 | 오른쪽→왼쪽(RTL) 문서에서 배치·이동·키보드 방향을 뒤집고 코드·키 조합은 왼쪽→오른쪽으로 유지한다. React는 `DirectionProvider`를 export한다(CR-074) | Should | CR-074 |
 | FR-CMP-001 | 모든 컴포넌트가 공통 계약을 지킨다 | Must | F-CMP-001 |
 | FR-CMP-002 | 액션 컴포넌트군을 제공한다 | Must | F-CMP-002 |
 | FR-CMP-003 | 표면 컴포넌트군을 제공한다 | Must | F-CMP-003 |
@@ -188,6 +189,7 @@ Conductor Design System(이하 Conductor)은 `agent-ai-platform`의 `packages/we
 | FR-DX-003 | 공개 진입점과 부수효과를 선언한다 | Must | F-DX-003 |
 | FR-DX-004 | 서버 렌더링 환경에서 동작한다 | Must | F-DX-004 |
 | FR-DX-005 | semver와 변경 이력을 자동 생성한다 | Should | F-DX-005 |
+| FR-DX-006 | 1.0의 공개 계약 범위·검출·폐기 절차·품질 게이트·실사용 검증을 정하고, 1.0 이후 계약 위반은 major로만 낸다(CR-075) | Should | CR-075 |
 | FR-QA-001 | 테마 간 토큰 키 대칭을 검사한다 | Must | F-QA-001 |
 | FR-QA-002 | 컴포넌트 단위 테스트가 AC를 인용한다 | Must | F-QA-002 |
 | FR-QA-003 | axe-core 위반 0건을 CI에서 강제한다 | Must | F-QA-003 |
@@ -237,8 +239,12 @@ Conductor Design System(이하 Conductor)은 `agent-ai-platform`의 `packages/we
 | OD-002 | 시각 회귀 검사를 v1 릴리스 게이트에 포함하는가? | **REL-004로 이월**. FR-QA-004를 `deferred`로 표시한다. v1은 수동 시각 확인으로 대체한다. R-2(폰트 렌더 flake)가 v1 일정 위험보다 크다 | 2026-07-10 | QA | closed |
 | OD-003 | 필터/칩 컴포넌트군(F-CMP-010)을 v1에 넣는가? | CR-041 사용자 요청으로 포함 | 2026-09-13 | Product | resolved scope |
 | OD-004 | 셸 컴포넌트군을 배포 패키지에 넣는가, 문서 사이트 내부 컴포넌트로 두는가? | **`@conductor-by-89soone/react`에 포함**. `renderLink` props로 라우팅 비종속 API가 성립한다. WP-023을 실행한다 | 2026-07-10 | System Maintainer | closed |
+| OD-005 | 1.0 실사용 검증에 소비자가 몇 곳, 얼마 동안 필요한가? | — (open) | — | Product (사용자) | open |
+| OD-006 | 1.0 이후 같은 이름의 토큰 값·시각 변경을 minor로 내는가, major로 내는가? | — (open) | — | System Maintainer (사용자) | open |
+| OD-007 | 1.0 전에 어떤 컴포넌트를 더하는가? | — (open) | — | Product (사용자) | open |
+| OD-008 | 세 패키지 버전을 1.0에서 묶는가(lockstep), 패키지별로 올리는가? | — (open) | — | System Maintainer (사용자) | open |
 
-Must 우선순위 FR을 차단하는 open OD: **없음.** OD-001이 2026-07-10에 종결되어 FR-THM-004와 FR-A11Y-004의 차단이 해제되었다. OD-003은 CR-041로 범위 조건이 해소되었으며 새 FR의 baseline 승인은 별도다.
+Must 우선순위 FR을 차단하는 open OD: **없음.** OD-005 ~ OD-008(CR-075)은 Should인 FR-DX-006의 1.0 발행만 막는다. OD-001이 2026-07-10에 종결되어 FR-THM-004와 FR-A11Y-004의 차단이 해제되었다. OD-003은 CR-041로 범위 조건이 해소되었으며 새 FR의 baseline 승인은 별도다.
 
 ### 12.1 OD-001이 드러낸 사실
 

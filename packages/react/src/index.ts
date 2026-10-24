@@ -50,6 +50,7 @@ export type { ComboboxLabels, CopyButtonLabels, DataTableLabels, DetailInspector
 export { Toast } from "./toast";
 export type { ToastActionProps, ToastCloseProps, ToastRootProps, ToastTone, ToastViewportProps } from "./toast";
 export { DatePicker } from "./date-picker";
+export { DirectionProvider, useDirection } from "./direction";
 export type { DatePickerProps } from "./date-picker";
 export { CommandPalette, filterCommands } from "./command";
 export type { Command, CommandPaletteProps } from "./command";

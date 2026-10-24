@@ -29,6 +29,7 @@ export default defineConfig({
     "src/number-input.tsx",
     "src/agent.tsx",
     "src/route-focus.ts",
+    "src/direction.tsx",
   ],
   format: ["esm"],
   dts: true,
@@ -38,7 +39,7 @@ export default defineConfig({
   splitting: false,
   treeshake: false,
   async onSuccess() {
-    const clientEntries = new Set(["action", "data", "feedback", "form", "overlay", "shell", "status", "surface", "interaction", "workbench", "relation", "toast", "date-picker", "command", "pagination", "route-focus"]);
+    const clientEntries = new Set(["action", "data", "feedback", "form", "overlay", "shell", "status", "surface", "interaction", "workbench", "relation", "toast", "date-picker", "command", "pagination", "route-focus", "direction"]);
     for (const file of await readdir("dist")) {
       if (!file.endsWith(".js")) continue;
       const path = `dist/${file}`;

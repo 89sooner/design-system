@@ -22,6 +22,8 @@ Select a theme on the document root. Dark is the default and canonical palette.
 <html data-cdt-theme="light"></html>
 ```
 
+Layout follows the document direction: with `dir="rtl"` the stylesheet mirrors placement and motion, while code, key caps and monospaced values keep reading left to right.
+
 Applications that already own a global reset can use the reset-free entry point:
 
 ```ts

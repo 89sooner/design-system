@@ -7,6 +7,7 @@
 import { ButtonHTMLAttributes } from 'react';
 import { ComponentPropsWithoutRef } from 'react';
 import { DayPickerProps } from 'react-day-picker';
+import { DirectionProvider } from '@radix-ui/react-direction';
 import { ElementType } from 'react';
 import { forwardRef } from 'react';
 import { HTMLAttributes } from 'react';
@@ -32,6 +33,7 @@ import { ReactNode } from 'react';
 import { Ref } from 'react';
 import { TdHTMLAttributes } from 'react';
 import { ThHTMLAttributes } from 'react';
+import { useDirection } from '@radix-ui/react-direction';
 
 // @public (undocumented)
 export const AlertDialog: {
@@ -543,6 +545,8 @@ export const Dialog: {
 export type DialogContentProps = ComponentPropsWithoutRef<typeof RadixDialog.Content> & {
     readonly size?: "sm" | "md";
 };
+
+export { DirectionProvider }
 
 // @public (undocumented)
 export const Drawer: {
@@ -1652,6 +1656,8 @@ export interface TopBarProps extends Omit<HTMLAttributes<HTMLElement>, "children
     // (undocumented)
     readonly title?: ReactNode;
 }
+
+export { useDirection }
 
 // @public (undocumented)
 export const WorkbenchLayout: react.ForwardRefExoticComponent<WorkbenchLayoutProps & react.RefAttributes<HTMLDivElement>>;

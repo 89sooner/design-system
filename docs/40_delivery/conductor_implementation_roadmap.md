@@ -1,6 +1,6 @@
 # Conductor Design System 구현 로드맵
 
-> 상태: review | 버전: v0.4 | 갱신일: 2026-10-23
+> 상태: review | 버전: v0.5 | 갱신일: 2026-10-24
 
 ## 1. 목적
 
@@ -21,6 +21,7 @@
 | REL-002 | 스타일 레이어, 라이트 테마, 컴포넌트 라이브러리 | FR-THM-002, FR-THM-003, FR-CSS-001 ~ FR-CSS-005, FR-CMP-001 ~ FR-CMP-008, FR-A11Y-001 ~ FR-A11Y-003, FR-A11Y-005, FR-DX-003, FR-DX-004, FR-QA-001, FR-QA-002 | `@conductor-by-89soone/css`, `@conductor-by-89soone/react`, 컴포넌트 C-001 ~ C-064 | 두 테마의 시맨틱 키 집합 차이 0개. React 없이 `cdt-*` 클래스만으로 동일 시각이 나온다. 공유 계약 테스트 스위트가 공개 컴포넌트 전수를 통과한다. `renderToString`이 전 컴포넌트에서 예외 0건 |
 | REL-003 | 문서 사이트와 접근성 검사 | FR-DOC-001 ~ FR-DOC-007, FR-CMP-009(조건부), FR-QA-003, FR-DX-003 AC-3 | `apps/docs` 정적 사이트, 화면 W-001 ~ W-050, `JOB-CI-002`, `JOB-CI-004` | 문서 사이트가 `@conductor-by-89soone/react`를 소비자로서 설치해 렌더한다(소스 상대경로 import 0건). 공개 컴포넌트 중 카탈로그에 없는 것이 0건. axe serious 이상 위반 0건(두 테마). `Button` 단독 gzip 4KB 이하 |
 | REL-004 | 릴리스 자동화와 시각 회귀 | FR-DX-005, FR-QA-004(조건부), JOB-BUILD-004, JOB-REL-001 | Changesets, npm OIDC 배포 워크플로, `JOB-CI-003`, 문서 사이트 배포 | 파괴 변경이 major를 올린다. 롤백 리허설이 10분 이내에 끝난다. 시각 회귀 스냅샷의 픽셀 차이 1% 이하(CR-068 이후 공개 컴포넌트 전부 × 2테마 + 오버레이 열린 상태) |
+| REL-005 | 1.0 안정화 (CR-075) | FR-DX-006 | 공개 계약 검출(클래스 목록 기준), NFR-005 매트릭스 CI, 1.0.0 발행 | 검증 계획 §1.0 준비도 표가 모두 충족이고 OD-005 ~ OD-008이 닫혔다. 발행은 사용자 지시로만 한다. 2026-10-24 상태: 미착수, OD 4건 open |
 
 ## 4. Slice Definition
 

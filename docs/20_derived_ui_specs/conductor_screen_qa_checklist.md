@@ -1,6 +1,6 @@
 # Conductor Design System 화면 QA 체크리스트
 
-> 상태: review | 버전: v0.8 | 갱신일: 2026-10-23
+> 상태: review | 버전: v0.10 | 갱신일: 2026-10-24
 
 ## 0. 사용 방법
 
@@ -198,6 +198,10 @@ FR-CMP-001은 공개 컴포넌트 전수가 ref 전달(AC-1), className 병합(A
 - [x] QA-214 강제 색 모드에서 모든 공개 컴포넌트의 포커스 가능한 요소가 보이는 외곽선을 갖는다 (FR-A11Y-001 AC-5, CR-071) — 67개 미리보기의 포커스 가능한 요소 전수, Chromium 강제 색 에뮬레이션
 - [x] QA-215 강제 색 모드에서 켬·선택·강조·현재·채움 상태가 시스템 색으로 남는다 (FR-A11Y-003 AC-5, CR-071) — 정지 8종 + NavList 레일 + 강조 항목 4종 + DatePicker 선택 날짜 + DataTable 선택 행의 계산값
 - [x] QA-216 상태 컴포넌트 9개의 강제 색 렌더가 기준 이미지와 비교된다 (FR-QA-004 AC-6, CR-071)
+- [x] QA-217 320px에서 67개 컴포넌트 페이지의 미리보기가 스테이지를 넘지 않고, 넓은 예제는 자체 스크롤러로 닿는다 (FR-DOC-003, QA-005, CR-073)
+- [x] QA-218 `DirectionProvider dir="rtl"` 아래에서 Tabs·RadioGroup·ToggleGroup 루트와 DatePicker 달력이 `dir="rtl"`이고, Tabs에서 ArrowLeft가 다음 탭이다 (FR-CSS-006 AC-2·AC-3, CR-074)
+- [x] QA-219 RTL 문서에서 Switch 손잡이가 반대로 움직이고, 코드 블록·키 캡·`cdt-mono`·도구 이름은 `ltr isolate`다 (FR-CSS-006 AC-1·AC-4, CR-074)
+- [x] QA-220 Getting Started가 `dir="rtl"`·`DirectionProvider`·`swipeDirection` 사용법을 보인다 (FR-CSS-006 AC-5, CR-074)
 - [x] QA-190 픽셀 차이가 1%를 초과하면 CI가 실패하고 차이 이미지가 아티팩트로 남는다 (FR-QA-004 AC-2) — 36% 차이 픽스처 exit 1, actual/expected/diff 생성
 - [x] QA-191 기준 이미지 갱신이 `pnpm test:visual --update` 명시적 커맨드로만 가능하다 (FR-QA-004 AC-3)
 - [x] QA-192 `Button` 단독 import gzip 크기가 4KB 이하다(React 제외) (FR-DX-003 AC-3) — `size-limit` 실측 527바이트
