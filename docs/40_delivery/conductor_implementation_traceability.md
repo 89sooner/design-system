@@ -736,4 +736,4 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | FR 매핑 | NFR-003(강제 색 지표 측정), FR-DOC-001~007·화면 QA 검사 → JOB-CI-005 |
 | 편차 | DEV-048·DEV-063 closed |
 | 검증 (로컬) | `CI=1 pnpm test:e2e` 86/86 두 번 연속, lint·typecheck 통과 |
-
+| 검증 (CI) | PR #87 head `3b4ea34`: docs e2e 86/86(첫 실행), verify(node 20·22)·visual regression 통과. CR-072 closed |
