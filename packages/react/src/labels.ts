@@ -224,12 +224,14 @@ export const DEFAULT_CONVERSATION_LABELS: ConversationLabels = { log: "Conversat
 
 export interface MessageLabels {
   readonly user: string;
+  /** Another person in a shared conversation. Pass `name` to say who. */
+  readonly participant: string;
   readonly assistant: string;
   readonly system: string;
   readonly streaming: string;
   readonly error: string;
 }
-export const DEFAULT_MESSAGE_LABELS: MessageLabels = { user: "You", assistant: "Assistant", system: "System", streaming: "Responding", error: "The response failed." };
+export const DEFAULT_MESSAGE_LABELS: MessageLabels = { user: "You", participant: "Participant", assistant: "Assistant", system: "System", streaming: "Responding", error: "The response failed." };
 
 export interface PromptInputLabels {
   readonly input: string;

@@ -5,6 +5,7 @@
 // 뒤 그에 맞는 changeset(파괴 변경이면 major + 마이그레이션 노트)을 함께 커밋한다.
 // 리포트에 `any`가 나타나도 실패한다 (FR-DX-002 AC-2, NFR-004 지표).
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { spawnSync } from "node:child_process";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Extractor, ExtractorConfig } from "@microsoft/api-extractor";
@@ -71,10 +72,14 @@ if (missingBuild.length > 0) {
   console.error(`error[SURFACE-BUILD]: packages/css/dist에 ${missingBuild.join(", ")}가 없다. \`pnpm build\` 뒤에 실행한다`);
   process.exit(1);
 }
+// A CLI's options are read from the usage line it prints for an argument it does not know (exit 3), so
+// the baseline holds what the shipped binary accepts rather than a list kept by hand (WP-043, AC-1 ⑦).
+const usageOf = (pkg, file) => spawnSync(process.execPath, [resolve(ROOT, "packages", pkg, file), "--cdt-surface-probe"], { encoding: "utf8" }).stderr;
 const surface = renderSurface({
   packages: PACKAGES.map((pkg) => {
     const manifest = JSON.parse(readFileSync(resolve(ROOT, "packages", pkg, "package.json"), "utf8"));
-    return { name: manifest.name, manifest };
+    const cliUsage = Object.fromEntries(Object.entries(manifest.bin ?? {}).map(([bin, file]) => [bin, usageOf(pkg, file)]));
+    return { name: manifest.name, manifest, cliUsage };
   }),
   stylesheets: STYLESHEETS.map((file) => ({ file: `@conductor-by-89soone/css/${file}`, css: readFileSync(resolve(ROOT, "packages/css/dist", file), "utf8") })),
 });

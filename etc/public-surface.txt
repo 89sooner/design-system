@@ -15,6 +15,17 @@ conductor-build-tokens
 conductor-check-contrast
 conductor-lint-tokens
 
+## @conductor-by-89soone/tokens bin arguments
+
+conductor-build-tokens --out <dir>
+conductor-build-tokens --report
+conductor-build-tokens --watch
+conductor-check-contrast --theme <dark|light|all>
+conductor-check-contrast --report
+conductor-check-contrast --out <dir>
+conductor-lint-tokens <path...>
+conductor-lint-tokens --report
+
 ## @conductor-by-89soone/css exports
 
 .
@@ -26,6 +37,10 @@ conductor-lint-tokens
 
 (none)
 
+## @conductor-by-89soone/css bin arguments
+
+(none)
+
 ## @conductor-by-89soone/react exports
 
 .
@@ -33,6 +48,10 @@ conductor-lint-tokens
 ./relation
 
 ## @conductor-by-89soone/react bin
+
+(none)
+
+## @conductor-by-89soone/react bin arguments
 
 (none)
 
@@ -754,7 +773,9 @@ cdt-inline-citation__description
 cdt-inline-citation__href
 cdt-inline-citation__title
 cdt-message
+cdt-message--assistant
 cdt-message--error
+cdt-message--participant
 cdt-message--system
 cdt-message--user
 cdt-message__actions

@@ -5,7 +5,7 @@
  * Refs: CR-075 FR-DX-006 WP-041
  */
 import { describe, expect, test } from "vitest";
-import { cssSurface, packageSurface, renderSurface, surfaceDiff } from "./public-surface.mjs";
+import { cliArguments, cssSurface, packageSurface, renderSurface, surfaceDiff } from "./public-surface.mjs";
 
 const CSS = `/* .cdt-commented-out */@layer cdt.reset, cdt.base, cdt.component;
 @layer cdt.component{.cdt-btn{color:red}.cdt-btn--primary:not(.cdt-btn--ghost){color:blue}.cdt-tabs__trigger[data-state=active]{x:y}[data-cdt-theme=light] .cdt-card{x:y}}`;
@@ -24,6 +24,13 @@ describe("FR-DX-006 AC-2: public surface report", () => {
 
   test("reads entry points and CLI names from a manifest", () => {
     expect(packageSurface({ name: "x", exports: { "./b": {}, ".": {} }, bin: { tool: "./bin.mjs" } })).toEqual({ name: "x", exports: [".", "./b"], bin: ["tool"] });
+  });
+
+  test("FR-DX-006 AC-1 ⑦: reads each CLI option and positional from the usage line the binary prints", () => {
+    const usage = "error[TOK-ARG]: unrecognised argument `--x`\n  usage: tool <path...> [--theme <dark|light|all>] [--report]\n";
+    expect(cliArguments("tool", usage)).toEqual(["tool <path...>", "tool --theme <dark|light|all>", "tool --report"]);
+    // A binary that prints no usage for a bad argument fails the check rather than baselining nothing.
+    expect(() => cliArguments("tool", "Error: boom")).toThrow(/no usage line/);
   });
 
   test("renders the same bytes for the same input", () => {

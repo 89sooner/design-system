@@ -1066,7 +1066,10 @@ describe("CR-071 forced colours", () => {
       .flatMap((layer) => rulesInLayer(css, layer))
       .filter((rule) => rule.selector.includes(":focus-visible") && rule.decls.outline !== undefined);
     expect(focusRules.length).toBeGreaterThan(0);
-    expect(focusRules.filter((rule) => /^(none|0)$/.test(rule.decls.outline ?? ""))).toEqual([]);
+    // AppShell's main is a landmark that takes focus only from the skip link and route changes
+    // (`tabIndex=-1`); it is not an interactive element, so it alone draws nothing (CR-077).
+    const removed = focusRules.filter((rule) => /^(none|0)$/.test(rule.decls.outline ?? ""));
+    expect(removed.map((rule) => rule.selector)).toEqual([".cdt-app-shell__main:focus-visible"]);
   });
 
   test("FR-A11Y-001 AC-5: the agent stylesheet keeps the same outline on focus", () => {

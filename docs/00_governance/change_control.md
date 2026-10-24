@@ -95,6 +95,7 @@
 | CR-074 | 2026-10-24 | scope | 사용자 지시 (2026-10-24): "그대로 남은 한계를 개선하기 위해 추천 순서대로 작업 진행 하라" — 품질 재평가 권고 2 | **오른쪽→왼쪽(RTL) 문서를 지원한다.** Radix가 방향을 받지 못해 Tabs·RadioGroup·ToggleGroup·Select가 RTL 문서에서 `dir="ltr"`로 그려지고 화살표 키가 거꾸로 움직였고, 코드·키 캡이 양방향 알고리즘에 재배열됐고, Switch 손잡이·모바일 내비게이션·토스트 퇴장이 물리 방향이었다. FR-CSS-006을 신설하고 `DirectionProvider`·`useDirection`을 export한다 | FR-CSS-006 (신설) | SRS v1.24(§34), PRD v0.17, 용어집 v0.8, RTM v0.18, UI 컴포넌트 명세 v0.21, API 계약 v0.14(API-CMP-013), 프런트엔드 v0.10, 보안 v0.9, QA 체크리스트 v0.10(QA-218~220), 검증 계획 v0.14, 원장 v0.61, `packages/css/src/*`, `packages/react/src/direction.tsx`, `apps/docs/src/getting-started.tsx` | closed |
 | CR-075 | 2026-10-24 | scope | 사용자 지시 (2026-10-24): "그대로 남은 한계를 개선하기 위해 추천 순서대로 작업 진행 하라" — 품질 재평가 권고 3 | **1.0의 공개 계약·검출·폐기 절차·품질 게이트·실사용 검증을 정한다.** SRS에 1.0 기준이 없어, 소비자가 버전만으로 깨질 수 있는 변경을 알 수 없었다. FR-DX-006을 신설하고, 사용자 결정이 필요한 넷을 OD-005 ~ OD-008로 연다. 1.0을 발행하지 않는다. 기준과 CI를 대조하다 NFR-005 매트릭스 공백을 DEV-065로 등록했다 | FR-DX-006 (신설), NFR-005 | SRS v1.25(§35, §14), PRD v0.18, 용어집 v0.9, RTM v0.19, API 계약 v0.15(§6.5), 로드맵 v0.5(REL-005), 검증 계획 v0.15(§1.0 준비도), 원장 v0.62(DEV-065) | closed |
 | CR-076 | 2026-10-24 | scope | 사용자 결정 (2026-10-24): "OD-005 ~ 008까지 모두 너의 추천대로 진행하라 그리고 WP-041 042도 진행" | **1.0 기준의 미결정 넷을 닫고, 공개 표면 검출과 호환성 매트릭스를 CI에 둔다.** OD-005 소비자 한 곳·4주·재정의 0건, OD-006 같은 이름의 시각 변경은 minor, OD-007 기본 단위 6종(FR-CMP-017 신설), OD-008 1.0부터 lockstep. WP-041: 공개 표면 기준 **public-surface.txt**와 `check:api` 대조. WP-042: consumers·cross-browser CI 잡. 낡은 소비자 검사 스크립트를 고쳤다(DEV-067) | FR-DX-006, FR-CMP-017 (신설), NFR-005 | SRS v1.26(§14.1, §35, §36), PRD v0.19, RTM v0.20, UI 컴포넌트 명세 v0.22(C-093 ~ C-098), API 계약 v0.16(API-CMP-014, §6.5), 비동기 작업 v0.12(JOB-CI-006·007), 프런트엔드 v0.11, QA 체크리스트 v0.11(QA-221 ~ 223), 로드맵 v0.6, WP v0.17(WP-044), 검증 계획 v0.16, 원장 v0.64(DEV-067), `scripts/*`, `etc/public-surface.txt`, `.github/workflows/ci.yml`, `apps/docs/e2e-cross/*` | closed |
+| CR-077 | 2026-10-25 | scope | 사용자 지시 (2026-10-24): "WP-043 실사용 검증 진행해" | **소비자 재정의를 판정하고, 결함을 가리킨 셋을 1.0 전에 고친다.** agent-ai-platform 재정의 13규칙 중 7규칙(`.cdt-btn` 배치)은 앱 고유, 6규칙은 결함 셋: 에이전트·시스템 턴 본문이 내용 폭으로 줄었다, 다른 참여자를 나타낼 `from`이 없었다, 포커스를 받은 main이 링을 그렸다. `participant` 역할, 행 전체 폭 본문, main 무표시로 고친다. CLI 옵션을 공개 표면 기준에 더하고(AC-1 ⑦), FR-CMP-010~013을 원장 §3으로 옮긴다. 다음 릴리스(css·react 0.18.0)를 1.0 후보로 둔다 | FR-CMP-016, FR-CMP-009, FR-A11Y-001, FR-DX-006 | SRS v1.27(§37), PRD v0.20, RTM v0.21, UI 컴포넌트 명세 v0.23(C-070, C-083), API 계약 v0.17(API-CMP-012, 버전 정책 2항), QA 체크리스트 v0.13(QA-225 ~ 227), 로드맵 v0.7, WP v0.18(WP-043 진행), 검증 계획 v0.18(1.0 준비도), 원장 v0.66(§3, §5.2), `packages/react`, `packages/css`, `scripts/*`, `etc/public-surface.txt`, 시각 기준 2장 | open |
 
 유형: `scope`(범위 변경), `design`(설계 변경), `implementation`(구현 편차 DEV-### 처리), `correction`(문서 오류 수정)
 
@@ -955,3 +956,17 @@ CR-041 구현 cascade와 로컬 검증은 2026-09-14에 종료했다. 사용자�
 | WP-042 설계 | consumers 잡은 기존 `check-consumer.mjs`(tarball → React 18·19·Next 소비자)를 CI에 올린다. cross-browser 잡은 Firefox·WebKit에서 엔진 공통 동작만 보는 스모크 4건이다. 픽셀·강제 색 검사는 Chromium 잡이 계속 맡는다 |
 | 편차 | DEV-065 closed, DEV-067 closed |
 | CI · 종료 | PR #91 head `d2ce28a`: consumers(React 18·19·Next) 통과, cross-browser Firefox·WebKit 8/8 통과(첫 실행), verify(node 20·22)·docs e2e·visual regression 통과. 패키지 변경이 없어 릴리스는 없다. 1.0 준비도 표 12행: 충족 6(승인 예외 1 포함), 부분 1(CLI 플래그), 미충족 4(FR 상태·실사용 검증·컴포넌트 범위는 WP-043·WP-044, 폐기 절차는 첫 폐기 때), 1.0 발행 PR에서 1(버전 정렬) |
+
+## CR-077 소비자 재정의 판정과 결함 수정, CLI 옵션 검출 (2026-10-25)
+
+| 항목 | 기록 |
+| --- | --- |
+| 유형 / 상태 | scope / open |
+| 근거 | FR-DX-006 AC-5: 재정의가 컴포넌트 결함을 가리키면 1.0 전에 고친다. 목록은 agent-ai-platform DS-PILOT-23 기록(13규칙) |
+| 판정 | 앱 고유 7(`.cdt-btn`를 둘러싼 컨테이너의 `flex`·`width`·여백). 결함 6 → 셋: ① Message 본문 폭(2) ② 다른 참여자(3) ③ main 포커스 링(1). 원장 §5.2 |
+| 설계 | ① `assistant`·`system` 본문 `flex: 1 1 auto`. 앱이 쓰던 `width: 100%`와 같은 결과를 아바타와 함께 낸다. ② `from="participant"`: 사용자 말풍선과 같은 여백·모서리, 시작 쪽, `surface.raised` 채움 + `border.default` 테두리(채움만으로는 두 테마에서 바탕과 구별되지 않았다). 새 역할 값과 클래스는 additive. ③ `.cdt-app-shell__main:focus-visible { outline: none; box-shadow: none }`. main은 대화형 요소가 아니라 FR-A11Y-001 AC-2·AC-5의 대상이 아니다. 그 범위를 SRS에 적고, 번들 시험은 `outline: none` 규칙이 이 하나뿐인지 본다 |
+| 검출 | CLI 옵션은 손 목록이 아니라 배포되는 bin이 모르는 인자에 출력하는 사용법 줄에서 읽는다. 사용법 줄이 없으면 검사가 실패한다 |
+| 버전 | 같은 이름의 시각 변경과 additive 추가라 css·react minor(OD-006). changeset 첫 줄 `Visual change:` |
+| 후보 운영 가정 | 이 CR을 담은 릴리스가 1.0 후보다. 4주 안에 공개 표면·시각을 바꾸는 minor가 나오면 새 후보로 4주를 다시 센다. 기준 이미지와 공개 표면을 바꾸지 않는 patch는 기간을 끊지 않는다(검증 계획 §1.0 준비도) |
+| 검증 (로컬) | build, typecheck, test 923/923, lint, lint:tokens, check:contrast, size, check:api, test:a11y 389/389, 문서 E2E 87/87, 시각 회귀 182/182 |
+| CI · 종료 | PR CI 녹색 뒤 기록한다. 이 CR은 후보 릴리스까지 open이다 |

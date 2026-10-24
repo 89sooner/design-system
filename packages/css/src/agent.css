@@ -20,15 +20,25 @@
   /* Centred with physical `left` on purpose: `inset-inline-start: 50%` plus `translateX(-50%)` put it off centre in RTL (CR-074). */
   .cdt-conversation__latest { position: absolute; inset-block-end: var(--cdt-space-3); left: 50%; box-shadow: var(--cdt-elevation-raised); transform: translateX(-50%); }
 
-  /* Message — the person's turns sit on the accent tint at the end; the agent's read as plain text. */
+  /*
+   * Message — the reader's turns sit on the accent tint at the end, another person's on the raised
+   * surface at the start. The agent's and the system's read as plain text across the row, so the
+   * tool cards and code inside them line up from turn to turn (CR-077).
+   */
   .cdt-message { display: flex; align-items: flex-start; gap: var(--cdt-space-3); max-inline-size: 100%; }
   .cdt-message--user { flex-direction: row-reverse; margin-inline-start: auto; max-inline-size: min(100%, 80ch); }
+  .cdt-message--participant { max-inline-size: min(100%, 80ch); }
   .cdt-message__avatar { flex: 0 0 auto; }
   .cdt-message__body { display: grid; gap: var(--cdt-space-1); min-inline-size: 0; }
+  .cdt-message--assistant .cdt-message__body,
+  .cdt-message--system .cdt-message__body { flex: 1 1 auto; }
   .cdt-message__author { color: var(--cdt-text-muted); font-size: var(--cdt-font-size-xs); font-weight: 600; cursor: default; }
   .cdt-message--user .cdt-message__author { text-align: end; }
   .cdt-message__content { color: var(--cdt-text-primary); line-height: var(--cdt-font-line-height-md); overflow-wrap: anywhere; white-space: pre-wrap; }
-  .cdt-message--user .cdt-message__content { padding: var(--cdt-space-2) var(--cdt-space-3); border-radius: var(--cdt-radius-md); background: var(--cdt-accent-soft); }
+  .cdt-message--user .cdt-message__content,
+  .cdt-message--participant .cdt-message__content { padding: var(--cdt-space-2) var(--cdt-space-3); border-radius: var(--cdt-radius-md); background: var(--cdt-accent-soft); }
+  /* The raised fill alone matches most page backgrounds, so the hairline is what draws the bubble. */
+  .cdt-message--participant .cdt-message__content { border: var(--cdt-border-width-hairline) solid var(--cdt-border-default); background: var(--cdt-surface-raised); }
   .cdt-message--system .cdt-message__content { color: var(--cdt-text-secondary); font-size: var(--cdt-font-size-sm); }
   .cdt-message--error .cdt-message__content { color: var(--cdt-text-secondary); }
   .cdt-message__caret { display: inline-block; inline-size: var(--cdt-space-2); block-size: 1em; margin-inline-start: var(--cdt-space-1); vertical-align: text-bottom; border-radius: var(--cdt-radius-xs); background: var(--cdt-accent); animation: cdt-caret var(--cdt-motion-spin) infinite; }
