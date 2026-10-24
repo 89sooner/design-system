@@ -1,6 +1,6 @@
 # Conductor Design System PRD
 
-> 상태: review | 버전: v0.18 | 갱신일: 2026-10-24
+> 상태: review | 버전: v0.19 | 갱신일: 2026-10-24
 
 ## 1. 문서 개요
 
@@ -169,6 +169,7 @@ Conductor Design System(이하 Conductor)은 `agent-ai-platform`의 `packages/we
 | FR-CMP-014 | Toast·DatePicker·CommandPalette·Pagination을 제공한다 (CR-054) | Should | F-CMP-014 |
 | FR-CMP-015 | AlertDialog·RadioGroup·ToggleGroup·Avatar·NumberInput을 제공한다 (CR-060). NumberInput은 TextField와 같은 glass 변형을 받는다 (CR-063) | Should | F-CMP-015 |
 | FR-CMP-016 | Conversation·Message·PromptInput·Reasoning·Tool·Confirmation·Sources·InlineCitation·Suggestions·Suggestion·Shimmer를 제공한다 (CR-061) | Should | F-CMP-016 |
+| FR-CMP-017 | Separator·Stack·Grid·Heading·Text·Accordion을 제공한다 (CR-076, OD-007) | Should | CR-076 |
 | FR-DOC-001 | 문서 사이트 셸을 제공한다 | Must | F-DOC-001 |
 | FR-DOC-002 | Foundations 페이지를 빌드 산출물에서 생성한다 | Must | F-DOC-002 |
 | FR-DOC-003 | 컴포넌트 카탈로그에 라이브 프리뷰를 제공한다 | Must | F-DOC-003 |
@@ -239,12 +240,12 @@ Conductor Design System(이하 Conductor)은 `agent-ai-platform`의 `packages/we
 | OD-002 | 시각 회귀 검사를 v1 릴리스 게이트에 포함하는가? | **REL-004로 이월**. FR-QA-004를 `deferred`로 표시한다. v1은 수동 시각 확인으로 대체한다. R-2(폰트 렌더 flake)가 v1 일정 위험보다 크다 | 2026-07-10 | QA | closed |
 | OD-003 | 필터/칩 컴포넌트군(F-CMP-010)을 v1에 넣는가? | CR-041 사용자 요청으로 포함 | 2026-09-13 | Product | resolved scope |
 | OD-004 | 셸 컴포넌트군을 배포 패키지에 넣는가, 문서 사이트 내부 컴포넌트로 두는가? | **`@conductor-by-89soone/react`에 포함**. `renderLink` props로 라우팅 비종속 API가 성립한다. WP-023을 실행한다 | 2026-07-10 | System Maintainer | closed |
-| OD-005 | 1.0 실사용 검증에 소비자가 몇 곳, 얼마 동안 필요한가? | — (open) | — | Product (사용자) | open |
-| OD-006 | 1.0 이후 같은 이름의 토큰 값·시각 변경을 minor로 내는가, major로 내는가? | — (open) | — | System Maintainer (사용자) | open |
-| OD-007 | 1.0 전에 어떤 컴포넌트를 더하는가? | — (open) | — | Product (사용자) | open |
-| OD-008 | 세 패키지 버전을 1.0에서 묶는가(lockstep), 패키지별로 올리는가? | — (open) | — | System Maintainer (사용자) | open |
+| OD-005 | 1.0 실사용 검증에 소비자가 몇 곳, 얼마 동안 필요한가? | **소비자 한 곳, 4주, 재정의 0건**: agent-ai-platform이 1.0 후보 버전을 main에서 4주 이상 쓰고, Conductor 클래스·값을 덮어쓴 로컬 재정의가 0건이거나 남은 각 항목이 앱 고유 스타일로 판정돼 있다 | 2026-10-24 | Product (사용자) | closed (CR-076) |
+| OD-006 | 1.0 이후 같은 이름의 토큰 값·시각 변경을 minor로 내는가, major로 내는가? | **minor**: 같은 이름의 값·시각 변경은 minor. changeset 첫 줄 `Visual change:`와 같은 PR의 기준 이미지 갱신을 요구한다. 이름 제거·변경은 major | 2026-10-24 | System Maintainer (사용자) | closed (CR-076) |
+| OD-007 | 1.0 전에 어떤 컴포넌트를 더하는가? | **기본 단위 6종 추가**: Separator·Stack·Grid·Heading·Text·Accordion(FR-CMP-017). Slider·FileUpload·Tree·ContextMenu는 1.0 이후 minor | 2026-10-24 | Product (사용자) | closed (CR-076) |
+| OD-008 | 세 패키지 버전을 1.0에서 묶는가(lockstep), 패키지별로 올리는가? | **1.0부터 lockstep**: 세 패키지 1.0.0 동시, 이후 같은 버전(changesets `fixed`). 0.x는 `linked` 유지 | 2026-10-24 | System Maintainer (사용자) | closed (CR-076) |
 
-Must 우선순위 FR을 차단하는 open OD: **없음.** OD-005 ~ OD-008(CR-075)은 Should인 FR-DX-006의 1.0 발행만 막는다. OD-001이 2026-07-10에 종결되어 FR-THM-004와 FR-A11Y-004의 차단이 해제되었다. OD-003은 CR-041로 범위 조건이 해소되었으며 새 FR의 baseline 승인은 별도다.
+Must 우선순위 FR을 차단하는 open OD: **없음.** OD-005 ~ OD-008(CR-075)은 2026-10-24 CR-076으로 종결됐다. OD-001이 2026-07-10에 종결되어 FR-THM-004와 FR-A11Y-004의 차단이 해제되었다. OD-003은 CR-041로 범위 조건이 해소되었으며 새 FR의 baseline 승인은 별도다.
 
 ### 12.1 OD-001이 드러낸 사실
 

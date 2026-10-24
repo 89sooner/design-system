@@ -1,6 +1,6 @@
 # Conductor Design System 최종 요구사항 정의서
 
-> 상태: baseline | 버전: v1.25 | 갱신일: 2026-10-24
+> 상태: baseline | 버전: v1.26 | 갱신일: 2026-10-24
 
 ## 1. 문서 개요
 
@@ -40,7 +40,7 @@ Conductor는 `agent-ai-platform/packages/web`의 시각 언어를 3개 npm 패�
 4. React 프리미티브 컴포넌트 — 기존 FR-CMP-001 ~ FR-CMP-009 및 CR-041 확장 FR-CMP-010 ~ FR-CMP-013 (§17, review)
 5. 정적 문서 사이트 — FR-DOC-001 ~ FR-DOC-007 및 CR-048 확장 FR-DOC-008 (§18), CR-051 확장 FR-DOC-009 (§19), CR-052 확장 FR-DOC-010 (§20), CR-053 보강 FR-DOC-001 AC-5·FR-CMP-013 AC-5 (§21), CR-054 확장 FR-CMP-014 (§22), CR-060 확장 FR-CMP-015 (§24), CR-061 확장 FR-CMP-016 (§25), CR-063 보강 FR-CMP-015 AC-7 (§26), CR-064 보강 FR-THM-005 AC-8·FR-CMP-004 AC-7·FR-CMP-010 AC-6 (§27), CR-065 정정·보강 FR-THM-002 AC-3·AC-5·FR-CMP-013 AC-6 (§28), CR-067 정정 FR-CMP-013 AC-6 (§29), CR-071 정정 FR-CMP-013 AC-6 (§32)
 6. WCAG 2.1 AA 접근성 기준선 — FR-A11Y-001 ~ FR-A11Y-005 (CR-071 보강 FR-A11Y-001 AC-5·FR-A11Y-003 AC-5, §32)
-7. 모노레포 빌드, 타입 배포, 진입점 선언, SSR 안전성, 버저닝 — FR-DX-001 ~ FR-DX-005 및 CR-075 확장 FR-DX-006 1.0 안정화 기준 (§35)
+7. 모노레포 빌드, 타입 배포, 진입점 선언, SSR 안전성, 버저닝 — FR-DX-001 ~ FR-DX-005 및 CR-075 확장 FR-DX-006 1.0 안정화 기준 (§35, CR-076 확정 §36)
 8. 토큰 계약·단위·접근성·시각 회귀 검사 — FR-QA-001 ~ FR-QA-004 (CR-068 정정·확대 FR-QA-004, §30; CR-071 보강 FR-QA-004 AC-6, §32)
 
 ### 4.2 Conditional Scope
@@ -963,7 +963,7 @@ OD-001(2026-07-10 종결)이 확정한 정책이다. 소스 팔레트를 실측�
 ## 13. 우선순위와 릴리스 전략
 
 - **Must**: FR-TOK-001 ~ FR-TOK-007, FR-THM-001 ~ FR-THM-005, FR-CSS-001 ~ FR-CSS-005, FR-CMP-001 ~ FR-CMP-008, FR-DOC-001 ~ FR-DOC-005, FR-A11Y-001 ~ FR-A11Y-005, FR-DX-001 ~ FR-DX-004, FR-QA-001 ~ FR-QA-003
-- **Should**: FR-QA-004 (CR-068, §30), FR-TOK-008, FR-TOK-009, FR-CMP-009, FR-DOC-006, FR-DOC-007, FR-DOC-008, FR-DOC-009, FR-DOC-010, FR-CMP-014, FR-CMP-015, FR-CMP-016, FR-DX-005, FR-CSS-006 (CR-074, §34), FR-DX-006 (CR-075, §35)
+- **Should**: FR-QA-004 (CR-068, §30), FR-TOK-008, FR-TOK-009, FR-CMP-009, FR-DOC-006, FR-DOC-007, FR-DOC-008, FR-DOC-009, FR-DOC-010, FR-CMP-014, FR-CMP-015, FR-CMP-016, FR-DX-005, FR-CSS-006 (CR-074, §34), FR-DX-006 (CR-075, §35), FR-CMP-017 (CR-076, §36)
 - **Deferred**: 없음. FR-QA-004는 OD-002에 따라 REL-004로 이월된 뒤 구현됐고 CR-068로 Should에 돌아왔다
 - **Could**: 없음
 - **Won't (이번 범위)**: 4.3 Out of Scope 표 전체
@@ -976,20 +976,24 @@ OD-001(2026-07-10 종결)이 확정한 정책이다. 소스 팔레트를 실측�
 | OD-002 | 시각 회귀 검사를 v1 릴리스 게이트에 포함하는가? | FR-QA-004 (Should) | QA | REL-003 착수 시점 | **closed (2026-07-10)** |
 | OD-003 | 필터/칩 컴포넌트군(F-CMP-010)을 v1에 넣는가? | FR-CMP-010 / CR-041 | Product | 2026-09-13 | resolved scope |
 | OD-004 | 셸 컴포넌트군을 `@conductor-by-89soone/react`에 넣는가, 문서 사이트 내부 컴포넌트로 두는가? | FR-CMP-009 (Should) | System Maintainer | REL-003 착수 시점 | **closed (2026-07-10)** |
-| OD-005 | 1.0의 실사용 검증에 소비자가 몇 곳, 얼마 동안 필요한가? 지금은 agent-ai-platform 한 곳이다 | FR-DX-006 AC-5 | Product (사용자) | REL-005 착수 전 | open |
-| OD-006 | 1.0 이후 같은 이름의 토큰 값·시각 변경(색·간격·반경·그림자)을 minor로 내는가, major로 내는가? | FR-DX-006 AC-1 | System Maintainer (사용자) | REL-005 착수 전 | open |
-| OD-007 | 1.0 전에 어떤 컴포넌트를 더하는가? 후보: Slider, Accordion, FileUpload, Tree, ContextMenu, Separator, Stack·Grid 레이아웃, Heading·Text 타이포그래피 | FR-DX-006 AC-6 | Product (사용자) | REL-005 착수 전 | open |
-| OD-008 | 세 패키지를 1.0.0으로 함께 올리고 이후에도 같은 버전으로 묶는가(lockstep), 지금처럼 패키지별로 올리는가? | FR-DX-006 AC-7 | System Maintainer (사용자) | REL-005 착수 전 | open |
+| OD-005 | 1.0의 실사용 검증에 소비자가 몇 곳, 얼마 동안 필요한가? 지금은 agent-ai-platform 한 곳이다 | FR-DX-006 AC-5 | Product (사용자) | REL-005 착수 전 | **closed (2026-10-24)** |
+| OD-006 | 1.0 이후 같은 이름의 토큰 값·시각 변경(색·간격·반경·그림자)을 minor로 내는가, major로 내는가? | FR-DX-006 AC-1 | System Maintainer (사용자) | REL-005 착수 전 | **closed (2026-10-24)** |
+| OD-007 | 1.0 전에 어떤 컴포넌트를 더하는가? 후보: Slider, Accordion, FileUpload, Tree, ContextMenu, Separator, Stack·Grid 레이아웃, Heading·Text 타이포그래피 | FR-DX-006 AC-6 | Product (사용자) | REL-005 착수 전 | **closed (2026-10-24)** |
+| OD-008 | 세 패키지를 1.0.0으로 함께 올리고 이후에도 같은 버전으로 묶는가(lockstep), 지금처럼 패키지별로 올리는가? | FR-DX-006 AC-7 | System Maintainer (사용자) | REL-005 착수 전 | **closed (2026-10-24)** |
 
 ### 14.1 종결된 결정
 
 - **OD-001 → 최소 수정**: 접근성 결함인 `focusRing`과 폼 컨트롤 경계만 값을 교정하고, 나머지는 `usage` 메타데이터로 분류하되 값을 보존한다. 12.1절 표가 결정 내용이며 FR-THM-005가 이를 강제한다. 근거: 포커스 표시자(WCAG 2.4.11)는 장식으로 분류할 수 없어 값 보존이 불가능하고, 카드 경계는 표면색 차이로 식별되므로 WCAG 1.4.11 예외에 해당한다. 전면 조정은 `text.faint`를 `text.muted`와 구분 불가능하게 만들고 제품 목표 G-1(시각 보존)과 M-1(시각 회귀 1%)을 동시에 깨뜨린다.
 - **OD-002 → REL-004로 이월**: 시각 회귀 검사(FR-QA-004)를 v1 릴리스 게이트에서 제외한다. 폰트 렌더 차이로 diff가 불안정해질 위험(R-2)이 v1 일정 위험보다 크다. v1은 수동 시각 확인으로 대체한다. FR-QA-004의 상태를 `deferred`로 표시한다. 결과: M-1은 v1에서 자동 측정되지 않으며, REL-004 완료 시점에 처음 측정된다.
 - **OD-004 → 패키지에 포함**: 셸 컴포넌트군(C-070 ~ C-072)을 `@conductor-by-89soone/react`에 포함한다. `renderLink` props로 링크 렌더를 위임하면 라우팅 비종속 API가 성립한다(FR-CMP-009 AC-1, AC-2). 소스의 사이드 내비와 상단바는 Conductor 시각 언어에서 가장 특징적인 표면이다. WP-023을 실행한다.
+- **OD-005 → 소비자 한 곳, 4주, 재정의 0건 (CR-076)**: 1.0의 실사용 검증은 agent-ai-platform 한 곳으로 한다. 1.0 후보 버전을 그 앱의 main에서 4주 이상 쓰는 동안, Conductor의 `cdt-*` 클래스나 `--cdt-*` 값을 덮어쓰는 로컬 재정의가 0건이어야 한다. 남은 재정의는 각각 컴포넌트 결함이 아닌 앱 고유 스타일로 원장에 판정돼야 한다. 두 번째 소비자는 요구하지 않는다. 근거: 두 번째 소비자를 구할 경로가 없고, 재정의 수가 컴포넌트가 실제 요구를 채우는지를 가장 직접 잰다.
+- **OD-006 → 같은 이름의 값·시각 변경은 minor (CR-076)**: 1.0 이후 토큰 이름이나 클래스 이름을 지우거나 바꾸면 major다. 이름이 같은 채 값·모양만 바뀌는 의도된 시각 변경은 minor로 낸다. 그 changeset은 본문 첫 줄을 `Visual change:`로 시작하고, 같은 PR에 갱신된 시각 회귀 기준 이미지를 담는다. 버그 수정성 보정은 patch다. 근거: 디자인 개선이 major를 기다리지 않게 하되, 소비자가 CHANGELOG에서 화면 변화를 찾을 수 있게 한다.
+- **OD-007 → 기본 단위 6종을 1.0 범위에 (CR-076)**: 1.0 전에 Separator, Stack, Grid, Heading, Text, Accordion을 더한다(FR-CMP-017, §36). Slider, FileUpload, Tree, ContextMenu는 1.0 이후 minor로 더한다. 근거: 앞의 다섯은 작고 거의 모든 화면이 쓰는 레이아웃·타이포그래피 단위라 소비자가 각자 만들면 나중에 공식 컴포넌트와 충돌한다. Accordion은 Radix에 위임하면 작다.
+- **OD-008 → 1.0부터 lockstep (CR-076)**: 세 패키지를 1.0.0으로 함께 올리고, 이후에도 같은 버전으로 낸다. 1.0 발행 PR에서 `.changeset/config.json`의 `linked`를 `fixed`로 바꾼다. 0.x 동안은 지금의 `linked`를 유지한다. 근거: 소비자는 세 패키지를 항상 함께 설치하므로, 버전 하나가 조합 오류를 없앤다.
 
 ### 14.2 baseline 전 확인
 
-- **OD-001이 종결되어 Must FR인 FR-THM-004와 FR-A11Y-004를 더 이상 차단하지 않는다.** 모든 Must 우선순위 FR에 차단하는 open OD가 없다. OD-005 ~ OD-008(CR-075)은 Should인 FR-DX-006의 1.0 발행만 막고, 0.x 릴리스는 막지 않는다.
+- **OD-001이 종결되어 Must FR인 FR-THM-004와 FR-A11Y-004를 더 이상 차단하지 않는다.** 모든 Must 우선순위 FR에 차단하는 open OD가 없다. OD-005 ~ OD-008(CR-075)은 CR-076으로 2026-10-24에 모두 종결됐다.
 - OD-003의 범위 조건은 CR-041 요청으로 해소했고, 사용자가 2026-09-14에 확장 FR의 baseline을 승인했다.
 - 이 문서의 `baseline` 승격은 사용자 승인으로만 이루어진다.
 
@@ -1288,11 +1292,33 @@ v1.24 baseline 이력을 유지한다. 사용자가 2026-10-24 품질 재평가�
 | 우선순위 | Should |
 | 출처 | CR-075 / 2026-10-24 사용자 실행 지시, 품질 재평가 권고 3 |
 | 요구사항 | 세 패키지의 1.0.0을 발행하기 전에, 시스템은 AC-1의 공개 계약을 검출 가능하게 고정하고 AC-4의 품질 게이트와 AC-5의 실사용 검증을 충족하여야 하며, 1.0.0 이후 공개 계약의 제거·이름 변경·의미 변경은 major 릴리스로만 내야 한다. |
-| 수용 기준 | AC-1 (공개 계약): ① 세 패키지 `package.json`의 `exports` 진입점, ② `@conductor-by-89soone/react`의 공개 export와 props 타입, ③ `@conductor-by-89soone/tokens`의 JS 키와 그 값이 가리키는 `--cdt-*` 커스텀 프로퍼티 이름, ④ 스타일시트의 `cdt-*` 클래스 이름, ⑤ `data-cdt-theme`과 문서화된 `data-*` 상태 속성, ⑥ `@layer cdt.*` 레이어 이름과 순서, ⑦ CLI 이름과 옵션. `cdt-` 클래스가 없는 DOM 구조와 Radix 내부 마크업은 계약이 아니다. 같은 이름의 토큰 값·시각 변경을 어느 버전으로 내는지는 OD-006이 정한다. AC-2 (검출): ①은 패키지별 `exports` 시험, ②·③은 `pnpm check:api`의 커밋된 API 리포트, ④는 커밋된 클래스 목록 기준과의 대조로 CI가 잡는다. 제거나 이름 변경이 major changeset 없이 들어오면 CI가 실패한다. AC-3 (폐기): 지울 공개 API는 최소 한 minor 동안 `@deprecated` JSDoc과 개발 빌드 1회 경고로 남기고, 다음 major에서 지운다. 클래스·커스텀 프로퍼티의 폐기는 changeset과 CHANGELOG에 적고 같은 기간 동안 유지한다. AC-4 (품질 게이트): 1.0 후보 커밋에서 CI의 verify(Node 20·22)·docs e2e·visual regression이 녹색이고, NFR-005 호환성 매트릭스(React 18·19, 지원 브라우저)가 CI에서 실행돼 통과하고, Must·Should FR이 모두 원장에서 `검증됨`이고, open DEV가 0건이다. 사용자가 명시적으로 예외를 승인한 DEV는 원장에 그 결정과 함께 남긴다. AC-5 (실사용 검증): 1.0 후보 버전을 OD-005가 정한 수의 소비자가 정한 기간 동안 쓰고, 각 소비자가 Conductor 클래스를 덮어쓴 로컬 재정의 목록을 원장에 남긴다. 재정의가 컴포넌트 결함을 가리키면 1.0 전에 고친다. AC-6 (범위): 1.0 컴포넌트 목록은 OD-007이 정한다. 목록 밖 컴포넌트는 1.0 이후 minor로 더한다. AC-7 (버전 정렬): 세 패키지의 버전 묶음 방식은 OD-008이 정한다. |
+| 수용 기준 | AC-1 (공개 계약): ① 세 패키지 `package.json`의 `exports` 진입점, ② `@conductor-by-89soone/react`의 공개 export와 props 타입, ③ `@conductor-by-89soone/tokens`의 JS 키와 그 값이 가리키는 `--cdt-*` 커스텀 프로퍼티 이름, ④ 스타일시트의 `cdt-*` 클래스 이름, ⑤ `data-cdt-theme`과 문서화된 `data-*` 상태 속성, ⑥ `@layer cdt.*` 레이어 이름과 순서, ⑦ CLI 이름과 옵션. `cdt-` 클래스가 없는 DOM 구조와 Radix 내부 마크업은 계약이 아니다. 같은 이름의 토큰 값·시각 변경은 minor이고, 그 changeset은 본문 첫 줄을 `Visual change:`로 시작하며 같은 PR에 기준 이미지 갱신을 담는다(OD-006, CR-076). AC-2 (검출): ①은 패키지별 `exports` 시험, ②·③은 `pnpm check:api`의 커밋된 API 리포트, ④는 커밋된 클래스 목록 기준과의 대조로 CI가 잡는다. 제거나 이름 변경이 major changeset 없이 들어오면 CI가 실패한다. AC-3 (폐기): 지울 공개 API는 최소 한 minor 동안 `@deprecated` JSDoc과 개발 빌드 1회 경고로 남기고, 다음 major에서 지운다. 클래스·커스텀 프로퍼티의 폐기는 changeset과 CHANGELOG에 적고 같은 기간 동안 유지한다. AC-4 (품질 게이트): 1.0 후보 커밋에서 CI의 verify(Node 20·22)·docs e2e·visual regression이 녹색이고, NFR-005 호환성 매트릭스(React 18·19, 지원 브라우저)가 CI에서 실행돼 통과하고, Must·Should FR이 모두 원장에서 `검증됨`이고, open DEV가 0건이다. 사용자가 명시적으로 예외를 승인한 DEV는 원장에 그 결정과 함께 남긴다. AC-5 (실사용 검증): agent-ai-platform이 1.0 후보 버전을 main에서 4주 이상 쓰고, Conductor 클래스·값을 덮어쓴 로컬 재정의가 0건이거나 남은 각 항목이 앱 고유 스타일로 원장에 판정돼 있다. 재정의가 컴포넌트 결함을 가리키면 1.0 전에 고친다(OD-005, CR-076). AC-6 (범위): 1.0 컴포넌트 범위는 지금의 공개 컴포넌트와 FR-CMP-017(Separator·Stack·Grid·Heading·Text·Accordion)이다. Slider·FileUpload·Tree·ContextMenu 등 그 밖의 컴포넌트는 1.0 이후 minor로 더한다(OD-007, CR-076). AC-7 (버전 정렬): 1.0.0부터 세 패키지는 changesets `fixed` 그룹으로 같은 버전을 쓴다. 0.x 동안은 `linked`다(OD-008, CR-076). |
 | 검증 방법 | inspection, test |
 | 관련 화면 | 없음(간접 노출: CHANGELOG, W-002) |
 | 관련 API/데이터 | API-PKG-001 ~ API-PKG-003, API-CMP-001 ~ API-CMP-013 / JOB-REL-001 |
 | 예외/실패 처리 | 기준을 하나라도 채우지 못하면 1.0.0을 발행하지 않고 0.x를 이어 간다. 1.0.0 이후 계약 위반이 발행본에서 발견되면 그 변경을 되돌리는 patch를 내거나, 되돌릴 수 없으면 major와 마이그레이션 노트를 낸다(FR-DX-005 AC-4). |
 
 2026-10-24 현재 충족 상태는 검증 계획 §1.0 준비도 표가 기록한다. 이 절은 기준만 정한다.
+
+## 36. CR-076 확정·확장 요구 (baseline)
+
+v1.25 baseline 이력을 유지한다. 사용자가 2026-10-24 OD-005 ~ OD-008을 제안대로 정했다("OD-005 ~ 008까지 모두 너의 추천대로 진행하라"). 결정은 §14.1에 있다. FR-DX-006의 AC-1·AC-5·AC-6·AC-7을 그 결정으로 확정하고, OD-007이 1.0 범위에 넣은 컴포넌트를 FR-CMP-017로 신설한다.
+
+| FR | 변경 |
+| --- | --- |
+| FR-DX-006 | AC-1 정정: 같은 이름의 토큰 값·시각 변경은 minor이고, changeset 본문 첫 줄 `Visual change:`와 같은 PR의 기준 이미지 갱신을 요구한다(OD-006). AC-5 확정: agent-ai-platform이 1.0 후보 버전을 main에서 4주 이상 쓰고 Conductor 클래스·값을 덮어쓴 로컬 재정의가 0건이거나 남은 각 항목이 앱 고유 스타일로 판정돼 있다(OD-005). AC-6 확정: 1.0 컴포넌트 범위는 지금의 공개 컴포넌트와 FR-CMP-017이다(OD-007). AC-7 확정: 1.0.0부터 세 패키지는 changesets `fixed` 그룹이다(OD-008) |
+
+#### FR-CMP-017 레이아웃·타이포그래피·구획 기본 컴포넌트
+
+| 항목 | 내용 |
+| --- | --- |
+| 상태 | approved |
+| 우선순위 | Should |
+| 출처 | CR-076 / OD-007 종결 (2026-10-24 사용자 결정) |
+| 요구사항 | 시스템은 항상 `Separator`, `Stack`, `Grid`, `Heading`, `Text`, `Accordion`을 `@conductor-by-89soone/react` 공개 export와 대응하는 `cdt-*` 클래스로 제공하여야 한다. |
+| 수용 기준 | AC-1 (Separator, C-093): 가로·세로 방향을 받고, 장식이면 보조 기술에서 숨기고 의미가 있으면 `role="separator"`와 `aria-orientation`을 갖는다. 선 색은 경계 토큰이다. AC-2 (Stack, C-094): 한 축으로 자식을 쌓고 간격·정렬을 space 토큰 이름으로만 받는다(임의 px 없음). AC-3 (Grid, C-095): 열 수 또는 최소 열 폭 토큰으로 반응형 격자를 만들고 간격은 space 토큰이다. AC-4 (Heading, C-096): `level` 1~6이 제목 요소를 정하고, 시각 크기는 `size`로 따로 정할 수 있어 문서 구조와 모양이 분리된다. AC-5 (Text, C-097): 문단·인라인 텍스트의 크기·굵기·톤을 typography·text 토큰으로 받고, 기본 요소는 `<p>`, `as`로 바꿀 수 있다. AC-6 (Accordion, C-098): Radix Accordion에 펼침·접힘·키보드 이동·`aria-expanded`를 위임하고, 단일·복수 펼침을 지원한다. AC-7: 여섯 컴포넌트는 FR-CMP-001 공통 계약(ref·className·네이티브 속성), 포커스 링, 커서 계약, axe serious 이상 0건, 시각 회귀 기준 이미지, 공개 표면 기준(`etc/public-surface.txt`)을 지킨다. |
+| 검증 방법 | test |
+| 관련 화면 | W-020, W-021 |
+| 관련 API/데이터 | API-CMP-014 / ENT-CMP-001 |
+| 예외/실패 처리 | 반응형 prop 객체(`{ sm, md }`), 임의 CSS 값 prop, 텍스트 말줄임 줄 수 지정은 이 FR 범위가 아니다. 새 런타임 의존성은 기존 Radix 묶음과 맞춘 `@radix-ui/react-accordion` 하나로 한정하고 정확한 버전으로 고정한다(보안 아키텍처 3.1). |
 

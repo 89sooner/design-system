@@ -166,6 +166,80 @@ jobs:
           if-no-files-found: ignore
           retention-days: 30
 
+  consumers:
+    name: consumers (react 18 · 19, next)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm build
+
+      - run: pnpm exec playwright install --with-deps chromium
+
+      # JOB-CI-006: packs the three packages and installs the tarballs into isolated Vite + React 18,
+      # Vite + React 19 and Next.js + React 19 apps, then typechecks, builds and drives each one in a
+      # browser. NFR-005 promised React 18 in a CI matrix, but the repository itself builds against
+      # React 19 only (DEV-065). Refs: CR-075 WP-042 NFR-005
+      - run: pnpm check:consumer
+        env:
+          CONSUMER_OUTPUT: ${{ runner.temp }}/conductor-consumers
+
+      - name: upload consumer results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: consumer-results
+          path: |
+            ${{ runner.temp }}/conductor-consumers/results.json
+            ${{ runner.temp }}/conductor-consumers/*/*.log
+          if-no-files-found: ignore
+          retention-days: 30
+
+  cross-browser:
+    name: cross-browser (firefox, webkit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm build
+
+      - run: pnpm exec playwright install --with-deps firefox webkit
+
+      # JOB-CI-007: the engine smoke suite in Firefox and WebKit (Safari's engine). Chromium, and Edge
+      # with it, is already the engine of every other browser job. Refs: CR-075 WP-042 DEV-065 NFR-005
+      - run: pnpm test:cross
+
+      - name: upload cross-browser results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cross-browser-results
+          path: apps/docs/test-results/**
+          if-no-files-found: ignore
+          retention-days: 30
+
   visual:
     name: visual regression (playwright 1.61.1)
     runs-on: ubuntu-latest

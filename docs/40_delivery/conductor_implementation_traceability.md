@@ -1,6 +1,6 @@
 # Conductor Design System 구현 추적 원장
 
-> 상태: review | 버전: v0.63 | 갱신일: 2026-10-24
+> 상태: review | 버전: v0.64 | 갱신일: 2026-10-24
 
 ## 1. 목적과 갱신 규칙
 
@@ -252,7 +252,8 @@ PR Search 소비처의 `DEV-380`이 트리거다: 화면 계약이 최대 20계�
 | FR-DX-003 | `packages/tokens/package.json`, `packages/css/package.json`, `packages/react/package.json`, `packages/react/tsup.config.ts`, `scripts/check-size.mjs`, `.github/workflows/ci.yml` | `packages/tokens/src/index.test.ts`, `packages/css/test/exports.test.ts`, `packages/react/src/index.test.ts`, `pnpm size` 음성 픽스처 | WP-003, WP-008, WP-011, WP-025 | 검증됨 (AC-1~AC-4 및 예외 처리. 공개 exports·peer 선언과 React `sideEffects: false`·CSS `*.css` 보존을 검증한다. 멀티 엔트리 청크에서 Button 단독 gzip 527바이트/4KB, CSS 전체 7,720바이트/20KB이며 초과 시 exit 1과 기여 모듈을 출력한다.) |
 | FR-DX-004 | `packages/react/src/testing/ssr.tsx`, `src/testing/public-components.ts`, `apps/docs/src/main.tsx`, `App.tsx` | `ssr.test.tsx`, `hydration.browser.test.tsx`, `apps/docs/e2e/shell.spec.ts` | WP-011, WP-018, WP-023 | 검증됨 (AC-1 공개 30개 renderToString 예외 0, AC-2 browser-global 접근 0, AC-3 공개 30개 server root 보존·recoverable error 0. 문서 `/` 프리렌더 DOM 보존과 딥링크 불일치 client mount 경계를 실제 Chromium에서 검증) |
 | FR-DX-005 | `.changeset/config.json`, `scripts/check-changesets.mjs`, `scripts/is-version-packages-commit.mjs`, `scripts/check-api.mjs`, `scripts/check-release-tags.mjs`, `scripts/release-rollback.mjs`, `.github/workflows/release.yml` | `check:changesets`·version commit 양성/음성 분류·`check:api` 음성 픽스처, `changeset version`, 0.1.0/0.1.1 OIDC publish·provenance, annotated tag local/remote 검증, npm rollback 실증 | WP-027 | 검증됨 (AC-1 드리프트 exit 1 + major 규약, AC-2 CHANGELOG Refs와 LF/CRLF 동일 파싱, AC-3 react-only 0.1.1 bump 실증, AC-4 마이그레이션 노트 강제. 일반 commit의 `status --since`는 유지하고 이미 Changeset을 소비한 bot version commit만 구조 검증 후 skip. Release runs 29569125471·29586062062와 323.8초 실제 롤백으로 외부 경로까지 확인) |
-| FR-DX-006 | — (기준 정의, CR-075) | 검증 계획 §1.0 준비도 표 | REL-005 | 미착수 (1.0 미발행. 준비도 표 미충족 4·부분 3·OD 대기 3, OD-005 ~ OD-008 open) |
+| FR-DX-006 | `scripts/check-api.mjs`, `scripts/public-surface.mjs`, `etc/public-surface.txt`, `scripts/check-consumer.mjs`, `.github/workflows/ci.yml`(consumers·cross-browser), `apps/docs/playwright.cross.config.ts` | `scripts/public-surface.test.mjs`, `scripts/package-exports.test.mjs`, `apps/docs/e2e-cross/engines.spec.ts`, 검증 계획 §1.0 준비도 표 | REL-005, WP-041, WP-042 | 진행 중 (AC-1·AC-2 충족(WP-041), AC-4 매트릭스는 CI 확인 대기(WP-042), AC-5·AC-6 미충족, 1.0 미발행. OD-005 ~ OD-008 closed(CR-076)) |
+| FR-CMP-017 | — (WP-044 미착수) | — | REL-005, WP-044 | 미착수 (CR-076 신설) |
 | FR-QA-001 | `src/theme-contract.ts`, `src/token-source.ts` | `src/theme-contract.test.ts` | WP-006, WP-010 | 검증됨 (AC-1~AC-3. 실제 dark/light semantic·component 키 대칭과 `themeSpecific` 예외를 검사. `derivePalette`가 base에 없는 override 키를 `TOK-THEME-KEY`로 막아, 키 집합 비교만으로는 보이지 않는 오타 경로를 닫는다 — CR-035) |
 | FR-QA-002 | `packages/react/src/testing/public-components.ts`, `src/testing/contract.tsx` | `src/testing/public-components.test.ts`, `src/testing/contract.test.tsx`, `src/testing/shell.test.tsx` | WP-011, WP-012~017, WP-023 | 검증됨 (AC-1 공개 30개 전수 테스트 파일·SSR registry, AC-2 FR/AC 명명, AC-3 공유 스위트와 컴포넌트군별 상호작용 테스트를 검증.) |
 | FR-QA-003 | `vitest.a11y.config.ts`, `packages/react/src/testing/a11y-scenarios.tsx`, `axe-allowlist.json`, `.github/workflows/ci.yml` | `packages/react/src/testing/a11y.browser.test.tsx` | WP-024 | 검증됨 (공개 30개를 덮는 49개 기본/disabled/error/interactive/open scenario × 다크·라이트 = 98 axe 실행, serious/critical 0건. 유한 진입 animation 완료 뒤 안정 상태를 감사하고 무한 Spinner는 대기만 제외한다. 정상 164 passed/1 negative fixture skipped를 4회 연속 확인. fixture 활성화 시 `button-name(critical)` 검출과 exit 1을 실증. JSON report와 실패 screenshot을 30일 보존) |
@@ -266,6 +267,7 @@ PR Search 소비처의 `DEV-380`이 트리거다: 화면 계약이 최대 20계�
 
 | DEV ID | 발견일 | 유형 | 내용 | 관련 ID | 처리 CR | 상태 |
 | --- | --- | --- | --- | --- | --- | --- |
+| DEV-067 | 2026-10-24 | 검증 편차 | **설치 소비자 검사 스크립트가 낡아 실행하면 실패했다.** `scripts/check-consumer.mjs`는 WP-029 뒤 CI에도 `package.json`에도 연결되지 않아(DEV-065) 아무도 돌리지 않았다. WP-042로 처음 다시 돌리자 ① Popover를 Escape로 닫은 직후 포커스가 트리거에 있다고 즉시 단정해 실패했다 — CR-047의 퇴장 애니메이션 동안 포커스는 아직 닫기 버튼에 있고 600ms 안에 트리거로 돌아온다(감소 모션이면 즉시). 동작은 정상이고 단정이 틀렸다. ② DataTable·DetailInspector·RelationGraph의 접근성 이름이 CR-053으로 영어 기본 문구가 됐는데 스크립트는 한국어 이름을 찾았다. 포커스 복귀를 2초까지 기다리게 하고 이름 다섯을 현재 기본 문구로 고쳤다. 로컬에서 vite18·vite19·next19 3/3 통과, 콘솔 오류 0 | NFR-005, FR-DX-006 AC-4 | CR-075 (WP-042) | closed |
 | DEV-066 | 2026-10-24 | 검증 편차 | **0.16.0 발행이 릴리스 audit 게이트에서 멈췄다.** release.yml `publish` 잡(run 40084277740)의 `pnpm audit --audit-level high`가 새 권고 GHSA-mrhx-c7xc-m3w5(zod <4.6.6, high)로 실패했다. 경로는 개발 도구 `lighthouse@13.4.0 > puppeteer-core@25.3.0 > chromium-bidi@16.0.1 > zod@3.25.76`뿐이고 `pnpm audit --prod`에는 high가 없다. 게시 단계 전에 멈춰 npm에 올라간 것은 없다. 루트 개발 의존성 `lighthouse`를 ^13.5.0으로 올려 `chromium-bidi@157`·`zod@4.6.7`로 바꿨다. 예외(`ignoreGhsas`)는 더하지 않았다 | NFR-002, JOB-REL-001 | — (개발 의존성 갱신, 패키지 변경 없음) | closed |
 | DEV-065 | 2026-10-24 | 검증 편차 | **NFR-005 호환성 매트릭스의 일부가 CI에서 실행되지 않는다.** NFR-005와 검증 계획 §2는 React 18·19와 지원 브라우저(Chrome·Firefox·Safari·Edge 최근 2개 메이저)를 CI 매트릭스로 잰다고 적는다. `ci.yml`의 매트릭스는 Node 20·22뿐이고, 저장소 개발 의존성은 React 19.2.7, 브라우저 시험은 Chromium뿐이다. React 18 설치 소비자 검사(`scripts/check-consumer.mjs`의 `vite18` 고정 장치)는 있지만 CI 잡과 `package.json` 스크립트에 연결돼 있지 않다 | NFR-005, FR-DX-006 AC-4 | CR-075 | open |
 | DEV-064 | 2026-10-24 | 구현 편차 | **문서 사이트 컴포넌트 페이지에서 폭 약 850px 미만일 때 Table 예제 오른쪽이 잘리고 닿을 수 없었다.** `.docs-stage > .docs-preview`가 grid 항목 기본값 `min-width: auto`로 표의 800px 최소 폭까지 넓어져 스테이지의 `overflow: hidden`에 잘렸다. 표 자체 스크롤러는 동작하지 않았다. 2026-10-24 품질 재평가의 320·560·800px 측정에서 발견 | FR-DOC-003, FR-CMP-005 | CR-073 | closed |
@@ -772,3 +774,13 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | 전달 | 로드맵 v0.5 REL-005, 검증 계획 v0.15 §1.0 준비도 표, API 계약 v0.15 §6.5 |
 | 편차 | DEV-065 open(NFR-005 매트릭스 CI 미실행). 기준 정의 중 문서와 CI를 대조해 발견했다 |
 | 코드 | 없음. 1.0 발행 없음 |
+
+### CR-076 OD-005 ~ OD-008 종결, WP-041·WP-042 (2026-10-24)
+
+| 범위 | 결과 |
+| --- | --- |
+| 결정 | 사용자가 OD-005 ~ OD-008을 제안대로 정했다. SRS v1.26 §14.1·§36: 소비자 한 곳 4주 재정의 0건, 같은 이름의 시각 변경은 minor(`Visual change:` + 기준 이미지), 기본 단위 6종을 1.0 범위로(FR-CMP-017 신설, WP-044), 1.0부터 `fixed` |
+| WP-041 | `scripts/public-surface.mjs`(추출·렌더·구역별 차이), `scripts/check-api.mjs`(기준 **public-surface.txt** 대조·`--update` 갱신), `etc/public-surface.txt`(675줄: 세 패키지 entry point·CLI, 세 스타일시트의 클래스·`data-*`·레이어 순서), `scripts/package-exports.test.mjs`(tokens·react 대상 파일 존재). 시험 `public-surface.test.mjs` 7건. dist 변이(`cdt-badge__dismiss` → `cdt-badge__close`)에서 `check:api` 실패 확인 |
+| WP-042 | `.github/workflows/ci.yml` consumers(JOB-CI-006)·cross-browser(JOB-CI-007) 잡, 루트 `check:consumer`·`test:cross`, `apps/docs/playwright.cross.config.ts`, `apps/docs/e2e-cross/engines.spec.ts` 4건, `scripts/check-consumer.mjs` 정정(DEV-067) |
+| 검증 (로컬) | `check:api` 통과, scripts 시험 27/27, consumer 3/3(React 18.3.1·19.2.8·Next 16.3.1), `test:cross --project chromium` 4/4. Firefox·WebKit은 이 환경에 브라우저가 없어 CI 첫 실행으로 확인한다 |
+| 편차 | DEV-065 open(CI 확인 뒤 종료), DEV-067 closed |

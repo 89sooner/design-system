@@ -18,6 +18,8 @@
     "check:contrast": "pnpm --filter @conductor-by-89soone/tokens run check:contrast",
     "test:a11y": "vitest run --config vitest.a11y.config.ts",
     "test:e2e": "pnpm --filter docs test:e2e",
+    "test:cross": "pnpm --filter docs test:cross --project firefox --project webkit",
+    "check:consumer": "node scripts/check-consumer.mjs",
     "test:visual": "node scripts/test-visual.mjs",
     "size": "node scripts/check-size.mjs",
     "changeset": "changeset",

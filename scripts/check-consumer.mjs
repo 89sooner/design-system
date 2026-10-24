@@ -1,4 +1,5 @@
 /* global document, getComputedStyle */
+// Accessible names follow the packages' English default labels (CR-053); the fixture's own copy stays Korean.
 /** FR-CMP-013 / WP-029: install real tarballs in isolated consumers. Never publishes. */
 import { spawn, spawnSync } from 'node:child_process';
 import { mkdirSync, readFileSync, writeFileSync, copyFileSync, readdirSync } from 'node:fs';
@@ -27,6 +28,14 @@ const dependencies = Object.fromEntries(['tokens', 'css', 'react'].map(pkg => {
   return [name, `file:${join(tarballs, tgz)}`];
 }));
 writeFileSync(join(output, 'artifacts.json'), JSON.stringify(Object.fromEntries(Object.entries(dependencies).map(([name, path]) => [name, { tarball: path.slice(5), sha256: createHash('sha256').update(readFileSync(path.slice(5))).digest('hex') }])), null, 2));
+/** Focus comes back once the layer's exit animation ends (CR-047), not on the same frame as the key press. */
+async function focusReturnsTo(locator) {
+  for (let attempt = 0; attempt < 40; attempt++) {
+    if (await locator.evaluate(element => element === document.activeElement)) return;
+    await new Promise(resolve => setTimeout(resolve, 50));
+  }
+  assert.fail('Focus did not return to the trigger within 2 seconds');
+}
 async function browserCheck(cwd, next, port) {
   const log = [];
   const server = spawn(pnpm, next ? ['exec', 'next', 'start', '--hostname', '127.0.0.1', '--port', String(port)] : ['exec', 'vite', 'preview', '--strictPort', '--host', '127.0.0.1', '--port', String(port)], { cwd, env: { ...process.env, NEXT_TELEMETRY_DISABLED: '1' }, stdio: ['ignore', 'pipe', 'pipe'] });
@@ -49,19 +58,19 @@ async function browserCheck(cwd, next, port) {
     await page.getByRole('button', { name: 'View options', exact: true }).click();
     await page.getByRole('dialog', { name: 'Options', exact: true }).waitFor();
     await page.keyboard.press('Escape');
-    assert.equal(await page.getByRole('button', { name: 'View options', exact: true }).evaluate(element => element === document.activeElement), true);
-    const preview = page.getByRole('button', { name: 'PR A · 한글 검색 미리보기', exact: true });
+    await focusReturnsTo(page.getByRole('button', { name: 'View options', exact: true }));
+    const preview = page.getByRole('button', { name: 'Preview PR A · 한글 검색', exact: true });
     await preview.click(); await page.getByRole('heading', { name: 'PR preview', exact: true }).waitFor();
-    await page.getByRole('button', { name: '미리보기 닫기', exact: true }).click();
-    assert.equal(await preview.evaluate(element => element === document.activeElement), true);
+    await page.getByRole('button', { name: 'Close preview', exact: true }).click();
+    await focusReturnsTo(preview);
     await page.getByRole('tab', { name: 'Results', exact: true }).focus(); await page.keyboard.press('ArrowRight');
     assert.equal(await page.getByRole('tab', { name: 'Results', exact: true }).getAttribute('aria-selected'), 'true');
     await page.waitForFunction(() => document.activeElement?.textContent === 'Relations');
     await page.keyboard.press('Enter');
-    await page.getByRole('button', { name: '관계 선택: synthetic:edge', exact: true }).click();
-    await page.getByText('근거: Synthetic explicit reference', { exact: true }).waitFor();
+    await page.getByRole('button', { name: 'Select relation: synthetic:edge', exact: true }).click();
+    await page.getByText('Evidence: Synthetic explicit reference', { exact: true }).waitFor();
     const relationUrl = page.url();
-    await page.getByRole('link', { name: '동일 정보 목록으로 이동', exact: true }).click();
+    await page.getByRole('link', { name: 'Skip to the equivalent list', exact: true }).click();
     assert.equal(page.url(), relationUrl, 'List alternative must preserve the consumer route');
     await page.evaluate(() => document.documentElement.setAttribute('data-cdt-theme', 'dark'));
     const darkText = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--cdt-text-primary'));

@@ -1,6 +1,6 @@
 # Conductor Design System 화면 QA 체크리스트
 
-> 상태: review | 버전: v0.10 | 갱신일: 2026-10-24
+> 상태: review | 버전: v0.11 | 갱신일: 2026-10-24
 
 ## 0. 사용 방법
 
@@ -202,6 +202,9 @@ FR-CMP-001은 공개 컴포넌트 전수가 ref 전달(AC-1), className 병합(A
 - [x] QA-218 `DirectionProvider dir="rtl"` 아래에서 Tabs·RadioGroup·ToggleGroup 루트와 DatePicker 달력이 `dir="rtl"`이고, Tabs에서 ArrowLeft가 다음 탭이다 (FR-CSS-006 AC-2·AC-3, CR-074)
 - [x] QA-219 RTL 문서에서 Switch 손잡이가 반대로 움직이고, 코드 블록·키 캡·`cdt-mono`·도구 이름은 `ltr isolate`다 (FR-CSS-006 AC-1·AC-4, CR-074)
 - [x] QA-220 Getting Started가 `dir="rtl"`·`DirectionProvider`·`swipeDirection` 사용법을 보인다 (FR-CSS-006 AC-5, CR-074)
+- [x] QA-221 `cdt-*` 클래스 이름을 바꾼 빌드에서 `pnpm check:api`가 실패하고 바뀐 이름을 보인다 (FR-DX-006 AC-2, WP-041)
+- [ ] QA-222 Firefox·WebKit에서 67개 컴포넌트 페이지가 예외 없이 렌더되고, Dialog Escape 포커스 복귀와 `:dir(rtl)` 미러링이 동작한다 (NFR-005, WP-042) — CI 첫 실행으로 확인
+- [x] QA-223 React 18·19·Next 설치 소비자가 tarball로 설치·typecheck·빌드·브라우저 구동된다 (NFR-005, WP-042) — 로컬 3/3
 - [x] QA-190 픽셀 차이가 1%를 초과하면 CI가 실패하고 차이 이미지가 아티팩트로 남는다 (FR-QA-004 AC-2) — 36% 차이 픽스처 exit 1, actual/expected/diff 생성
 - [x] QA-191 기준 이미지 갱신이 `pnpm test:visual --update` 명시적 커맨드로만 가능하다 (FR-QA-004 AC-3)
 - [x] QA-192 `Button` 단독 import gzip 크기가 4KB 이하다(React 제외) (FR-DX-003 AC-3) — `size-limit` 실측 527바이트

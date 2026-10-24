@@ -1,6 +1,6 @@
 # Conductor Design System 프론트엔드 아키텍처
 
-> 상태: review | 버전: v0.10 | 갱신일: 2026-10-24
+> 상태: review | 버전: v0.11 | 갱신일: 2026-10-24
 
 ## 1. 목적과 두 개의 프론트엔드
 
@@ -173,6 +173,9 @@ Radix가 소유하는 DOM에는 구조 셀렉터를 쓰지 않고 `data-state`, 
 | 시각 회귀 | Playwright 1.61.1 스냅샷, 고정 컨테이너 이미지 | 공개 컴포넌트 전부 × 테마 2종 + 오버레이 열린 상태 11개 × 2 (CR-068) + 상태 컴포넌트 9개 강제 색 (CR-071) | FR-QA-004, JOB-CI-003 |
 | 강제 색 모드 | Playwright `emulateMedia({ forcedColors: "active" })`, 계산값 판정 (`apps/docs/e2e/forced-colors.spec.ts`) | 공개 컴포넌트 전부의 포커스 외곽선 + 상태 표시 15건 (CR-071, JOB-CI-005 — CR-072) | FR-A11Y-001 AC-5, FR-A11Y-003 AC-5 |
 | 읽기 방향 (RTL) | Vitest jsdom(`direction.test.tsx`) + Vitest 브라우저(`component-css.browser.test.tsx`) | Radix 루트 `dir`·RTL 화살표 이동·DatePicker 달력 방향, Switch 손잡이 미러링, 코드·키 캡·고정폭·도구 이름 `ltr isolate` (CR-074) | FR-CSS-006 |
+| 공개 표면 기준 | `scripts/check-api.mjs` + `scripts/public-surface.mjs`, 기준 **public-surface.txt**(`etc/`) | 세 패키지 entry point·CLI 이름, 세 스타일시트의 `cdt-*` 클래스·`data-*` 선택자·레이어 순서 (CR-075 WP-041) | FR-DX-006 AC-1·AC-2 |
+| 설치 소비자 매트릭스 | `scripts/check-consumer.mjs`, CI consumers 잡 | React 18·19, Next 16 tarball 소비자 (JOB-CI-006) | NFR-005, FR-DX-006 AC-4 |
+| 브라우저 엔진 | Playwright Firefox·WebKit, `apps/docs/e2e-cross/engines.spec.ts`, CI cross-browser 잡 | 엔진 스모크 4건 (JOB-CI-007) | NFR-005, FR-DX-006 AC-4 |
 | 토큰 계약 | Vitest | 두 테마 semantic 키 대칭 | FR-QA-001 |
 | 타입 | `tsc --noEmit` + api-extractor 7.x | `any` 0건, 내부 타입 누출 0건 | FR-DX-002 |
 

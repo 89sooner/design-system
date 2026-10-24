@@ -1,6 +1,6 @@
 # Conductor Design System 작업 패키지
 
-> 상태: review | 버전: v0.16 | 갱신일: 2026-10-24
+> 상태: review | 버전: v0.17 | 갱신일: 2026-10-24
 
 ## 1. 목적
 
@@ -858,10 +858,21 @@ design-system/
 - 릴리스: REL-005
 - 관련 요구사항: FR-DX-006 AC-4 ~ AC-7, FR-DX-005
 - 관련 화면: W-002 (CHANGELOG 간접)
-- 선행 WP: WP-041, WP-042, OD-005 ~ OD-008 종결
-- 구현 범위: OD-005가 정한 실사용 검증 기록(소비자별 로컬 재정의 목록), OD-007 범위 확인, OD-008에 맞춘 major changeset과 마이그레이션 노트, 1.0 후보 커밋의 전 게이트 실행
+- 선행 WP: WP-041, WP-042, WP-044 (OD-005 ~ OD-008은 2026-10-24 CR-076으로 종결)
+- 구현 범위: 1.0 후보 버전을 agent-ai-platform main에 4주 이상 적용하고 로컬 재정의 목록을 원장에 판정(OD-005), `.changeset/config.json`의 `linked`를 `fixed`로 바꾸고 세 패키지 major changeset과 마이그레이션 노트(OD-008), 1.0 후보 커밋의 전 게이트 실행
 - 제외: 1.0 이후 컴포넌트 추가(minor)
 - 완료 기준(DoD): 검증 계획 §1.0 준비도 표가 모두 충족이고 사용자가 발행을 지시했다.
 - 검증 방법: inspection, CI 전 잡, JOB-REL-001 실행 기록
 - 기록: 구현 원장 REL-005, 변경 대장 CR-075 종료
 
+## WP-044 레이아웃·타이포그래피·구획 기본 컴포넌트 (CR-076)
+
+- 릴리스: REL-005 (react·css minor)
+- 관련 요구사항: FR-CMP-017
+- 관련 화면: W-020, W-021
+- 선행 WP: WP-041 (새 클래스가 공개 표면 기준에 들어간다)
+- 구현 범위: `layout.tsx`(Separator·Stack·Grid), `typography.tsx`(Heading·Text), `accordion.tsx`(Radix Accordion, `@radix-ui/react-accordion` 정확한 버전), 대응 CSS, 공개 레지스트리·a11y 시나리오·SSR·카탈로그 미리보기·지침, 시각 기준 이미지, `etc/public-surface.txt` 갱신
+- 제외: 반응형 prop 객체, 임의 CSS 값 prop, 말줄임 줄 수, Slider·FileUpload·Tree·ContextMenu(1.0 이후)
+- 완료 기준(DoD): FR-CMP-017 AC-1~AC-7을 단위·브라우저·시각 시험으로 증명한다.
+- 검증 방법: 단위 시험, a11y·component-css 브라우저 시험, 시각 회귀, `pnpm check:api`
+- 기록: 구현 원장 WP-044, FR-CMP-017 매핑

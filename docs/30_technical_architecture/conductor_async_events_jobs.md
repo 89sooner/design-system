@@ -1,6 +1,6 @@
 # Conductor Design System CI 잡과 릴리스 파이프라인
 
-> 상태: review | 버전: v0.11 | 갱신일: 2026-10-24
+> 상태: review | 버전: v0.12 | 갱신일: 2026-10-24
 
 ## 0. 문서 재해석
 
@@ -23,6 +23,8 @@ Conductor Design System에는 큐, 워커 런타임, dead letter queue, 사용�
 | JOB-CI-003 | 시각 회귀 | JOB-BUILD-002~004 성공, `VISUAL_REGRESSION_ENABLED=true`일 때만 | 예(그룹 A) | JOB-BUILD-002, JOB-BUILD-003, JOB-BUILD-004 | 0회 | 3분 |
 | JOB-CI-004 | 번들 크기 검사 | JOB-BUILD-002, JOB-BUILD-003 성공 | 예(그룹 A) | JOB-BUILD-002, JOB-BUILD-003 | 0회 | 60초 |
 | JOB-CI-005 | 문서 사이트 E2E (CR-072) | JOB-BUILD-001~004 성공 | 예(그룹 A, 별도 CI 잡) | JOB-BUILD-001~004 | 0회 | 10분 |
+| JOB-CI-006 | 설치 소비자 매트릭스 (CR-075) | JOB-BUILD-001~003 성공 | 예(그룹 A, 별도 CI 잡) | JOB-BUILD-001~003 | 0회 | 15분 |
+| JOB-CI-007 | 브라우저 엔진 스모크 (CR-075) | JOB-BUILD-001~004 성공 | 예(그룹 A, 별도 CI 잡) | JOB-BUILD-001~004 | 0회 | 10분 |
 | JOB-REL-001 | npm 배포 | `main` 병합 + 변경 이력 존재 + 수동 승인 | 아니오 | JOB-BUILD-001~004, JOB-CI-001, JOB-CI-002, JOB-CI-004(JOB-CI-003은 활성화 시에만) | 0회 | 5분 |
 
 ### 2.1 JOB-BUILD-001 토큰 빌드
@@ -114,6 +116,28 @@ Conductor Design System에는 큐, 워커 런타임, dead letter queue, 사용�
 | 실패 시 동작 | 시험 하나라도 실패하면 종료 코드 1. 재시도는 없다. CI에서 `test.only`가 남아 있으면 실패한다(`forbidOnly`) |
 | 아티팩트 | 실패 시 `apps/docs/test-results/**`(`docs-e2e-results`, 30일) |
 | 배경 | 검증 계획은 이 검사를 처음부터 PR·main 게이트로 적었지만, 실행하는 잡이 없어 로컬 게이트였다(DEV-048, DEV-063). 2026-10-24 기준 86건이다 |
+
+### 2.8b JOB-CI-006 설치 소비자 매트릭스 (CR-075 WP-042)
+
+| 항목 | 내용 |
+| --- | --- |
+| Worker | `scripts/check-consumer.mjs`(`pnpm check:consumer`), Playwright Chromium |
+| 입력 | 세 패키지의 `pnpm pack` tarball. Vite+React 18.3.1, Vite+React 19.2.8, Next 16.3.1+React 19.2.8 소비자를 격리 디렉터리에 만든다 |
+| 출력 | 소비자별 설치·typecheck·빌드·브라우저 구동(hydration, 오버레이 포커스 복귀, 탭 키보드, 관계 근거, 테마 전환) 결과 `results.json` |
+| 실패 시 동작 | 단계 하나라도 실패하면 종료 코드 1. 재시도 없음 |
+| 아티팩트 | 항상 `results.json`과 단계별 로그(`consumer-results`, 30일) |
+| 배경 | NFR-005가 React 18을 CI 매트릭스로 잰다고 적었지만 저장소는 React 19로만 빌드됐다(DEV-065). 스크립트는 WP-029 뒤 CI에 없어 CR-047·CR-053 이후 낡아 있었다(DEV-067) |
+
+### 2.8c JOB-CI-007 브라우저 엔진 스모크 (CR-075 WP-042)
+
+| 항목 | 내용 |
+| --- | --- |
+| Worker | Playwright Firefox·WebKit, `apps/docs/e2e-cross/*.spec.ts`(`pnpm test:cross`) |
+| 입력 | JOB-BUILD-001~004 산출물. 잡이 문서 사이트를 빌드해 `vite preview`로 서빙한다 |
+| 출력 | 엔진별 통과·실패: 67개 컴포넌트 페이지 무예외 렌더, 레이어·테마 토큰 해석, Dialog Escape 포커스 복귀, `:dir(rtl)` Switch 미러링 |
+| 실패 시 동작 | 실패하면 종료 코드 1. 재시도 없음 |
+| 아티팩트 | 실패 시 `apps/docs/test-results/**`(`cross-browser-results`, 30일) |
+| 배경 | NFR-005의 지원 브라우저 중 Chromium(Edge 포함) 밖의 엔진을 실행하는 잡이 없었다(DEV-065). 픽셀·강제 색 검사는 Chromium 잡이 계속 맡는다 |
 
 ### 2.9 JOB-REL-001 npm 배포
 
