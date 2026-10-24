@@ -1,6 +1,6 @@
 # Conductor Design System 구현 추적 원장
 
-> 상태: review | 버전: v0.62 | 갱신일: 2026-10-24
+> 상태: review | 버전: v0.63 | 갱신일: 2026-10-24
 
 ## 1. 목적과 갱신 규칙
 
@@ -266,6 +266,7 @@ PR Search 소비처의 `DEV-380`이 트리거다: 화면 계약이 최대 20계�
 
 | DEV ID | 발견일 | 유형 | 내용 | 관련 ID | 처리 CR | 상태 |
 | --- | --- | --- | --- | --- | --- | --- |
+| DEV-066 | 2026-10-24 | 검증 편차 | **0.16.0 발행이 릴리스 audit 게이트에서 멈췄다.** release.yml `publish` 잡(run 40084277740)의 `pnpm audit --audit-level high`가 새 권고 GHSA-mrhx-c7xc-m3w5(zod <4.6.6, high)로 실패했다. 경로는 개발 도구 `lighthouse@13.4.0 > puppeteer-core@25.3.0 > chromium-bidi@16.0.1 > zod@3.25.76`뿐이고 `pnpm audit --prod`에는 high가 없다. 게시 단계 전에 멈춰 npm에 올라간 것은 없다. 루트 개발 의존성 `lighthouse`를 ^13.5.0으로 올려 `chromium-bidi@157`·`zod@4.6.7`로 바꿨다. 예외(`ignoreGhsas`)는 더하지 않았다 | NFR-002, JOB-REL-001 | — (개발 의존성 갱신, 패키지 변경 없음) | closed |
 | DEV-065 | 2026-10-24 | 검증 편차 | **NFR-005 호환성 매트릭스의 일부가 CI에서 실행되지 않는다.** NFR-005와 검증 계획 §2는 React 18·19와 지원 브라우저(Chrome·Firefox·Safari·Edge 최근 2개 메이저)를 CI 매트릭스로 잰다고 적는다. `ci.yml`의 매트릭스는 Node 20·22뿐이고, 저장소 개발 의존성은 React 19.2.7, 브라우저 시험은 Chromium뿐이다. React 18 설치 소비자 검사(`scripts/check-consumer.mjs`의 `vite18` 고정 장치)는 있지만 CI 잡과 `package.json` 스크립트에 연결돼 있지 않다 | NFR-005, FR-DX-006 AC-4 | CR-075 | open |
 | DEV-064 | 2026-10-24 | 구현 편차 | **문서 사이트 컴포넌트 페이지에서 폭 약 850px 미만일 때 Table 예제 오른쪽이 잘리고 닿을 수 없었다.** `.docs-stage > .docs-preview`가 grid 항목 기본값 `min-width: auto`로 표의 800px 최소 폭까지 넓어져 스테이지의 `overflow: hidden`에 잘렸다. 표 자체 스크롤러는 동작하지 않았다. 2026-10-24 품질 재평가의 320·560·800px 측정에서 발견 | FR-DOC-003, FR-CMP-005 | CR-073 | closed |
 | DEV-063 | 2026-10-23 | 문서/CI 불일치 | **검증 계획은 문서 사이트 Playwright E2E(`pnpm test:e2e`)를 PR·main 게이트로 적었지만, `.github/workflows/ci.yml`은 그 명령을 실행하지 않는다.** CI의 `verify`는 `pnpm test`·`test:a11y`·`lighthouse` 등을 돌리고, `visual regression`은 `test:visual`만 돌린다. 그래서 `apps/docs/e2e/*.spec.ts`(CR-071의 `forced-colors.spec.ts` 포함 86건)는 로컬에서만 실행돼 왔다. CR-071의 PR #85 CI 로그를 확인하다 발견. CR-071의 강제 색 상태는 CI에서 `bundle.test.ts`(선언)와 강제 색 기준 이미지 9장이 막고, 계산값 판정과 67개 컴포넌트 포커스 전수는 로컬 게이트다. 해결(CI에 문서 E2E 잡 추가 또는 검증 계획 정정)은 사용자 결정 대기. 잡을 추가하면 `screens.spec.ts` QA-003·QA-004 포커스 순서 시험(로컬 23~26초, 기본 한도 30초)의 시간 여유부터 다뤄야 한다 | FR-DOC-001~007, FR-A11Y-001 AC-5, FR-A11Y-003 AC-5 | CR-072 (DEV-048의 중복. CR-071이 기록) | closed |
