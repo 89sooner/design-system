@@ -153,10 +153,12 @@ for (const [component, open] of Object.entries(HIGHLIGHTED_OPTIONS)) {
       const stray = [...node.querySelectorAll("*")].map((child) => getComputedStyle(child).color);
       return { background: own.backgroundColor, color: own.color, stray };
     });
-    await expect.poll(async () => (await read()).background).toBe(highlight);
-    const style = await read();
-    expect(style.color).toBe(highlightText);
-    expect(style.stray.filter((colour) => colour !== highlightText)).toEqual([]);
+    // One sample reads background, colour and children from the same node. Reading twice raced on CI: the
+    // highlight can still move between options after the keys (PR #97 run 40177832745).
+    await expect.poll(async () => {
+      const style = await read();
+      return { background: style.background, color: style.color, stray: style.stray.filter((colour) => colour !== highlightText) };
+    }).toEqual({ background: highlight, color: highlightText, stray: [] });
   });
 }
 

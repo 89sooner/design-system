@@ -1,0 +1,45 @@
+/*
+ * CR-078 FR-CMP-018: Slider, Tree and the ContextMenu extras. Radix and Headless Tree own the
+ * behaviour and set the `data-state`, `data-orientation`, `data-disabled` and `aria-*` hooks these rules key
+ * on; this file only paints. Every value reads a `--cdt-` token.
+ */
+@layer cdt.component {
+  /* Slider — a hairline track, the filled range in accent, and round thumbs that carry the focus ring. */
+  .cdt-slider { position: relative; display: flex; align-items: center; inline-size: 100%; min-block-size: var(--cdt-space-5); touch-action: none; user-select: none; }
+  .cdt-slider[data-orientation="vertical"] { flex-direction: column; inline-size: var(--cdt-space-5); min-block-size: calc(var(--cdt-space-8) * 3); }
+  .cdt-slider__track { position: relative; flex-grow: 1; overflow: hidden; block-size: var(--cdt-space-1); border-radius: var(--cdt-radius-pill); background: var(--cdt-border-default); }
+  .cdt-slider[data-orientation="vertical"] .cdt-slider__track { inline-size: var(--cdt-space-1); block-size: auto; }
+  .cdt-slider__range { position: absolute; block-size: 100%; border-radius: inherit; background: var(--cdt-accent); }
+  .cdt-slider[data-orientation="vertical"] .cdt-slider__range { inline-size: 100%; block-size: auto; }
+  .cdt-slider__thumb { display: block; inline-size: var(--cdt-space-4); block-size: var(--cdt-space-4); border: var(--cdt-border-width-emphasis) solid var(--cdt-accent); border-radius: var(--cdt-radius-pill); background: var(--cdt-surface-raised); box-shadow: var(--cdt-elevation-raised); cursor: grab; transition: box-shadow var(--cdt-motion-fast); }
+  .cdt-slider__thumb:focus-visible { outline: var(--cdt-border-width-emphasis) solid transparent; box-shadow: var(--cdt-focus-ring); transition: none; }
+  .cdt-slider[data-disabled] { opacity: 0.6; }
+  .cdt-slider[data-disabled] .cdt-slider__thumb { cursor: not-allowed; }
+
+  /* Tree — rows indent by level; the chevron turns when a branch opens. Selection is the accent tint plus weight. */
+  .cdt-tree { display: grid; gap: var(--cdt-border-width-hairline); }
+  .cdt-tree__item { display: flex; align-items: center; gap: var(--cdt-space-2); min-block-size: var(--cdt-button-min-height); padding-block: var(--cdt-space-1); padding-inline: calc(var(--cdt-space-2) + var(--cdt-tree-level, 0) * var(--cdt-space-4)) var(--cdt-space-2); border-radius: var(--cdt-radius-xs); color: var(--cdt-text-secondary); cursor: pointer; transition: background var(--cdt-motion-fast), color var(--cdt-motion-fast); }
+  .cdt-tree__item:hover { background: var(--cdt-state-hover); color: var(--cdt-text-primary); }
+  .cdt-tree__item[aria-selected="true"] { background: var(--cdt-accent-soft); color: var(--cdt-text-primary); font-weight: 600; }
+  .cdt-tree__item:focus-visible { outline: var(--cdt-border-width-emphasis) solid transparent; box-shadow: var(--cdt-focus-ring); transition: none; }
+  .cdt-tree__chevron { display: inline-flex; flex: 0 0 auto; justify-content: center; inline-size: var(--cdt-space-3); color: var(--cdt-text-muted); transition: transform var(--cdt-motion-fast); }
+  .cdt-tree__item[data-state="open"] .cdt-tree__chevron { transform: rotate(90deg); }
+  .cdt-tree__item[data-state="open"] .cdt-tree__chevron:dir(rtl),
+  .cdt-tree__item[data-state="closed"] .cdt-tree__chevron:dir(rtl) { scale: -1 1; }
+  .cdt-tree__icon { display: inline-flex; flex: 0 0 auto; }
+  .cdt-tree__label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* ContextMenu — the `cdt-menu` surface, grown from the pointer, with a shortcut pushed to the row's end. */
+  .cdt-context-menu { transform-origin: var(--radix-context-menu-content-transform-origin); }
+  .cdt-context-menu__trigger { display: block; }
+  .cdt-context-menu__shortcut { margin-inline-start: auto; padding-inline-start: var(--cdt-space-4); color: var(--cdt-text-muted); font-size: var(--cdt-font-size-xs); direction: ltr; unicode-bidi: isolate; }
+
+  /* Forced colours drop the fills: a selected row repaints in the system highlight. */
+  @media (forced-colors: active) {
+    .cdt-tree__item[aria-selected="true"] { forced-color-adjust: none; background: Highlight; color: HighlightText; }
+    .cdt-tree__item[aria-selected="true"] * { color: HighlightText; }
+    .cdt-tree__item[aria-selected="true"]:focus-visible { outline-color: CanvasText; outline-offset: var(--cdt-border-width-emphasis); }
+    .cdt-slider__range { background: Highlight; }
+    .cdt-slider__thumb { background: Canvas; border-color: CanvasText; }
+  }
+}

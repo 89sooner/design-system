@@ -18,11 +18,13 @@ import * as RadixAlertDialog from '@radix-ui/react-alert-dialog';
 import * as RadixAvatar from '@radix-ui/react-avatar';
 import * as RadixCheckbox from '@radix-ui/react-checkbox';
 import * as RadixCollapsible from '@radix-ui/react-collapsible';
+import * as RadixContextMenu from '@radix-ui/react-context-menu';
 import * as RadixDialog from '@radix-ui/react-dialog';
 import * as RadixDropdownMenu from '@radix-ui/react-dropdown-menu';
 import * as RadixPopover from '@radix-ui/react-popover';
 import * as RadixRadioGroup from '@radix-ui/react-radio-group';
 import * as RadixSelect from '@radix-ui/react-select';
+import * as RadixSlider from '@radix-ui/react-slider';
 import * as RadixSwitch from '@radix-ui/react-switch';
 import * as RadixTabs from '@radix-ui/react-tabs';
 import * as RadixToast from '@radix-ui/react-toast';
@@ -364,6 +366,27 @@ export type ConfirmationState = "pending" | "approved" | "rejected";
 
 // @public
 export const CONSUMED_PACKAGES: readonly ["@conductor-by-89soone/tokens", "@conductor-by-89soone/css"];
+
+// @public (undocumented)
+export const ContextMenu: {
+    readonly Root: react.FC<RadixContextMenu.ContextMenuProps>;
+    readonly Trigger: react.ForwardRefExoticComponent<Omit<RadixContextMenu.ContextMenuTriggerProps & react.RefAttributes<HTMLSpanElement>, "ref"> & react.RefAttributes<HTMLSpanElement>>;
+    readonly Content: react.ForwardRefExoticComponent<Omit<RadixContextMenu.ContextMenuContentProps & react.RefAttributes<HTMLDivElement>, "ref"> & react.RefAttributes<HTMLDivElement>>;
+    readonly Item: react.ForwardRefExoticComponent<Omit<RadixContextMenu.ContextMenuItemProps & react.RefAttributes<HTMLDivElement>, "ref"> & {
+        readonly tone?: "neutral" | "danger";
+        readonly icon?: ReactNode;
+        readonly shortcut?: string;
+    } & react.RefAttributes<HTMLDivElement>>;
+    readonly Label: react.ForwardRefExoticComponent<Omit<RadixContextMenu.ContextMenuLabelProps & react.RefAttributes<HTMLDivElement>, "ref"> & react.RefAttributes<HTMLDivElement>>;
+    readonly Separator: react.ForwardRefExoticComponent<Omit<RadixContextMenu.ContextMenuSeparatorProps & react.RefAttributes<HTMLDivElement>, "ref"> & react.RefAttributes<HTMLDivElement>>;
+};
+
+// @public (undocumented)
+export type ContextMenuItemProps = ComponentPropsWithoutRef<typeof RadixContextMenu.Item> & {
+    readonly tone?: "neutral" | "danger";
+    readonly icon?: ReactNode;
+    readonly shortcut?: string;
+};
 
 // @public
 export const Conversation: react.ForwardRefExoticComponent<ConversationProps & react.RefAttributes<HTMLDivElement>>;
@@ -1413,6 +1436,22 @@ export const Skeleton: react.ForwardRefExoticComponent<HTMLAttributes<HTMLDivEle
 } & react.RefAttributes<HTMLDivElement>>;
 
 // @public (undocumented)
+export const Slider: react.ForwardRefExoticComponent<SliderProps & react.RefAttributes<HTMLSpanElement>>;
+
+// @public (undocumented)
+export interface SliderLabels {
+    readonly end: string;
+    readonly start: string;
+}
+
+// @public (undocumented)
+export interface SliderProps extends ComponentPropsWithoutRef<typeof RadixSlider.Root> {
+    // (undocumented)
+    readonly labels?: Partial<SliderLabels>;
+    readonly valueText?: (value: number) => string;
+}
+
+// @public (undocumented)
 export interface SourceItem {
     // (undocumented)
     readonly description?: string;
@@ -1760,6 +1799,29 @@ export interface TopBarProps extends Omit<HTMLAttributes<HTMLElement>, "children
     readonly menuButton?: ReactNode;
     // (undocumented)
     readonly title?: ReactNode;
+}
+
+// @public (undocumented)
+export const Tree: react.ForwardRefExoticComponent<TreeProps & react.RefAttributes<HTMLDivElement>>;
+
+// @public (undocumented)
+export interface TreeNode {
+    readonly children?: readonly TreeNode[];
+    readonly icon?: ReactNode;
+    // (undocumented)
+    readonly id: string;
+    readonly label: string;
+}
+
+// @public (undocumented)
+export interface TreeProps extends Omit<HTMLAttributes<HTMLDivElement>, "children" | "onSelect"> {
+    readonly defaultExpandedIds?: readonly string[];
+    // (undocumented)
+    readonly defaultSelectedId?: string | null;
+    // (undocumented)
+    readonly items: readonly TreeNode[];
+    readonly onSelectedIdChange?: (id: string) => void;
+    readonly selectedId?: string | null;
 }
 
 export { useDirection }

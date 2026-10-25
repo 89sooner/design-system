@@ -1,6 +1,6 @@
 // Refs: WP-024 FR-QA-003 FR-A11Y-002 FR-A11Y-005
-import { useRef, useState, type ReactElement } from "react";
-import { AlertDialog, Avatar, CommandPalette, Confirmation, Conversation, InlineCitation, Message, PromptInput, Reasoning, Shimmer, Sources, Suggestion, Suggestions, Tool, DatePicker, NumberInput, Pagination, RadioGroup, Toast, ToggleGroup, Accordion, Grid, Heading, Separator, Stack, Text } from "../index";
+import { useEffect, useRef, useState, type ReactElement } from "react";
+import { AlertDialog, Avatar, CommandPalette, Confirmation, Conversation, InlineCitation, Message, PromptInput, Reasoning, Shimmer, Sources, Suggestion, Suggestions, Tool, DatePicker, NumberInput, Pagination, RadioGroup, Toast, ToggleGroup, Accordion, Grid, Heading, Separator, Stack, Text, ContextMenu, Slider, Tree } from "../index";
 import {
   AppShell, AppShellNavTrigger, Tabs, Popover, Collapsible, Combobox, MultiSelect, FilterChip, FilterToolbar, DataTable, WorkbenchLayout, DetailInspector, PathList, Breadcrumb, Skeleton, CopyButton, ProcessingStatus, RelationGraph,
   Badge,
@@ -73,6 +73,17 @@ function DrawerFixture({ open = false }: { readonly open?: boolean }): ReactElem
 function TooltipFixture({ open = false }: { readonly open?: boolean }): ReactElement {
   return <Tooltip.Provider delayDuration={0}><Tooltip.Root defaultOpen={open}><Tooltip.Trigger {...keyboardTarget}>Tooltip trigger</Tooltip.Trigger><Tooltip.Content>Helpful detail</Tooltip.Content></Tooltip.Root></Tooltip.Provider>;
 }
+
+/** Opens on the context-menu key or Shift+F10; `open` dispatches the browser event a right-click raises. */
+function ContextMenuFixture({ open = false }: { readonly open?: boolean }): ReactElement {
+  const area = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (open) area.current?.dispatchEvent(new MouseEvent("contextmenu", { bubbles: true, cancelable: true, clientX: 40, clientY: 40 }));
+  }, [open]);
+  return <ContextMenu.Root><ContextMenu.Trigger asChild><div ref={area} tabIndex={0} data-context-area="" aria-label="run_8f2c">run_8f2c</div></ContextMenu.Trigger><ContextMenu.Content><ContextMenu.Label>Run</ContextMenu.Label><ContextMenu.Item shortcut="⌘C">Copy ID</ContextMenu.Item><ContextMenu.Separator /><ContextMenu.Item tone="danger">Cancel run</ContextMenu.Item></ContextMenu.Content></ContextMenu.Root>;
+}
+
+const TREE_ITEMS = [{ id: "src", label: "src", children: [{ id: "src/index.ts", label: "index.ts" }, { id: "src/tree.tsx", label: "tree.tsx" }] }, { id: "README.md", label: "README.md" }];
 
 function MenuFixture({ open = false }: { readonly open?: boolean }): ReactElement {
   return <DropdownMenu.Root defaultOpen={open}><DropdownMenu.Trigger {...keyboardTarget}>Menu trigger</DropdownMenu.Trigger><DropdownMenu.Content><DropdownMenu.Item>First action</DropdownMenu.Item><DropdownMenu.Item>Second action</DropdownMenu.Item></DropdownMenu.Content></DropdownMenu.Root>;
@@ -194,6 +205,13 @@ export const a11yScenarios: readonly A11yScenario[] = [
   { component: "Heading", state: "default", keyboard: { kind: "static" }, render: () => <><Heading level={2}>Section</Heading><Heading level={3} size="minor">Subsection</Heading></> },
   { component: "Text", state: "default", keyboard: { kind: "static" }, render: () => <><Text>Body text.</Text><Text size="sm" tone="secondary">Secondary detail.</Text><Text size="xs" tone="muted" mono>run_8f2c</Text></> },
   { component: "Accordion", state: "default", keyboard: { kind: "steps", steps: [{ target: "button", keys: "{Enter}", check: "button", attribute: "aria-expanded", expected: "true" }] }, render: () => <Accordion.Root type="single" collapsible><Accordion.Item value="limits"><Accordion.Trigger {...keyboardTarget}>Run limits</Accordion.Trigger><Accordion.Content>Fifty steps per run.</Accordion.Content></Accordion.Item><Accordion.Item value="audit"><Accordion.Trigger>Audit</Accordion.Trigger><Accordion.Content>Every step is recorded.</Accordion.Content></Accordion.Item></Accordion.Root> },
+  { component: "ContextMenu", state: "default", keyboard: { kind: "steps", steps: [{ target: "[data-context-area]", keys: "{Shift>}{F10}{/Shift}", check: "[role=menu]", expected: "Copy ID" }] }, render: () => <ContextMenuFixture /> },
+  { component: "ContextMenu", state: "open", axeSelector: '[role="menu"]', render: () => <ContextMenuFixture open /> },
+  { component: "Slider", state: "default", keyboard: { kind: "steps", steps: [{ target: "[role=slider]", keys: "{ArrowRight}", check: "[role=slider]", attribute: "aria-valuenow", expected: "51" }] }, render: () => <Slider aria-label="Volume" defaultValue={[50]} /> },
+  { component: "Slider", state: "interactive", render: () => <Slider aria-label="Price" defaultValue={[20, 80]} valueText={(value) => `$${value}`} /> },
+  { component: "Slider", state: "disabled", render: () => <Slider aria-label="Volume" defaultValue={[30]} disabled /> },
+  { component: "Tree", state: "default", keyboard: { kind: "steps", steps: [{ target: "[role=treeitem][tabindex='0']", keys: "{ArrowRight}", check: "[role=treeitem][aria-expanded]", attribute: "aria-expanded", expected: "true" }, { target: "[role=treeitem][tabindex='0']", keys: "{ArrowDown}{Enter}", check: "[role=treeitem][aria-selected=true]", expected: "index.ts" }] }, render: () => <Tree aria-label="Files" items={TREE_ITEMS} /> },
+  { component: "Tree", state: "open", render: () => <Tree aria-label="Files" items={TREE_ITEMS} defaultExpandedIds={["src"]} defaultSelectedId="src/tree.tsx" /> },
   { component: "Accordion", state: "open", render: () => <Accordion.Root type="multiple" defaultValue={["limits"]}><Accordion.Item value="limits"><Accordion.Trigger>Run limits</Accordion.Trigger><Accordion.Content>Fifty steps per run.</Accordion.Content></Accordion.Item><Accordion.Item value="audit" disabled><Accordion.Trigger>Audit</Accordion.Trigger><Accordion.Content>Every step is recorded.</Accordion.Content></Accordion.Item></Accordion.Root> },
   { component: "NumberInput", state: "default", keyboard: { kind: "steps", steps: [{ target: "input[type=number]", keys: "{ArrowUp}", check: "[data-count]", expected: "11" }] }, render: () => <NumberFixture /> },
   { component: "NumberInput", state: "error", render: () => <NumberFixture invalid /> },

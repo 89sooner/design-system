@@ -284,3 +284,11 @@ export interface SuggestionsLabels {
   readonly group: string;
 }
 export const DEFAULT_SUGGESTIONS_LABELS: SuggestionsLabels = { group: "Suggestions" };
+
+export interface SliderLabels {
+  /** Added to the name of a range's first thumb. */
+  readonly start: string;
+  /** Added to the name of a range's second thumb. */
+  readonly end: string;
+}
+export const DEFAULT_SLIDER_LABELS: SliderLabels = { start: "Minimum", end: "Maximum" };

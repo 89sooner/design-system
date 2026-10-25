@@ -28,6 +28,9 @@ import { NumberInput } from "../number-input";
 import { Grid, Separator, Stack } from "../layout";
 import { Heading, Text } from "../typography";
 import { Accordion } from "../accordion";
+import { ContextMenu } from "../context-menu";
+import { Slider } from "../slider";
+import { Tree } from "../tree";
 import { Confirmation, Conversation, InlineCitation, Message, PromptInput, Reasoning, Shimmer, Sources, Suggestion, Suggestions, Tool } from "../agent";
 
 export interface PublicComponent {
@@ -37,6 +40,9 @@ export interface PublicComponent {
 }
 
 export const publicComponents: readonly PublicComponent[] = [
+  { name: "ContextMenu", testFile: "testing/extensions.test.tsx", render: () => createElement(ContextMenu.Root, { children: null }) },
+  { name: "Slider", testFile: "testing/extensions.test.tsx", render: () => createElement(Slider, { "aria-label": "Slider", defaultValue: [50] }) },
+  { name: "Tree", testFile: "testing/extensions.test.tsx", render: () => createElement(Tree, { "aria-label": "Tree", items: [] }) },
   { name: "Separator", testFile: "testing/primitives.test.tsx", render: () => createElement(Separator) },
   { name: "Stack", testFile: "testing/primitives.test.tsx", render: () => createElement(Stack) },
   { name: "Grid", testFile: "testing/primitives.test.tsx", render: () => createElement(Grid) },

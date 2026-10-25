@@ -275,3 +275,4 @@
 .docs-agent-stack { display: grid; gap: var(--cdt-space-2); width: 100%; }
 .docs-agent-conversation { width: 100%; }
 .docs-avatar-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--cdt-space-2); }
+.docs-context-area { display: grid; place-items: center; min-height: calc(var(--cdt-space-8) * 2); padding: var(--cdt-space-4); border: var(--cdt-border-width-hairline) dashed var(--cdt-border-default); border-radius: var(--cdt-radius-sm); color: var(--cdt-text-secondary); font-size: var(--cdt-font-size-sm); }

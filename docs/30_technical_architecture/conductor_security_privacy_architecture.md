@@ -1,6 +1,6 @@
 # Conductor Design System 보안 및 개인정보 아키텍처
 
-> 상태: review | 버전: v0.9 | 갱신일: 2026-10-24
+> 상태: review | 버전: v0.10 | 갱신일: 2026-10-25
 
 ## 1. 범위 재정의: 이 제품은 공급망 보안 문제다
 
@@ -31,6 +31,7 @@ Conductor의 의존성은 두 종류로 나뉜다.
 | Radix UI(개별 프리미티브 패키지) | 정확한 버전 고정, caret 미사용. 모든 프리미티브를 같은 배포 묶음(같은 날 함께 배포된 버전)에 맞춘다. 묶음이 다르면 내부 공통 모듈(`react-focus-scope`·`react-presence` 등)이 소비자 번들에 여러 벌 들어간다(CR-058, 2026-07-24 묶음). CR-060이 더한 alert-dialog 1.1.23·radio-group 1.4.7·toggle-group 1.1.19·avatar 1.2.6도 같은 묶음이고, 추가 뒤에도 공통 모듈은 한 벌이다. CR-074가 직접 의존으로 올린 `@radix-ui/react-direction@1.1.4`는 기존 프리미티브가 이미 전이 의존으로 쓰던 단일 버전이라 lockfile에 새 버전이 생기지 않는다 | Conductor가 버전을 통제하고 DOM 구조 변경을 시각 회귀 검사로 검출한다 | FR-CMP-006, ADR-004, R-3 |
 | lucide-react | peer, 소비자가 아이콘 컴포넌트를 props로 주입 | Conductor는 아이콘을 번들하지 않는다 | FR-CMP-004 |
 | react-day-picker (dependency, CR-054) | `10.0.1` 정확한 버전. 전이 의존 `date-fns`, `@date-fns/tz` | 달력 격자·키보드 탐색을 맡는 접근성 검증 라이브러리. 자체 CSS는 import하지 않는다. 추가 시점 `pnpm audit --audit-level high` 결과가 main과 같았다(새 권고 0건) | FR-CMP-014 |
+| @headless-tree/core (dependency, CR-078) | `1.7.0` 정확한 버전. 런타임 의존성 0, MIT | Tree(C-101)의 역할·키보드·로빙 포커스를 맡는 headless 라이브러리. 1.8.0(2026-10-15)이 아니라 5개월 된 1.7.0(2026-05-17)을 고른다. React 결합부 `@headless-tree/react`는 쓰지 않는다. 같은 CR의 `@radix-ui/react-context-menu@2.3.7`·`@radix-ui/react-slider@1.4.7`은 위 Radix 행의 같은 배포 묶음(2026-07-24)이며 공통 모듈이 단일 버전으로 남는다(`react-menu` 2.1.24, `react-focus-scope` 1.1.16) |
 
 ### 3.2 빌드 타임 의존성 (Conductor가 버전을 소유)
 

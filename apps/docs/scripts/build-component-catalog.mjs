@@ -32,11 +32,11 @@ const FAMILIES = [
   ["Typography", ["Heading", "Text"]],
   ["Status", ["Badge", "StatusBadge", "SeverityTag", "Avatar"]],
   ["Data", ["Table", "Timeline", "CodeBlock", "Kbd"]],
-  ["Overlays", ["Dialog", "AlertDialog", "Drawer", "Tooltip", "DropdownMenu", "Popover"]],
-  ["Forms", ["Field", "TextField", "TextArea", "Select", "Switch", "Checkbox", "RadioGroup", "NumberInput", "DatePicker"]],
+  ["Overlays", ["Dialog", "AlertDialog", "Drawer", "Tooltip", "DropdownMenu", "ContextMenu", "Popover"]],
+  ["Forms", ["Field", "TextField", "TextArea", "Select", "Switch", "Checkbox", "RadioGroup", "NumberInput", "Slider", "DatePicker"]],
   ["Feedback", ["Banner", "Toast", "EmptyState", "Meter", "ProgressRing", "Spinner", "Skeleton"]],
   ["Shell", ["AppShell", "AppShellNavTrigger", "NavList", "TopBar"]],
-  ["Interaction", ["Tabs", "ToggleGroup", "Collapsible", "Accordion", "CommandPalette", "Pagination"]],
+  ["Interaction", ["Tabs", "ToggleGroup", "Collapsible", "Accordion", "Tree", "CommandPalette", "Pagination"]],
   ["Search workbench", ["Combobox", "MultiSelect", "FilterChip", "FilterToolbar", "DataTable", "WorkbenchLayout", "DetailInspector", "PathList", "Breadcrumb", "CopyButton"]],
   ["Relations", ["RelationGraph"]],
   ["Operations", ["ProcessingStatus"]],
@@ -61,6 +61,7 @@ const ROOT_CLASSES = {
   Heading: "cdt-heading",
   Text: "cdt-text",
   Accordion: "cdt-accordion",
+  Tree: "cdt-tree",
   Badge: "cdt-badge",
   StatusBadge: "cdt-badge cdt-status-badge",
   SeverityTag: "cdt-badge cdt-severity-tag",
@@ -72,6 +73,7 @@ const ROOT_CLASSES = {
   Drawer: "cdt-drawer",
   Tooltip: "cdt-tooltip",
   DropdownMenu: "cdt-menu",
+  ContextMenu: "cdt-menu cdt-context-menu",
   Popover: "cdt-popover",
   Field: "cdt-field",
   TextField: "cdt-input",
@@ -89,6 +91,7 @@ const ROOT_CLASSES = {
   ToggleGroup: "cdt-toggle-group",
   Avatar: "cdt-avatar",
   NumberInput: "cdt-number-input",
+  Slider: "cdt-slider",
   EmptyState: "cdt-empty-state",
   Meter: "cdt-meter",
   ProgressRing: "cdt-progress-ring",
@@ -130,7 +133,7 @@ const exported = new Set([...publicDeclarations.matchAll(/export \{([^}]+)\}/g)]
 const declared = [...declarations.matchAll(/declare const (\w+):/g)].map((match) => match[1]).filter((name) => !ignored.has(name) && exported.has(name));
 const source = ts.createSourceFile("index.d.ts", declarations, ts.ScriptTarget.Latest, true);
 const members = new Map(source.statements.filter(ts.isInterfaceDeclaration).filter((statement) => statement.name.text.endsWith("Props")).map((statement) => [statement.name.text, statement.members.filter(ts.isPropertySignature).map((property) => ({ name: property.name.getText(source).replaceAll('"', ""), required: property.questionToken === undefined, type: property.type?.getText(source) ?? "unknown" }))]));
-const aliases = { Dialog: "DialogContentProps", Drawer: "DrawerContentProps", Tooltip: "TooltipContentProps", DropdownMenu: "DropdownMenuItemProps", Select: "SelectTriggerProps", AlertDialog: "AlertDialogContentProps", RadioGroup: "RadioGroupRootProps" };
+const aliases = { Dialog: "DialogContentProps", Drawer: "DrawerContentProps", Tooltip: "TooltipContentProps", DropdownMenu: "DropdownMenuItemProps", ContextMenu: "ContextMenuItemProps", Select: "SelectTriggerProps", AlertDialog: "AlertDialogContentProps", RadioGroup: "RadioGroupRootProps" };
 
 // Family lookup: name → { family, order } where `order` sorts the catalog into display order.
 const placement = new Map();

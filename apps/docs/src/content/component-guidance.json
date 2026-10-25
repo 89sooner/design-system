@@ -2203,5 +2203,128 @@
       "Each open section is a region named by its trigger.",
       "Closed sections are hidden from assistive technology."
     ]
+  },
+  "ContextMenu": {
+    "purpose": "A menu of actions on an area, opened by right-click, long press, Shift+F10 or the context-menu key, built on Radix Context Menu.",
+    "use": [
+      "Use for shortcuts to actions that are also reachable elsewhere, such as Copy ID on a run row.",
+      "Make the trigger area focusable when keyboard users need the menu, and say in its label that it has one.",
+      "Show a key combination with shortcut and mark destructive items with the danger tone."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not put the only way to reach an action in a context menu.",
+        "instead": "DropdownMenu"
+      },
+      {
+        "rule": "Do not use it to choose a form value.",
+        "instead": "Select"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Shift+F10 / Context menu key",
+        "action": "On the focused area, opens the menu and focuses the first item."
+      },
+      {
+        "keys": "Arrow Down / Arrow Up",
+        "action": "Moves focus between items."
+      },
+      {
+        "keys": "Enter / Space",
+        "action": "Activates the focused item."
+      },
+      {
+        "keys": "Escape",
+        "action": "Closes the menu and returns focus to the area."
+      }
+    ],
+    "accessibility": [
+      "Radix sets the menu and menuitem roles and manages focus; do not override them.",
+      "Many people never right-click, so every action must also exist in visible controls.",
+      "The shortcut is shown as text and read with the item; it does not bind the key."
+    ]
+  },
+  "Slider": {
+    "purpose": "Picks a number, or a range of two, on a track with draggable thumbs, built on Radix Slider.",
+    "use": [
+      "Use when the exact value matters less than its position, such as a budget or a limit.",
+      "Pass two values in defaultValue or value for a range; each thumb is named start and end.",
+      "Use valueText to read the value with its unit, such as dollars or minutes."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it when the user must type an exact number.",
+        "instead": "NumberInput"
+      },
+      {
+        "rule": "Do not use it for a choice between a few named options.",
+        "instead": "RadioGroup"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Arrow keys",
+        "action": "Move the focused thumb by one step."
+      },
+      {
+        "keys": "Page Up / Page Down",
+        "action": "Move the thumb by a larger step."
+      },
+      {
+        "keys": "Home / End",
+        "action": "Move the thumb to the minimum or the maximum."
+      }
+    ],
+    "accessibility": [
+      "Each thumb is a slider named by aria-label or aria-labelledby; a range adds Minimum and Maximum (labels).",
+      "The filled range is drawn in accent and the thumb keeps the focus ring.",
+      "It needs aria-label or aria-labelledby: Field does not label it."
+    ]
+  },
+  "Tree": {
+    "purpose": "A hierarchy of items, such as files or folders, that expands and selects, built on Headless Tree.",
+    "use": [
+      "Pass nested items; a node with children, even empty, is a branch that opens.",
+      "Use defaultExpandedIds to open the path to what matters and selectedId with onSelectedIdChange to drive a detail view.",
+      "Give the tree an aria-label that names what it lists."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it for site navigation links.",
+        "instead": "NavList"
+      },
+      {
+        "rule": "Do not use it for a flat list of choices.",
+        "instead": "RadioGroup"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Tab",
+        "action": "Moves into the tree, onto one row only."
+      },
+      {
+        "keys": "Arrow Down / Arrow Up",
+        "action": "Moves to the next or previous visible row."
+      },
+      {
+        "keys": "Arrow Right / Arrow Left",
+        "action": "Opens a closed branch or moves into it; closes an open branch or moves to its parent."
+      },
+      {
+        "keys": "Home / End",
+        "action": "Moves to the first or last visible row."
+      },
+      {
+        "keys": "Enter / Space",
+        "action": "Selects the focused row."
+      }
+    ],
+    "accessibility": [
+      "Rows are treeitems with aria-level, aria-setsize, aria-posinset and, on branches, aria-expanded.",
+      "The selected row is on the accent tint and bold, not colour alone; the chevron is decorative.",
+      "Only one row is a tab stop, so the tree takes one Tab however many rows it has."
+    ]
   }
 }

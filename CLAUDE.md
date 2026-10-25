@@ -82,7 +82,7 @@ Planning deliverables carry `> 상태: draft | 버전: vX.Y | 갱신일: YYYY-MM
 - Open (product) decisions: `OD-###`
 - Scenarios: `SCN-###`
 - Screens: `W-###` only (the docs site is the sole UI). `D-###` and `A-###` do not exist in this product.
-- Components: `C-###` (C-001 ~ C-098; C-073 ~ C-076 added by CR-054, C-077 ~ C-081 by CR-060, C-082 ~ C-092 by CR-061, C-093 ~ C-098 by CR-076)
+- Components: `C-###` (C-001 ~ C-101; C-073 ~ C-076 added by CR-054, C-077 ~ C-081 by CR-060, C-082 ~ C-092 by CR-061, C-093 ~ C-098 by CR-076, C-099 ~ C-101 by CR-078)
 - Flows: `FLOW-###`
 - Architecture decisions: `ADR-###`
 - API operations: `API-<AREA>-###`

@@ -42,6 +42,10 @@ const OPEN_STATES: Readonly<Record<string, (page: Page, preview: Locator) => Pro
     await preview.getByRole("button", { name: "Menu trigger" }).click();
     return page.getByRole("menu");
   },
+  ContextMenu: async (page, preview) => {
+    await preview.locator(".docs-context-area").click({ button: "right", position: { x: 24, y: 24 } });
+    return page.getByRole("menu");
+  },
   Popover: async (page, preview) => {
     await preview.getByRole("button", { name: "Show filter help" }).click();
     return page.getByRole("dialog", { name: "Filter help" });
