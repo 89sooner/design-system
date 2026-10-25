@@ -982,5 +982,5 @@ CR-041 구현 cascade와 로컬 검증은 2026-09-14에 종료했다. 사용자�
 | 설계 | ContextMenu·Slider는 기존 Radix 묶음(2026-07-24)의 같은 날 배포본으로 고정해 공통 모듈이 단일 버전으로 남는다. Tree는 Radix에 없어 `@headless-tree/core` 1.7.0에 역할·키보드를 맡기고, React 결합부는 서버 렌더가 비어 쓰지 않는다. Conductor는 Enter·Space를 행 동작에 잇는 단축키 설정만 더한다 |
 | 1.0 일정 | 추가만 있는 minor는 실사용 기간(2026-10-25 ~ 11-22)을 끊지 않는다(사용자 결정). 새 3종은 소비자 실사용 없이 1.0 계약에 든다. 원장 §5에 제약으로 남겼다 |
 | 검증 (로컬) | 원장 CR-078 절 |
-| CI · 종료 | PR #97 head `4fba5a4`: verify(node 20·22), docs e2e, visual regression, consumers(React 18·19·Next), cross-browser(Firefox·WebKit) 모두 통과. 검증기 `--strict` OK. 여기서 닫는다. 병합과 css·react minor 릴리스는 사용자 지시 때 하고 원장 WP-045 행에 기록한다 |
+| CI · 종료 | PR #97 head `4fba5a4`: verify(node 20·22), docs e2e, visual regression, consumers(React 18·19·Next), cross-browser(Firefox·WebKit) 모두 통과. 검증기 `--strict` OK. 다음 head `419e041`의 docs e2e에서 드러난 forced-colors Select 시험의 두 번 읽기 경합을 시험만 고쳐 해소했다(원장 CR-078 절). 여기서 닫는다. 병합과 css·react minor 릴리스는 사용자 지시 때 하고 원장 WP-045 행에 기록한다 |
 

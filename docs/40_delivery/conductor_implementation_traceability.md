@@ -852,3 +852,4 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | 원장 정리 | §5의 해소된 제약 3줄(시각 회귀 게이트, 소비자 스모크 CI, 필터/칩)을 해소됨으로 고치고, 새 제약 3줄(Tree 타이프어헤드 없음, Slider와 Field, 실사용 없는 1.0 편입)을 더했다. DEV-049 재확인 |
 | 운영 안내 | `SECURITY.md`(지원 버전, 비공개 신고 경로, `npm audit signatures`), README "Using Conductor in production"(정확한 버전 고정, 업그레이드 화면 비교) |
 | CI | PR #97 head `4fba5a4`: verify(node 20·22), docs e2e, visual regression, consumers(React 18·19·Next), cross-browser(Firefox·WebKit) 모두 통과. CR-078 closed. 병합·릴리스는 사용자 지시 대기 |
+| 시험 보강 | 문서만 바꾼 `419e041`에서 docs e2e의 forced-colors Select 강조 시험이 한 번 실패했다(배경은 Highlight, 글자는 흰색). 같은 코드의 `4fba5a4`와 로컬 100회 반복에서는 통과했다. 시험이 배경과 글자색을 따로 두 번 읽어서, 그 사이에 강조가 다른 옵션으로 옮겨 가면 두 값이 다른 노드에서 나온다. 한 번에 세 값을 같은 노드에서 읽고 그 묶음을 poll하도록 고쳤다(`apps/docs/e2e/forced-colors.spec.ts`). forced-colors 시험 17건 × 10회 170/170 통과. 컴포넌트 CSS는 바꾸지 않았다 |
