@@ -1,6 +1,6 @@
 # Conductor Design System 구현 추적 원장
 
-> 상태: review | 버전: v0.66 | 갱신일: 2026-10-25
+> 상태: review | 버전: v0.67 | 갱신일: 2026-10-25
 
 ## 1. 목적과 갱신 규칙
 
@@ -384,6 +384,8 @@ agent-ai-platform `packages/web/src/styles/*.css`에서 Conductor 클래스를 �
 
 판정 뒤 남는 재정의는 앱 고유 7규칙이다. AC-5는 후보 버전을 4주 쓴 뒤 이 표가 앱 고유 항목만 담고 있을 때 충족된다.
 
+**적용 (2026-10-25):** agent-ai-platform이 0.18.0을 main에 병합했다(DS-PILOT-24, PR #27 `d4e8e04`). 결함 6규칙은 지워졌고, 다른 사용자 메시지는 `from="participant"`로 그린다. 4주 기간은 2026-10-25 ~ 2026-11-22다.
+
 ## 6. 코드 태깅 규약
 
 - **커밋/PR `Refs:` 줄**: `Refs: WP-### FR-<AREA>-###` 형식을 커밋 메시지 또는 PR 본문에 남긴다. 한 WP가 여러 FR을 구현하면 공백으로 나열한다. 예: `Refs: WP-004 FR-TOK-004 FR-TOK-005`.
@@ -412,7 +414,7 @@ agent-ai-platform `packages/web/src/styles/*.css`에서 Conductor 클래스를 �
 | WP-038 | FR-CMP-015 | done | AlertDialog·RadioGroup·ToggleGroup·Avatar·NumberInput(C-077~C-081), `controls.css`, 레지스트리·a11y·SSR 시험, 카탈로그 미리보기·지침. CR-060. |
 | WP-039 | FR-CMP-016 | done | 에이전트 대화 컴포넌트 11종(C-082~C-092), `agent.css`, 레지스트리·a11y·SSR 시험, 카탈로그 미리보기·지침. CR-061. |
 | WP-044 | FR-CMP-017 | done | Separator·Stack·Grid·Heading·Text·Accordion(C-093~C-098), `primitives.css`, 레지스트리·a11y·SSR 시험, 카탈로그 Layout·Typography family와 Accordion, 지침 6종, 시각 기준 12장 (CR-076) |
-| WP-043 | FR-DX-006 AC-4~AC-7, FR-DX-005 | in progress | 1.0 발행. 1단계(CR-077): 소비자 재정의 13규칙 판정(§5.2), 결함 셋 수정(Message 행 폭·`participant`·main 포커스), CLI 옵션 검출, FR-CMP-010~013 §3 이관. 남은 일: 후보 릴리스, 앱 적용과 4주, `fixed` 전환·major changeset·마이그레이션 노트, 사용자 발행 지시. |
+| WP-043 | FR-DX-006 AC-4~AC-7, FR-DX-005 | in progress | 1.0 발행. 1단계(CR-077) done — 0.18.0 발행(2026-10-24, release run 148), agent-ai-platform 적용 2026-10-25(4주: ~2026-11-22). 1단계 내용: 소비자 재정의 13규칙 판정(§5.2), 결함 셋 수정(Message 행 폭·`participant`·main 포커스), CLI 옵션 검출, FR-CMP-010~013 §3 이관. 남은 일: 4주 실사용 뒤 재정의 재판정, `fixed` 전환·major changeset·마이그레이션 노트, 사용자 발행 지시. |
 
 착수 문서 validator --report: exit 0, FR49/49, Phase7. 실제 소비자 코드는 읽기만 수행했으며 운영 연동·소비자 마이그레이션은 실행하지 않았다. 공개 기록에는 일반화된 계약과 합성 데이터만 남긴다.
 
