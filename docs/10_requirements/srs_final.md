@@ -1,6 +1,6 @@
 # Conductor Design System 최종 요구사항 정의서
 
-> 상태: baseline | 버전: v1.27 | 갱신일: 2026-10-25
+> 상태: baseline | 버전: v1.28 | 갱신일: 2026-10-25
 
 ## 1. 문서 개요
 
@@ -37,7 +37,7 @@ Conductor는 `agent-ai-platform/packages/web`의 시각 언어를 3개 npm 패�
 1. 3계층 디자인 토큰 소스와 CSS/TypeScript/JSON 산출 빌드 — FR-TOK-001 ~ FR-TOK-009
 2. 다크(기준) 및 라이트 테마, 시스템 설정 연동, 테마별 대비 검증, 소스 계승 토큰의 접근성 교정 — FR-THM-001 ~ FR-THM-005
 3. 캐스케이드 레이어 기반 프레임워크 비종속 스타일시트 — FR-CSS-001 ~ FR-CSS-005 (CR-069 보강 FR-CSS-001 AC-5, §30; CR-071 정정 FR-CSS-002 AC-3, §32) 및 CR-074 확장 FR-CSS-006 오른쪽→왼쪽(RTL) 문서 (§34)
-4. React 프리미티브 컴포넌트 — 기존 FR-CMP-001 ~ FR-CMP-009 및 CR-041 확장 FR-CMP-010 ~ FR-CMP-013 (§17, review)
+4. React 프리미티브 컴포넌트 — 기존 FR-CMP-001 ~ FR-CMP-009 및 CR-041 확장 FR-CMP-010 ~ FR-CMP-013 (§17, review) 및 CR-078 확장 FR-CMP-018 ContextMenu·Slider·Tree (§38)
 5. 정적 문서 사이트 — FR-DOC-001 ~ FR-DOC-007 및 CR-048 확장 FR-DOC-008 (§18), CR-051 확장 FR-DOC-009 (§19), CR-052 확장 FR-DOC-010 (§20), CR-053 보강 FR-DOC-001 AC-5·FR-CMP-013 AC-5 (§21), CR-054 확장 FR-CMP-014 (§22), CR-060 확장 FR-CMP-015 (§24), CR-061 확장 FR-CMP-016 (§25), CR-063 보강 FR-CMP-015 AC-7 (§26), CR-064 보강 FR-THM-005 AC-8·FR-CMP-004 AC-7·FR-CMP-010 AC-6 (§27), CR-065 정정·보강 FR-THM-002 AC-3·AC-5·FR-CMP-013 AC-6 (§28), CR-067 정정 FR-CMP-013 AC-6 (§29), CR-071 정정 FR-CMP-013 AC-6 (§32)
 6. WCAG 2.1 AA 접근성 기준선 — FR-A11Y-001 ~ FR-A11Y-005 (CR-071 보강 FR-A11Y-001 AC-5·FR-A11Y-003 AC-5, §32; CR-077 적용 범위 정정 FR-A11Y-001 AC-2·AC-5, §37)
 7. 모노레포 빌드, 타입 배포, 진입점 선언, SSR 안전성, 버저닝 — FR-DX-001 ~ FR-DX-005 및 CR-075 확장 FR-DX-006 1.0 안정화 기준 (§35, CR-076 확정 §36, CR-077 검출 보강 §37)
@@ -988,7 +988,7 @@ OD-001(2026-07-10 종결)이 확정한 정책이다. 소스 팔레트를 실측�
 - **OD-004 → 패키지에 포함**: 셸 컴포넌트군(C-070 ~ C-072)을 `@conductor-by-89soone/react`에 포함한다. `renderLink` props로 링크 렌더를 위임하면 라우팅 비종속 API가 성립한다(FR-CMP-009 AC-1, AC-2). 소스의 사이드 내비와 상단바는 Conductor 시각 언어에서 가장 특징적인 표면이다. WP-023을 실행한다.
 - **OD-005 → 소비자 한 곳, 4주, 재정의 0건 (CR-076)**: 1.0의 실사용 검증은 agent-ai-platform 한 곳으로 한다. 1.0 후보 버전을 그 앱의 main에서 4주 이상 쓰는 동안, Conductor의 `cdt-*` 클래스나 `--cdt-*` 값을 덮어쓰는 로컬 재정의가 0건이어야 한다. 남은 재정의는 각각 컴포넌트 결함이 아닌 앱 고유 스타일로 원장에 판정돼야 한다. 두 번째 소비자는 요구하지 않는다. 근거: 두 번째 소비자를 구할 경로가 없고, 재정의 수가 컴포넌트가 실제 요구를 채우는지를 가장 직접 잰다.
 - **OD-006 → 같은 이름의 값·시각 변경은 minor (CR-076)**: 1.0 이후 토큰 이름이나 클래스 이름을 지우거나 바꾸면 major다. 이름이 같은 채 값·모양만 바뀌는 의도된 시각 변경은 minor로 낸다. 그 changeset은 본문 첫 줄을 `Visual change:`로 시작하고, 같은 PR에 갱신된 시각 회귀 기준 이미지를 담는다. 버그 수정성 보정은 patch다. 근거: 디자인 개선이 major를 기다리지 않게 하되, 소비자가 CHANGELOG에서 화면 변화를 찾을 수 있게 한다.
-- **OD-007 → 기본 단위 6종을 1.0 범위에 (CR-076)**: 1.0 전에 Separator, Stack, Grid, Heading, Text, Accordion을 더한다(FR-CMP-017, §36). Slider, FileUpload, Tree, ContextMenu는 1.0 이후 minor로 더한다. 근거: 앞의 다섯은 작고 거의 모든 화면이 쓰는 레이아웃·타이포그래피 단위라 소비자가 각자 만들면 나중에 공식 컴포넌트와 충돌한다. Accordion은 Radix에 위임하면 작다.
+- **OD-007 → 기본 단위 6종을 1.0 범위에 (CR-076)**: 1.0 전에 Separator, Stack, Grid, Heading, Text, Accordion을 더한다(FR-CMP-017, §36). Slider, FileUpload, Tree, ContextMenu는 1.0 이후 minor로 더한다(2026-10-25 CR-078이 ContextMenu·Slider·Tree를 1.0 전으로 앞당겼다, §38. FileUpload는 그대로 1.0 이후). 근거: 앞의 다섯은 작고 거의 모든 화면이 쓰는 레이아웃·타이포그래피 단위라 소비자가 각자 만들면 나중에 공식 컴포넌트와 충돌한다. Accordion은 Radix에 위임하면 작다.
 - **OD-008 → 1.0부터 lockstep (CR-076)**: 세 패키지를 1.0.0으로 함께 올리고, 이후에도 같은 버전으로 낸다. 1.0 발행 PR에서 `.changeset/config.json`의 `linked`를 `fixed`로 바꾼다. 0.x 동안은 지금의 `linked`를 유지한다. 근거: 소비자는 세 패키지를 항상 함께 설치하므로, 버전 하나가 조합 오류를 없앤다.
 
 ### 14.2 baseline 전 확인
@@ -1334,3 +1334,26 @@ v1.26 baseline 이력을 유지한다. 사용자가 2026-10-24 WP-043 실사용 
 | FR-DX-006 | AC-2 보강: AC-1 ⑦의 CLI 옵션도 공개 표면 기준에 든다. 각 CLI가 모르는 인자에 출력하는 사용법 줄에서 옵션과 위치 인자를 읽어 `etc/public-surface.txt`의 `bin arguments` 구역에 고정하고, `pnpm check:api`가 대조한다. 옵션을 지우면 그 줄이 `-`로 보고되고 CI가 실패한다. |
 
 새 컴포넌트·새 런타임 의존성·새 토큰은 없다. `Message`의 바뀐 폭과 새 변형은 같은 이름의 시각 변경이라 minor이고, changeset 첫 줄 `Visual change:`와 같은 PR의 기준 이미지 갱신을 따른다(OD-006).
+
+## 38. CR-078 확장 요구 (baseline)
+
+v1.27 baseline 이력을 유지한다. 2026-10-25 사용자가 상용 서비스 준비도 평가의 위험 6번(빠진 컴포넌트)을 우선 진행하라고 지시했고("상용 서비스 전에 알아야 할 위험 중 6번 7번을 우선 진행한다"), 질의 응답으로 ContextMenu·Slider·Tree를 고르고 1.0 일정은 "추가만이면 기간 유지"로 정했다. 같은 질의에서 고른 필터 칩은 이미 있다(`FilterChip`·`FilterToolbar`·`MultiSelect`, FR-CMP-010, CR-041; OD-003은 2026-09-13에 해소). 평가가 낡은 원장 §5 줄을 근거로 빠졌다고 잘못 적었으므로 새 컴포넌트를 만들지 않는다. 선택형 칩 묶음은 `ToggleGroup type="multiple"`이 맡는다. FileUpload는 질의 선택지에 없었으므로 OD-007대로 1.0 이후다. OD-007이 1.0 이후로 둔 셋을 앞당기는 결정이며, FR-DX-006 AC-6의 1.0 범위에 FR-CMP-018을 더한다.
+
+| FR | 변경 |
+| --- | --- |
+| FR-DX-006 | AC-6 보강: 1.0 컴포넌트 범위는 지금의 공개 컴포넌트, FR-CMP-017, FR-CMP-018(ContextMenu·Slider·Tree)이다. FileUpload 등 그 밖의 후보는 1.0 이후 minor다 |
+
+#### FR-CMP-018 ContextMenu·Slider·Tree
+
+| 항목 | 내용 |
+| --- | --- |
+| 상태 | approved |
+| 우선순위 | Should |
+| 출처 | CR-078 / 2026-10-25 사용자 지시와 질의 응답 |
+| 요구사항 | 시스템은 항상 `ContextMenu`, `Slider`, `Tree`를 `@conductor-by-89soone/react` 공개 export와 대응하는 `cdt-*` 클래스로 제공하고, 키보드 동작·역할·포커스 관리는 검증된 라이브러리에 위임하여야 한다. |
+| 수용 기준 | AC-1 (ContextMenu, C-099): Radix ContextMenu에 열기(오른쪽 클릭·길게 누르기·Shift+F10·컨텍스트 메뉴 키), `menu`/`menuitem` 역할, 화살표 이동, Escape 닫기와 포커스 복귀를 위임한다. 표면과 항목은 `DropdownMenu`와 같은 `cdt-menu` 클래스를 쓰고 `cdt-context-menu`를 더한다. 항목은 `tone`(`neutral`·`danger`), 장식 `icon`, 텍스트 `shortcut`을 받는다. AC-2 (Slider, C-100): Radix Slider에 `slider` 역할, `aria-valuenow`·`min`·`max`, 화살표·Page·Home/End 키, 끌기를 위임한다. 이름(`aria-label` 또는 `aria-labelledby`)은 역할이 있는 썸에 붙고 역할 없는 루트에는 붙이지 않는다. 값이 둘이면 범위이고, 썸 이름에 `labels.start`·`labels.end`(기본 `Minimum`·`Maximum`)가 붙는다. `valueText`가 있으면 썸의 `aria-valuetext`가 비제어 값까지 따라간다. AC-3 (Tree, C-101): Headless Tree에 `tree`/`treeitem` 역할, `aria-level`·`aria-setsize`·`aria-posinset`·가지의 `aria-expanded`, 한 행만 탭 정지인 로빙 포커스, 위·아래·오른쪽·왼쪽·Home·End 키를 위임한다. Enter·Space·클릭은 행을 선택하고(`selectedId`/`defaultSelectedId`/`onSelectedIdChange`, 단일 선택) 선택 행은 `aria-selected="true"`와 강조 틴트·굵기로 보인다. 서버 렌더에도 행이 나온다. AC-4: 세 컴포넌트는 포커스 링, 커서 계약, axe serious 이상 0건(두 테마, ContextMenu 열린 상태 포함), 키보드 경로 시험, 시각 기준 이미지, 공개 표면 기준(`etc/public-surface.txt`)을 지킨다. |
+| 검증 방법 | test |
+| 관련 화면 | W-020, W-021 |
+| 관련 API/데이터 | API-CMP-015 / ENT-CMP-001 |
+| 예외/실패 처리 | 하위 메뉴·체크·라디오 메뉴 항목, Slider 눈금 표시, Tree 다중 선택·끌어 놓기·이름 바꾸기·비동기 로딩·가상화·타이프어헤드는 이 FR 범위가 아니다. Radix에 Tree가 없으므로 ADR-004의 위임 대상에 Headless Tree를 더한다(react-day-picker·downshift와 같은 예외 경로, 보안 아키텍처 3.1). 새 런타임 의존성은 기존 Radix 묶음(2026-07-24)의 `@radix-ui/react-context-menu@2.3.7`·`@radix-ui/react-slider@1.4.7`과 `@headless-tree/core@1.7.0`(MIT, 런타임 의존성 0. React 결합부 `@headless-tree/react`는 쓰지 않는다: 그 `useTree`가 행을 effect에서 만들어 서버 렌더가 비므로, 같은 일을 하는 작은 훅을 Tree 안에 둔다)이며 정확한 버전으로 고정한다. |
+

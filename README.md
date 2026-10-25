@@ -25,6 +25,16 @@ Dependency direction is strictly `tokens → css → react → docs`. A reverse 
 
 Requires Node 20+ and pnpm 10+.
 
+## Using Conductor in production
+
+Conductor is `0.x`. Until 1.0.0, a minor release may change how existing components look (its changeset starts with `Visual change:`), so:
+
+- Pin exact versions of all three packages (`"0.18.0"`, not `"^0.18.0"`) and upgrade on purpose.
+- When you upgrade, compare your screens before and after — screenshots of your main routes in both themes are enough.
+- Read the package `CHANGELOG.md` for the minors you skip.
+
+From 1.0.0 the three packages share one version, and removing or renaming a public export, `cdt-*` class, `--cdt-*` property or CLI option requires a major release. See [`SECURITY.md`](SECURITY.md) to report a vulnerability.
+
 ## Documentation
 
 The requirements, architecture, and delivery plan live in [`docs/README.md`](docs/README.md). Code implements the approved scope in `docs/10_requirements/srs_final.md`, one work package at a time from `docs/40_delivery/conductor_work_packages.md`.

@@ -1,6 +1,6 @@
 # Conductor Design System 패키지 공개 API 계약
 
-> 상태: review | 버전: v0.17 | 갱신일: 2026-10-25
+> 상태: review | 버전: v0.18 | 갱신일: 2026-10-25
 
 ## 0. 문서 재해석
 
@@ -45,6 +45,7 @@ Conductor Design System에는 HTTP API, 요청/응답 엔드포인트, 인증 �
 | API-CMP-012 | TS interface | 에이전트 대화(`Conversation`, `Message`, `PromptInput`, `Reasoning`, `Tool`, `Confirmation`, `Sources`, `InlineCitation`, `Suggestions`, `Suggestion`, `Shimmer`) | FR-CMP-016 (CR-061) |
 | API-CMP-013 | TS export | 읽기 방향(`DirectionProvider`, `useDirection`) | FR-CSS-006 (CR-074) |
 | API-CMP-014 | TS interface | 레이아웃·타이포그래피·구획(`Separator`, `Stack`, `Grid`, `Heading`, `Text`, `Accordion`) | FR-CMP-017 (CR-076) |
+| API-CMP-015 | TS interface | 컨텍스트 메뉴·슬라이더·트리(`ContextMenu`, `Slider`, `Tree`; 타입 `ContextMenuItemProps`, `SliderProps`, `SliderLabels`, `TreeNode`, `TreeProps`) | FR-CMP-018 (CR-078) |
 | API-DOC-001 | 정적 라우트 계약 | 문서 사이트 W-001~W-050 | 라우트/데이터 출처 매핑 | FR-DOC-001~007 |
 | API-DOC-002 | 에이전트 판독용 산출물 계약 | AI 코딩 에이전트, 소비자 | 정적 Markdown·텍스트 파일 경로와 구조 | FR-DOC-008 |
 

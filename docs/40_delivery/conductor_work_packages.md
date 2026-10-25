@@ -1,6 +1,6 @@
 # Conductor Design System 작업 패키지
 
-> 상태: review | 버전: v0.18 | 갱신일: 2026-10-25
+> 상태: review | 버전: v0.19 | 갱신일: 2026-10-25
 
 ## 1. 목적
 
@@ -858,7 +858,7 @@ design-system/
 - 릴리스: REL-005
 - 관련 요구사항: FR-DX-006 AC-4 ~ AC-7, FR-DX-005
 - 관련 화면: W-002 (CHANGELOG 간접)
-- 선행 WP: WP-041, WP-042, WP-044 (OD-005 ~ OD-008은 2026-10-24 CR-076으로 종결)
+- 선행 WP: WP-041, WP-042, WP-044, WP-045 (OD-005 ~ OD-008은 2026-10-24 CR-076으로 종결)
 - 구현 범위: 1.0 후보 버전을 agent-ai-platform main에 4주 이상 적용하고 로컬 재정의 목록을 원장에 판정(OD-005), `.changeset/config.json`의 `linked`를 `fixed`로 바꾸고 세 패키지 major changeset과 마이그레이션 노트(OD-008), 1.0 후보 커밋의 전 게이트 실행
 - 제외: 1.0 이후 컴포넌트 추가(minor)
 - 완료 기준(DoD): 검증 계획 §1.0 준비도 표가 모두 충족이고 사용자가 발행을 지시했다.
@@ -877,3 +877,16 @@ design-system/
 - 완료 기준(DoD): FR-CMP-017 AC-1~AC-7을 단위·브라우저·시각 시험으로 증명한다.
 - 검증 방법: 단위 시험, a11y·component-css 브라우저 시험, 시각 회귀, `pnpm check:api`
 - 기록: 구현 원장 WP-044, FR-CMP-017 매핑
+
+## WP-045 ContextMenu·Slider·Tree (CR-078)
+
+- 릴리스: REL-005 (react·css minor, 추가만)
+- 관련 요구사항: FR-CMP-018, FR-DX-006 AC-6
+- 관련 화면: W-020, W-021
+- 선행 WP: WP-041 (새 클래스가 공개 표면 기준에 들어간다)
+- 구현 범위: `context-menu.tsx`(Radix ContextMenu, `cdt-menu` 표면 재사용), `slider.tsx`(Radix Slider, 썸 이름·범위 라벨·`valueText`), `tree.tsx`(Headless Tree core, 서버 렌더 가능한 생성 훅, Enter·Space 단축키 설정), `labels.ts`(`SliderLabels`), `packages/css/src/extensions.css`, 공개 레지스트리·a11y 시나리오(키보드 경로 포함)·카탈로그 미리보기·지침·family·루트 클래스, 시각 기준 이미지, `etc/public-surface.txt`·**react.api.md** 갱신
+- 제외: 새 필터 칩(이미 FR-CMP-010), FileUpload, 하위 메뉴·체크 메뉴 항목, Slider 눈금, Tree 다중 선택·끌어 놓기·이름 바꾸기·비동기·가상화·타이프어헤드
+- 완료 기준(DoD): FR-CMP-018 AC-1~AC-4를 단위·브라우저·시각 시험으로 증명한다. 기존 공개 표면에서 지워지거나 바뀐 줄이 없다(`check:api` 차이가 `+`뿐).
+- 검증 방법: 단위 시험, a11y 브라우저 시험(axe·키보드 경로), 시각 회귀, `pnpm check:api`
+- 기록: 구현 원장 WP-045, FR-CMP-018 매핑
+

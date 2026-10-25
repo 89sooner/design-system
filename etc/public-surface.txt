@@ -134,6 +134,9 @@ cdt-command__list
 cdt-command__shortcut
 cdt-command__title
 cdt-content-stack
+cdt-context-menu
+cdt-context-menu__shortcut
+cdt-context-menu__trigger
 cdt-copy-feedback
 cdt-data-table
 cdt-date-picker
@@ -286,6 +289,10 @@ cdt-severity-tag--read
 cdt-severity-tag--write
 cdt-skeleton
 cdt-skip-link
+cdt-slider
+cdt-slider__range
+cdt-slider__thumb
+cdt-slider__track
 cdt-spinner
 cdt-spinner--sm
 cdt-spinner__indicator
@@ -382,6 +389,11 @@ cdt-topbar__context
 cdt-topbar__eyebrow
 cdt-topbar__menu-button
 cdt-topbar__title
+cdt-tree
+cdt-tree__chevron
+cdt-tree__icon
+cdt-tree__item
+cdt-tree__label
 cdt-workbench
 cdt-workbench__inspector
 cdt-workbench__resize
@@ -482,6 +494,9 @@ cdt-command__list
 cdt-command__shortcut
 cdt-command__title
 cdt-content-stack
+cdt-context-menu
+cdt-context-menu__shortcut
+cdt-context-menu__trigger
 cdt-copy-feedback
 cdt-data-table
 cdt-date-picker
@@ -634,6 +649,10 @@ cdt-severity-tag--read
 cdt-severity-tag--write
 cdt-skeleton
 cdt-skip-link
+cdt-slider
+cdt-slider__range
+cdt-slider__thumb
+cdt-slider__track
 cdt-spinner
 cdt-spinner--sm
 cdt-spinner__indicator
@@ -730,6 +749,11 @@ cdt-topbar__context
 cdt-topbar__eyebrow
 cdt-topbar__menu-button
 cdt-topbar__title
+cdt-tree
+cdt-tree__chevron
+cdt-tree__icon
+cdt-tree__item
+cdt-tree__label
 cdt-workbench
 cdt-workbench__inspector
 cdt-workbench__resize

@@ -33,6 +33,9 @@ export default defineConfig({
     "src/layout.tsx",
     "src/typography.tsx",
     "src/accordion.tsx",
+    "src/context-menu.tsx",
+    "src/slider.tsx",
+    "src/tree.tsx",
   ],
   format: ["esm"],
   dts: true,
@@ -42,7 +45,7 @@ export default defineConfig({
   splitting: false,
   treeshake: false,
   async onSuccess() {
-    const clientEntries = new Set(["action", "data", "feedback", "form", "overlay", "shell", "status", "surface", "interaction", "workbench", "relation", "toast", "date-picker", "command", "pagination", "route-focus", "direction", "accordion"]);
+    const clientEntries = new Set(["action", "data", "feedback", "form", "overlay", "shell", "status", "surface", "interaction", "workbench", "relation", "toast", "date-picker", "command", "pagination", "route-focus", "direction", "accordion", "context-menu", "slider", "tree"]);
     for (const file of await readdir("dist")) {
       if (!file.endsWith(".js")) continue;
       const path = `dist/${file}`;
@@ -53,5 +56,5 @@ export default defineConfig({
     }
   },
   target: "es2022",
-  external: ["react", "react-dom", "lucide-react", "@radix-ui/react-dialog", "@radix-ui/react-dropdown-menu", "@radix-ui/react-tooltip", "@radix-ui/react-toast", "react-day-picker", "@radix-ui/react-alert-dialog", "@radix-ui/react-avatar", "@radix-ui/react-radio-group", "@radix-ui/react-toggle-group", "@radix-ui/react-accordion"],
+  external: ["react", "react-dom", "lucide-react", "@radix-ui/react-dialog", "@radix-ui/react-dropdown-menu", "@radix-ui/react-tooltip", "@radix-ui/react-toast", "react-day-picker", "@radix-ui/react-alert-dialog", "@radix-ui/react-avatar", "@radix-ui/react-radio-group", "@radix-ui/react-toggle-group", "@radix-ui/react-accordion", "@radix-ui/react-context-menu", "@radix-ui/react-slider", "@headless-tree/core"],
 });

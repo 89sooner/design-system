@@ -1,6 +1,6 @@
 # Conductor Design System Architecture Decision Records
 
-> 상태: review | 버전: v0.4 | 갱신일: 2026-09-13
+> 상태: review | 버전: v0.5 | 갱신일: 2026-10-25
 
 ## 1. 목적
 
@@ -170,6 +170,7 @@ Radix가 필요한 컴포넌트: C-040 Dialog, C-041 Drawer, C-042 Tooltip, C-04
 - 부정: Radix DOM 구조 변경에 노출된다(R-3). 7개 컴포넌트가 외부 패키지에 결합된다.
 - 완화: 정확 버전 고정, `data-*` 셀렉터 전용, 구조 셀렉터 사용 시 CSS 산출물 검사 실패(FR-CSS-004 AC-4). 구조 변경이 감지되면 DEV를 등록한다.
 - 후속: Radix 메이저 업그레이드는 시각 회귀 검사(JOB-CI-003)와 axe 검사(JOB-CI-002)를 통과해야 병합한다.
+- 보강 (2026-10-25, CR-078): Radix에 없는 패턴은 같은 원칙으로 검증된 라이브러리에 위임한다. 앞선 예가 달력 격자의 react-day-picker(CR-054)와 콤보박스 키보드 모델의 downshift(CR-041·CR-054)다. Tree(C-101)는 `@headless-tree/core`에 `tree`/`treeitem` 역할, 수준·위치·펼침 속성, 로빙 포커스, 방향·Home/End 키를 맡긴다. Conductor가 더하는 것은 Enter·Space를 행의 기본 동작에 잇는 라이브러리 단축키 설정 두 줄뿐이고, 키 처리 코드는 자체로 작성하지 않는다. React 결합부 `@headless-tree/react`는 행을 effect에서 만들어 서버 렌더가 비므로 쓰지 않고, 같은 생성·마운트 절차를 Tree 안의 작은 훅으로 둔다.
 
 ---
 

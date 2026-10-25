@@ -1,6 +1,6 @@
 # Conductor Design System 화면 QA 체크리스트
 
-> 상태: review | 버전: v0.13 | 갱신일: 2026-10-25
+> 상태: review | 버전: v0.14 | 갱신일: 2026-10-25
 
 ## 0. 사용 방법
 
@@ -209,6 +209,9 @@ FR-CMP-001은 공개 컴포넌트 전수가 ref 전달(AC-1), className 병합(A
 - [x] QA-225 짧은 에이전트·시스템 턴의 본문이 행 전체 폭이고, 사용자 말풍선은 끝 쪽, `participant` 말풍선은 시작 쪽에 `surface.raised` 채움과 테두리로 그려진다 (FR-CMP-016 AC-1, CR-077) — 계산값 시험, Message 두 테마 기준 이미지
 - [x] QA-226 건너뛰기 링크를 Enter로 눌러 포커스가 main으로 가면 main은 링·외곽선을 그리지 않고, 다음 Tab의 컨트롤은 링을 그린다 (FR-CMP-009 AC-4, CR-077)
 - [x] QA-227 CLI 옵션을 하나 지운 빌드에서 `pnpm check:api`가 `bin arguments`의 지운 줄을 `-`로 보이며 실패한다 (FR-DX-006 AC-2, CR-077)
+- [x] QA-228 ContextMenu가 Shift+F10으로 열리고 `cdt-menu` 표면에 `menuitem`을 보이며, Escape로 닫혀 영역으로 포커스가 돌아온다. 열린 상태 axe serious 0건(두 테마) (FR-CMP-018 AC-1, CR-078)
+- [x] QA-229 Slider 썸이 이름 붙은 `slider`이고 방향키로 값이 움직이며, 범위는 썸마다 Minimum·Maximum이 붙는다 (FR-CMP-018 AC-2, CR-078)
+- [x] QA-230 Tree가 한 행만 탭 정지이고, →로 펼치고 ↓로 이동하며 Enter로 선택하고, 서버 렌더에도 행이 있다 (FR-CMP-018 AC-3, CR-078)
 - [x] QA-190 픽셀 차이가 1%를 초과하면 CI가 실패하고 차이 이미지가 아티팩트로 남는다 (FR-QA-004 AC-2) — 36% 차이 픽스처 exit 1, actual/expected/diff 생성
 - [x] QA-191 기준 이미지 갱신이 `pnpm test:visual --update` 명시적 커맨드로만 가능하다 (FR-QA-004 AC-3)
 - [x] QA-192 `Button` 단독 import gzip 크기가 4KB 이하다(React 제외) (FR-DX-003 AC-3) — `size-limit` 실측 527바이트

@@ -1,6 +1,6 @@
 # 요구사항-화면 추적 매트릭스
 
-> 상태: review | 버전: v0.21 | 갱신일: 2026-10-25
+> 상태: review | 버전: v0.22 | 갱신일: 2026-10-25
 
 ## 1. 목적
 
@@ -110,6 +110,7 @@ UI가 없는 요구사항은 아래 표면 중 하나에 간접 노출된다.
 | FR-DX-005 | Should | — | SFC-REL | — | 버저닝 |
 | FR-DX-006 | Should | W-002 | SFC-REL, SFC-CI | — | 1.0 안정화 기준 (CR-075); OD-005 ~ OD-008 closed (CR-076); CLI 옵션 검출 (CR-077) |
 | FR-CMP-017 | Should | W-020, W-021 | SFC-PKG | — | Separator·Stack·Grid·Heading·Text·Accordion (CR-076) |
+| FR-CMP-018 | Should | W-020, W-021 | SFC-PKG | — | ContextMenu·Slider·Tree (CR-078) |
 | FR-QA-001 | Must | — | SFC-CLI, SFC-CI, W-030 | FLOW-003 | 토큰 계약 |
 | FR-QA-002 | Must | — | SFC-CI, W-050 | FLOW-003 | 단위 검사 |
 | FR-QA-003 | Must | W-050 | SFC-CI | FLOW-003 | 접근성 검사 |
@@ -163,6 +164,7 @@ NFR은 화면 하나에 귀속되지 않는다. 각 NFR이 어디서 측정되�
 | FR-CMP-015 | W-020, W-021 / SFC-PKG | WP-038 | AlertDialog·RadioGroup·ToggleGroup·Avatar·NumberInput 동작, axe(열린 상태 포함), 키보드 경로, 쌓임·커서·포커스 링 계약 (CR-060); NumberInput glass 배경이 glass TextField와 같고 포커스·비활성은 solid와 같은지 두 테마 브라우저 시험 (CR-063) |
 | FR-CMP-016 | W-020, W-021 / SFC-PKG | WP-039 | 에이전트 대화 컴포넌트 11종 동작(전송·IME·중단, 스트리밍 상태, 펼침, 승인 결정, 인용), axe(열린 상태 포함), 키보드 경로, 포커스 링·커서 계약 (CR-061); `participant` 역할과 에이전트 턴 행 폭의 계산값 시험 (CR-077) |
 | FR-CMP-017 | W-020, W-021 / SFC-PKG | WP-044 | 레이아웃·타이포그래피·구획 6종의 공통 계약, Accordion 키보드·`aria-expanded`, axe, 시각 기준, 공개 표면 기준 (CR-076) |
+| FR-CMP-018 | W-020, W-021 / SFC-PKG | WP-045 | ContextMenu 열기·Escape·포커스 복귀, Slider 썸 이름·키·`aria-valuetext`, Tree 역할·수준·로빙 포커스·선택, axe(두 테마, 열린 상태), 키보드 경로, 시각 기준, 공개 표면 기준 (CR-078) |
 | FR-CMP-013 | W-060, W-061, W-062 / SFC-PKG / SFC-REL | WP-029 | Radix 키보드·포커스와 tarball 소비; Tabs 활성 표시선 (CR-065), Tabs 세그먼트형 기본·`variant="line"` (CR-067) |
 
 
