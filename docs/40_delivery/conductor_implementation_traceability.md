@@ -419,7 +419,7 @@ agent-ai-platform `packages/web/src/styles/*.css`에서 Conductor 클래스를 �
 | WP-039 | FR-CMP-016 | done | 에이전트 대화 컴포넌트 11종(C-082~C-092), `agent.css`, 레지스트리·a11y·SSR 시험, 카탈로그 미리보기·지침. CR-061. |
 | WP-044 | FR-CMP-017 | done | Separator·Stack·Grid·Heading·Text·Accordion(C-093~C-098), `primitives.css`, 레지스트리·a11y·SSR 시험, 카탈로그 Layout·Typography family와 Accordion, 지침 6종, 시각 기준 12장 (CR-076) |
 | WP-043 | FR-DX-006 AC-4~AC-7, FR-DX-005 | in progress | 1.0 발행. 1단계(CR-077) done — 0.18.0 발행(2026-10-24, release run 148), agent-ai-platform 적용 2026-10-25(4주: ~2026-11-22). 1단계 내용: 소비자 재정의 13규칙 판정(§5.2), 결함 셋 수정(Message 행 폭·`participant`·main 포커스), CLI 옵션 검출, FR-CMP-010~013 §3 이관. 남은 일: 4주 실사용 뒤 재정의 재판정, `fixed` 전환·major changeset·마이그레이션 노트, 사용자 발행 지시. |
-| WP-045 | FR-CMP-018 | done | ContextMenu·Slider·Tree(C-099~C-101), `extensions.css`, Radix ContextMenu 2.3.7·Slider 1.4.7과 `@headless-tree/core` 1.7.0, 레지스트리·a11y(키보드 경로 포함)·카탈로그·지침, 시각 기준. CR-078. 새 필터 칩은 FR-CMP-010에 이미 있어 만들지 않았다. |
+| WP-045 | FR-CMP-018 | done | ContextMenu·Slider·Tree(C-099~C-101), `extensions.css`, Radix ContextMenu 2.3.7·Slider 1.4.7과 `@headless-tree/core` 1.7.0, 레지스트리·a11y(키보드 경로 포함)·카탈로그·지침, 시각 기준. CR-078. 새 필터 칩은 FR-CMP-010에 이미 있어 만들지 않았다. PR #97 병합 `27787df`, Version packages #98 `640570c`, release run 152 — npm css·react 0.19.0(2026-10-25). |
 
 착수 문서 validator --report: exit 0, FR49/49, Phase7. 실제 소비자 코드는 읽기만 수행했으며 운영 연동·소비자 마이그레이션은 실행하지 않았다. 공개 기록에는 일반화된 계약과 합성 데이터만 남긴다.
 
@@ -851,5 +851,5 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | 검증 (로컬) | build, typecheck, test 936/936, lint, lint:tokens(0 위반), check:contrast, size(Button 1.33KiB, index.css 15.72KiB), check:api(차이는 `+`뿐: 클래스 24줄, **react.api.md** 62줄), check:changesets, test:a11y 409/409(+1 skip), 문서 E2E 87/87, 시각 회귀 190/190, `pnpm audit --audit-level high` 통과(prod moderate 1건은 기존 docs의 postcss) |
 | 원장 정리 | §5의 해소된 제약 3줄(시각 회귀 게이트, 소비자 스모크 CI, 필터/칩)을 해소됨으로 고치고, 새 제약 3줄(Tree 타이프어헤드 없음, Slider와 Field, 실사용 없는 1.0 편입)을 더했다. DEV-049 재확인 |
 | 운영 안내 | `SECURITY.md`(지원 버전, 비공개 신고 경로, `npm audit signatures`), README "Using Conductor in production"(정확한 버전 고정, 업그레이드 화면 비교) |
-| CI | PR #97 head `4fba5a4`: verify(node 20·22), docs e2e, visual regression, consumers(React 18·19·Next), cross-browser(Firefox·WebKit) 모두 통과. CR-078 closed. 병합·릴리스는 사용자 지시 대기 |
+| CI | PR #97 head `4fba5a4`: verify(node 20·22), docs e2e, visual regression, consumers(React 18·19·Next), cross-browser(Firefox·WebKit) 모두 통과. CR-078 closed. 병합 `27787df`, Version packages #98 `640570c`, release run 152 성공, npm css·react 0.19.0 |
 | 시험 보강 | 문서만 바꾼 `419e041`에서 docs e2e의 forced-colors Select 강조 시험이 한 번 실패했다(배경은 Highlight, 글자는 흰색). 같은 코드의 `4fba5a4`와 로컬 반복(강조 시험 4종 × 25회, Select 25/25)에서는 통과했다. 시험이 배경과 글자색을 따로 두 번 읽어서, 그 사이에 강조가 다른 옵션으로 옮겨 가면 두 값이 다른 노드에서 나온다. 한 번에 세 값을 같은 노드에서 읽고 그 묶음을 poll하도록 고쳤다(`apps/docs/e2e/forced-colors.spec.ts`). forced-colors 시험 17건 × 10회 170/170 통과. 컴포넌트 CSS는 바꾸지 않았다 |
