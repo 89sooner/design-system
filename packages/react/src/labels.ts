@@ -64,6 +64,12 @@ export interface RelationGraphLabels {
   readonly unresolved: string;
   readonly ambiguous: string;
   readonly confirmed: string;
+  /** State of an edge derived from metadata rather than declared (CR-079). Optional so existing full label objects still type-check. */
+  readonly inferred?: string;
+  /** Legend for `layout="focus"` (CR-079). */
+  readonly legendFocus?: string;
+  /** Appended to `legend` when at least one edge is inferred (CR-079). */
+  readonly legendInferred?: string;
   readonly missingEndpoint: string;
   readonly findNode: string;
   readonly findPlaceholder: string;
@@ -120,6 +126,9 @@ export const DEFAULT_RELATION_GRAPH_LABELS: RelationGraphLabels = {
   unresolved: "Unresolved",
   ambiguous: "Ambiguous",
   confirmed: "Confirmed",
+  inferred: "Inferred",
+  legendFocus: "Arrows read source → relation → target. Left: items that point to the focused item. Right: items it points to; one that points both ways sits on the right. Rows follow relation type, then ID; position does not imply time, merge or dependency order. Solid: confirmed · dash-dot: inferred · dotted: unresolved or ambiguous · dashed: retracted.",
+  legendInferred: "Dash-dot: inferred from metadata, not declared.",
   missingEndpoint: "No details for this endpoint",
   findNode: "Find node",
   findPlaceholder: "Name or stable ID",

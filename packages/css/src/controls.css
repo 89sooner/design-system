@@ -71,6 +71,9 @@
   .cdt-command__item[data-highlighted] { background: var(--cdt-accent-soft); box-shadow: inset var(--cdt-border-width-emphasis) 0 0 var(--cdt-accent); }
   .cdt-command__item[data-disabled] { color: var(--cdt-text-muted); cursor: not-allowed; }
   /* A shortcut reads left to right in any document, like the key caps inside it (CR-074). */
+  /* CR-079: a label with a second line (description or disabled reason). The second line stays readable while disabled. */
+  .cdt-command__text { display: grid; gap: calc(var(--cdt-space-1) / 2); min-inline-size: 0; }
+  .cdt-command__description { color: var(--cdt-text-muted); font-size: var(--cdt-font-size-sm); line-height: var(--cdt-font-line-height-sm); overflow-wrap: break-word; }
   .cdt-command__shortcut { display: inline-flex; gap: var(--cdt-space-1); direction: ltr; }
   .cdt-command__empty { margin: 0; padding: var(--cdt-space-4); color: var(--cdt-text-muted); text-align: center; }
 

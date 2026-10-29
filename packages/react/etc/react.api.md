@@ -287,8 +287,10 @@ export interface ComboboxProps extends Omit<HTMLAttributes<HTMLDivElement>, "onC
 
 // @public (undocumented)
 export interface Command {
+    readonly description?: string;
     // (undocumented)
     readonly disabled?: boolean;
+    readonly disabledReason?: string;
     // (undocumented)
     readonly group?: string;
     // (undocumented)
@@ -489,6 +491,7 @@ export interface DataTableProps<Row> extends Omit<HTMLAttributes<HTMLDivElement>
     readonly columns: readonly DataColumn<Row>[];
     // (undocumented)
     readonly density?: "comfortable" | "compact";
+    readonly fit?: "scroll" | "columns";
     // (undocumented)
     readonly hasMore?: boolean;
     // (undocumented)
@@ -758,7 +761,7 @@ export interface KbdProps extends HTMLAttributes<HTMLElement> {
 }
 
 // @public
-export function layoutRelationNodes(nodes: readonly RelationNode[]): {
+export function layoutRelationNodes(nodes: readonly RelationNode[], options?: RelationLayoutOptions): {
     x: number;
     y: number;
     id: string;
@@ -1179,6 +1182,7 @@ export interface RelationEdge {
     readonly evidence: string;
     // (undocumented)
     readonly id: string;
+    readonly inferred?: boolean;
     readonly label: string;
     // (undocumented)
     readonly retracted?: boolean;
@@ -1235,8 +1239,11 @@ export interface RelationGraphLabels {
     readonly fit: string;
     // (undocumented)
     readonly hiddenByFilter: string;
+    readonly inferred?: string;
     // (undocumented)
     readonly legend: string;
+    readonly legendFocus?: string;
+    readonly legendInferred?: string;
     // (undocumented)
     readonly loading: string;
     // (undocumented)
@@ -1311,9 +1318,11 @@ export interface RelationGraphLabels {
 export interface RelationGraphProps extends Omit<HTMLAttributes<HTMLDivElement>, "children" | "onSelect"> {
     // (undocumented)
     readonly edges: readonly RelationEdge[];
+    readonly focusId?: string;
     // (undocumented)
     readonly label: string;
     readonly labels?: Partial<RelationGraphLabels>;
+    readonly layout?: "grid" | "focus";
     // (undocumented)
     readonly nodes: readonly RelationNode[];
     // (undocumented)
@@ -1330,6 +1339,13 @@ export interface RelationGraphProps extends Omit<HTMLAttributes<HTMLDivElement>,
     readonly stateMessage?: string;
     // (undocumented)
     readonly viewport?: RelationViewport;
+}
+
+// @public
+export interface RelationLayoutOptions {
+    readonly edges?: readonly RelationEdge[];
+    readonly focusId?: string;
+    readonly layout?: "grid" | "focus";
 }
 
 // @public (undocumented)

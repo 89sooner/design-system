@@ -1,6 +1,6 @@
 # Conductor Design System 화면 QA 체크리스트
 
-> 상태: review | 버전: v0.14 | 갱신일: 2026-10-25
+> 상태: review | 버전: v0.15 | 갱신일: 2026-10-29
 
 ## 0. 사용 방법
 
@@ -212,6 +212,11 @@ FR-CMP-001은 공개 컴포넌트 전수가 ref 전달(AC-1), className 병합(A
 - [x] QA-228 ContextMenu가 Shift+F10으로 열리고 `cdt-menu` 표면에 `menuitem`을 보이며, Escape로 닫혀 영역으로 포커스가 돌아온다. 열린 상태 axe serious 0건(두 테마) (FR-CMP-018 AC-1, CR-078)
 - [x] QA-229 Slider 썸이 이름 붙은 `slider`이고 방향키로 값이 움직이며, 범위는 썸마다 Minimum·Maximum이 붙는다 (FR-CMP-018 AC-2, CR-078)
 - [x] QA-230 Tree가 한 행만 탭 정지이고, →로 펼치고 ↓로 이동하며 Enter로 선택하고, 서버 렌더에도 행이 있다 (FR-CMP-018 AC-3, CR-078)
+- [x] QA-231 CommandPalette에서 한국어를 조합하다 Enter로 확정하면(`isComposing`·keyCode 229·조합 이벤트 사이) 명령이 실행되지 않고, 조합이 끝난 뒤의 Enter는 실행된다 (FR-CMP-014 AC-6, CR-079)
+- [x] QA-232 `description`이 있는 명령은 두 번째 줄을 이름에 포함하고, 비활성 명령은 `disabledReason`을 그 자리에 보이며, 둘 다 없는 명령의 마크업은 그대로다 (FR-CMP-014 AC-6, CR-079)
+- [x] QA-233 390px에서 `fit="columns"` DataTable은 틀 폭을 넘지 않고, 기본 DataTable은 틀 안에서 옆으로 스크롤한다 (FR-CMP-010 AC-7, CR-079)
+- [x] QA-234 `AppShell` 밖에서 조상에 `--cdt-workbench-sticky-offset: 56px`를 둔 작업대를 내리면 고정 인스펙터가 뷰포트 위 56px에 붙고 높이가 뷰포트 − 56px를 넘지 않는다 (FR-CMP-010 AC-7, CR-079)
+- [x] QA-235 문서 워크벤치 예제에서 더 불러오고 행을 고른 뒤 다른 페이지에 갔다 뒤로 오면 행 수·선택·미리보기·포커스·스크롤이 돌아오고, 관계 예제의 추론 간선은 `Inferred`·일점쇄선, "Focus on #42"는 좌우 초점 배치와 범례를 보인다 (FR-CMP-010 AC-8, FR-CMP-011 AC-6, CR-079)
 - [x] QA-190 픽셀 차이가 1%를 초과하면 CI가 실패하고 차이 이미지가 아티팩트로 남는다 (FR-QA-004 AC-2) — 36% 차이 픽스처 exit 1, actual/expected/diff 생성
 - [x] QA-191 기준 이미지 갱신이 `pnpm test:visual --update` 명시적 커맨드로만 가능하다 (FR-QA-004 AC-3)
 - [x] QA-192 `Button` 단독 import gzip 크기가 4KB 이하다(React 제외) (FR-DX-003 AC-3) — `size-limit` 실측 527바이트

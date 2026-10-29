@@ -535,6 +535,7 @@ export const tokens: {
         readonly background: "var(--cdt-workbench-background)";
         readonly compactPadding: "var(--cdt-workbench-compact-padding)";
         readonly listHeight: "var(--cdt-workbench-list-height)";
+        readonly stickyOffset: "var(--cdt-workbench-sticky-offset)";
     };
 };
 

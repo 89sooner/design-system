@@ -1,6 +1,6 @@
 # Conductor Design System 작업 패키지
 
-> 상태: review | 버전: v0.19 | 갱신일: 2026-10-25
+> 상태: review | 버전: v0.20 | 갱신일: 2026-10-29
 
 ## 1. 목적
 
@@ -890,3 +890,14 @@ design-system/
 - 검증 방법: 단위 시험, a11y 브라우저 시험(axe·키보드 경로), 시각 회귀, `pnpm check:api`
 - 기록: 구현 원장 WP-045, FR-CMP-018 매핑
 
+## WP-046 PR 조사 공백: IME 확정, 명령 보조 줄, 표 맞춤, 고정 오프셋, 추론 관계와 초점 배치, 왕복 복원 (CR-079)
+
+- 릴리스: REL-005 (tokens·css·react minor, 추가만)
+- 관련 요구사항: FR-CMP-010 AC-7·AC-8, FR-CMP-011 AC-6, FR-CMP-014 AC-6
+- 관련 화면: W-060, W-061, W-020, W-021
+- 선행 WP: WP-030, WP-031, WP-037, WP-041
+- 구현 범위: `command.tsx`(IME 확정 Enter 차단, `description`·`disabledReason`), `workbench.tsx`(`DataTable fit`), `relation.tsx`(`inferred`, `layout="focus"`, `RelationLayoutOptions`), `labels.ts`(`RelationGraphLabels.inferred`·`legendFocus`·`legendInferred`), `index.ts`, `packages/css/src/controls.css`·`workbench.css`·`relation.css`, `packages/tokens/src/components.ts`(`workbench.stickyOffset`), `apps/docs/src/workbench-context.ts`·`workbench-example.tsx`·`relation-example.tsx`, 지침 JSON, API 보고서·`etc/public-surface.txt` 갱신
+- 제외: 선택 행 레일, 입력 배경 통일, 관계 그래프 라벨 겹침, 표 셀 `overflow-wrap`(기존 시각을 바꾼다), 우선순위 열 접기(소비자 책임), 저장된 보기 예제, 성능 한계 정의, 교차 브라우저 범위 확대
+- 완료 기준(DoD): 위 AC를 단위·브라우저·E2E 시험으로 증명한다. `check:api` 차이는 추가와 `layoutRelationNodes` 선택 인자 한 줄뿐이다. 기존 시각 기준 이미지가 그대로다(CI visual regression 통과).
+- 검증 방법: 단위 시험, 브라우저 CSS 시험, 문서 E2E, 시각 회귀, `pnpm check:api`
+- 기록: 구현 원장 WP-046, CR-079 절

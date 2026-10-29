@@ -1,6 +1,6 @@
 # Conductor Design System 패키지 공개 API 계약
 
-> 상태: review | 버전: v0.18 | 갱신일: 2026-10-25
+> 상태: review | 버전: v0.19 | 갱신일: 2026-10-29
 
 ## 0. 문서 재해석
 
@@ -646,3 +646,26 @@ export { DirectionProvider, useDirection } from "@radix-ui/react-direction";
 ```
 
 `direction` 진입점은 `"use client"` 경계를 가진다(FR-DX-004). 새 export만 있는 비파괴 변경이라 react minor다. `@conductor-by-89soone/css`의 RTL 미러링·LTR 고정은 클래스와 커스텀 프로퍼티 이름을 바꾸지 않으므로 css patch다. 새 런타임 의존성은 `@radix-ui/react-direction@1.1.4` 하나이고, 기존 Radix 패키지가 이미 같은 버전을 전이 의존으로 쓰고 있었다.
+
+## CR-079 추가 prop (FR-CMP-010 AC-7, FR-CMP-011 AC-6, FR-CMP-014 AC-6)
+
+```ts
+export interface Command {
+  readonly description?: string;    // 두 번째 줄. 옵션 이름에 들고 filterCommands가 찾지 않는다
+  readonly disabledReason?: string; // disabled일 때 description 자리에 보인다
+}
+export interface DataTableProps<Row> { readonly fit?: "scroll" | "columns" } // 기본 "scroll"; "columns" → data-fit="columns"
+export interface RelationEdge { readonly inferred?: boolean }               // data-state="inferred", 상태 문구 Inferred
+export interface RelationGraphProps {
+  readonly layout?: "grid" | "focus"; // 기본 "grid"
+  readonly focusId?: string;
+}
+export interface RelationLayoutOptions { readonly layout?: "grid" | "focus"; readonly focusId?: string; readonly edges?: readonly RelationEdge[] }
+export function layoutRelationNodes(nodes: readonly RelationNode[], options?: RelationLayoutOptions): (RelationNode & { x: number; y: number })[];
+export interface RelationGraphLabels { readonly inferred?: string; readonly legendFocus?: string; readonly legendInferred?: string }
+// tokens: tokens.workbench.stickyOffset → "var(--cdt-workbench-sticky-offset)", 기본 0px
+// css: .cdt-command__text, .cdt-command__description, [data-fit="columns"]
+```
+
+모두 선택 prop·선택 인자·새 키 추가라 tokens·css·react minor다. `layoutRelationNodes`는 공개 API 보고서에서 시그니처 줄이 바뀌지만(선택 인자) 인자 하나로 부르면 이전과 같은 격자를 돌려준다. `RelationGraphLabels`의 새 키는 선택이라 기존 `labels` 객체를 깨지 않는다. CommandPalette의 IME 확정 Enter 차단은 결함 수정으로 서명 변화가 없다.
+

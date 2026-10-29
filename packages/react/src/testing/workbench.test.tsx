@@ -69,6 +69,16 @@ describe("FR-CMP-010 search contracts", () => {
     expect(retry).toHaveBeenCalledOnce();
   });
 
+  test("CR-079 FR-CMP-010 AC-7: fit=\"columns\" marks the table so it drops its minimum width; scroll stays the default", () => {
+    const props = { label: "PRs", rows: [{ id: "a" }], rowId: (row: { id: string }) => row.id, rowLabel: (row: { id: string }) => row.id, columns: [{ id: "id", header: "ID", cell: (row: { id: string }) => row.id }] };
+    const { container, rerender } = render(<DataTable {...props} />);
+    expect(container.querySelector(".cdt-data-table")!.hasAttribute("data-fit")).toBe(false);
+    rerender(<DataTable {...props} fit="columns" />);
+    expect(container.querySelector(".cdt-data-table")!.getAttribute("data-fit")).toBe("columns");
+    rerender(<DataTable {...props} fit="scroll" />);
+    expect(container.querySelector(".cdt-data-table")!.hasAttribute("data-fit")).toBe(false);
+  });
+
   test("empty/loading/error rows and cursor action remain honest", () => {
     const load = vi.fn(); const props = { label: "Results", rows: [] as string[], rowId: (row: string) => row, rowLabel: (row: string) => row, columns: [{ id: "name", header: "Name", cell: (row: string) => row }] };
     const { rerender } = render(<DataTable {...props} />); expect(screen.getByText("No results")).toBeTruthy();

@@ -81,6 +81,51 @@ describe("FR-CMP-014 CommandPalette", () => {
   });
 });
 
+describe("FR-CMP-014 AC-6 (CR-079) CommandPalette IME and second lines", () => {
+  test.each([
+    ["keyCode 229", { key: "Enter", keyCode: 229 }],
+    ["isComposing with keyCode 13", { key: "Enter", keyCode: 13, isComposing: true }],
+  ])("an Enter that confirms an IME composition (%s) runs nothing", (_name, init) => {
+    const select = vi.fn();
+    render(<CommandPalette open onOpenChange={() => undefined} commands={commands} onSelect={select} />);
+    const input = screen.getByRole("combobox", { name: "Search commands" });
+    fireEvent.change(input, { target: { value: "배포" } });
+    fireEvent.change(input, { target: { value: "" } });
+    fireEvent.keyDown(input, init);
+    expect(select).not.toHaveBeenCalled();
+    fireEvent.keyDown(input, { key: "Enter" });
+    expect(select).toHaveBeenCalledWith("deploy");
+  });
+
+  test("composition events alone also hold Enter until compositionend", () => {
+    const select = vi.fn();
+    render(<CommandPalette open onOpenChange={() => undefined} commands={commands} onSelect={select} />);
+    const input = screen.getByRole("combobox", { name: "Search commands" });
+    fireEvent.compositionStart(input);
+    fireEvent.keyDown(input, { key: "Enter" });
+    expect(select).not.toHaveBeenCalled();
+    fireEvent.compositionEnd(input);
+    fireEvent.keyDown(input, { key: "Enter" });
+    expect(select).toHaveBeenCalledWith("deploy");
+  });
+
+  test("description is a second line in the option's name; a disabled command shows its reason instead", () => {
+    render(<CommandPalette open onOpenChange={() => undefined} onSelect={() => undefined} commands={[
+      { id: "copy", label: "Copy ID", description: "atlas/search#70" },
+      { id: "explore", label: "Explore relations", description: "atlas/search#70", disabled: true, disabledReason: "Select a pull request first" },
+      { id: "plain", label: "Toggle theme" },
+    ]} />);
+    const [copy, explore, plain] = screen.getAllByRole("option");
+    expect(copy!.textContent).toBe("Copy IDatlas/search#70");
+    expect(explore!.textContent).toBe("Explore relationsSelect a pull request first");
+    expect(explore!.getAttribute("aria-disabled")).toBe("true");
+    expect(explore!.querySelector(".cdt-command__description")).toBeTruthy();
+    // Without a second line the option keeps its earlier markup: a single label span.
+    expect(plain!.querySelector(".cdt-command__text")).toBeNull();
+    expect(filterCommands([{ id: "copy", label: "Copy ID", description: "atlas/search#70" }], "atlas")).toEqual([]);
+  });
+});
+
 function PaletteFixture() {
   const [open, setOpen] = useState(false);
   return <><button type="button" onClick={() => setOpen(true)}>Open palette</button><CommandPalette open={open} onOpenChange={setOpen} commands={commands} onSelect={() => undefined} /></>;

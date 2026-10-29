@@ -5,6 +5,7 @@
 // Conductor element, or sits inside one, draws `--cdt-focus-ring` with this entry point alone.
 import { page, userEvent } from "@vitest/browser/context";
 import { cleanup, render } from "@testing-library/react";
+import type { CSSProperties } from "react";
 import { afterEach, expect, test } from "vitest";
 import { NumberInput } from "../number-input";
 import { Switch, TextArea, TextField } from "../form";
@@ -247,6 +248,36 @@ test("CR-064 FR-CMP-010 AC-6: the split-view inspector stays in view while resul
   window.scrollTo(0, 0);
   await page.viewport(700, 800);
   expect(getComputedStyle(view()).position).toBe("static");
+  await page.viewport(1280, 800);
+});
+
+// ---- CR-079 ----
+
+test("CR-079 FR-CMP-010 AC-7: outside AppShell the pinned inspector starts below an app bar set through --cdt-workbench-sticky-offset", async () => {
+  document.documentElement.dataset.cdtTheme = "dark";
+  const tall = Array.from({ length: 60 }, (_, index) => ({ id: `row-${index}` }));
+  const view = (): HTMLElement => document.querySelector<HTMLElement>(".cdt-workbench__inspector")!;
+  render(<div style={{ "--cdt-workbench-sticky-offset": "56px" } as CSSProperties /* cdt-allow-literal: consumer bar height under test */}>
+    <WorkbenchLayout inspector={<DetailInspector label="Preview" onClose={() => undefined}>Detail</DetailInspector>}>
+      <DataTable label="Tall" rows={tall} rowId={(row) => row.id} rowLabel={(row) => row.id} columns={[{ id: "id", header: "ID", cell: (row) => row.id }]} />
+    </WorkbenchLayout>
+  </div>);
+  await page.viewport(1280, 800);
+  window.scrollTo(0, 1600);
+  expect(Math.round(view().getBoundingClientRect().top)).toBe(56);
+  expect(getComputedStyle(view()).maxBlockSize).toBe(`${800 - 56}px`);
+  window.scrollTo(0, 0);
+});
+
+test("CR-079 FR-CMP-010 AC-7: below md a fit=\"columns\" DataTable fits its container; the default still scrolls inside itself", async () => {
+  document.documentElement.dataset.cdtTheme = "dark";
+  const props = { label: "PRs", rows: [{ id: "a" }], rowId: (row: { id: string }) => row.id, rowLabel: (row: { id: string }) => row.id, columns: [{ id: "id", header: "ID", cell: (row: { id: string }) => row.id }] };
+  await page.viewport(390, 800);
+  const { container, rerender } = render(<div style={{ inlineSize: "358px" } /* cdt-allow-literal: phone content width under test */}><DataTable {...props} /></div>);
+  const scroller = (): HTMLElement => container.querySelector<HTMLElement>(".cdt-table__scroll")!;
+  expect(scroller().scrollWidth).toBeGreaterThan(scroller().clientWidth);
+  rerender(<div style={{ inlineSize: "358px" } /* cdt-allow-literal: phone content width under test */}><DataTable {...props} fit="columns" /></div>);
+  expect(scroller().scrollWidth).toBeLessThanOrEqual(scroller().clientWidth);
   await page.viewport(1280, 800);
 });
 

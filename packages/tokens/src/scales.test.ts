@@ -173,3 +173,10 @@ describe("breakpoint scale", () => {
     expect(findBreakpointVarsInMedia(css)).toEqual([]);
   });
 });
+
+describe("CR-079 FR-CMP-010 AC-7: workbench sticky offset", () => {
+  test("workbench.stickyOffset defaults to no offset, so a bare WorkbenchLayout pins its inspector to the viewport top", () => {
+    expect(componentByKey.get("workbench.stickyOffset")?.value).toBe("0px");
+    expect(css).toContain("--cdt-workbench-sticky-offset: 0px;");
+  });
+});

@@ -124,6 +124,7 @@ cdt-collapsible__trigger
 cdt-combobox
 cdt-combobox__options
 cdt-command
+cdt-command__description
 cdt-command__empty
 cdt-command__group
 cdt-command__group-label
@@ -132,6 +133,7 @@ cdt-command__input
 cdt-command__item
 cdt-command__list
 cdt-command__shortcut
+cdt-command__text
 cdt-command__title
 cdt-content-stack
 cdt-context-menu
@@ -405,6 +407,7 @@ data-cdt-theme
 data-density
 data-dimmed
 data-disabled
+data-fit
 data-highlighted
 data-inspecting
 data-mobile
@@ -484,6 +487,7 @@ cdt-collapsible__trigger
 cdt-combobox
 cdt-combobox__options
 cdt-command
+cdt-command__description
 cdt-command__empty
 cdt-command__group
 cdt-command__group-label
@@ -492,6 +496,7 @@ cdt-command__input
 cdt-command__item
 cdt-command__list
 cdt-command__shortcut
+cdt-command__text
 cdt-command__title
 cdt-content-stack
 cdt-context-menu
@@ -765,6 +770,7 @@ data-cdt-theme
 data-density
 data-dimmed
 data-disabled
+data-fit
 data-highlighted
 data-inspecting
 data-mobile

@@ -1,6 +1,6 @@
 # 요구사항-화면 추적 매트릭스
 
-> 상태: review | 버전: v0.22 | 갱신일: 2026-10-25
+> 상태: review | 버전: v0.23 | 갱신일: 2026-10-29
 
 ## 1. 목적
 
@@ -157,10 +157,10 @@ NFR은 화면 하나에 귀속되지 않는다. 각 NFR이 어디서 측정되�
 
 | 요구사항 | 화면 / 표면 | 구현 단위 | 검증 |
 | --- | --- | --- | --- |
-| FR-CMP-010 | W-060 / SFC-PKG | WP-030 | 검색·선택·미리보기·복귀, IME, 상태·커서; 행 ID·열 최소 폭·배너 행동·선택 행 대비·패널 고정 (CR-064) |
-| FR-CMP-011 | W-061 / SFC-PKG | WP-031 | 그래프/목록 방향·근거, 결정성, 50/300노드 |
+| FR-CMP-010 | W-060 / SFC-PKG | WP-030, WP-046 | 검색·선택·미리보기·복귀, IME, 상태·커서; 행 ID·열 최소 폭·배너 행동·선택 행 대비·패널 고정 (CR-064); `fit="columns"` 표 폭, 고정 오프셋 토큰, 뒤로 가기 복원 E2E (CR-079) |
+| FR-CMP-011 | W-061 / SFC-PKG | WP-031, WP-046 | 그래프/목록 방향·근거, 결정성, 50/300노드; 추론 간선 상태·초점 배치 결정성 (CR-079) |
 | FR-CMP-012 | W-062 / SFC-PKG | WP-032 | 단계 의미, 허용 행동, 부분/미확인 |
-| FR-CMP-014 | W-020, W-021 / SFC-PKG | WP-037 | Toast·DatePicker·CommandPalette·Pagination 동작, axe(열린 상태 포함), 키보드 경로 (CR-054) |
+| FR-CMP-014 | W-020, W-021 / SFC-PKG | WP-037, WP-046 | Toast·DatePicker·CommandPalette·Pagination 동작, axe(열린 상태 포함), 키보드 경로 (CR-054); IME 확정 Enter 차단, 명령 두 번째 줄 (CR-079) |
 | FR-CMP-015 | W-020, W-021 / SFC-PKG | WP-038 | AlertDialog·RadioGroup·ToggleGroup·Avatar·NumberInput 동작, axe(열린 상태 포함), 키보드 경로, 쌓임·커서·포커스 링 계약 (CR-060); NumberInput glass 배경이 glass TextField와 같고 포커스·비활성은 solid와 같은지 두 테마 브라우저 시험 (CR-063) |
 | FR-CMP-016 | W-020, W-021 / SFC-PKG | WP-039 | 에이전트 대화 컴포넌트 11종 동작(전송·IME·중단, 스트리밍 상태, 펼침, 승인 결정, 인용), axe(열린 상태 포함), 키보드 경로, 포커스 링·커서 계약 (CR-061); `participant` 역할과 에이전트 턴 행 폭의 계산값 시험 (CR-077) |
 | FR-CMP-017 | W-020, W-021 / SFC-PKG | WP-044 | 레이아웃·타이포그래피·구획 6종의 공통 계약, Accordion 키보드·`aria-expanded`, axe, 시각 기준, 공개 표면 기준 (CR-076) |

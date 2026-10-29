@@ -1,6 +1,6 @@
 # Conductor Design System UI 컴포넌트 명세서
 
-> 상태: review | 버전: v0.24 | 갱신일: 2026-10-25
+> 상태: review | 버전: v0.25 | 갱신일: 2026-10-29
 
 ## 0. 문서 위치와 범위
 
@@ -1292,6 +1292,10 @@ component 토큰은 semantic 토큰만 참조한다(FR-TOK-002 AC-3). 아래 표
 
 - **결정 (CR-064, FR-CMP-010 AC-6)**: `DataTable`의 행은 `data-row-id`로 안정 ID를 드러내 소비자가 복귀 시 행과 포커스를 되찾을 수 있다. `DataColumn.minInlineSize`는 헤더 셀의 최소 폭이고, `stateAction`은 error/partial 배너의 행동 자리다. 선택된 행의 눌린 버튼은 `text.primary`(muted는 `state.selected` 위 다크 4.34:1), 정렬 헤더 버튼은 헤더 글자 스타일을 상속한다. 표 셀 안의 버튼은 줄을 바꾸지 않는다.
 - **결정 (CR-064)**: 분할 레이아웃의 `WorkbenchLayout` 패널은 `position: sticky`와 자체 스크롤을 갖는다. `AppShell` 안에서는 `--cdt-top-bar-min-height` 아래에 붙는다. **breakpoint.md** 미만에서는 결과 아래로 쌓이고 고정하지 않는다.
+- **결정 (CR-079, FR-CMP-010 AC-7)**: 패널이 붙는 위치는 `workbench.stickyOffset`(`--cdt-workbench-sticky-offset`, 기본 `0px`)이고 높이 상한은 `100vh`에서 그 값을 뺀 값이다. `AppShell`은 이를 `topBar.minHeight`로 둔다. 자기 고정 바를 쓰는 앱은 작업대의 조상에 이 속성을 둔다. 패널 선택자를 덮어쓰게 하지 않는 것은 그 덮어쓰기가 `@layer` 순서와 다음 버전의 선택자에 묶이기 때문이다.
+- **결정 (CR-079, FR-CMP-010 AC-7)**: `DataTable fit="columns"`(`data-fit="columns"`)는 **breakpoint.md** 미만의 표 최소 폭을 없앤다. 기본 `scroll`은 바뀌지 않는다. 어느 열을 접고 행 안에 어떻게 다시 보일지는 소비자가 정한다. 값만 줄여 열을 그대로 두면 칸이 좁아져 글이 세로로 길어지므로 접는 소비자만 쓴다.
+- **결정 (CR-079, FR-CMP-011 AC-6)**: `RelationEdge.inferred`는 확정·미확인·철회와 다른 네 번째 선(`data-state="inferred"`, 일점쇄선 `9 5 2 5`)이다. 색만으로 구별하지 않고 선 모양과 상태 문구 `Inferred`가 함께 다르다. `layout="focus"`는 초점 노드를 가운데(x 410), 들어오기만 하는 노드를 왼쪽(x 130), 나가는 노드를 오른쪽(x 690)에 110 간격으로 두고 나머지를 아래 격자에 둔다. 양방향 노드는 오른쪽에 한 번 그린다. 배치는 입력 순서와 무관하다.
+- **결정 (CR-079, FR-CMP-014 AC-6)**: CommandPalette는 IME 확정 Enter를 downshift에 넘기지 않는다(`preventDownshiftDefault`). 두 번째 줄 `.cdt-command__description`(`text.muted`, `font.size.sm`)은 `.cdt-command__text` 격자 안에 있다. 두 번째 줄이 없는 명령은 이전과 같은 마크업이라 기존 기준 이미지가 바뀌지 않는다.
 - **결정 (CR-065, FR-CMP-013 AC-6)**: `Tabs`의 활성 표시는 채운 상자가 아니다. 목록은 `border.default` 구분선과 `space.1` 아래 여백을 갖고, 각 트리거의 `::after`(높이 `border.width.emphasis`, `radius.pill`)가 `space.1 + hairline`만큼 내려가 구분선 위에 정확히 놓인다. 활성 탭은 그 선이 `accent`이고 글자가 `text.primary`이며 배경·그림자가 없다. 호버는 `state.hover` 면이며 구분선에 닿지 않는다. 세로 방향은 같은 선을 inline-end 구분선 위에 둔다. 강제 색 모드에서는 `Highlight`로 다시 그린다. 이전에는 활성 탭이 `surface.2` 상자 안에 `inset 0 -1px` 밑줄을 그렸는데, 안쪽 그림자가 둥근 아래 모서리를 따라 휘어 `border.control` 구분선 위에 두 번째 선으로 떴다.
 - **결정 (CR-067, FR-CMP-013 AC-6 정정)**: 기본 `Tabs.List`는 세그먼트형이다. 목록은 `surface.base` 트랙(**radius.md**, 안쪽 여백 `space.1 - hairline`)이고, 선택 탭은 `surface.elevated` 알약에 `border.default` 1px 고리를 두르며 글자는 `text.primary`다. 목록 아래 구분선과 표시선은 없다. 모든 탭의 글자 굵기는 500으로 같아 선택이 너비를 바꾸지 않는다. 호버는 선택되지 않은 탭에만 `state.hover` 면을 깐다. 위 CR-065 밑줄형은 `variant="line"`(`cdt-tabs__list--line`)으로 유지한다 — shadcn/ui(기본 세그먼트형 + `line` 변형), Radix Themes(Tabs = 밑줄, SegmentedControl = 알약), Mantine(`default`·`outline`·`pills`), Primer(UnderlineNav = 페이지 이동, SegmentedControl = 보기 전환)를 비교한 결과다. 포커스된 탭의 링은 `.cdt-tabs__list .cdt-tabs__trigger:focus-visible`(명시도 0,3,0)로 두 선택 상태 규칙을 이겨, 포커스된 선택 탭에서 알약 고리 대신 링이 보인다.
 - **결정 (CR-071, FR-CMP-013 AC-6 정정 · FR-A11Y-003 AC-5)**: 강제 색 모드에서 세그먼트형 선택 탭은 `Highlight` 외곽선이 아니라 `Highlight` 채움에 `HighlightText` 글자다(`forced-color-adjust: none`). 외곽선은 포커스 표시에 남겨, 포커스된 선택 탭에 `CanvasText` 외곽선이 채움에서 떨어져 보인다. 밑줄형 표시선은 `Highlight` 그대로다.
@@ -1304,7 +1308,7 @@ component 토큰은 semantic 토큰만 참조한다(FR-TOK-002 AC-3). 아래 표
 | --- | --- | --- | --- | --- |
 | C-073 | `Toast` (`Provider`, `Viewport`, `Root`, `Title`, `Description`, `Action`, `Close`) | `cdt-toast`, `cdt-toast-viewport` | Radix Toast | `Root`: `tone`, `icon`, Radix `open`·`onOpenChange`·`duration`; `Action`: `altText`(필수); `Close`: `labels` |
 | C-074 | `DatePicker` | `cdt-date-picker` (트리거), `cdt-date-picker__*` (달력 부분) | react-day-picker + Radix Popover | `value`, `onValueChange`, `disabledDays`, `startMonth`, `endMonth`, `locale`, `formatDate`, `invalid`, `size`, `defaultOpen`, `labels` |
-| C-075 | `CommandPalette` | `cdt-command` | Radix Dialog + downshift | `open`, `onOpenChange`, `commands`(`id`, `label`, `group`, `keywords`, `shortcut`, `disabled`), `onSelect`, `labels` |
+| C-075 | `CommandPalette` | `cdt-command` | Radix Dialog + downshift | `open`, `onOpenChange`, `commands`(`id`, `label`, `group`, `keywords`, `shortcut`, `disabled`, `description`·`disabledReason` CR-079), `onSelect`, `labels` |
 | C-076 | `Pagination` | `cdt-pagination` | 기본 버튼 | `page`, `pageCount`, `onPageChange`, `siblings`(기본 1), `size`, `labels` |
 
 공개 함수 `filterCommands(commands, query)`와 `paginationRange(page, pageCount, siblings)`는 화면 없이 시험할 수 있도록 함께 export한다. 스타일은 `@conductor-by-89soone/css`의 `controls.css`(cdt.component 층)에 있다.

@@ -89,6 +89,48 @@ test("FR-CMP-011 graph/list direction, evidence, view preservation", async ({ pa
   await expect(page).toHaveURL(/examples\/relations/);
 });
 
+test("CR-079 FR-CMP-010 AC-8: Back from another page restores loaded rows, selection, focus and position", async ({ page }) => {
+  await page.goto("/#/examples/workbench?q=%EA%B2%80%EC%83%89");
+  await expect(page.getByRole("heading", { name: "Search workbench", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Load more", exact: true }).click();
+  await expect(page.getByText("25 loaded", { exact: true })).toBeVisible();
+  const trigger = page.getByRole("button", { name: /^Preview PR \d+$/ }).nth(18);
+  const label = (await trigger.getAttribute("aria-label"))!;
+  await trigger.click();
+  await expect(page.getByRole("region", { name: "Selected change" })).toBeVisible();
+  await trigger.scrollIntoViewIfNeeded();
+  const before = await page.evaluate(() => Math.round(window.scrollY));
+  expect(before).toBeGreaterThan(0);
+  // Leave through the app's own navigation, then come back with the browser's Back.
+  await page.evaluate(() => { window.location.hash = "#/examples/relations"; });
+  await expect(page.getByRole("heading", { name: "Relation explorer", exact: true })).toBeVisible();
+  await page.goBack();
+  await expect(page.getByRole("heading", { name: "Search workbench", exact: true })).toBeVisible();
+  await expect(page.getByText("25 loaded", { exact: true })).toBeVisible();
+  const restored = page.getByRole("button", { name: label, exact: true });
+  await expect(restored).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("region", { name: "Selected change" })).toBeVisible();
+  await expect(restored).toBeFocused();
+  await expect.poll(() => page.evaluate(() => Math.round(window.scrollY))).toBeGreaterThan(before - 40);
+  // A new search is a new list: nothing carries over.
+  await page.getByRole("searchbox", { name: "Search titles" }).fill("cache");
+  await page.getByRole("button", { name: "Search", exact: true }).click();
+  await expect(page.getByRole("region", { name: "Selected change" })).toHaveCount(0);
+});
+
+test("CR-079 FR-CMP-011 AC-6: inferred relation and focus layout in the explorer", async ({ page }) => {
+  await page.goto("/#/examples/relations");
+  await page.getByRole("button", { name: "Select relation: r-inferred", exact: true }).click();
+  await expect(page.locator(".cdt-relation__detail")).toContainText("Inferred");
+  await expect(page.locator(".cdt-relation__detail")).not.toContainText("Confirmed");
+  await expect(page.locator('[data-edge-id="r-inferred"] path[data-state]')).toHaveAttribute("data-state", "inferred");
+  await page.getByRole("button", { name: "Focus on #42", exact: true }).click();
+  await expect(page.locator(".cdt-relation__legend")).toContainText("Left: items that point to the focused item");
+  await page.getByRole("button", { name: "Focus on #42", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Focus on #42", exact: true })).toHaveAttribute("aria-pressed", "false");
+  await expect(page.locator(".cdt-relation__legend")).toContainText("inferred from metadata");
+});
+
 test("FR-CMP-012 receipt is not index completion; action permission and feedback", async ({ page }) => {
   await page.goto("/#/examples/operations");
   await page.getByRole("checkbox", { name: "Synthetic run permission", exact: true }).uncheck();

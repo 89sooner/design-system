@@ -18,6 +18,42 @@ describe("FR-CMP-011 relation exploration", () => {
   test("stable layout independent of input order, cycles need no DAG", () => {
     expect(layoutRelationNodes(nodes)).toEqual(layoutRelationNodes([...nodes].reverse()));
   });
+  test("CR-079 FR-CMP-011 AC-6: an inferred edge is labelled Inferred, drawn as its own state and explained in the legend", () => {
+    const inferred: RelationEdge[] = [{ id: "derived", source: "b", target: "a", type: "depends_on", label: "의존함", evidence: "같은 파일 변경", confidence: "derived", inferred: true }];
+    const view = render(<RelationGraph label="관계" nodes={nodes} edges={inferred} />);
+    fireEvent.click(view.getByRole("button", { name: "Select relation: derived" }));
+    const detail = view.getByRole("region", { name: "Selected relation details" });
+    expect(detail.textContent).toContain("Inferred");
+    expect(detail.textContent).not.toContain("Confirmed");
+    expect(view.container.querySelector('[data-edge-id="derived"] path[data-state]')!.getAttribute("data-state")).toBe("inferred");
+    expect(view.container.querySelector(".cdt-relation__legend")!.textContent).toContain("inferred from metadata");
+  });
+  test("CR-079 FR-CMP-011 AC-6: layout=\"focus\" puts sources left and targets right of the focus, a cycle once on the right, the rest below", () => {
+    const graph: RelationNode[] = ["f", "in1", "in2", "out1", "both", "lone"].map((id) => ({ id, label: id }));
+    const links: RelationEdge[] = [
+      { id: "1", source: "in1", target: "f", type: "references", label: "r", evidence: "" },
+      { id: "2", source: "in2", target: "f", type: "depends_on", label: "d", evidence: "" },
+      { id: "3", source: "f", target: "out1", type: "depends_on", label: "d", evidence: "" },
+      { id: "4", source: "f", target: "both", type: "references", label: "r", evidence: "" },
+      { id: "5", source: "both", target: "f", type: "references", label: "r", evidence: "" },
+      { id: "6", source: "f", target: "gone", type: "references", label: "r", evidence: "", unresolved: true },
+    ];
+    const at = (list: ReturnType<typeof layoutRelationNodes>) => Object.fromEntries(list.map((node) => [node.id, node]));
+    const placed = at(layoutRelationNodes(graph, { layout: "focus", focusId: "f", edges: links }));
+    expect(placed.in1!.x).toBeLessThan(placed.f!.x);
+    expect(placed.in2!.x).toBe(placed.in1!.x);
+    expect(placed.out1!.x).toBeGreaterThan(placed.f!.x);
+    expect(placed.both!.x).toBe(placed.out1!.x);
+    // Rows follow the first relation type, then ID: depends_on before references on each side.
+    expect(placed.in2!.y).toBeLessThan(placed.in1!.y);
+    expect(placed.out1!.y).toBeLessThan(placed.both!.y);
+    expect(placed.lone!.y).toBeGreaterThan(Math.max(placed.in1!.y, placed.both!.y, placed.f!.y));
+    // Deterministic for any input order, and the grid when the focus is not a node.
+    expect(layoutRelationNodes([...graph].reverse(), { layout: "focus", focusId: "f", edges: [...links].reverse() })).toEqual(layoutRelationNodes(graph, { layout: "focus", focusId: "f", edges: links }));
+    expect(layoutRelationNodes(graph, { layout: "focus", focusId: "absent", edges: links })).toEqual(layoutRelationNodes(graph));
+    const view = render(<RelationGraph label="초점" nodes={graph} edges={links} layout="focus" focusId="f" />);
+    expect(view.container.querySelector(".cdt-relation__legend")!.textContent).toContain("Left: items that point to the focused item");
+  });
   test("table selection shows direction, distinct flags, evidence and confidence", () => {
     const view = render(<RelationGraph label="관계" nodes={nodes} edges={edges} />);
     fireEvent.click(view.getByRole("button", { name: "Select relation: back" }));
