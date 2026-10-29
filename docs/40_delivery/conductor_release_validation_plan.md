@@ -157,4 +157,4 @@ build 후 typecheck; test/lint/lint:deps/lint:tokens/check:contrast/test:a11y/te
 | AC-4 open DEV | DEV-049 하나. 사용자가 승인한 audit 예외(패치 없는 개발 도구 전이 의존)로 원장에 결정과 함께 남아 있다. DEV-065는 WP-042로 닫혔다 | 충족 (승인 예외) | 1.0 후보 커밋에서 다시 |
 | AC-5 실사용 검증 | 기준 확정(OD-005). agent-ai-platform이 1.0 후보 0.18.0을 2026-10-25에 main에 병합했다(그 저장소의 DS-PILOT-24, PR #27 `d4e8e04`). 결함 6규칙을 지웠고 남은 재정의는 앱 고유 `.cdt-btn` 배치 7규칙이다(원장 §5.2). 같은 날 15 경로 × 두 테마 비교에서 Thread의 참여자 말풍선 2장 말고는 0.17.0과 같았다 | 진행 중 (2026-10-25 ~ 2026-11-22) | 2026-11-22 이후 재정의 목록을 다시 받아 판정 |
 | AC-6 컴포넌트 범위 | 기준 확정(OD-007)과 보강(CR-078): 공개 컴포넌트 67개 + FR-CMP-017 6종(0.17.0 배포) + FR-CMP-018 ContextMenu·Slider·Tree(WP-045, 다음 minor). FileUpload는 1.0 이후 | 충족 (병합·배포 후) | WP-045 릴리스 |
-| AC-7 버전 정렬 | 기준 확정(OD-008): 1.0.0부터 `fixed`. 지금은 tokens 0.14.0, css·react 0.17.0(`linked`) | 1.0 발행 PR에서 | WP-043에서 `fixed`로 전환 |
+| AC-7 버전 정렬 | 기준 확정(OD-008): 1.0.0부터 `fixed`. 지금은 tokens·css·react 0.20.0(`linked`, 2026-10-29 CR-079 릴리스에서 세 패키지가 함께 올라 같은 번호가 됐다) | 1.0 발행 PR에서 | WP-043에서 `fixed`로 전환 |
