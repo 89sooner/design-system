@@ -1,6 +1,6 @@
 # Conductor Design System PRD
 
-> 상태: review | 버전: v0.21 | 갱신일: 2026-10-25
+> 상태: review | 버전: v0.22 | 갱신일: 2026-10-29
 
 ## 1. 문서 개요
 
@@ -166,7 +166,7 @@ Conductor Design System(이하 Conductor)은 `agent-ai-platform`의 `packages/we
 | FR-CMP-007 | 폼 컴포넌트군을 제공한다 | Must | F-CMP-007 |
 | FR-CMP-008 | 피드백 컴포넌트군을 제공한다 | Must | F-CMP-008 |
 | FR-CMP-009 | 셸 컴포넌트군을 제공한다. 프로그램 포커스를 받은 main은 링을 그리지 않는다(CR-077) | Should | F-CMP-009 |
-| FR-CMP-014 | Toast·DatePicker·CommandPalette·Pagination을 제공한다 (CR-054) | Should | F-CMP-014 |
+| FR-CMP-014 | Toast·DatePicker·CommandPalette·Pagination을 제공한다 (CR-054). CommandPalette는 IME 확정 Enter로 실행하지 않고, 명령은 대상 줄과 비활성 이유를 보인다 (CR-079) | Should | F-CMP-014 |
 | FR-CMP-015 | AlertDialog·RadioGroup·ToggleGroup·Avatar·NumberInput을 제공한다 (CR-060). NumberInput은 TextField와 같은 glass 변형을 받는다 (CR-063) | Should | F-CMP-015 |
 | FR-CMP-016 | Conversation·Message·PromptInput·Reasoning·Tool·Confirmation·Sources·InlineCitation·Suggestions·Suggestion·Shimmer를 제공한다 (CR-061). 공유 대화의 다른 참여자 턴(`participant`)과 행 전체 폭의 에이전트 턴(CR-077) | Should | F-CMP-016 |
 | FR-CMP-017 | Separator·Stack·Grid·Heading·Text·Accordion을 제공한다 (CR-076, OD-007) | Should | CR-076 |
@@ -254,4 +254,4 @@ Must 우선순위 FR을 차단하는 open OD: **없음.** OD-005 ~ OD-008(CR-075
 
 ## CR-041 업무 탐색 확장
 
-FR-CMP-010~013은 사용자가 명시한 로컬 확장 범위다(review). 필터/칩 조건부와 시각화 제외의 읽기 전용 관계 예외를 SRS §17에 따라 변경한다. 세 합성 조합은 W-060/061/062 독립 예제 경로에서 동작하고 기존 W-040 가이드와 연결된다. 데이터 호출·검색 문법·권한·업무 재시도는 소비자 소유다. 현재 로드된 결과 미리보기와 복귀를 기본 흐름으로 삼고, 관계는 방향·근거·불확실성을 유지한다. 운영 수신과 검색 색인 최신을 동일 상태로 표시하지 않는다. CR-064(SRS §27)는 이 흐름을 시제품화하며 드러난 세 결함을 고친다: 입력 placeholder를 장식 토큰에서 읽기용 역할 토큰 `text.placeholder`로 옮기고(FR-THM-005 AC-8, 새 색 없음), 배지와 표 셀 버튼이 줄을 바꾸지 않게 하며(FR-CMP-004 AC-7), 분할 작업대의 미리보기가 스크롤해도 화면에 남게 한다(FR-CMP-010 AC-6). CR-065(SRS §28)는 Tabs의 활성 표시를 구분선 위의 곧은 강조선 하나로 바꾸었고, CR-067(SRS §29)은 기본 Tabs를 아래 테두리 없는 세그먼트형으로 바꾸고 밑줄형을 `variant="line"`으로 남긴다(FR-CMP-013 AC-6). CR-065는 또 라이트 장식 경계를 다크와 같은 무게로 되돌린다(FR-THM-002 AC-3 정정·AC-5).
+FR-CMP-010~013은 사용자가 명시한 로컬 확장 범위다(review). 필터/칩 조건부와 시각화 제외의 읽기 전용 관계 예외를 SRS §17에 따라 변경한다. 세 합성 조합은 W-060/061/062 독립 예제 경로에서 동작하고 기존 W-040 가이드와 연결된다. 데이터 호출·검색 문법·권한·업무 재시도는 소비자 소유다. 현재 로드된 결과 미리보기와 복귀를 기본 흐름으로 삼고, 관계는 방향·근거·불확실성을 유지한다. 운영 수신과 검색 색인 최신을 동일 상태로 표시하지 않는다. CR-064(SRS §27)는 이 흐름을 시제품화하며 드러난 세 결함을 고친다: 입력 placeholder를 장식 토큰에서 읽기용 역할 토큰 `text.placeholder`로 옮기고(FR-THM-005 AC-8, 새 색 없음), 배지와 표 셀 버튼이 줄을 바꾸지 않게 하며(FR-CMP-004 AC-7), 분할 작업대의 미리보기가 스크롤해도 화면에 남게 한다(FR-CMP-010 AC-6). CR-065(SRS §28)는 Tabs의 활성 표시를 구분선 위의 곧은 강조선 하나로 바꾸었고, CR-067(SRS §29)은 기본 Tabs를 아래 테두리 없는 세그먼트형으로 바꾸고 밑줄형을 `variant="line"`으로 남긴다(FR-CMP-013 AC-6). CR-065는 또 라이트 장식 경계를 다크와 같은 무게로 되돌린다(FR-THM-002 AC-3 정정·AC-5). CR-079(SRS §39)는 0.19.0 재분석에서 남은 공백 중 추가만으로 닫히는 것을 더한다: 좁은 화면에서 접힌 열에 맞추는 `DataTable fit="columns"`, 앱 고정 바 아래에 붙는 인스펙터(`workbench.stickyOffset`), 문서 예제의 뒤로 가기 복원(FR-CMP-010 AC-7·AC-8), 추론 관계와 초점 배치(FR-CMP-011 AC-6). 기존 시각을 바꾸는 개선은 1.0 실사용 기간을 지키려 1.0 뒤로 미룬다.

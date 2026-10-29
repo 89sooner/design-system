@@ -19,6 +19,15 @@ export interface Command {
   /** Keys shown as `Kbd` chips, for example `["⌘", "K"]`. Display only; the palette binds nothing. */
   readonly shortcut?: readonly string[];
   readonly disabled?: boolean;
+  /** A second line under the label, such as the item the command acts on (CR-079). Part of the option's name; not searched. */
+  readonly description?: string;
+  /** Why a disabled command can't run now, shown in place of `description` while `disabled` (CR-079). */
+  readonly disabledReason?: string;
+}
+
+/** IME composition (CR-079): the Enter that confirms a Hangul or kana syllable must not run a command. Mirrors `Combobox`. */
+function isComposing(event: { readonly nativeEvent: KeyboardEvent; readonly keyCode: number }): boolean {
+  return event.nativeEvent.isComposing || event.keyCode === 229;
 }
 
 /** Every whitespace-separated term of `query` must appear in the label, group or a keyword (case-insensitive). Order is kept. */
@@ -39,6 +48,11 @@ function groupRuns(items: readonly Command[]): readonly { readonly group: string
     else runs.push({ group: item.group, start: index, members: [item] });
     return runs;
   }, []);
+}
+
+/** The line under the label: the disabled reason while disabled, else the description. */
+function secondLine(item: Command): string | undefined {
+  return item.disabled && item.disabledReason !== undefined ? item.disabledReason : item.description;
 }
 
 export interface CommandPaletteProps extends Omit<HTMLAttributes<HTMLDivElement>, "onSelect"> {
@@ -69,15 +83,27 @@ function CommandPaletteBody({ commands, onChoose, t }: { readonly commands: read
     stateReducer: (state, { type, changes }) => (type === useCombobox.stateChangeTypes.InputKeyDownEscape ? state : changes),
   });
   const groups = groupRuns(items);
+  const composing = useRef(false);
   return <>
     <label {...combo.getLabelProps()} className="cdt-sr-only">{t.input}</label>
-    <input {...combo.getInputProps()} className="cdt-input cdt-command__input" placeholder={t.placeholder} />
+    <input {...combo.getInputProps({
+      onCompositionStart: () => { composing.current = true; },
+      onCompositionEnd: () => { composing.current = false; },
+      onKeyDown: (event) => {
+        // downshift skips only `which === 229`; some engines send the confirming Enter as keyCode 13 with `isComposing`.
+        if (event.key === "Enter" && (composing.current || isComposing(event))) {
+          (event.nativeEvent as KeyboardEvent & { preventDownshiftDefault?: boolean }).preventDownshiftDefault = true;
+          (event as typeof event & { preventDownshiftDefault?: boolean }).preventDownshiftDefault = true;
+          event.preventDefault();
+        }
+      },
+    })} className="cdt-input cdt-command__input" placeholder={t.placeholder} />
     <ul {...combo.getMenuProps()} className="cdt-command__list">
       {groups.map(({ group, start, members }, groupIndex) => {
         const options = members.map((item, offset) => {
           const index = start + offset;
           return <li {...combo.getItemProps({ item, index })} key={item.id} className="cdt-command__item" data-highlighted={combo.highlightedIndex === index || undefined} data-disabled={item.disabled || undefined}>
-            <span>{item.label}</span>
+            {secondLine(item) === undefined ? <span>{item.label}</span> : <span className="cdt-command__text"><span>{item.label}</span><span className="cdt-command__description">{secondLine(item)}</span></span>}
             {item.shortcut === undefined ? null : <span className="cdt-command__shortcut" aria-hidden="true">{item.shortcut.map((key) => <Kbd key={key}>{key}</Kbd>)}</span>}
           </li>;
         });

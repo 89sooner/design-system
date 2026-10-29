@@ -12,6 +12,8 @@
   .cdt-relation__edge .cdt-relation__edge-hit { stroke: transparent; stroke-width: 18; }
   .cdt-relation__edge [data-state="uncertain"] { stroke-dasharray: 3 5; }
   .cdt-relation__edge [data-state="retracted"] { stroke-dasharray: 12 5; }
+  /* CR-079: inferred is derived, not declared — its own long dash so it never reads as confirmed or ambiguous. */
+  .cdt-relation__edge [data-state="inferred"] { stroke-dasharray: 9 5 2 5; }
   .cdt-relation__edge[data-selected] path:not(.cdt-relation__edge-hit) { stroke: var(--cdt-accent); stroke-width: 4; }
   .cdt-relation__edge-label { fill: var(--cdt-text-primary); font-size: var(--cdt-font-size-sm); paint-order: stroke; stroke: var(--cdt-surface-base); stroke-width: 4; }
   .cdt-relation__arrow { fill: var(--cdt-text-secondary); }

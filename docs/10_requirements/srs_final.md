@@ -1,6 +1,6 @@
 # Conductor Design System 최종 요구사항 정의서
 
-> 상태: baseline | 버전: v1.28 | 갱신일: 2026-10-25
+> 상태: baseline | 버전: v1.29 | 갱신일: 2026-10-29
 
 ## 1. 문서 개요
 
@@ -1357,3 +1357,14 @@ v1.27 baseline 이력을 유지한다. 2026-10-25 사용자가 상용 서비스 
 | 관련 API/데이터 | API-CMP-015 / ENT-CMP-001 |
 | 예외/실패 처리 | 하위 메뉴·체크·라디오 메뉴 항목, Slider 눈금 표시, Tree 다중 선택·끌어 놓기·이름 바꾸기·비동기 로딩·가상화·타이프어헤드는 이 FR 범위가 아니다. Radix에 Tree가 없으므로 ADR-004의 위임 대상에 Headless Tree를 더한다(react-day-picker·downshift와 같은 예외 경로, 보안 아키텍처 3.1). 새 런타임 의존성은 기존 Radix 묶음(2026-07-24)의 `@radix-ui/react-context-menu@2.3.7`·`@radix-ui/react-slider@1.4.7`과 `@headless-tree/core@1.7.0`(MIT, 런타임 의존성 0. React 결합부 `@headless-tree/react`는 쓰지 않는다: 그 `useTree`가 행을 effect에서 만들어 서버 렌더가 비므로, 같은 일을 하는 작은 훅을 Tree 안에 둔다)이며 정확한 버전으로 고정한다. |
 
+## 39. CR-079 보강 (baseline)
+
+v1.28 baseline 이력을 유지한다. 2026-10-29 사용자가 0.19.0 기준 재분석을 지시하고("2026-10-29 기준 최근 디자인 시스템에 업데이트가 있었다 그걸 기준으로 다시 분석해"), 확인된 공백의 개선을 지시했다("그래서 부족한 부분이 확인된게 있다면 개선 진행해라"). PR 검색·리뷰·관계 조사 시제품에서 다시 확인한 공백 중 기존 공개 표면과 기존 시각을 바꾸지 않는 것만 이 절에 넣는다. 1.0 실사용 기간을 끊지 않기 위해서다(CR-078의 "추가만이면 기간 유지"). 선택 행 레일, 입력 배경 통일, 관계 그래프 라벨 겹침, 표 셀 줄바꿈은 기존 시각을 바꾸므로 1.0 뒤의 CR로 미룬다. 새 FR·새 컴포넌트·새 런타임 의존성은 없고 새 토큰은 `workbench.stickyOffset` 하나다.
+
+| FR | 추가 수용 기준 |
+| --- | --- |
+| FR-CMP-010 | AC-7: `DataTable`은 `fit?: "scroll" \| "columns"`(기본 `scroll`)를 받는다. `scroll`은 지금처럼 md 아래에서 표 최소 폭(`table.scrollBreakpoint`)을 지키고 표 틀 안에서 옆으로 스크롤한다. `columns`는 루트에 `data-fit="columns"`를 두고 그 최소 폭을 없애, 좁은 화면에서 낮은 우선순위 열을 행 안으로 접은 소비자의 표가 틀 폭에 맞는다. 어느 열을 접을지는 소비자가 정한다. 분할 레이아웃의 고정 인스펙터는 `workbench.stickyOffset`(`--cdt-workbench-sticky-offset`, 기본 `0px`)만큼 뷰포트 위에서 떨어져 붙고, 높이는 뷰포트에서 그 값을 뺀 만큼을 넘지 않는다. `AppShell`은 그 값을 `topBar.minHeight`로 둔다. 다른 고정 상단 바를 쓰는 앱은 인스펙터를 덮어쓰지 않고 작업대의 조상에 이 사용자 정의 속성을 둔다. AC-8: 문서 사이트의 검색 워크벤치 예제는 CR-064가 소비자 책임으로 둔 왕복 보존의 참조 구현이다. 다른 페이지로 갔다가 브라우저 뒤로 가기로 돌아오면, 같은 검색일 때 불러온 행 수, 선택된 행과 열린 미리보기, 선택 행 버튼의 포커스, 목록 스크롤 위치가 돌아온다. 상태는 라우터의 기록 항목 키로 sessionStorage에 두고, 저장소를 쓸 수 없으면 처음 상태로 연다. 다른 검색은 처음 행부터 선택 없이 연다. |
+| FR-CMP-011 | AC-6: `RelationEdge`는 `inferred?: boolean`을 받는다. 선언되지 않고 메타데이터(바뀐 경로, 브랜치 이름 등)에서 추론한 관계다. 상태 문구는 `Inferred`(`RelationGraphLabels.inferred`)이고 `Confirmed`라 하지 않는다. 선은 `data-state="inferred"` 일점쇄선이며, 추론 간선이 하나라도 있으면 범례에 그 뜻(`legendInferred`)이 붙는다. `RelationGraph`는 `layout?: "grid" \| "focus"`(기본 `grid`, 지금의 ID 격자)와 `focusId`를 받는다. `focus`는 `focusId` 노드를 가운데 두고, 그 노드를 가리키기만 하는 노드를 왼쪽에, 그 노드가 가리키는 노드(양방향 포함, 한 번만)를 오른쪽에, 나머지를 아래 격자에 둔다. 각 열의 행은 첫 관계 유형, 그다음 ID 순이며 입력 순서와 무관하게 같다. 범례(`legendFocus`)는 화살표 방향과 좌우의 뜻을 말하고 위치가 시간·병합·의존 순서가 아님을 밝힌다. `focusId`가 노드에 없으면 격자로 그린다. `layoutRelationNodes(nodes, options?)`가 같은 배치를 계산한다(`RelationLayoutOptions`). |
+| FR-CMP-014 | AC-6: `CommandPalette`는 IME 조합을 확정하는 Enter로 명령을 실행하지 않는다. `compositionstart`와 `compositionend` 사이의 Enter, `isComposing`이 참인 Enter, keyCode 229인 Enter가 그것이며, 조합이 끝난 뒤의 Enter는 강조된 명령을 실행한다. `Command`는 `description?`(명령이 다루는 대상 같은 두 번째 줄)과 `disabledReason?`(비활성 명령이 지금 실행되지 않는 이유, `disabled`일 때 `description` 자리에 보인다)을 받는다. 두 번째 줄은 옵션의 접근 가능한 이름에 들어가고 `filterCommands`의 검색 대상이 아니다. 둘 다 없는 명령의 마크업은 바뀌지 않는다. |
+
+`layoutRelationNodes`의 선택 인자 추가는 공개 API 보고서에서 시그니처 한 줄이 바뀌지만 기존 호출의 결과는 같다. 나머지 차이는 추가뿐이고 기존 시각 기준 이미지는 그대로여야 한다. tokens·css·react minor이며 changeset 첫 줄에 `Visual change:`를 쓰지 않는다(OD-006).

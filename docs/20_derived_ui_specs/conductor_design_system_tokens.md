@@ -1,6 +1,6 @@
 # Conductor Design System 토큰 명세
 
-> 상태: review | 버전: v0.17 | 갱신일: 2026-10-22
+> 상태: review | 버전: v0.18 | 갱신일: 2026-10-29
 
 ## 0. 문서 성격과 범위 경계
 
@@ -999,6 +999,14 @@ CR-018 이전 구현은 상태 semantic 색을 배경 전체에 적용하고 `te
 | `topBar.eyebrowText` | `{text.faint}` | C-072 |
 | `topBar.titleText` | `{text.secondary}` | C-072 |
 | `topBar.minHeight` | `68px` | C-072 |
+
+### 7.9 `workbench.stickyOffset` (CR-079)
+
+| 토큰 키 | 값 | 관련 컴포넌트 |
+| --- | --- | --- |
+| `workbench.stickyOffset` | `0px` | `WorkbenchLayout`, `DetailInspector` (FR-CMP-010 AC-7) |
+
+분할 레이아웃의 고정 인스펙터가 뷰포트 위에서 떨어지는 거리다. 기본값이 `0px`라 셸 없이 쓰면 뷰포트 위에 붙는다. `AppShell`은 이 속성을 `topBar.minHeight`로 다시 정한다(컴포넌트 CSS, 토큰 값은 그대로). 다른 고정 바를 쓰는 앱은 작업대의 조상 요소에 같은 사용자 정의 속성을 둔다. 크기 값이라 대비율 검사 쌍이 없다.
 
 ---
 

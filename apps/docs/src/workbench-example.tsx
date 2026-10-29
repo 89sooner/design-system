@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { hashSearch, onPage, readSnapshot, restorable, sessionStore, writeSnapshot } from "./workbench-context";
 import { Badge, Banner, Breadcrumb, Button, Collapsible, Combobox, CopyButton, DataTable, DetailInspector, Dialog, FilterChip, FilterToolbar, MultiSelect, PathList, Popover, Tabs, TextField, WorkbenchLayout, type DataColumn, type DataSort } from "@conductor-by-89soone/react";
 
 interface DemoRow { id: string; number: number; title: string; repository: string; state: string; sha: string }
@@ -11,23 +12,51 @@ const modes = ["ready", "loading", "empty", "error", "partial", "long"] as const
 export function WorkbenchExample() {
   const location = useLocation();
   const initial = new URLSearchParams(location.search);
-  const [mode, setMode] = useState<typeof modes[number]>("ready");
-  const [count, setCount] = useState(100);
+  // CR-079: Back to this history entry restores the loaded range, the selection and the scroll position.
+  const entry = location.key;
+  const [restored] = useState(() => { const snapshot = readSnapshot(sessionStore(), entry); return restorable(snapshot, typeof window === "undefined" ? location.search : hashSearch(window.location.hash)) ? snapshot : null; });
+  const [mode, setMode] = useState<typeof modes[number]>(() => (modes as readonly string[]).includes(restored?.mode ?? "") ? restored!.mode as typeof modes[number] : "ready");
+  const [count, setCount] = useState(restored?.count ?? 100);
   const [query, setQuery] = useState(initial.get("q") ?? "");
   const [applied, setApplied] = useState(initial.get("q") ?? "");
   const [repositoryQuery, setRepositoryQuery] = useState(initial.get("repository") ?? "");
   const [repository, setRepository] = useState<string | null>(initial.get("repository"));
   const [statuses, setStatuses] = useState<readonly string[]>(initial.getAll("state"));
   const [sort, setSort] = useState<DataSort>({ column: initial.get("sort") === "title" ? "title" : "number", direction: initial.get("direction") === "ascending" ? "ascending" : "descending" });
-  const [limit, setLimit] = useState(20);
-  const [selected, setSelected] = useState<string | null>(null);
+  const [limit, setLimit] = useState(restored?.limit ?? 20);
+  const [selected, setSelected] = useState<string | null>(restored?.selected ?? null);
   const [width, setWidth] = useState(40);
   const [density, setDensity] = useState<"comfortable" | "compact">("compact");
   const [visible, setVisible] = useState<readonly string[]>(["number", "title", "state"]);
   const [path, setPath] = useState<string>();
   const trigger = useRef<HTMLButtonElement | null>(null);
   const inspector = useRef<HTMLElement | null>(null);
+  const restoring = useRef(restored !== null);
+  const firstSearch = useRef(true);
+  const latest = useRef({ limit, selected, mode, count });
+  latest.current = { limit, selected, mode, count };
+  const save = () => { if (!restoring.current && onPage(window.location.hash, location.pathname)) writeSnapshot(sessionStore(), entry, { search: hashSearch(window.location.hash), ...latest.current, scrollY: Math.round(window.scrollY) }); };
   useEffect(() => {
+    if (!restored) return;
+    // App scrolls to the top and focuses main after a route change (its effect runs after this one), so wait two frames.
+    let frame = requestAnimationFrame(() => { frame = requestAnimationFrame(() => {
+      window.scrollTo({ top: restored.scrollY, left: 0 });
+      const row = restored.selected === null ? null : document.querySelector<HTMLButtonElement>(`tr[data-row-id="${CSS.escape(restored.selected)}"] button[aria-pressed="true"]`);
+      if (row) { trigger.current = row; row.focus({ preventScroll: true }); }
+      restoring.current = false;
+    }); });
+    return () => cancelAnimationFrame(frame);
+  }, [restored]);
+  useEffect(save);
+  useEffect(() => {
+    let frame = 0;
+    const onScroll = () => { cancelAnimationFrame(frame); frame = requestAnimationFrame(save); };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => { cancelAnimationFrame(frame); window.removeEventListener("scroll", onScroll); };
+  }, [entry]);
+  useEffect(() => {
+    // The first run is the mount: the state above already came from this URL (and maybe a snapshot), so keep it.
+    if (firstSearch.current) { firstSearch.current = false; return; }
     const params = new URLSearchParams(location.search);
     setQuery(params.get("q") ?? ""); setApplied(params.get("q") ?? "");
     setRepository(params.get("repository")); setRepositoryQuery(params.get("repository") ?? "");

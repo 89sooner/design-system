@@ -23,6 +23,8 @@ export interface RelationEdge {
   readonly label: string;
   readonly evidence: string;
   readonly confidence?: string;
+  /** Derived from metadata (changed paths, branch names) rather than declared. Never drawn or labelled as confirmed (CR-079). */
+  readonly inferred?: boolean;
   readonly unresolved?: boolean;
   readonly ambiguous?: boolean;
   readonly retracted?: boolean;
@@ -38,26 +40,71 @@ export interface RelationGraphProps extends Omit<HTMLAttributes<HTMLDivElement>,
   readonly viewport?: RelationViewport;
   readonly onViewportChange?: (viewport: RelationViewport) => void;
   readonly state?: "ready" | "loading" | "empty" | "error" | "partial";
+  /**
+   * `grid` (default): stable ID order. `focus`: `focusId` in the middle, items that point to it on the left, items it
+   * points to on the right, the rest below (CR-079). Falls back to `grid` when `focusId` is not a node.
+   */
+  readonly layout?: "grid" | "focus";
+  /** The node `layout="focus"` centres on. */
+  readonly focusId?: string;
   readonly stateMessage?: string;
   readonly onRetry?: () => void;
   /** Every string the graph renders, merged over English defaults (CR-053). */
   readonly labels?: Partial<RelationGraphLabels>;
 }
 
-/** Stable ID order, bounded O(n log n), and no assumption of a directed acyclic graph. */
-export function layoutRelationNodes(nodes: readonly RelationNode[]) {
-  const ordered = [...nodes].sort((a, b) => a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
-  const columns = Math.max(1, Math.ceil(Math.sqrt(ordered.length)));
-  return ordered.map((node, index) => ({ ...node, x: 130 + (index % columns) * 280, y: 90 + Math.floor(index / columns) * 150 }));
+/** How `layoutRelationNodes` places nodes (CR-079). Without options it returns the stable ID grid. */
+export interface RelationLayoutOptions {
+  /** `grid` (default) or `focus`, as on `RelationGraphProps.layout`. */
+  readonly layout?: "grid" | "focus";
+  /** The node `focus` centres on; a missing ID falls back to `grid`. */
+  readonly focusId?: string;
+  /** The edges that decide which side of the focus each node sits on. */
+  readonly edges?: readonly RelationEdge[];
+}
+
+const compareId = (a: { readonly id: string }, b: { readonly id: string }) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
+
+/**
+ * Stable ID order, bounded O(n log n), and no assumption of a directed acyclic graph.
+ * `layout: "focus"` (CR-079) splits the neighbours of `focusId` by direction; a neighbour on both sides (a cycle)
+ * is placed once, on the right. Rows follow the first relation type, then ID, so the same input lays out the same way.
+ */
+export function layoutRelationNodes(nodes: readonly RelationNode[], options: RelationLayoutOptions = {}) {
+  const ordered = [...nodes].sort(compareId);
+  const focus = options.focusId;
+  if (options.layout !== "focus" || focus === undefined || !ordered.some((node) => node.id === focus)) {
+    const columns = Math.max(1, Math.ceil(Math.sqrt(ordered.length)));
+    return ordered.map((node, index) => ({ ...node, x: 130 + (index % columns) * 280, y: 90 + Math.floor(index / columns) * 150 }));
+  }
+  const edges = options.edges ?? [];
+  const present = new Set(ordered.map((node) => node.id));
+  const outgoing = new Set(edges.filter((edge) => edge.source === focus && edge.target !== focus && present.has(edge.target)).map((edge) => edge.target));
+  const incoming = new Set(edges.filter((edge) => edge.target === focus && edge.source !== focus && present.has(edge.source) && !outgoing.has(edge.source)).map((edge) => edge.source));
+  const firstType = (id: string) => edges.filter((edge) => (edge.source === focus && edge.target === id) || (edge.target === focus && edge.source === id)).map((edge) => edge.type).sort()[0] ?? "";
+  const lane = (ids: ReadonlySet<string>) => ordered.filter((node) => ids.has(node.id)).sort((a, b) => (firstType(a.id) < firstType(b.id) ? -1 : firstType(a.id) > firstType(b.id) ? 1 : compareId(a, b)));
+  const left = lane(incoming);
+  const right = lane(outgoing);
+  const rest = ordered.filter((node) => node.id !== focus && !incoming.has(node.id) && !outgoing.has(node.id));
+  const rows = Math.max(left.length, right.length, 1);
+  const step = 110;
+  const laneY = (count: number, index: number) => 90 + ((rows - count) * step) / 2 + index * step;
+  const place = new Map<string, { x: number; y: number }>();
+  place.set(focus, { x: 410, y: 90 + ((rows - 1) * step) / 2 });
+  left.forEach((node, index) => place.set(node.id, { x: 130, y: laneY(left.length, index) }));
+  right.forEach((node, index) => place.set(node.id, { x: 690, y: laneY(right.length, index) }));
+  const restTop = 90 + rows * step + 40;
+  rest.forEach((node, index) => place.set(node.id, { x: 130 + (index % 3) * 280, y: restTop + Math.floor(index / 3) * 150 }));
+  return ordered.map((node) => ({ ...node, ...place.get(node.id)! }));
 }
 
 function edgeState(edge: RelationEdge, t: RelationGraphLabels) {
-  return [edge.retracted && t.retracted, edge.unresolved && t.unresolved, edge.ambiguous && t.ambiguous].filter(Boolean).join(" · ") || t.confirmed;
+  return [edge.retracted && t.retracted, edge.unresolved && t.unresolved, edge.ambiguous && t.ambiguous, edge.inferred && (t.inferred ?? DEFAULT_RELATION_GRAPH_LABELS.inferred)].filter(Boolean).join(" · ") || t.confirmed;
 }
 
 export const RelationGraph = forwardRef<HTMLDivElement, RelationGraphProps>(function RelationGraph(
   { nodes, edges, label, selection: controlledSelection, onSelectionChange, viewport: controlledViewport, onViewportChange,
-    state = "ready", stateMessage, onRetry, labels, className, ...props }, ref,
+    state = "ready", stateMessage, onRetry, layout = "grid", focusId, labels, className, ...props }, ref,
 ) {
   const t = { ...DEFAULT_RELATION_GRAPH_LABELS, ...labels };
   const uid = useId().replace(/:/g, "");
@@ -67,7 +114,8 @@ export const RelationGraph = forwardRef<HTMLDivElement, RelationGraphProps>(func
   const [type, setType] = useState("");
   const selection = controlledSelection === undefined ? localSelection : controlledSelection;
   const viewport = controlledViewport ?? localViewport;
-  const positioned = useMemo(() => layoutRelationNodes(nodes), [nodes]);
+  const positioned = useMemo(() => layoutRelationNodes(nodes, { layout, focusId, edges }), [nodes, layout, focusId, edges]);
+  const focused = layout === "focus" && focusId !== undefined && nodes.some((node) => node.id === focusId);
   const byId = useMemo(() => new Map(positioned.map((node) => [node.id, node])), [positioned]);
   const types = useMemo(() => [...new Set(edges.map((edge) => edge.type))].sort(), [edges]);
   const visibleEdges = useMemo(() => [...edges].sort((a, b) => a.id < b.id ? -1 : a.id > b.id ? 1 : 0).filter((edge) => !type || edge.type === type), [edges, type]);
@@ -100,7 +148,7 @@ export const RelationGraph = forwardRef<HTMLDivElement, RelationGraphProps>(func
       <label htmlFor={`${uid}-type`}>{t.relationType}<select id={`${uid}-type`} className="cdt-input" value={type} onChange={(event) => setType(event.target.value)}><option value="">{t.allTypes}</option>{types.map((value) => <option key={value} value={value}>{value}</option>)}</select></label>
       <a href={`#${uid}-list`} onClick={event => { event.preventDefault(); const list = event.currentTarget.ownerDocument.getElementById(`${uid}-list`); list?.focus({ preventScroll: true }); list?.scrollIntoView({ block: "start" }); }}>{t.skipToList}</a>
     </div>
-    <p className="cdt-relation__legend">{t.legend}</p>
+    <p className="cdt-relation__legend">{focused ? t.legendFocus ?? DEFAULT_RELATION_GRAPH_LABELS.legendFocus : edges.some((edge) => edge.inferred) ? `${t.legend} ${t.legendInferred ?? DEFAULT_RELATION_GRAPH_LABELS.legendInferred}` : t.legend}</p>
     <p role={state === "error" ? "alert" : "status"}>{stateMessage ?? ({ ready: t.summary(nodes.length, visibleEdges.length), loading: t.loading, empty: t.empty, error: t.error, partial: t.partial }[state])}</p>
     {state === "error" && onRetry && <Button type="button" onClick={onRetry}>{t.retry}</Button>}
     {!blocked && <>
@@ -129,7 +177,7 @@ export const RelationGraph = forwardRef<HTMLDivElement, RelationGraphProps>(func
             : `M ${source.x} ${source.y} Q ${(source.x + target.x) / 2 - dy / distance * offset} ${(source.y + target.y) / 2 + dx / distance * offset} ${target.x - dx * inset} ${target.y - dy * inset}`;
           return <g key={edge.id} data-edge-id={edge.id} data-selected={selectedEdge?.id === edge.id || undefined} data-dimmed={neighbors.size > 0 && !(neighbors.has(edge.source) && neighbors.has(edge.target)) || undefined} className="cdt-relation__edge" onClick={() => changeSelection({ kind: "edge", id: edge.id })}>
             <path d={path} className="cdt-relation__edge-hit" />
-            <path d={path} markerEnd={`url(#${uid}-arrow)`} data-state={edge.retracted ? "retracted" : edge.unresolved || edge.ambiguous ? "uncertain" : "confirmed"} />
+            <path d={path} markerEnd={`url(#${uid}-arrow)`} data-state={edge.retracted ? "retracted" : edge.unresolved || edge.ambiguous ? "uncertain" : edge.inferred ? "inferred" : "confirmed"} />
             {(nodes.length <= 50 || selectedEdge?.id === edge.id) && <text x={(source.x + target.x) / 2 - dy / distance * offset / 2} y={(source.y + target.y) / 2 + dx / distance * offset / 2 - 8} textAnchor="middle" className="cdt-relation__edge-label">{edge.label}</text>}
             <title>{`${endpointLabel(edge.source)} → ${edge.label} → ${endpointLabel(edge.target)} · ${edgeState(edge, t)}`}</title>
           </g>;

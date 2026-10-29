@@ -1181,9 +1181,9 @@
   "DataTable": {
     "purpose": "Displays loaded search results with externally controlled sorting, ID-based row selection, column visibility and load-more paging.",
     "use": [
-      "Use it for result sets that need sorting, row preview or incremental loading.",
-      "Sort in the parent or on the server and pass the sort state in.",
-      "Use state to show loading, error and partial results honestly, and stateAction to offer the retry in that banner."
+      "Use it for result sets that need sorting, row preview or incremental loading; sort in the parent or on the server and pass the sort state in.",
+      "Use state to show loading, error and partial results honestly, and stateAction to offer the retry in that banner.",
+      "Pass fit=\"columns\" when you fold low-priority columns into the row on narrow screens; the table then stops scrolling sideways below the md breakpoint."
     ],
     "avoid": [
       {
@@ -1214,7 +1214,8 @@
     "purpose": "Splits a results area from an optional inspector pane, with a slider to resize the inspector share.",
     "use": [
       "Use it to show results next to a DetailInspector.",
-      "Pass onWidthChange to offer the non-drag width slider."
+      "Pass onWidthChange to offer the non-drag width slider.",
+      "Outside AppShell, set --cdt-workbench-sticky-offset on an ancestor to the height of your own sticky bar so the pinned panel starts below it."
     ],
     "avoid": [
       {
@@ -1357,8 +1358,8 @@
     "purpose": "Shows a read-only graph of nodes and directed edges with an equivalent keyboard list and table of direction, state and evidence.",
     "use": [
       "Use it to explore relations between items with their evidence.",
-      "Pass state to separate loading, empty, error and partial results.",
-      "Pass only data the viewer is allowed to see."
+      "Pass state to separate loading, empty, error and partial results, and pass only data the viewer is allowed to see.",
+      "Mark edges derived from metadata as inferred, and use layout=\"focus\" with focusId to split what points to an item from what it points to."
     ],
     "avoid": [
       {
@@ -1507,7 +1508,7 @@
     "purpose": "A modal search over a list of commands, built on Radix Dialog with a downshift combobox, for keyboard-first navigation and actions.",
     "use": [
       "Use for applications with many actions or destinations that power users reach by typing.",
-      "Group related commands and add keywords for synonyms users might type.",
+      "Group related commands with keywords for synonyms; use description for the item a command acts on and disabledReason to say why a disabled one can’t run now.",
       "Bind the opening shortcut yourself, typically Cmd or Ctrl + K, and show it on the trigger."
     ],
     "avoid": [
@@ -1527,7 +1528,7 @@
       },
       {
         "keys": "Enter",
-        "action": "Runs the highlighted command and closes the palette."
+        "action": "Runs the highlighted command and closes the palette. An Enter that confirms an IME composition only finishes the text."
       },
       {
         "keys": "Escape",

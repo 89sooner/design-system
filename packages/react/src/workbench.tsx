@@ -89,12 +89,18 @@ export interface DataTableProps<Row> extends Omit<HTMLAttributes<HTMLDivElement>
   /** Next step shown in the error/partial banner, such as a retry button (CR-064). */
   readonly stateAction?: ReactNode;
   readonly hasMore?: boolean; readonly onLoadMore?: () => void; readonly loadingMore?: boolean;
+  /**
+   * `scroll` (default): below breakpoint.md the table keeps its minimum width and scrolls inside itself.
+   * `columns`: the consumer fits the columns to the width (for example by passing fewer `visibleColumns`), so the
+   * table drops that minimum and never scrolls sideways (CR-079).
+   */
+  readonly fit?: "scroll" | "columns";
   readonly labels?: Partial<DataTableLabels>;
 }
-function DataTableRoot<Row>({ label, rows, columns, rowId, rowLabel, selectedId, onSelect, sort, onSortChange, visibleColumns, density = "comfortable", state = "ready", message, stateAction, hasMore, onLoadMore, loadingMore, labels, className, ...props }: DataTableProps<Row>, ref: Ref<HTMLDivElement>) {
+function DataTableRoot<Row>({ label, rows, columns, rowId, rowLabel, selectedId, onSelect, sort, onSortChange, visibleColumns, density = "comfortable", state = "ready", message, stateAction, hasMore, onLoadMore, loadingMore, fit = "scroll", labels, className, ...props }: DataTableProps<Row>, ref: Ref<HTMLDivElement>) {
   const t = { ...DEFAULT_DATA_TABLE_LABELS, ...labels };
   const shown = columns.filter(column => visibleColumns === undefined || visibleColumns.includes(column.id));
-  return <div {...props} ref={ref} className={cx("cdt-data-table", className)} data-density={density} aria-busy={state === "loading" || loadingMore || undefined}>
+  return <div {...props} ref={ref} className={cx("cdt-data-table", className)} data-density={density} data-fit={fit === "columns" ? "columns" : undefined} aria-busy={state === "loading" || loadingMore || undefined}>
     {state === "error" || state === "partial" ? <Banner tone="warning" action={stateAction}>{message ?? (state === "error" ? t.error : t.partial)}</Banner> : null}
     <Table caption={label}><Table.Head><Table.Row>{onSelect && <Table.HeaderCell>{t.previewColumn}</Table.HeaderCell>}{shown.map(column => <Table.HeaderCell key={column.id} aria-sort={sort?.column === column.id ? sort.direction : undefined} style={column.minInlineSize === undefined ? undefined : { minInlineSize: column.minInlineSize }}>{column.sortable && onSortChange ? <Button variant="ghost" size="sm" onClick={() => onSortChange({ column: column.id, direction: sort?.column === column.id && sort.direction === "ascending" ? "descending" : "ascending" })}>{column.header}{sort?.column === column.id ? sort.direction === "ascending" ? " ↑" : " ↓" : " ↕"}</Button> : column.header}</Table.HeaderCell>)}</Table.Row></Table.Head>
     <Table.Body>{state !== "loading" && rows.map(row => <Table.Row key={rowId(row)} data-row-id={rowId(row)} data-selected={selectedId === rowId(row) || undefined}>{onSelect && <Table.Cell><Button size="sm" variant="ghost" aria-label={t.preview(rowLabel(row))} aria-pressed={selectedId === rowId(row)} onClick={event => onSelect(rowId(row), event.currentTarget)}>{t.select}</Button></Table.Cell>}{shown.map(column => <Table.Cell key={column.id} numeric={column.numeric}>{column.cell(row)}</Table.Cell>)}</Table.Row>)}{(state === "loading" || rows.length === 0) && <Table.Row><Table.Cell colSpan={shown.length + (onSelect ? 1 : 0)}>{state === "loading" ? <Skeleton label={t.loading} /> : <EmptyState title={state === "error" ? t.failed : t.empty} />}</Table.Cell></Table.Row>}</Table.Body></Table>

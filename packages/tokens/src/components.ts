@@ -391,6 +391,11 @@ const workbench: TokenDefinition[] = [
   component("workbench.background", ref("surface.canvas"), "Flat workspace surface."),
   component("workbench.compactPadding", ref("space.2"), "Opt-in compact table cell padding."),
   component("workbench.listHeight", value("240px"), "Bounded combobox option viewport."),
+  component(
+    "workbench.stickyOffset",
+    value("0px"),
+    "Space a sticky app bar takes above the pinned inspector (CR-079). `AppShell` sets it to `topBar.minHeight`; another app sets it on an ancestor of the workbench instead of overriding the inspector.",
+  ),
 ];
 
 export const componentTokens: readonly TokenDefinition[] = [

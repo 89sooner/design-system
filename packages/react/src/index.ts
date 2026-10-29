@@ -43,7 +43,7 @@ export type { TabsRootProps, TabsListProps, TabsContentProps, PopoverContentProp
 export { AppShellNavTrigger } from "./shell";
 
 export { RelationGraph, layoutRelationNodes } from "./relation";
-export type { RelationNode, RelationEdge, RelationSelection, RelationViewport, RelationGraphProps } from "./relation";
+export type { RelationNode, RelationEdge, RelationSelection, RelationViewport, RelationGraphProps, RelationLayoutOptions } from "./relation";
 // CR-053: the strings the CR-041 components render, overridable per instance through `labels`.
 export type { ComboboxLabels, CopyButtonLabels, DataTableLabels, DetailInspectorLabels, MultiSelectLabels, PathListLabels, ProcessingStatusLabels, RelationGraphLabels, WorkbenchLayoutLabels } from "./labels";
 // CR-054 FR-CMP-014: notifications, date entry, a command palette and page navigation.
