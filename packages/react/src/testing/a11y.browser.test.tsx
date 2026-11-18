@@ -1,5 +1,5 @@
 // Refs: WP-024 FR-QA-003 FR-A11Y-001 FR-A11Y-002 FR-A11Y-005
-import { commands, page, userEvent } from "@vitest/browser/context";
+import { commands, page, userEvent } from "vitest/browser";
 import { cleanup, render, waitFor } from "@testing-library/react";
 import axe, { type Result } from "axe-core";
 import { afterAll, afterEach, describe, expect, test } from "vitest";
@@ -20,7 +20,7 @@ import { publicComponents } from "./public-components";
 
 declare const __CONDUCTOR_A11Y_FIXTURE__: string;
 
-declare module "@vitest/browser/context" {
+declare module "vitest/browser" {
   interface BrowserCommands {
     writeAxeReport: (report: string) => Promise<void>;
   }

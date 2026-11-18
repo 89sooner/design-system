@@ -3,7 +3,7 @@
 // `@conductor-by-89soone/css/component.css` leaves out cdt.reset for consumers that bring their
 // own global reset. The focus ring must not depend on that reset: every keyboard stop that is a
 // Conductor element, or sits inside one, draws `--cdt-focus-ring` with this entry point alone.
-import { page, userEvent } from "@vitest/browser/context";
+import { page, userEvent } from "vitest/browser";
 import { cleanup, render } from "@testing-library/react";
 import type { CSSProperties } from "react";
 import { afterEach, expect, test } from "vitest";
