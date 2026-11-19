@@ -216,14 +216,16 @@ const spinner: TokenDefinition[] = [
 const input: TokenDefinition[] = [
   component("input.minHeight", value("40px"), "Minimum target height."),
   component("input.minHeightCompact", value("42px"), "Minimum height below `breakpoint.sm`."),
-  component("input.background", ref("surface.base"), "Field fill."),
-  component("input.backgroundFocus", ref("surface.canvas"), "Focused field fill."),
+  // CR-080: one field fill. TextField, TextArea and Select painted `surface.raised` while NumberInput, PromptInput
+  // and the choice controls painted `surface.base`, so two fields in one form had two fills (DEV-061).
+  component("input.background", ref("surface.raised"), "Field fill, for every field and choice control."),
+  component("input.backgroundFocus", ref("surface.raised"), "Focused field fill. The focus ring, not the fill, marks focus."),
   component("input.text", ref("text.primary"), "Field value.", "body"),
   component(
     "input.placeholder",
     ref("text.placeholder"),
-    "Placeholder. Readable text, so `body` (CR-064): checked on `surface.raised`, which `.cdt-input` " +
-      "paints, and on `input.background`, which NumberInput and PromptInput paint (CP-122, CP-123).",
+    "Placeholder. Readable text, so `body` (CR-064): checked on `input.background`, the fill every field " +
+      "paints (CR-080), and on `surface.raised` (CP-122, CP-123).",
     "body",
   ),
   component("input.border", ref("border.control"), "Field edge. 3.23:1 on `surface.raised`."),

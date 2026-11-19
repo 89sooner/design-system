@@ -2320,12 +2320,49 @@
       {
         "keys": "Enter / Space",
         "action": "Selects the focused row."
+      },
+      {
+        "keys": "Letters and digits",
+        "action": "Move to the next visible row whose name starts with what was typed."
       }
     ],
     "accessibility": [
       "Rows are treeitems with aria-level, aria-setsize, aria-posinset and, on branches, aria-expanded.",
       "The selected row is on the accent tint and bold, not colour alone; the chevron is decorative.",
       "Only one row is a tab stop, so the tree takes one Tab however many rows it has."
+    ]
+  },
+  "FileUpload": {
+    "purpose": "Chooses files with the browser's own file input, or by dropping them on the zone around it, and lists what was chosen.",
+    "use": [
+      "Use when the user attaches logs, traces or documents to a form or a run.",
+      "Pass accept, maxSize and maxFiles so files are checked before they reach your upload code.",
+      "Read the list from onFilesChange and send it yourself; the component does not upload."
+    ],
+    "avoid": [
+      {
+        "rule": "Do not use it to pick a path on a server or in a repository.",
+        "instead": "PathList"
+      },
+      {
+        "rule": "Do not use it for pasted text such as a stack trace.",
+        "instead": "TextArea"
+      }
+    ],
+    "keyboard": [
+      {
+        "keys": "Tab",
+        "action": "Reach the file input, then each chosen file's remove button."
+      },
+      {
+        "keys": "Enter / Space",
+        "action": "Open the system file picker, or remove the focused file."
+      }
+    ],
+    "accessibility": [
+      "The native file input carries the name from Field, aria-label or aria-labelledby; the visible face is hidden from assistive technology.",
+      "Files left out are announced in a status line the input points to.",
+      "Removing a file returns focus to the file input."
     ]
   }
 }

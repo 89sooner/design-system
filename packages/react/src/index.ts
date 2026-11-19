@@ -80,6 +80,10 @@ export type { SliderProps } from "./slider";
 export type { SliderLabels } from "./labels";
 export { Tree } from "./tree";
 export type { TreeNode, TreeProps } from "./tree";
+// CR-080 FR-CMP-019: the native file input with a drop zone and a list of chosen files.
+export { FileUpload } from "./file-upload";
+export type { FileRejection, FileUploadProps } from "./file-upload";
+export type { FileRejectionReason, FileUploadLabels } from "./labels";
 // CR-061 FR-CMP-016: agent and chat interface parts, modelled on Vercel AI Elements, built on Conductor.
 export { Conversation, Message, PromptInput, Reasoning, Tool, Confirmation, Sources, InlineCitation, Suggestions, Suggestion, Shimmer } from "./agent";
 export type { ConfirmationProps, ConfirmationState, ConversationProps, InlineCitationProps, MessageProps, MessageRole, MessageStatus, PromptInputProps, PromptInputStatus, ReasoningProps, ShimmerProps, SourceItem, SourcesProps, SuggestionProps, SuggestionsProps, ToolProps, ToolStatus } from "./agent";

@@ -25,7 +25,6 @@
   .cdt-relation__detail { padding: var(--cdt-space-3); border-inline-start: var(--cdt-border-width-rail) solid var(--cdt-accent); background: var(--cdt-surface-raised); overflow-wrap: anywhere; }
   .cdt-relation__nodes { display: flex; flex-wrap: wrap; gap: var(--cdt-space-2); padding: var(--cdt-space-2); list-style: none; }
   .cdt-relation details summary { padding-block: var(--cdt-space-2); cursor: pointer; }
-  .cdt-relation .cdt-table__cell { overflow-wrap: anywhere; }
   .cdt-relation [data-selected] .cdt-table__cell { background: var(--cdt-accent-soft); }
 
   /* CR-071: forced colours drop the selected row's fill; it takes an inset outline instead. */

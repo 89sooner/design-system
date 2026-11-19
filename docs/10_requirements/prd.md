@@ -1,6 +1,6 @@
 # Conductor Design System PRD
 
-> 상태: review | 버전: v0.22 | 갱신일: 2026-10-29
+> 상태: review | 버전: v0.23 | 갱신일: 2026-11-18
 
 ## 1. 문서 개요
 
@@ -170,7 +170,8 @@ Conductor Design System(이하 Conductor)은 `agent-ai-platform`의 `packages/we
 | FR-CMP-015 | AlertDialog·RadioGroup·ToggleGroup·Avatar·NumberInput을 제공한다 (CR-060). NumberInput은 TextField와 같은 glass 변형을 받는다 (CR-063) | Should | F-CMP-015 |
 | FR-CMP-016 | Conversation·Message·PromptInput·Reasoning·Tool·Confirmation·Sources·InlineCitation·Suggestions·Suggestion·Shimmer를 제공한다 (CR-061). 공유 대화의 다른 참여자 턴(`participant`)과 행 전체 폭의 에이전트 턴(CR-077) | Should | F-CMP-016 |
 | FR-CMP-017 | Separator·Stack·Grid·Heading·Text·Accordion을 제공한다 (CR-076, OD-007) | Should | CR-076 |
-| FR-CMP-018 | ContextMenu·Slider·Tree를 제공한다. 동작은 Radix와 Headless Tree에 위임한다 (CR-078) | Should | CR-078 |
+| FR-CMP-018 | ContextMenu·Slider·Tree를 제공한다. 동작은 Radix와 Headless Tree에 위임한다 (CR-078). Tree는 글자로 행을 찾는다 (CR-080) | Should | CR-078, CR-080 |
+| FR-CMP-019 | FileUpload를 제공한다. 선택은 브라우저 파일 입력에 맡기고, 놓기 영역·형식·크기·개수 검사·고른 파일 목록을 더한다 (CR-080) | Should | CR-080 |
 | FR-DOC-001 | 문서 사이트 셸을 제공한다 | Must | F-DOC-001 |
 | FR-DOC-002 | Foundations 페이지를 빌드 산출물에서 생성한다 | Must | F-DOC-002 |
 | FR-DOC-003 | 컴포넌트 카탈로그에 라이브 프리뷰를 제공한다 | Must | F-DOC-003 |

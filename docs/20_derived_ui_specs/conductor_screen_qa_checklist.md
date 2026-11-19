@@ -1,6 +1,6 @@
 # Conductor Design System 화면 QA 체크리스트
 
-> 상태: review | 버전: v0.15 | 갱신일: 2026-10-29
+> 상태: review | 버전: v0.16 | 갱신일: 2026-11-18
 
 ## 0. 사용 방법
 
@@ -217,6 +217,12 @@ FR-CMP-001은 공개 컴포넌트 전수가 ref 전달(AC-1), className 병합(A
 - [x] QA-233 390px에서 `fit="columns"` DataTable은 틀 폭을 넘지 않고, 기본 DataTable은 틀 안에서 옆으로 스크롤한다 (FR-CMP-010 AC-7, CR-079)
 - [x] QA-234 `AppShell` 밖에서 조상에 `--cdt-workbench-sticky-offset: 56px`를 둔 작업대를 내리면 고정 인스펙터가 뷰포트 위 56px에 붙고 높이가 뷰포트 − 56px를 넘지 않는다 (FR-CMP-010 AC-7, CR-079)
 - [x] QA-235 문서 워크벤치 예제에서 더 불러오고 행을 고른 뒤 다른 페이지에 갔다 뒤로 오면 행 수·선택·미리보기·포커스·스크롤이 돌아오고, 관계 예제의 추론 간선은 `Inferred`·일점쇄선, "Focus on #42"는 좌우 초점 배치와 범례를 보인다 (FR-CMP-010 AC-8, FR-CMP-011 AC-6, CR-079)
+- [x] QA-236 Tree에서 글자를 누르면 그 글자로 시작하는 다음 보이는 행으로 포커스가 가고, 빠르게 이어 누른 키는 접두어가 되며, 선택은 그대로다 (FR-CMP-018 AC-5, CR-080)
+- [x] QA-237 FileUpload: Tab이 파일 입력에 닿고 면에 포커스 링이 보이며, 제거 버튼 Enter로 파일이 빠지고 포커스가 입력으로 돌아온다. 기본·비활성·오류 axe serious 0건(두 테마) (FR-CMP-019 AC-2·AC-3, CR-080)
+- [x] QA-238 FileUpload에서 받지 않는 형식·너무 큰 파일·남는 개수가 이유와 함께 상태 줄에 보이고 입력이 그 줄을 가리킨다 (FR-CMP-019 AC-1, CR-080)
+- [x] QA-239 TextField·TextArea·Select·NumberInput·PromptInput·Switch·Checkbox·FilterChip의 배경이 두 테마에서 같은 값이다 (FR-CMP-007 AC-6, CR-080)
+- [x] QA-240 선택된 DataTable 행 첫 셀에 시작 쪽 레일이 있고 rtl에서 반대쪽이다 (FR-CMP-010 AC-9, CR-080)
+- [x] QA-241 320px 틀의 Table에서 긴 식별자가 셀 안에서 줄바꿈되어 표가 틀을 넘지 않고, RelationGraph의 긴 라벨(와이드 문자 포함)이 표시 폭으로 잘리고 전체 텍스트는 title에 남는다 (FR-CMP-005 AC-7, FR-CMP-011 AC-7, CR-080)
 - [x] QA-190 픽셀 차이가 1%를 초과하면 CI가 실패하고 차이 이미지가 아티팩트로 남는다 (FR-QA-004 AC-2) — 36% 차이 픽스처 exit 1, actual/expected/diff 생성
 - [x] QA-191 기준 이미지 갱신이 `pnpm test:visual --update` 명시적 커맨드로만 가능하다 (FR-QA-004 AC-3)
 - [x] QA-192 `Button` 단독 import gzip 크기가 4KB 이하다(React 제외) (FR-DX-003 AC-3) — `size-limit` 실측 527바이트

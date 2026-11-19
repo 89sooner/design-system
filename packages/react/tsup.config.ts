@@ -35,6 +35,7 @@ export default defineConfig({
     "src/accordion.tsx",
     "src/context-menu.tsx",
     "src/slider.tsx",
+    "src/file-upload.tsx",
     "src/tree.tsx",
   ],
   format: ["esm"],
@@ -45,7 +46,7 @@ export default defineConfig({
   splitting: false,
   treeshake: false,
   async onSuccess() {
-    const clientEntries = new Set(["action", "data", "feedback", "form", "overlay", "shell", "status", "surface", "interaction", "workbench", "relation", "toast", "date-picker", "command", "pagination", "route-focus", "direction", "accordion", "context-menu", "slider", "tree"]);
+    const clientEntries = new Set(["action", "data", "feedback", "form", "overlay", "shell", "status", "surface", "interaction", "workbench", "relation", "toast", "date-picker", "command", "pagination", "route-focus", "direction", "accordion", "context-menu", "slider", "tree", "file-upload"]);
     for (const file of await readdir("dist")) {
       if (!file.endsWith(".js")) continue;
       const path = `dist/${file}`;

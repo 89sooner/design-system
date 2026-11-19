@@ -1,6 +1,6 @@
 # Conductor Design System 작업 패키지
 
-> 상태: review | 버전: v0.20 | 갱신일: 2026-10-29
+> 상태: review | 버전: v0.21 | 갱신일: 2026-11-18
 
 ## 1. 목적
 
@@ -858,7 +858,7 @@ design-system/
 - 릴리스: REL-005
 - 관련 요구사항: FR-DX-006 AC-4 ~ AC-7, FR-DX-005
 - 관련 화면: W-002 (CHANGELOG 간접)
-- 선행 WP: WP-041, WP-042, WP-044, WP-045 (OD-005 ~ OD-008은 2026-10-24 CR-076으로 종결)
+- 선행 WP: WP-041, WP-042, WP-044, WP-045, WP-047 (OD-005 ~ OD-008은 2026-10-24 CR-076으로 종결. WP-047이 새 1.0 후보를 낸다, CR-080)
 - 구현 범위: 1.0 후보 버전을 agent-ai-platform main에 4주 이상 적용하고 로컬 재정의 목록을 원장에 판정(OD-005), `.changeset/config.json`의 `linked`를 `fixed`로 바꾸고 세 패키지 major changeset과 마이그레이션 노트(OD-008), 1.0 후보 커밋의 전 게이트 실행
 - 제외: 1.0 이후 컴포넌트 추가(minor)
 - 완료 기준(DoD): 검증 계획 §1.0 준비도 표가 모두 충족이고 사용자가 발행을 지시했다.
@@ -901,3 +901,16 @@ design-system/
 - 완료 기준(DoD): 위 AC를 단위·브라우저·E2E 시험으로 증명한다. `check:api` 차이는 추가와 `layoutRelationNodes` 선택 인자 한 줄뿐이다. 기존 시각 기준 이미지가 그대로다(CI visual regression 통과).
 - 검증 방법: 단위 시험, 브라우저 CSS 시험, 문서 E2E, 시각 회귀, `pnpm check:api`
 - 기록: 구현 원장 WP-046, CR-079 절
+
+## WP-047 보안 권고·의존성 갱신, Tree 타이프어헤드, 시각 보강 4건, FileUpload (CR-080)
+
+- 릴리스: REL-005 (tokens·css·react minor, 기존 시각 변경 — 새 1.0 후보)
+- 관련 요구사항: FR-CMP-019, FR-CMP-018 AC-5, FR-CMP-005 AC-7, FR-CMP-007 AC-6, FR-CMP-010 AC-9, FR-CMP-011 AC-7, FR-DX-006 AC-6
+- 관련 화면: W-020, W-021, W-060, W-061
+- 선행 WP: WP-041, WP-045, WP-046
+- 구현 범위: 루트 `package.json`(vitest 4.1.12·`@vitest/browser-playwright`·typescript-eslint 8.73.0, overrides), `vitest.a11y.config.ts`, `packages/react/package.json`(Radix 2026-10-12 묶음, `@headless-tree/core` 1.8.0, `react-day-picker` 10.0.2), `tree.tsx`(타이프어헤드 단축키와 `findTypeaheadMatch`), `relation.tsx`(`fitLabel`), `file-upload.tsx`, `labels.ts`(`FileUploadLabels`·`FileRejectionReason`), `index.ts`, `tsup.config.ts`, `packages/tokens/src/components.ts`(`input.background`·`input.backgroundFocus`), `contrast-pairs.ts`, `packages/css/src/components.css`·`workbench.css`·`relation.css`·`extensions.css`, 시험(`file-upload.test.tsx`, `extensions.test.tsx`, `relation.test.tsx`, `component-css.browser.test.tsx`, a11y 시나리오), 카탈로그·지침, 시각 기준 이미지, **react.api.md**·**public-surface.txt**
+- 제외: agent-ai-platform 적용(사용자 결정), 파일 전송·진행률, 폴더 선택, 이미지 미리보기, 조합 입력(한글 등) 타이프어헤드, downshift 9.5.0(배포 2주 미만), Playwright 갱신
+- 완료 기준(DoD): 위 AC를 단위·브라우저·시각 시험으로 증명한다. `pnpm audit` 0건. `check:api` 차이는 FileUpload 추가뿐이다. CI 6잡 녹색.
+- 검증 방법: 단위 시험, a11y·component-css 브라우저 시험(axe·키보드 경로), 문서 E2E, 시각 회귀, `pnpm check:api`, `pnpm audit`
+- 기록: 구현 원장 WP-047, CR-080 절, DEV-068
+

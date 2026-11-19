@@ -301,3 +301,41 @@ export interface SliderLabels {
   readonly end: string;
 }
 export const DEFAULT_SLIDER_LABELS: SliderLabels = { start: "Minimum", end: "Maximum" };
+
+/** Why a picked or dropped file was left out (CR-080). */
+export type FileRejectionReason = "type" | "size" | "count";
+
+export interface FileUploadLabels {
+  /** The visible face of the file input. Its accessible name comes from `Field`, `aria-label` or `aria-labelledby`. */
+  readonly choose: string;
+  /** Next to the face: that files can be dropped. */
+  readonly drop: string;
+  /** The list of chosen files. */
+  readonly files: string;
+  readonly remove: (name: string) => string;
+  readonly size: (bytes: number) => string;
+  /** Announced, and shown, for each file a pick or a drop left out. */
+  readonly rejected: (name: string, reason: FileRejectionReason) => string;
+}
+
+const BYTE_UNITS = ["B", "KB", "MB", "GB", "TB"] as const;
+function formatBytes(bytes: number): string {
+  const exponent = Math.min(BYTE_UNITS.length - 1, bytes > 0 ? Math.floor(Math.log(bytes) / Math.log(1024)) : 0);
+  const value = bytes / 1024 ** exponent;
+  return `${new Intl.NumberFormat("en", { maximumFractionDigits: exponent === 0 ? 0 : 1 }).format(value)} ${BYTE_UNITS[exponent]}`;
+}
+
+const REJECTION_REASONS: Record<FileRejectionReason, string> = {
+  type: "this file type is not accepted",
+  size: "the file is too large",
+  count: "no more files can be added",
+};
+
+export const DEFAULT_FILE_UPLOAD_LABELS: FileUploadLabels = {
+  choose: "Choose files",
+  drop: "or drop files here",
+  files: "Chosen files",
+  remove: (name) => `Remove ${name}`,
+  size: formatBytes,
+  rejected: (name, reason) => `${name} was not added: ${REJECTION_REASONS[reason]}.`,
+};

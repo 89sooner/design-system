@@ -54,6 +54,24 @@ describe("FR-CMP-011 relation exploration", () => {
     const view = render(<RelationGraph label="초점" nodes={graph} edges={links} layout="focus" focusId="f" />);
     expect(view.container.querySelector(".cdt-relation__legend")!.textContent).toContain("Left: items that point to the focused item");
   });
+  test("CR-080 FR-CMP-011 AC-7: a long label is cut by display width, wide characters counting two; the full text stays in the title", () => {
+    const longNodes: RelationNode[] = [
+      { id: "latin", label: "fix/flaky-forced-colors-select-test" },
+      { id: "wide", label: "다른 저장소의 아주 긴 이름을 가진 변경 요청" },
+      { id: "short", label: "저장소 #1" },
+    ];
+    const longEdges: RelationEdge[] = [{ id: "e", source: "latin", target: "wide", type: "references", label: "references the pull request that", evidence: "본문" }];
+    const view = render(<RelationGraph label="관계" nodes={longNodes} edges={longEdges} />);
+    const text = (id: string) => view.container.querySelector(`[data-node-id="${id}"] text`)!.textContent!;
+    expect(text("latin")).toBe("fix/flaky-forced-colors…");
+    expect([...text("latin")].length).toBe(24);
+    // 22 columns kept (each Hangul syllable counts two), then the ellipsis.
+    expect(text("wide")).toBe("다른 저장소의 아주 긴 …");
+    expect(text("short")).toBe("저장소 #1");
+    expect(view.container.querySelector('[data-node-id="wide"] title')!.textContent).toBe("다른 저장소의 아주 긴 이름을 가진 변경 요청");
+    expect(view.container.querySelector(".cdt-relation__edge-label")!.textContent).toBe("references the pull…");
+    expect(view.container.querySelector('[data-edge-id="e"] title')!.textContent).toContain("references the pull request that");
+  });
   test("table selection shows direction, distinct flags, evidence and confidence", () => {
     const view = render(<RelationGraph label="관계" nodes={nodes} edges={edges} />);
     fireEvent.click(view.getByRole("button", { name: "Select relation: back" }));

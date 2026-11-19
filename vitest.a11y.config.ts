@@ -1,5 +1,6 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
+import { playwright } from "@vitest/browser-playwright";
 import { defineConfig } from "vitest/config";
 
 const fromRoot = (path: string): string => fileURLToPath(new URL(path, import.meta.url));
@@ -19,7 +20,7 @@ export default defineConfig({
     hookTimeout: 30_000,
     browser: {
       enabled: true,
-      provider: "playwright",
+      provider: playwright(),
       headless: true,
       instances: [{ browser: "chromium" }],
       screenshotDirectory: fromRoot("./test-results/screenshots"),

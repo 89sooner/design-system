@@ -256,9 +256,9 @@ const tonePairs: ContrastPair[] = [
 
 /**
  * CR-064: the placeholder of an active field is text a user reads, so it is measured on the fills
- * the fields actually paint — `.cdt-input`/`.cdt-textarea`/`.cdt-select__trigger` use
- * `surface.raised`; NumberInput and PromptInput use `input.background`. The old assumption that
- * every field sat on `surface.base` (DEV-061) is why a 3.22:1 placeholder passed unnoticed.
+ * the fields actually paint. Since CR-080 every field paints `input.background` (`surface.raised` in
+ * dark, `surface.elevated` in light); CP-122 keeps `surface.raised` itself in the set. The old assumption
+ * that every field sat on `surface.base` (DEV-061) is why a 3.22:1 placeholder passed unnoticed.
  */
 const placeholderPairs: ContrastPair[] = [
   pair("CP-122", "input.placeholder", "surface.raised", "body"),

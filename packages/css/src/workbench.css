@@ -1,7 +1,7 @@
 /* FR-CMP-010 FR-CMP-012 · WP-030 WP-032 */
 @layer cdt.component {
   .cdt-filter-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--cdt-space-2); }
-  .cdt-filter-chip { display: inline-flex; align-items: center; gap: var(--cdt-space-1); padding-inline-start: var(--cdt-space-2); border: var(--cdt-border-width-hairline) solid var(--cdt-border-control); border-radius: var(--cdt-radius-sm); background: var(--cdt-surface-raised); overflow-wrap: anywhere; }
+  .cdt-filter-chip { display: inline-flex; align-items: center; gap: var(--cdt-space-1); padding-inline-start: var(--cdt-space-2); border: var(--cdt-border-width-hairline) solid var(--cdt-border-control); border-radius: var(--cdt-radius-sm); background: var(--cdt-input-background); overflow-wrap: anywhere; } /* CR-080: the same fill as the search field beside it */
   .cdt-combobox { position: relative; display: grid; gap: var(--cdt-space-2); min-inline-size: 0; }
   .cdt-combobox__options { position: absolute; inset-block-start: 100%; inset-inline: 0; z-index: var(--cdt-z-popover); margin: 0; padding: var(--cdt-space-1); max-block-size: var(--cdt-workbench-list-height); overflow: auto; list-style: none; border: var(--cdt-border-width-hairline) solid var(--cdt-border-control); background: var(--cdt-surface-raised); border-radius: var(--cdt-radius-sm); }
   .cdt-combobox__options li { padding: var(--cdt-space-3); cursor: pointer; }
@@ -14,11 +14,13 @@
   .cdt-data-table { min-inline-size: 0; }
   .cdt-data-table[data-density="compact"] { --cdt-table-cell-padding-block: var(--cdt-workbench-compact-padding); }
   .cdt-data-table [data-selected] { background: var(--cdt-state-selected); }
+  /* CR-080: the selected row also carries the start rail, so selection does not rest on the pressed button's contrast alone. */
+  .cdt-data-table [data-selected] > .cdt-table__cell:first-child { box-shadow: inset var(--cdt-border-width-rail) 0 0 var(--cdt-accent); }
+  .cdt-data-table [data-selected] > .cdt-table__cell:first-child:dir(rtl) { box-shadow: inset calc(var(--cdt-border-width-rail) * -1) 0 0 var(--cdt-accent); }
   /* CR-064: the pressed row button on the selected fill reads as primary text (muted measured 4.34:1 in dark). */
   .cdt-data-table [data-selected] .cdt-btn[aria-pressed="true"] { color: var(--cdt-text-primary); }
   /* CR-064: a sortable header's button takes the header's type, so sortable and plain headers read as one row. */
   .cdt-data-table .cdt-table__header-cell > .cdt-btn { margin-inline: calc(var(--cdt-space-2) * -1); color: inherit; font: inherit; letter-spacing: inherit; text-transform: inherit; }
-  .cdt-data-table .cdt-table__cell { overflow-wrap: anywhere; }
   /* CR-079: fit="columns" — the consumer drops or folds columns to fit, so the table stops forcing table.scrollBreakpoint below breakpoint.md. */
   .cdt-data-table[data-fit="columns"] .cdt-table { min-inline-size: 0; }
   .cdt-data-table > .cdt-filter-toolbar { padding: var(--cdt-space-3); justify-content: space-between; }

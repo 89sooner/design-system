@@ -1,5 +1,5 @@
 /*
- * CR-078 FR-CMP-018: Slider, Tree and the ContextMenu extras. Radix and Headless Tree own the
+ * CR-078 FR-CMP-018: Slider, Tree and the ContextMenu extras. CR-080 FR-CMP-019: FileUpload. Radix and Headless Tree own the
  * behaviour and set the `data-state`, `data-orientation`, `data-disabled` and `aria-*` hooks these rules key
  * on; this file only paints. Every value reads a `--cdt-` token.
  */
@@ -34,6 +34,29 @@
   .cdt-context-menu__trigger { display: block; }
   .cdt-context-menu__shortcut { margin-inline-start: auto; padding-inline-start: var(--cdt-space-4); color: var(--cdt-text-muted); font-size: var(--cdt-font-size-xs); direction: ltr; unicode-bidi: isolate; }
 
+  /*
+   * FileUpload (CR-080) — a dashed zone holding the file input's face. The input lies transparently over that
+   * face, so the face takes its hover from the input inside it and its ring when the input has keyboard focus.
+   */
+  .cdt-file-upload { display: grid; gap: var(--cdt-space-3); min-inline-size: 0; }
+  .cdt-file-upload__dropzone { display: flex; flex-wrap: wrap; align-items: center; gap: var(--cdt-space-3); padding: var(--cdt-space-4); border: var(--cdt-border-width-emphasis) dashed var(--cdt-border-control); border-radius: var(--cdt-radius-md); background: var(--cdt-input-background); transition: border-color var(--cdt-motion-fast), background var(--cdt-motion-fast); }
+  .cdt-file-upload__dropzone[data-state="dragging"] { border-color: var(--cdt-accent); background: var(--cdt-accent-soft); }
+  .cdt-file-upload__choose { position: relative; }
+  .cdt-file-upload__input { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; margin: 0; opacity: 0; cursor: pointer; }
+  .cdt-file-upload__choose:has(> .cdt-file-upload__input:focus-visible) { box-shadow: var(--cdt-focus-ring); outline: var(--cdt-border-width-emphasis) solid transparent; transition: none; }
+  .cdt-file-upload__choose:has(> .cdt-file-upload__input[aria-invalid="true"]) { border-color: var(--cdt-input-border-invalid); }
+  .cdt-file-upload__hint { color: var(--cdt-text-muted); font-size: var(--cdt-font-size-sm); }
+  .cdt-file-upload__list { display: grid; gap: var(--cdt-space-1); margin: 0; padding: 0; list-style: none; }
+  .cdt-file-upload__file { display: flex; align-items: center; gap: var(--cdt-space-3); min-block-size: var(--cdt-button-min-height); padding-inline: var(--cdt-space-3) var(--cdt-space-1); border: var(--cdt-border-width-hairline) solid var(--cdt-border-default); border-radius: var(--cdt-radius-sm); background: var(--cdt-surface-raised); }
+  .cdt-file-upload__name { flex: 1 1 auto; min-inline-size: 0; color: var(--cdt-text-primary); overflow-wrap: anywhere; }
+  .cdt-file-upload__size { flex: 0 0 auto; color: var(--cdt-text-muted); font-size: var(--cdt-font-size-sm); font-variant-numeric: tabular-nums; }
+  .cdt-file-upload__status { margin: 0; color: var(--cdt-input-error-text); font-size: var(--cdt-font-size-sm); }
+  .cdt-file-upload__status:empty { display: none; }
+  /* Disabled: the face takes the disabled Button look; the hint keeps its colour, so it stays readable. */
+  .cdt-file-upload[data-disabled] .cdt-file-upload__dropzone { border-style: solid; border-color: var(--cdt-border-default); }
+  .cdt-file-upload[data-disabled] .cdt-file-upload__choose { border-color: color-mix(in srgb, var(--cdt-button-disabled-border) 25%, var(--cdt-button-disabled-background)); background: var(--cdt-button-disabled-background); box-shadow: none; color: var(--cdt-button-disabled-text); }
+  .cdt-file-upload[data-disabled] .cdt-file-upload__input { cursor: not-allowed; }
+
   /* Forced colours drop the fills: a selected row repaints in the system highlight. */
   @media (forced-colors: active) {
     .cdt-tree__item[aria-selected="true"] { forced-color-adjust: none; background: Highlight; color: HighlightText; }
@@ -41,5 +64,6 @@
     .cdt-tree__item[aria-selected="true"]:focus-visible { outline-color: CanvasText; outline-offset: var(--cdt-border-width-emphasis); }
     .cdt-slider__range { background: Highlight; }
     .cdt-slider__thumb { background: Canvas; border-color: CanvasText; }
+    .cdt-file-upload__dropzone[data-state="dragging"] { border-color: Highlight; }
   }
 }
