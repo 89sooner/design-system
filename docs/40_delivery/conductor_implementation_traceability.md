@@ -1,6 +1,6 @@
 # Conductor Design System 구현 추적 원장
 
-> 상태: review | 버전: v0.70 | 갱신일: 2026-11-18
+> 상태: review | 버전: v0.71 | 갱신일: 2026-11-19
 
 ## 1. 목적과 갱신 규칙
 
@@ -395,6 +395,8 @@ agent-ai-platform `packages/web/src/styles/*.css`에서 Conductor 클래스를 �
 
 **적용 (2026-10-25):** agent-ai-platform이 0.18.0을 main에 병합했다(DS-PILOT-24, PR #27 `d4e8e04`). 결함 6규칙은 지워졌고, 다른 사용자 메시지는 `from="participant"`로 그린다. 4주 기간은 2026-10-25 ~ 2026-11-22다.
 
+**새 후보 적용 (2026-11-19, CR-080):** agent-ai-platform이 0.21.0(react·css·tokens)을 main에 병합했다(그 저장소의 DS-PILOT-25, PR #28 `c323530`). 앱 코드·스타일 변경은 없고, 남은 재정의는 위 표의 앱 고유 `.cdt-btn` 7규칙 그대로다. 15 경로 × 두 테마 비교(브라우저·Node 시계 고정)에서 20장은 0.18.0과 바이트 단위로 같고, 10장은 필드 배경 통일(FR-CMP-007 AC-6)이 닿은 컨트롤만 달랐다. **새 4주 기간은 2026-11-19 ~ 2026-12-17이다.** 0.18.0으로 센 2026-10-25 ~ 11-22 기간은 새 후보의 근거가 되지 않는다. 참고: 그 PR의 CI는 모든 잡이 러너 배정 전에 실패해(재실행 1회 포함) 실행되지 않았다. 사용자가 저장소 쪽 Actions 제약으로 보고 병합을 지시했다. 로컬에서 web 시험 151/151·lint·dep:check·typecheck·build·sca가 통과했고, 다른 패키지 시험(Docker)·eval·migration-dry-run·terraform-validate는 그 PR에서 돌지 않았다.
+
 ## 6. 코드 태깅 규약
 
 - **커밋/PR `Refs:` 줄**: `Refs: WP-### FR-<AREA>-###` 형식을 커밋 메시지 또는 PR 본문에 남긴다. 한 WP가 여러 FR을 구현하면 공백으로 나열한다. 예: `Refs: WP-004 FR-TOK-004 FR-TOK-005`.
@@ -423,7 +425,7 @@ agent-ai-platform `packages/web/src/styles/*.css`에서 Conductor 클래스를 �
 | WP-038 | FR-CMP-015 | done | AlertDialog·RadioGroup·ToggleGroup·Avatar·NumberInput(C-077~C-081), `controls.css`, 레지스트리·a11y·SSR 시험, 카탈로그 미리보기·지침. CR-060. |
 | WP-039 | FR-CMP-016 | done | 에이전트 대화 컴포넌트 11종(C-082~C-092), `agent.css`, 레지스트리·a11y·SSR 시험, 카탈로그 미리보기·지침. CR-061. |
 | WP-044 | FR-CMP-017 | done | Separator·Stack·Grid·Heading·Text·Accordion(C-093~C-098), `primitives.css`, 레지스트리·a11y·SSR 시험, 카탈로그 Layout·Typography family와 Accordion, 지침 6종, 시각 기준 12장 (CR-076) |
-| WP-043 | FR-DX-006 AC-4~AC-7, FR-DX-005 | in progress | 1.0 발행. 1단계(CR-077) done — 0.18.0 발행(2026-10-24, release run 148), agent-ai-platform 적용 2026-10-25(4주: ~2026-11-22). 1단계 내용: 소비자 재정의 13규칙 판정(§5.2), 결함 셋 수정(Message 행 폭·`participant`·main 포커스), CLI 옵션 검출, FR-CMP-010~013 §3 이관. 남은 일: 4주 실사용 뒤 재정의 재판정, `fixed` 전환·major changeset·마이그레이션 노트, 사용자 발행 지시. CR-080(2026-11-18): CR-080 릴리스가 새 1.0 후보다. agent-ai-platform 적용 전까지 4주는 시작되지 않는다(사용자가 이번엔 손대지 않기로 했다). |
+| WP-043 | FR-DX-006 AC-4~AC-7, FR-DX-005 | in progress | 1.0 발행. 1단계(CR-077) done — 0.18.0 발행(2026-10-24, release run 148), agent-ai-platform 적용 2026-10-25(4주: ~2026-11-22). 1단계 내용: 소비자 재정의 13규칙 판정(§5.2), 결함 셋 수정(Message 행 폭·`participant`·main 포커스), CLI 옵션 검출, FR-CMP-010~013 §3 이관. 남은 일: 4주 실사용 뒤 재정의 재판정, `fixed` 전환·major changeset·마이그레이션 노트, 사용자 발행 지시. CR-080(2026-11-18): CR-080 릴리스가 새 1.0 후보다. agent-ai-platform 적용 전까지 4주는 시작되지 않는다(사용자가 이번엔 손대지 않기로 했다). 새 후보 0.21.0을 agent-ai-platform이 2026-11-19 적용(DS-PILOT-25, `c323530`) — 4주: 2026-11-19 ~ 2026-12-17. |
 | WP-045 | FR-CMP-018 | done | ContextMenu·Slider·Tree(C-099~C-101), `extensions.css`, Radix ContextMenu 2.3.7·Slider 1.4.7과 `@headless-tree/core` 1.7.0, 레지스트리·a11y(키보드 경로 포함)·카탈로그·지침, 시각 기준. CR-078. 새 필터 칩은 FR-CMP-010에 이미 있어 만들지 않았다. PR #97 병합 `27787df`, Version packages #98 `640570c`, release run 152 — npm css·react 0.19.0(2026-10-25). |
 | WP-046 | FR-CMP-010 AC-7·AC-8, FR-CMP-011 AC-6, FR-CMP-014 AC-6 | done | CommandPalette IME 확정 Enter 차단·`Command.description`·`disabledReason`, `DataTable fit`, 토큰 `workbench.stickyOffset`, `RelationEdge.inferred`·`layout="focus"`, 문서 워크벤치 뒤로 가기 복원. CR-079. PR #100 CI 통과(`a150b63`). 병합 `1350fc3`, Version packages #101 `10876da`, release run 156 — npm tokens·css·react 0.20.0(2026-10-29). |
 | WP-047 | FR-CMP-019, FR-CMP-018 AC-5, FR-CMP-005 AC-7, FR-CMP-007 AC-6, FR-CMP-010 AC-9, FR-CMP-011 AC-7 | done | 개발 도구 권고 15건 정리(`pnpm audit` 0건, vitest 4.1.12), Radix 2026-10-12 묶음·`@headless-tree/core` 1.8.0·`react-day-picker` 10.0.2, Tree 타이프어헤드, 필드 배경 통일(`input.background`), 선택 행 레일, 표 셀 줄바꿈, 관계 그래프 라벨 맞춤, FileUpload(C-102). CR-080. PR #103 병합 `dadf95a`, Version packages #104 `ad4d9c2`, release run 160 — npm tokens·css·react 0.21.0(2026-11-19). 이 버전이 새 1.0 후보다 |
