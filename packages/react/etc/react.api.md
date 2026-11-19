@@ -670,6 +670,51 @@ export interface FieldProps extends Omit<HTMLAttributes<HTMLDivElement>, "childr
 }
 
 // @public (undocumented)
+export interface FileRejection {
+    // (undocumented)
+    readonly file: File;
+    // (undocumented)
+    readonly reason: FileRejectionReason;
+}
+
+// @public
+export type FileRejectionReason = "type" | "size" | "count";
+
+// @public (undocumented)
+export const FileUpload: react.ForwardRefExoticComponent<FileUploadProps & react.RefAttributes<HTMLDivElement>>;
+
+// @public (undocumented)
+export interface FileUploadLabels {
+    readonly choose: string;
+    readonly drop: string;
+    readonly files: string;
+    readonly rejected: (name: string, reason: FileRejectionReason) => string;
+    // (undocumented)
+    readonly remove: (name: string) => string;
+    // (undocumented)
+    readonly size: (bytes: number) => string;
+}
+
+// @public (undocumented)
+export interface FileUploadProps extends Omit<HTMLAttributes<HTMLDivElement>, "children" | "defaultValue" | "onChange"> {
+    readonly accept?: string;
+    // (undocumented)
+    readonly defaultFiles?: readonly File[];
+    // (undocumented)
+    readonly disabled?: boolean;
+    readonly files?: readonly File[];
+    // (undocumented)
+    readonly invalid?: boolean;
+    // (undocumented)
+    readonly labels?: Partial<FileUploadLabels>;
+    readonly maxFiles?: number;
+    readonly maxSize?: number;
+    readonly multiple?: boolean;
+    readonly onFilesChange?: (files: readonly File[]) => void;
+    readonly onFilesReject?: (rejections: readonly FileRejection[]) => void;
+}
+
+// @public (undocumented)
 export const FilterChip: react.ForwardRefExoticComponent<FilterChipProps & react.RefAttributes<HTMLSpanElement>>;
 
 // @public (undocumented)

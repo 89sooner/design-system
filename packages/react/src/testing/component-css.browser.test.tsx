@@ -52,7 +52,9 @@ test("FR-A11Y-001 AC-1: component.css alone draws the focus ring on every keyboa
       if (!active.matches(":focus-visible")) continue;
       // A trigger the consumer renders outside every Conductor element is styled by the consumer.
       if (!active.matches('[class*="cdt-"], [class*="cdt-"] *')) continue;
-      const style = getComputedStyle(active);
+      // CR-080: the file input lies transparently over its visible face, which draws the ring for it.
+      const painted = active.matches(".cdt-file-upload__input") ? active.parentElement! : active;
+      const style = getComputedStyle(painted);
       const drawn = style.boxShadow.includes(ring);
       if (!drawn) missing.push(`${scenario.component}: ${describeElement(active)} (box-shadow ${style.boxShadow}, outline ${style.outline})`);
     }

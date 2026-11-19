@@ -1,6 +1,6 @@
 // Refs: WP-024 FR-QA-003 FR-A11Y-002 FR-A11Y-005
 import { useEffect, useRef, useState, type ReactElement } from "react";
-import { AlertDialog, Avatar, CommandPalette, Confirmation, Conversation, InlineCitation, Message, PromptInput, Reasoning, Shimmer, Sources, Suggestion, Suggestions, Tool, DatePicker, NumberInput, Pagination, RadioGroup, Toast, ToggleGroup, Accordion, Grid, Heading, Separator, Stack, Text, ContextMenu, Slider, Tree } from "../index";
+import { AlertDialog, Avatar, CommandPalette, Confirmation, Conversation, InlineCitation, Message, PromptInput, Reasoning, Shimmer, Sources, Suggestion, Suggestions, Tool, DatePicker, NumberInput, Pagination, RadioGroup, Toast, ToggleGroup, Accordion, Grid, Heading, Separator, Stack, Text, ContextMenu, Slider, Tree, FileUpload } from "../index";
 import {
   AppShell, AppShellNavTrigger, Tabs, Popover, Collapsible, Combobox, MultiSelect, FilterChip, FilterToolbar, DataTable, WorkbenchLayout, DetailInspector, PathList, Breadcrumb, Skeleton, CopyButton, ProcessingStatus, RelationGraph,
   Badge,
@@ -146,6 +146,13 @@ function NumberFixture({ invalid = false }: { readonly invalid?: boolean }): Rea
   return <><Field label="Max steps" error={invalid ? "Too many steps." : undefined}><NumberInput {...keyboardTarget} min={1} max={50} value={value} onChange={(event) => setValue(event.currentTarget.value)} suffix="steps" /></Field><output data-count="">{value}</output></>;
 }
 
+// CR-080 FR-CMP-019: two chosen files, so removing one by keyboard leaves a list to check.
+const UPLOAD_FILES = [new File(["a"], "run-log.txt"), new File(["b"], "trace.json")];
+function UploadFixture({ disabled = false, invalid = false }: { readonly disabled?: boolean; readonly invalid?: boolean }): ReactElement {
+  const [files, setFiles] = useState<readonly File[]>(UPLOAD_FILES);
+  return <><Field label="Evidence" description="Logs or traces" error={invalid ? "Add at least one file." : undefined}><FileUpload multiple accept=".txt,.json" disabled={disabled} files={files} onFilesChange={setFiles} /></Field><output data-count="">{files.length}</output></>;
+}
+
 // CR-061 FR-CMP-016 fixtures.
 function ConversationFixture(): ReactElement {
   return <Conversation style={{ blockSize: 240 }}><Message from="user">Why did the deploy fail?</Message><Message from="participant" name="Mina">Same on staging</Message><Message from="assistant" name="Conductor" status="streaming">The migration step timed out<InlineCitation index={1} source={{ href: "https://example.com/runbook", title: "Deploy runbook" }} /></Message><Reasoning duration={3}>Checked the last three runs.</Reasoning><Tool name="ci.get_logs" status="completed" input={{ run: 42 }} output="Timeout after 600s" /><Sources sources={[{ href: "https://example.com/runbook", title: "Deploy runbook" }]} /><Shimmer>Working…</Shimmer></Conversation>;
@@ -211,6 +218,9 @@ export const a11yScenarios: readonly A11yScenario[] = [
   { component: "Slider", state: "interactive", render: () => <Slider aria-label="Price" defaultValue={[20, 80]} valueText={(value) => `$${value}`} /> },
   { component: "Slider", state: "disabled", render: () => <Slider aria-label="Volume" defaultValue={[30]} disabled /> },
   { component: "Tree", state: "default", keyboard: { kind: "steps", steps: [{ target: "[role=treeitem][tabindex='0']", keys: "{ArrowRight}", check: "[role=treeitem][aria-expanded]", attribute: "aria-expanded", expected: "true" }, { target: "[role=treeitem][tabindex='0']", keys: "{ArrowDown}{Enter}", check: "[role=treeitem][aria-selected=true]", expected: "index.ts" }, { target: "[role=treeitem][tabindex='0']", keys: "r", check: "[role=treeitem][tabindex='0']", expected: "README.md" }] }, render: () => <Tree aria-label="Files" items={TREE_ITEMS} /> },
+  { component: "FileUpload", state: "default", keyboard: { kind: "steps", steps: [{ target: "input[type=file]", keys: "{Shift}", check: "input[type=file]", attribute: "type", expected: "file" }, { target: "button[aria-label='Remove run-log.txt']", keys: "{Enter}", check: "[data-count]", expected: "1" }] }, render: () => <UploadFixture /> },
+  { component: "FileUpload", state: "disabled", render: () => <UploadFixture disabled /> },
+  { component: "FileUpload", state: "error", render: () => <UploadFixture invalid /> },
   { component: "Tree", state: "open", render: () => <Tree aria-label="Files" items={TREE_ITEMS} defaultExpandedIds={["src"]} defaultSelectedId="src/tree.tsx" /> },
   { component: "Accordion", state: "open", render: () => <Accordion.Root type="multiple" defaultValue={["limits"]}><Accordion.Item value="limits"><Accordion.Trigger>Run limits</Accordion.Trigger><Accordion.Content>Fifty steps per run.</Accordion.Content></Accordion.Item><Accordion.Item value="audit" disabled><Accordion.Trigger>Audit</Accordion.Trigger><Accordion.Content>Every step is recorded.</Accordion.Content></Accordion.Item></Accordion.Root> },
   { component: "NumberInput", state: "default", keyboard: { kind: "steps", steps: [{ target: "input[type=number]", keys: "{ArrowUp}", check: "[data-count]", expected: "11" }] }, render: () => <NumberFixture /> },
