@@ -63,6 +63,27 @@ export interface RelationLayoutOptions {
   readonly edges?: readonly RelationEdge[];
 }
 
+/** East Asian wide and fullwidth characters, and pictographs, take about two Latin columns. */
+const WIDE = /[\u1100-\u115f\u2e80-\ua4cf\uac00-\ud7a3\uf900-\ufaff\ufe30-\ufe4f\uff00-\uff60\uffe0-\uffe6\u{1f300}-\u{1faff}\u{20000}-\u{3fffd}]/u;
+
+/**
+ * CR-080: SVG text does not wrap or clip, so a label is cut to `columns` Latin-width columns before it is drawn
+ * (wide characters count two). The full text stays in the element's `<title>`, the detail panel and the table.
+ */
+function fitLabel(text: string, columns: number): string {
+  const characters = [...text];
+  const width = (character: string) => (WIDE.test(character) ? 2 : 1);
+  if (characters.reduce((sum, character) => sum + width(character), 0) <= columns) return text;
+  let used = 0;
+  let kept = "";
+  for (const character of characters) {
+    if (used + width(character) > columns - 1) break;
+    used += width(character);
+    kept += character;
+  }
+  return `${kept}…`;
+}
+
 const compareId = (a: { readonly id: string }, b: { readonly id: string }) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
 
 /**
@@ -178,13 +199,13 @@ export const RelationGraph = forwardRef<HTMLDivElement, RelationGraphProps>(func
           return <g key={edge.id} data-edge-id={edge.id} data-selected={selectedEdge?.id === edge.id || undefined} data-dimmed={neighbors.size > 0 && !(neighbors.has(edge.source) && neighbors.has(edge.target)) || undefined} className="cdt-relation__edge" onClick={() => changeSelection({ kind: "edge", id: edge.id })}>
             <path d={path} className="cdt-relation__edge-hit" />
             <path d={path} markerEnd={`url(#${uid}-arrow)`} data-state={edge.retracted ? "retracted" : edge.unresolved || edge.ambiguous ? "uncertain" : edge.inferred ? "inferred" : "confirmed"} />
-            {(nodes.length <= 50 || selectedEdge?.id === edge.id) && <text x={(source.x + target.x) / 2 - dy / distance * offset / 2} y={(source.y + target.y) / 2 + dx / distance * offset / 2 - 8} textAnchor="middle" className="cdt-relation__edge-label">{edge.label}</text>}
+            {(nodes.length <= 50 || selectedEdge?.id === edge.id) && <text x={(source.x + target.x) / 2 - dy / distance * offset / 2} y={(source.y + target.y) / 2 + dx / distance * offset / 2 - 8} textAnchor="middle" className="cdt-relation__edge-label">{fitLabel(edge.label, 20)}</text>}
             <title>{`${endpointLabel(edge.source)} → ${edge.label} → ${endpointLabel(edge.target)} · ${edgeState(edge, t)}`}</title>
           </g>;
         })}
         {positioned.map((node) => <g key={node.id} data-node-id={node.id} className="cdt-relation__node" data-selected={selectedNode?.id === node.id || undefined} data-dimmed={neighbors.size > 0 && !neighbors.has(node.id) || undefined} onClick={() => changeSelection({ kind: "node", id: node.id })}>
           <rect x={node.x - 110} y={node.y - 26} width={220} height={52} rx={8} />
-          <text x={node.x} y={node.y + 5} textAnchor="middle">{node.label.length > 24 ? `${node.label.slice(0, 23)}…` : node.label}</text><title>{node.label}</title>
+          <text x={node.x} y={node.y + 5} textAnchor="middle">{fitLabel(node.label, 24)}</text><title>{node.label}</title>
         </g>)}
       </svg>
       <section aria-label={t.detail} className="cdt-relation__detail" aria-live="polite">

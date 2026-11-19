@@ -8,9 +8,9 @@ import { cleanup, render } from "@testing-library/react";
 import type { CSSProperties } from "react";
 import { afterEach, expect, test } from "vitest";
 import { NumberInput } from "../number-input";
-import { Switch, TextArea, TextField } from "../form";
+import { Checkbox, Select, Switch, TextArea, TextField } from "../form";
 import { Badge, StatusBadge } from "../status";
-import { DataTable, DetailInspector, WorkbenchLayout } from "../workbench";
+import { DataTable, DetailInspector, FilterChip, WorkbenchLayout } from "../workbench";
 import { Conversation, Message, PromptInput, Tool } from "../agent";
 import { AppShell } from "../shell";
 import { Tabs } from "../interaction";
@@ -439,3 +439,54 @@ test("CR-077 FR-CMP-009 AC-4: main draws no ring when the skip link moves keyboa
   expect(document.activeElement?.textContent).toBe("Inside");
   expect(getComputedStyle(document.activeElement!).boxShadow).toContain(ringColor());
 });
+
+test("CR-080 FR-CMP-007 AC-7: every field, the choice controls and a filter chip paint the one field fill in both themes", () => {
+  for (const theme of ["dark", "light"] as const) {
+    document.documentElement.dataset.cdtTheme = theme;
+    const { container } = render(<>
+      <TextField aria-label="Search" />
+      <TextArea aria-label="Area" />
+      <Select.Root><Select.Trigger aria-label="Pick"><Select.Value placeholder="Pick" /></Select.Trigger></Select.Root>
+      <NumberInput aria-label="Number" />
+      <PromptInput aria-label="Prompt" value="" onValueChange={() => undefined} onSubmit={() => undefined} />
+      <Switch aria-label="Switch" />
+      <Checkbox aria-label="Check" />
+      <FilterChip removeLabel="Remove open" onRemove={() => undefined}>open</FilterChip>
+    </>);
+    const probe = document.createElement("span");
+    probe.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue("--cdt-input-background");
+    document.body.append(probe);
+    const fill = getComputedStyle(probe).backgroundColor;
+    probe.remove();
+    const painted = [".cdt-input", ".cdt-textarea", ".cdt-select__trigger", ".cdt-number-input__field", ".cdt-prompt-input__textarea", ".cdt-switch", ".cdt-checkbox", ".cdt-filter-chip"]
+      .map((selector) => [selector, getComputedStyle(container.querySelector<HTMLElement>(selector)!).backgroundColor] as const);
+    expect(painted.filter(([, colour]) => colour !== fill), theme).toEqual([]);
+    cleanup();
+  }
+});
+
+test("CR-080 FR-CMP-010 AC-8: a selected DataTable row carries the accent start rail, mirrored in rtl", () => {
+  for (const dir of ["ltr", "rtl"] as const) {
+    document.documentElement.dataset.cdtTheme = "dark";
+    const { container } = render(<div dir={dir}><DataTable label="Rows" rows={rows} rowId={(row) => row.id} rowLabel={(row) => row.id} selectedId="pr-1" onSelect={() => undefined}
+      columns={[{ id: "title", header: "Title", cell: (row) => row.id }]} /></div>);
+    const rail = getComputedStyle(container.querySelector<HTMLElement>("tr[data-selected] > td:first-child")!).boxShadow;
+    // cdt-allow-literal: the computed box-shadow of border.width.rail (3px), as the browser serialises it
+    expect(rail, dir).toMatch(dir === "ltr" ? / 3px 0px 0px 0px inset$/ : / -3px 0px 0px 0px inset$/);
+    expect(getComputedStyle(container.querySelector<HTMLElement>("tbody tr:not([data-selected]) > td:first-child")!).boxShadow, dir).toBe("none");
+    cleanup();
+  }
+});
+
+test("CR-080 FR-CMP-005: a long identifier wraps inside a plain Table cell instead of widening the table", async () => {
+  await page.viewport(1280, 800);
+  document.documentElement.dataset.cdtTheme = "dark";
+  const { container } = render(<div style={{ inlineSize: "320px" /* cdt-allow-literal: a narrow container */ }}>
+    <Table caption="Runs"><Table.Head><Table.Row><Table.HeaderCell>Run</Table.HeaderCell><Table.HeaderCell>State</Table.HeaderCell></Table.Row></Table.Head>
+      <Table.Body><Table.Row><Table.Cell>run_8f2c1d9e0b7a4c3f9e8d7c6b5a4f3e2d1c0b9a8f7e6d</Table.Cell><Table.Cell>ok</Table.Cell></Table.Row></Table.Body></Table>
+  </div>);
+  const cell = container.querySelector<HTMLElement>("tbody td")!;
+  expect(getComputedStyle(cell).overflowWrap).toBe("anywhere");
+  expect(container.querySelector<HTMLElement>("table")!.getBoundingClientRect().width).toBeLessThanOrEqual(320);
+});
+

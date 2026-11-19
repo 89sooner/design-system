@@ -4,7 +4,7 @@ import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-libra
 import { afterEach, beforeAll, describe, expect, test, vi } from "vitest";
 import { ContextMenu } from "../context-menu";
 import { Slider } from "../slider";
-import { Tree, type TreeNode } from "../tree";
+import { findTypeaheadMatch, Tree, type TreeNode } from "../tree";
 import { runContractSuite } from "./contract";
 
 afterEach(cleanup);
@@ -154,5 +154,48 @@ describe("FR-CMP-018 AC-3 Tree", () => {
     await waitFor(() => expect(document.activeElement).toBe(readme));
     press(readme, " ", "Space");
     await waitFor(() => expect(onSelectedIdChange).toHaveBeenLastCalledWith("README.md"));
+  });
+});
+
+describe("FR-CMP-018 AC-5 Tree type-ahead (CR-080)", () => {
+  const names = ["src", "index.ts", "scripts", "README.md"];
+
+  test("one character goes to the next row starting with it, wrapping; repeating it cycles", () => {
+    expect(findTypeaheadMatch(names, 0, "s")).toBe(2);
+    expect(findTypeaheadMatch(names, 2, "s")).toBe(0);
+    expect(findTypeaheadMatch(names, 2, "ss")).toBe(0);
+    expect(findTypeaheadMatch(names, 0, "R")).toBe(3);
+  });
+
+  test("a longer query matches a prefix and may stay on the focused row; no match is -1", () => {
+    expect(findTypeaheadMatch(names, 0, "sc")).toBe(2);
+    expect(findTypeaheadMatch(names, 2, "scr")).toBe(2);
+    expect(findTypeaheadMatch(names, 0, "x")).toBe(-1);
+    expect(findTypeaheadMatch([], 0, "a")).toBe(-1);
+  });
+
+  test("typing moves focus between visible rows without selecting", async () => {
+    const onSelectedIdChange = vi.fn();
+    render(<Tree aria-label="Files" items={ITEMS} defaultExpandedIds={["src"]} onSelectedIdChange={onSelectedIdChange} />);
+    const [src] = screen.getAllByRole("treeitem");
+    act(() => src!.focus());
+    press(src!, "r", "KeyR");
+    await waitFor(() => expect(document.activeElement?.textContent).toBe("README.md"));
+    // Keys typed in quick succession build one query: "rt" names no row, so focus stays.
+    press(document.activeElement!, "t", "KeyT");
+    expect(document.activeElement?.textContent).toBe("README.md");
+    await new Promise((resolve) => setTimeout(resolve, 550));
+    press(document.activeElement!, "t", "KeyT");
+    await waitFor(() => expect(document.activeElement?.textContent).toBe("tree.tsx"));
+    expect(onSelectedIdChange).not.toHaveBeenCalled();
+  });
+
+  test("a composing key does nothing", () => {
+    render(<Tree aria-label="Files" items={ITEMS} />);
+    const [src] = screen.getAllByRole("treeitem");
+    act(() => src!.focus());
+    fireEvent.keyDown(src!, { key: "Process", code: "KeyR", isComposing: true });
+    fireEvent.keyUp(src!, { key: "Process", code: "KeyR" });
+    expect(document.activeElement).toBe(src);
   });
 });

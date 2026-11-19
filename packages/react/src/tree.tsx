@@ -3,8 +3,9 @@
 // the roles, `aria-level`/`aria-setsize`/`aria-posinset`/`aria-expanded`, the roving tab stop, the arrow
 // keys and Home/End (the ADR-004 exception CR-078 records, as react-day-picker and downshift
 // are for DatePicker and CommandPalette). This file maps nodes to that model and paints the rows.
+// CR-080: type-ahead is a Headless Tree hotkey too; Conductor only decides which row the typed text names.
 import { createTree, hotkeysCoreFeature, syncDataLoaderFeature, type ItemInstance, type TreeConfig, type TreeInstance, type TreeState } from "@headless-tree/core";
-import { forwardRef, useEffect, useState, type CSSProperties, type HTMLAttributes, type ReactNode } from "react";
+import { forwardRef, useEffect, useRef, useState, type CSSProperties, type HTMLAttributes, type ReactNode } from "react";
 import { cx } from "./cx";
 
 export interface TreeNode {
@@ -29,6 +30,24 @@ export interface TreeProps extends Omit<HTMLAttributes<HTMLDivElement>, "childre
 }
 
 const ROOT = "cdt-tree-root";
+/** Keys typed closer together than this extend one type-ahead query. */
+const TYPEAHEAD_RESET_MS = 500;
+
+/**
+ * WAI-ARIA tree type-ahead: the index of the next visible row whose name starts with `query`, wrapping past
+ * the end, or -1. One character, or the same character repeated, steps past the focused row so repeated
+ * presses cycle; a longer query may stay on the focused row while it still matches.
+ */
+export function findTypeaheadMatch(names: readonly string[], focused: number, query: string): number {
+  const repeated = [...query].every((character) => character === query[0]);
+  const needle = (repeated ? query.slice(0, 1) : query).toLocaleLowerCase();
+  const start = repeated ? focused + 1 : focused;
+  for (let offset = 0; offset < names.length; offset += 1) {
+    const index = (start + offset + names.length) % names.length;
+    if (names[index]!.toLocaleLowerCase().startsWith(needle)) return index;
+  }
+  return -1;
+}
 
 function indexNodes(items: readonly TreeNode[]): Map<string, TreeNode> {
   const nodes = new Map<string, TreeNode>([[ROOT, { id: ROOT, label: "", children: items }]]);
@@ -68,6 +87,7 @@ export const Tree = forwardRef<HTMLDivElement, TreeProps>(function Tree({ "aria-
   const nodes = indexNodes(items);
   const [uncontrolled, setUncontrolled] = useState<string | null>(defaultSelectedId);
   const selected = selectedId === undefined ? uncontrolled : selectedId;
+  const typed = useRef({ query: "", at: Number.NEGATIVE_INFINITY });
   const select = (item: ItemInstance<TreeNode>): void => {
     const id = item.getId();
     if (selectedId === undefined) setUncontrolled(id);
@@ -87,6 +107,22 @@ export const Tree = forwardRef<HTMLDivElement, TreeProps>(function Tree({ "aria-
     hotkeys: {
       customActivate: { hotkey: "Enter", handler: (_event, model) => model.getFocusedItem().primaryAction() },
       customActivateSpace: { hotkey: "Space", handler: (_event, model) => model.getFocusedItem().primaryAction() },
+      customTypeahead: {
+        hotkey: "LetterOrNumber",
+        preventDefault: true,
+        handler: (event, model) => {
+          // A key that composes text (IME) or names no single character is not type-ahead.
+          if (event.isComposing || event.key.length !== 1) return;
+          const now = event.timeStamp;
+          const query = (now - typed.current.at < TYPEAHEAD_RESET_MS ? typed.current.query : "") + event.key;
+          typed.current = { query, at: now };
+          const rows = model.getItems();
+          const index = findTypeaheadMatch(rows.map((row) => row.getItemName()), model.getFocusedItem().getItemMeta().index, query);
+          if (index < 0) return;
+          rows[index]!.setFocused();
+          model.updateDomFocus();
+        },
+      },
     },
     features: [syncDataLoaderFeature, hotkeysCoreFeature],
   });

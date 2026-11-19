@@ -533,6 +533,7 @@
     border-bottom: var(--cdt-border-width-hairline) solid var(--cdt-table-cell-border);
     vertical-align: middle;
     color: var(--cdt-text-secondary);
+    overflow-wrap: anywhere; /* CR-080: a long identifier wraps inside its cell instead of widening the table */
   }
 
   /* A control in a cell is one unit too; the cell's text still wraps around it (CR-064). */
@@ -900,7 +901,7 @@
     padding: var(--cdt-input-padding-block) var(--cdt-input-padding-inline);
     border: var(--cdt-border-width-hairline) solid var(--cdt-input-border);
     border-radius: var(--cdt-input-radius);
-    background: var(--cdt-surface-raised);
+    background: var(--cdt-input-background); /* CR-080: the one field fill */
     color: var(--cdt-input-text);
     font: inherit;
     font-size: var(--cdt-font-size-md);
@@ -925,7 +926,7 @@
 
   .cdt-input:not(:disabled):hover,
   .cdt-textarea:not(:disabled):hover,
-  .cdt-select__trigger:not(:disabled):hover { border-color: var(--cdt-input-border-hover); background: var(--cdt-surface-raised); }
+  .cdt-select__trigger:not(:disabled):hover { border-color: var(--cdt-input-border-hover); background: var(--cdt-input-background); }
 
   .cdt-input:focus-visible,
   .cdt-textarea:focus-visible,
@@ -936,7 +937,7 @@
   }
 
   .cdt-input:focus-visible,
-  .cdt-textarea:focus-visible { background: var(--cdt-surface-raised); }
+  .cdt-textarea:focus-visible { background: var(--cdt-input-background-focus); }
 
   .cdt-input--glass,
   .cdt-textarea--glass { background: var(--cdt-surface-tint-1); }
