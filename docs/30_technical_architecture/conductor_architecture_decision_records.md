@@ -1,6 +1,6 @@
 # Conductor Design System Architecture Decision Records
 
-> 상태: review | 버전: v0.5 | 갱신일: 2026-10-25
+> 상태: review | 버전: v0.6 | 갱신일: 2026-11-18
 
 ## 1. 목적
 
@@ -171,6 +171,7 @@ Radix가 필요한 컴포넌트: C-040 Dialog, C-041 Drawer, C-042 Tooltip, C-04
 - 완화: 정확 버전 고정, `data-*` 셀렉터 전용, 구조 셀렉터 사용 시 CSS 산출물 검사 실패(FR-CSS-004 AC-4). 구조 변경이 감지되면 DEV를 등록한다.
 - 후속: Radix 메이저 업그레이드는 시각 회귀 검사(JOB-CI-003)와 axe 검사(JOB-CI-002)를 통과해야 병합한다.
 - 보강 (2026-10-25, CR-078): Radix에 없는 패턴은 같은 원칙으로 검증된 라이브러리에 위임한다. 앞선 예가 달력 격자의 react-day-picker(CR-054)와 콤보박스 키보드 모델의 downshift(CR-041·CR-054)다. Tree(C-101)는 `@headless-tree/core`에 `tree`/`treeitem` 역할, 수준·위치·펼침 속성, 로빙 포커스, 방향·Home/End 키를 맡긴다. Conductor가 더하는 것은 Enter·Space를 행의 기본 동작에 잇는 라이브러리 단축키 설정 두 줄뿐이고, 키 처리 코드는 자체로 작성하지 않는다. React 결합부 `@headless-tree/react`는 행을 effect에서 만들어 서버 렌더가 비므로 쓰지 않고, 같은 생성·마운트 절차를 Tree 안의 작은 훅으로 둔다.
+- 보강 (2026-11-18, CR-080): Tree의 타이프어헤드는 Headless Tree의 단축키 설정(`LetterOrNumber`)으로 받는다. 키 처리와 포커스 이동은 라이브러리가 하고, Conductor는 어느 행이 맞는지 정하는 순수 함수만 둔다(Enter·Space 연결과 같은 방식). FileUpload(C-102)는 위임할 라이브러리 없이 브라우저의 `<input type="file">`가 역할·이름·키·시스템 선택 창을 맡는다. 입력을 보이는 면 위에 투명하게 겹쳐, 클릭과 키를 흉내 내지 않고 그대로 입력에 보낸다. Radix 프리미티브는 2026-10-12 묶음으로 함께 올렸고(공통 모듈 단일 버전 유지), 시각 회귀·axe·키보드 경로 시험을 통과했다.
 
 ---
 

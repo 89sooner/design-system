@@ -1,6 +1,6 @@
 # Conductor Design System UI 컴포넌트 명세서
 
-> 상태: review | 버전: v0.25 | 갱신일: 2026-10-29
+> 상태: review | 버전: v0.26 | 갱신일: 2026-11-18
 
 ## 0. 문서 위치와 범위
 
@@ -26,6 +26,7 @@
 | 에이전트 대화 (CR-061) | FR-CMP-016 | API-CMP-012 | C-082, C-083, C-084, C-085, C-086, C-087, C-088, C-089, C-090, C-091, C-092 |
 | 레이아웃·타이포그래피·구획 (CR-076) | FR-CMP-017 | API-CMP-014 | C-093, C-094, C-095, C-096, C-097, C-098 |
 | 컨텍스트 메뉴·슬라이더·트리 (CR-078) | FR-CMP-018 | API-CMP-015 | C-099, C-100, C-101 |
+| 파일 업로드 (CR-080) | FR-CMP-019 | API-CMP-016 | C-102 |
 
 ## 1. 컴포넌트 설계 원칙
 
@@ -1383,8 +1384,12 @@ component 토큰은 semantic 토큰만 참조한다(FR-TOK-002 AC-3). 아래 표
 | C-099 | `ContextMenu` | `cdt-menu cdt-context-menu`(표면), `cdt-context-menu__trigger`, 항목 `cdt-menu__item`·`cdt-menu__item--danger`, `cdt-context-menu__shortcut` | Radix ContextMenu(포인터 위치 열기, Shift+F10·컨텍스트 메뉴 키, 역할, 포커스, Escape) | `Root`·`Trigger`·`Content`·`Item`(`tone`, `icon`, `shortcut`)·`Label`·`Separator` |
 | C-100 | `Slider` | `cdt-slider`, `cdt-slider__track`, `cdt-slider__range`, `cdt-slider__thumb` | Radix Slider(썸의 `slider` 역할, 값 속성, 키, 끌기) | `value`/`defaultValue`(값 1개 또는 범위 2개), `min`·`max`·`step`, `onValueChange`, `valueText`, `labels`(`start`·`end`), `aria-label`/`aria-labelledby` |
 | C-101 | `Tree` | `cdt-tree`, `cdt-tree__item`, `cdt-tree__chevron`, `cdt-tree__icon`, `cdt-tree__label` | Headless Tree(`tree`/`treeitem`, 수준·위치·펼침 속성, 로빙 포커스, 방향·Home/End 키) | `items`(`TreeNode`: `id`, `label`, `icon`, `children`), `defaultExpandedIds`, `selectedId`/`defaultSelectedId`, `onSelectedIdChange` |
+| C-102 | `FileUpload` | `cdt-file-upload`, `cdt-file-upload__dropzone`(`data-state` idle·dragging), `cdt-file-upload__choose`, `cdt-file-upload__input`, `cdt-file-upload__hint`, `cdt-file-upload__list`, `cdt-file-upload__file`, `cdt-file-upload__name`, `cdt-file-upload__size`, `cdt-file-upload__status` | 네이티브 `<input type="file">`(역할, 이름, 키, 시스템 선택 창) | `files`/`defaultFiles`, `onFilesChange`, `onFilesReject`, `accept`, `multiple`, `maxSize`, `maxFiles`, `disabled`, `invalid`, `labels`(`FileUploadLabels`) |
 
 - **결정**: ContextMenu는 DropdownMenu와 같은 `cdt-menu` 표면을 쓴다. 두 메뉴가 다른 모양이면 같은 명령이 두 곳에서 다르게 보인다.
 - **결정**: Slider의 이름은 썸에 붙인다. 보조 기술이 읽는 것은 `slider` 역할의 썸이고, 역할 없는 루트에 `aria-label`을 붙이면 금지 속성이 된다. Field는 Slider에 이름을 주지 않는다(`label[for]`는 썸을 가리킬 수 없다).
 - **결정**: Tree는 단일 선택이다. Enter·Space·클릭이 선택하고, 클릭은 가지를 함께 여닫는다(Headless Tree 기본). 들여쓰기는 행의 `--cdt-tree-level` 인라인 값과 space 토큰으로 그린다.
+- **결정 (CR-080)**: Tree의 타이프어헤드는 Headless Tree 단축키(`LetterOrNumber`)로 받는다. 500ms 안의 키는 접두어가 되고, 같은 글자를 거듭 누르면 그 글자로 시작하는 행을 돈다. 포커스만 옮기고 선택은 바꾸지 않는다. IME 조합 키는 무시하므로 한글처럼 조합으로 입력하는 이름은 글자로 찾지 못한다.
+- **결정 (CR-080)**: FileUpload는 보이는 "Choose files" 면 위에 투명한 네이티브 파일 입력을 겹친다. 클릭·Enter·Space가 그대로 입력에 가므로 역할·이름·시스템 선택 창을 직접 만들지 않는다(ADR-004). 면은 `cdt-btn cdt-btn--secondary` 모양을 빌리고, 입력이 키보드 포커스를 가지면 면이 포커스 링을 그린다. 고른 파일 목록이 값이며, 전송은 소비자가 한다.
+- **결정 (CR-080)**: 필드 배경은 `input.background` 하나다(DEV-061 해소). 선택된 DataTable 행은 시작 쪽 `accent` 레일을 갖고, 표 셀은 긴 식별자를 줄바꿈하며, 관계 그래프 라벨은 표시 폭(와이드 문자 2칸)으로 자른다.
 

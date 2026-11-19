@@ -54,7 +54,7 @@ describe("FR-CMP-011 relation exploration", () => {
     const view = render(<RelationGraph label="초점" nodes={graph} edges={links} layout="focus" focusId="f" />);
     expect(view.container.querySelector(".cdt-relation__legend")!.textContent).toContain("Left: items that point to the focused item");
   });
-  test("CR-080 FR-CMP-011 AC-8: a long label is cut by display width, wide characters counting two; the full text stays in the title", () => {
+  test("CR-080 FR-CMP-011 AC-7: a long label is cut by display width, wide characters counting two; the full text stays in the title", () => {
     const longNodes: RelationNode[] = [
       { id: "latin", label: "fix/flaky-forced-colors-select-test" },
       { id: "wide", label: "다른 저장소의 아주 긴 이름을 가진 변경 요청" },

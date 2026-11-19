@@ -442,7 +442,7 @@ test("CR-077 FR-CMP-009 AC-4: main draws no ring when the skip link moves keyboa
   expect(getComputedStyle(document.activeElement!).boxShadow).toContain(ringColor());
 });
 
-test("CR-080 FR-CMP-007 AC-7: every field, the choice controls and a filter chip paint the one field fill in both themes", () => {
+test("CR-080 FR-CMP-007 AC-6: every field, the choice controls and a filter chip paint the one field fill in both themes", () => {
   for (const theme of ["dark", "light"] as const) {
     document.documentElement.dataset.cdtTheme = theme;
     const { container } = render(<>
@@ -467,7 +467,7 @@ test("CR-080 FR-CMP-007 AC-7: every field, the choice controls and a filter chip
   }
 });
 
-test("CR-080 FR-CMP-010 AC-8: a selected DataTable row carries the accent start rail, mirrored in rtl", () => {
+test("CR-080 FR-CMP-010 AC-9: a selected DataTable row carries the accent start rail, mirrored in rtl", () => {
   for (const dir of ["ltr", "rtl"] as const) {
     document.documentElement.dataset.cdtTheme = "dark";
     const { container } = render(<div dir={dir}><DataTable label="Rows" rows={rows} rowId={(row) => row.id} rowLabel={(row) => row.id} selectedId="pr-1" onSelect={() => undefined}
@@ -480,7 +480,7 @@ test("CR-080 FR-CMP-010 AC-8: a selected DataTable row carries the accent start 
   }
 });
 
-test("CR-080 FR-CMP-005: a long identifier wraps inside a plain Table cell instead of widening the table", async () => {
+test("CR-080 FR-CMP-005 AC-7: a long identifier wraps inside a plain Table cell instead of widening the table", async () => {
   await page.viewport(1280, 800);
   document.documentElement.dataset.cdtTheme = "dark";
   const { container } = render(<div style={{ inlineSize: "320px" /* cdt-allow-literal: a narrow container */ }}>

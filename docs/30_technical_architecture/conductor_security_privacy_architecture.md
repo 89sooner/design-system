@@ -1,6 +1,6 @@
 # Conductor Design System 보안 및 개인정보 아키텍처
 
-> 상태: review | 버전: v0.10 | 갱신일: 2026-10-25
+> 상태: review | 버전: v0.11 | 갱신일: 2026-11-18
 
 ## 1. 범위 재정의: 이 제품은 공급망 보안 문제다
 
@@ -28,14 +28,16 @@ Conductor의 의존성은 두 종류로 나뉜다.
 | 의존성 | 범위 | 신뢰 근거 | 관련 요구사항 |
 | --- | --- | --- | --- |
 | React | `^18.0.0 \|\| ^19.0.0` | 소비자가 직접 설치하고 검증한다 | FR-CMP-001, FR-DX-004 |
-| Radix UI(개별 프리미티브 패키지) | 정확한 버전 고정, caret 미사용. 모든 프리미티브를 같은 배포 묶음(같은 날 함께 배포된 버전)에 맞춘다. 묶음이 다르면 내부 공통 모듈(`react-focus-scope`·`react-presence` 등)이 소비자 번들에 여러 벌 들어간다(CR-058, 2026-07-24 묶음). CR-060이 더한 alert-dialog 1.1.23·radio-group 1.4.7·toggle-group 1.1.19·avatar 1.2.6도 같은 묶음이고, 추가 뒤에도 공통 모듈은 한 벌이다. CR-074가 직접 의존으로 올린 `@radix-ui/react-direction@1.1.4`는 기존 프리미티브가 이미 전이 의존으로 쓰던 단일 버전이라 lockfile에 새 버전이 생기지 않는다 | Conductor가 버전을 통제하고 DOM 구조 변경을 시각 회귀 검사로 검출한다 | FR-CMP-006, ADR-004, R-3 |
+| Radix UI(개별 프리미티브 패키지) | 정확한 버전 고정, caret 미사용. 모든 프리미티브를 같은 배포 묶음(같은 날 함께 배포된 버전)에 맞춘다. 묶음이 다르면 내부 공통 모듈(`react-focus-scope`·`react-presence` 등)이 소비자 번들에 여러 벌 들어간다(CR-058, 2026-07-24 묶음). CR-060이 더한 alert-dialog 1.1.23·radio-group 1.4.7·toggle-group 1.1.19·avatar 1.2.6도 같은 묶음이고, 추가 뒤에도 공통 모듈은 한 벌이다. CR-074가 직접 의존으로 올린 `@radix-ui/react-direction@1.1.4`는 기존 프리미티브가 이미 전이 의존으로 쓰던 단일 버전이라 lockfile에 새 버전이 생기지 않는다 | Conductor가 버전을 통제하고 DOM 구조 변경을 시각 회귀 검사로 검출한다 CR-080(2026-11-18): 18개 프리미티브를 2026-10-12 묶음(예: dialog 1.3.1, dropdown-menu 2.2.1, select 2.4.1, context-menu 2.4.1, slider 1.6.1, direction 1.2.0)으로 함께 올렸다. 공통 모듈(menu·focus-scope·popper·presence·roving-focus·collection)은 각각 한 버전이다. | FR-CMP-006, ADR-004, R-3 |
 | lucide-react | peer, 소비자가 아이콘 컴포넌트를 props로 주입 | Conductor는 아이콘을 번들하지 않는다 | FR-CMP-004 |
-| react-day-picker (dependency, CR-054) | `10.0.1` 정확한 버전. 전이 의존 `date-fns`, `@date-fns/tz` | 달력 격자·키보드 탐색을 맡는 접근성 검증 라이브러리. 자체 CSS는 import하지 않는다. 추가 시점 `pnpm audit --audit-level high` 결과가 main과 같았다(새 권고 0건) | FR-CMP-014 |
-| @headless-tree/core (dependency, CR-078) | `1.7.0` 정확한 버전. 런타임 의존성 0, MIT | Tree(C-101)의 역할·키보드·로빙 포커스를 맡는 headless 라이브러리. 1.8.0(2026-10-15)이 아니라 5개월 된 1.7.0(2026-05-17)을 고른다. React 결합부 `@headless-tree/react`는 쓰지 않는다. 같은 CR의 `@radix-ui/react-context-menu@2.3.7`·`@radix-ui/react-slider@1.4.7`은 위 Radix 행의 같은 배포 묶음(2026-07-24)이며 공통 모듈이 단일 버전으로 남는다(`react-menu` 2.1.24, `react-focus-scope` 1.1.16) |
+| react-day-picker (dependency, CR-054) | `10.0.1` 정확한 버전. 전이 의존 `date-fns`, `@date-fns/tz` | 달력 격자·키보드 탐색을 맡는 접근성 검증 라이브러리. 자체 CSS는 import하지 않는다. 추가 시점 `pnpm audit --audit-level high` 결과가 main과 같았다(새 권고 0건) CR-080: `10.0.2`(2026-09-30)로 갱신. | FR-CMP-014 |
+| @headless-tree/core (dependency, CR-078) | `1.7.0` 정확한 버전. 런타임 의존성 0, MIT | Tree(C-101)의 역할·키보드·로빙 포커스를 맡는 headless 라이브러리. 1.8.0(2026-10-15)이 아니라 5개월 된 1.7.0(2026-05-17)을 고른다. React 결합부 `@headless-tree/react`는 쓰지 않는다. 같은 CR의 `@radix-ui/react-context-menu@2.3.7`·`@radix-ui/react-slider@1.4.7`은 위 Radix 행의 같은 배포 묶음(2026-07-24)이며 공통 모듈이 단일 버전으로 남는다(`react-menu` 2.1.24, `react-focus-scope` 1.1.16) | CR-080: `1.8.0`(2026-10-15, 배포 한 달 경과)으로 갱신. 런타임 의존성 0 그대로.
 
 ### 3.2 빌드 타임 의존성 (Conductor가 버전을 소유)
 
 빌드 도구 체인(타입 컴파일러, 번들러, 테스트 러너, 린터)은 `pnpm-lock.yaml`에 정확한 버전으로 고정한다(ADR-009 테스트 스택이 도구 선택을 확정한다). CI는 `pnpm install --frozen-lockfile`로 실행해 lockfile과 `package.json`이 어긋나면 설치 단계에서 실패한다. 이 의존성은 산출물에 포함되지 않으므로 소비자 런타임 위험은 아니지만, CI 실행 환경을 오염시킬 수 있는 공급망 경로이므로 3.3의 취약점 게이트 대상에 포함한다.
+
+CR-080(2026-11-18): 개발 도구의 권고 15건(vitest·@vitest/mocker·vite·esbuild·postcss·fast-uri·brace-expansion·minimatch)을 정리해 `pnpm audit`가 0건이다. vitest는 4.1.12로 올리고(브라우저 공급자는 `@vitest/browser-playwright`), tsup 8.5.1이 쓰는 esbuild는 overrides로 0.28.2, api-extractor가 고정한 minimatch는 overrides로 11.0.9를 쓴다. 두 overrides는 선언 범위 밖이지만 발행 dist가 갱신 전과 바이트 단위로 같고 `check:api`가 그대로 통과했다. 배포 2주가 안 된 downshift 9.5.0은 올리지 않았다. DEV-049(braces, 패치 없음)는 그대로다.
 
 ### 3.3 취약점 게이트
 

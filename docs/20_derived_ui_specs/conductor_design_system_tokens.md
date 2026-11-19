@@ -1,6 +1,6 @@
 # Conductor Design System 토큰 명세
 
-> 상태: review | 버전: v0.18 | 갱신일: 2026-10-29
+> 상태: review | 버전: v0.19 | 갱신일: 2026-11-18
 
 ## 0. 문서 성격과 범위 경계
 
@@ -913,6 +913,8 @@ CR-018 이전 구현은 상태 semantic 색을 배경 전체에 적용하고 `te
 `input.placeholder`는 CR-064부터 `{text.placeholder}`(`usage: body`, 두 테마 모두 `text.muted`와 같은 값)를 참조한다. 별칭이 아니라 값으로 두는 것은 FR-TOK-002 AC-2가 semantic 사이 참조를 CR-008의 4건으로 묶기 때문이다. 소스(`app.css:752-755`)는 `--text-faint`를 썼고 v1.16까지 SRS 12.1절도 그것을 허용했지만, 입력이 실제로 칠하는 `surface.raised` 위에서 다크 3.22:1·라이트 4.36:1로 본문 기준에 못 미쳤다. 새 역할 토큰은 새 색을 들이지 않으므로 OD-001의 값 보존 원칙을 깨지 않는다. CP-122(`surface.raised`)와 CP-123(`input.background`)이 검사한다(8.2절). 필드의 라벨은 placeholder가 아니라 `input.label.text`(`{text.secondary}`, 다크 `surface.base` 위 12.51:1)가 전달한다 — `Field`가 라벨을 `htmlFor`/`id`로 연결하기 때문이다(FR-CMP-007 AC-1). 설명은 별도 `text.muted` 단계에 남겨 라벨과 보조 정보의 위계를 분리한다(CR-019).
 
 **`input.background`와 실제 입력 배경은 다르다(DEV-061).** `.cdt-input`·`.cdt-textarea`·`.cdt-select__trigger`는 `input.background`가 아니라 `surface.raised`를 칠한다(CR-019 정제). `input.background`를 칠하는 것은 `NumberInput`의 내부 입력, `PromptInput`, `RadioGroup`의 원, `ToggleGroup`, `Switch`, `Checkbox`다. v0.14까지 이 절은 "다크 입력은 `surface.base` 위"라고 가정했고, 그래서 placeholder 대비를 `surface.base` 기준으로만 읽었다. CR-064는 두 배경을 모두 대비 쌍으로 선언한다.
+
+**CR-080: 필드 배경은 이제 하나다.** `input.background`·`input.backgroundFocus`가 다크에서 `surface.raised`(라이트는 그대로 `surface.elevated`)를 가리키고, `.cdt-input`·`.cdt-textarea`·`.cdt-select__trigger`와 `FilterChip`도 `input.background`를 칠한다. 위 문단은 CR-080 이전 상태의 기록이다. 다크 NumberInput·PromptInput·Switch·Checkbox·RadioGroup 원·ToggleGroup 트랙의 바탕이 `surface.base`에서 `surface.raised`로 밝아졌고, TextField·TextArea·Select는 다크에서 그대로, 라이트에서 `surface.raised`(#fcfdfe)가 `surface.elevated`(#fff)로 바뀌었다.
 
 ### 7.5.1 `feedbackMeter.*`
 

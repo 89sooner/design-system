@@ -1,6 +1,6 @@
 # Conductor Design System 최종 요구사항 정의서
 
-> 상태: baseline | 버전: v1.29 | 갱신일: 2026-10-29
+> 상태: baseline | 버전: v1.30 | 갱신일: 2026-11-18
 
 ## 1. 문서 개요
 
@@ -37,7 +37,7 @@ Conductor는 `agent-ai-platform/packages/web`의 시각 언어를 3개 npm 패�
 1. 3계층 디자인 토큰 소스와 CSS/TypeScript/JSON 산출 빌드 — FR-TOK-001 ~ FR-TOK-009
 2. 다크(기준) 및 라이트 테마, 시스템 설정 연동, 테마별 대비 검증, 소스 계승 토큰의 접근성 교정 — FR-THM-001 ~ FR-THM-005
 3. 캐스케이드 레이어 기반 프레임워크 비종속 스타일시트 — FR-CSS-001 ~ FR-CSS-005 (CR-069 보강 FR-CSS-001 AC-5, §30; CR-071 정정 FR-CSS-002 AC-3, §32) 및 CR-074 확장 FR-CSS-006 오른쪽→왼쪽(RTL) 문서 (§34)
-4. React 프리미티브 컴포넌트 — 기존 FR-CMP-001 ~ FR-CMP-009 및 CR-041 확장 FR-CMP-010 ~ FR-CMP-013 (§17, review) 및 CR-078 확장 FR-CMP-018 ContextMenu·Slider·Tree (§38)
+4. React 프리미티브 컴포넌트 — 기존 FR-CMP-001 ~ FR-CMP-009 및 CR-041 확장 FR-CMP-010 ~ FR-CMP-013 (§17, review) 및 CR-078 확장 FR-CMP-018 ContextMenu·Slider·Tree (§38) 및 CR-080 확장 FR-CMP-019 FileUpload (§40)
 5. 정적 문서 사이트 — FR-DOC-001 ~ FR-DOC-007 및 CR-048 확장 FR-DOC-008 (§18), CR-051 확장 FR-DOC-009 (§19), CR-052 확장 FR-DOC-010 (§20), CR-053 보강 FR-DOC-001 AC-5·FR-CMP-013 AC-5 (§21), CR-054 확장 FR-CMP-014 (§22), CR-060 확장 FR-CMP-015 (§24), CR-061 확장 FR-CMP-016 (§25), CR-063 보강 FR-CMP-015 AC-7 (§26), CR-064 보강 FR-THM-005 AC-8·FR-CMP-004 AC-7·FR-CMP-010 AC-6 (§27), CR-065 정정·보강 FR-THM-002 AC-3·AC-5·FR-CMP-013 AC-6 (§28), CR-067 정정 FR-CMP-013 AC-6 (§29), CR-071 정정 FR-CMP-013 AC-6 (§32)
 6. WCAG 2.1 AA 접근성 기준선 — FR-A11Y-001 ~ FR-A11Y-005 (CR-071 보강 FR-A11Y-001 AC-5·FR-A11Y-003 AC-5, §32; CR-077 적용 범위 정정 FR-A11Y-001 AC-2·AC-5, §37)
 7. 모노레포 빌드, 타입 배포, 진입점 선언, SSR 안전성, 버저닝 — FR-DX-001 ~ FR-DX-005 및 CR-075 확장 FR-DX-006 1.0 안정화 기준 (§35, CR-076 확정 §36, CR-077 검출 보강 §37)
@@ -988,7 +988,7 @@ OD-001(2026-07-10 종결)이 확정한 정책이다. 소스 팔레트를 실측�
 - **OD-004 → 패키지에 포함**: 셸 컴포넌트군(C-070 ~ C-072)을 `@conductor-by-89soone/react`에 포함한다. `renderLink` props로 링크 렌더를 위임하면 라우팅 비종속 API가 성립한다(FR-CMP-009 AC-1, AC-2). 소스의 사이드 내비와 상단바는 Conductor 시각 언어에서 가장 특징적인 표면이다. WP-023을 실행한다.
 - **OD-005 → 소비자 한 곳, 4주, 재정의 0건 (CR-076)**: 1.0의 실사용 검증은 agent-ai-platform 한 곳으로 한다. 1.0 후보 버전을 그 앱의 main에서 4주 이상 쓰는 동안, Conductor의 `cdt-*` 클래스나 `--cdt-*` 값을 덮어쓰는 로컬 재정의가 0건이어야 한다. 남은 재정의는 각각 컴포넌트 결함이 아닌 앱 고유 스타일로 원장에 판정돼야 한다. 두 번째 소비자는 요구하지 않는다. 근거: 두 번째 소비자를 구할 경로가 없고, 재정의 수가 컴포넌트가 실제 요구를 채우는지를 가장 직접 잰다.
 - **OD-006 → 같은 이름의 값·시각 변경은 minor (CR-076)**: 1.0 이후 토큰 이름이나 클래스 이름을 지우거나 바꾸면 major다. 이름이 같은 채 값·모양만 바뀌는 의도된 시각 변경은 minor로 낸다. 그 changeset은 본문 첫 줄을 `Visual change:`로 시작하고, 같은 PR에 갱신된 시각 회귀 기준 이미지를 담는다. 버그 수정성 보정은 patch다. 근거: 디자인 개선이 major를 기다리지 않게 하되, 소비자가 CHANGELOG에서 화면 변화를 찾을 수 있게 한다.
-- **OD-007 → 기본 단위 6종을 1.0 범위에 (CR-076)**: 1.0 전에 Separator, Stack, Grid, Heading, Text, Accordion을 더한다(FR-CMP-017, §36). Slider, FileUpload, Tree, ContextMenu는 1.0 이후 minor로 더한다(2026-10-25 CR-078이 ContextMenu·Slider·Tree를 1.0 전으로 앞당겼다, §38. FileUpload는 그대로 1.0 이후). 근거: 앞의 다섯은 작고 거의 모든 화면이 쓰는 레이아웃·타이포그래피 단위라 소비자가 각자 만들면 나중에 공식 컴포넌트와 충돌한다. Accordion은 Radix에 위임하면 작다.
+- **OD-007 → 기본 단위 6종을 1.0 범위에 (CR-076)**: 1.0 전에 Separator, Stack, Grid, Heading, Text, Accordion을 더한다(FR-CMP-017, §36). Slider, FileUpload, Tree, ContextMenu는 1.0 이후 minor로 더한다(2026-10-25 CR-078이 ContextMenu·Slider·Tree를 1.0 전으로 앞당겼다, §38. FileUpload는 그대로 1.0 이후였으나 2026-11-18 CR-080이 FR-CMP-019로 1.0 범위에 넣었다, §40). 근거: 앞의 다섯은 작고 거의 모든 화면이 쓰는 레이아웃·타이포그래피 단위라 소비자가 각자 만들면 나중에 공식 컴포넌트와 충돌한다. Accordion은 Radix에 위임하면 작다.
 - **OD-008 → 1.0부터 lockstep (CR-076)**: 세 패키지를 1.0.0으로 함께 올리고, 이후에도 같은 버전으로 낸다. 1.0 발행 PR에서 `.changeset/config.json`의 `linked`를 `fixed`로 바꾼다. 0.x 동안은 지금의 `linked`를 유지한다. 근거: 소비자는 세 패키지를 항상 함께 설치하므로, 버전 하나가 조합 오류를 없앤다.
 
 ### 14.2 baseline 전 확인
@@ -1355,7 +1355,7 @@ v1.27 baseline 이력을 유지한다. 2026-10-25 사용자가 상용 서비스 
 | 검증 방법 | test |
 | 관련 화면 | W-020, W-021 |
 | 관련 API/데이터 | API-CMP-015 / ENT-CMP-001 |
-| 예외/실패 처리 | 하위 메뉴·체크·라디오 메뉴 항목, Slider 눈금 표시, Tree 다중 선택·끌어 놓기·이름 바꾸기·비동기 로딩·가상화·타이프어헤드는 이 FR 범위가 아니다. Radix에 Tree가 없으므로 ADR-004의 위임 대상에 Headless Tree를 더한다(react-day-picker·downshift와 같은 예외 경로, 보안 아키텍처 3.1). 새 런타임 의존성은 기존 Radix 묶음(2026-07-24)의 `@radix-ui/react-context-menu@2.3.7`·`@radix-ui/react-slider@1.4.7`과 `@headless-tree/core@1.7.0`(MIT, 런타임 의존성 0. React 결합부 `@headless-tree/react`는 쓰지 않는다: 그 `useTree`가 행을 effect에서 만들어 서버 렌더가 비므로, 같은 일을 하는 작은 훅을 Tree 안에 둔다)이며 정확한 버전으로 고정한다. |
+| 예외/실패 처리 | 하위 메뉴·체크·라디오 메뉴 항목, Slider 눈금 표시, Tree 다중 선택·끌어 놓기·이름 바꾸기·비동기 로딩·가상화는 이 FR 범위가 아니다(타이프어헤드는 CR-080이 AC-5로 더했다, §40). Radix에 Tree가 없으므로 ADR-004의 위임 대상에 Headless Tree를 더한다(react-day-picker·downshift와 같은 예외 경로, 보안 아키텍처 3.1). 새 런타임 의존성은 기존 Radix 묶음(2026-07-24)의 `@radix-ui/react-context-menu@2.3.7`·`@radix-ui/react-slider@1.4.7`과 `@headless-tree/core@1.7.0`(MIT, 런타임 의존성 0. React 결합부 `@headless-tree/react`는 쓰지 않는다: 그 `useTree`가 행을 effect에서 만들어 서버 렌더가 비므로, 같은 일을 하는 작은 훅을 Tree 안에 둔다)이며 정확한 버전으로 고정한다. |
 
 ## 39. CR-079 보강 (baseline)
 
@@ -1368,3 +1368,33 @@ v1.28 baseline 이력을 유지한다. 2026-10-29 사용자가 0.19.0 기준 재
 | FR-CMP-014 | AC-6: `CommandPalette`는 IME 조합을 확정하는 Enter로 명령을 실행하지 않는다. `compositionstart`와 `compositionend` 사이의 Enter, `isComposing`이 참인 Enter, keyCode 229인 Enter가 그것이며, 조합이 끝난 뒤의 Enter는 강조된 명령을 실행한다. `Command`는 `description?`(명령이 다루는 대상 같은 두 번째 줄)과 `disabledReason?`(비활성 명령이 지금 실행되지 않는 이유, `disabled`일 때 `description` 자리에 보인다)을 받는다. 두 번째 줄은 옵션의 접근 가능한 이름에 들어가고 `filterCommands`의 검색 대상이 아니다. 둘 다 없는 명령의 마크업은 바뀌지 않는다. |
 
 `layoutRelationNodes`의 선택 인자 추가는 공개 API 보고서에서 시그니처 한 줄이 바뀌지만 기존 호출의 결과는 같다. 나머지 차이는 추가뿐이고 기존 시각 기준 이미지는 그대로여야 한다. tokens·css·react minor이며 changeset 첫 줄에 `Visual change:`를 쓰지 않는다(OD-006).
+
+## 40. CR-080 확장·보강 (baseline)
+
+v1.29 baseline 이력을 유지한다. 2026-11-18 사용자가 design-system 개선을 지시했고("agent-ai-platform은 그냥 두고 design-systemㄹ 개선하자"), 질의 응답으로 네 가지(개발 도구 보안 권고 정리, CR-079가 미룬 시각 개선 4건, 런타임 의존성 갱신과 Tree 타이프어헤드, FileUpload)를 모두 고르고 1.0 일정은 "지금 하고 기간 재시작"으로 정했다. 기존 컴포넌트의 시각이 바뀌므로 이 절을 담은 릴리스가 새 1.0 후보다(검증 계획 §1.0 준비도의 운영 가정). FR-DX-006 AC-5의 4주는 agent-ai-platform main이 새 후보를 쓰기 시작한 날부터 센다. 사용자가 agent-ai-platform은 이번에 손대지 않기로 했으므로, 그 적용 전까지 기간은 시작되지 않는다.
+
+| FR | 변경 |
+| --- | --- |
+| FR-DX-006 | AC-6 보강: 1.0 컴포넌트 범위에 FR-CMP-019(FileUpload)를 더한다. OD-007의 후보가 모두 1.0 범위에 든다 |
+| FR-CMP-005 | AC-7: `Table`의 셀(`cdt-table__cell`)은 `overflow-wrap: anywhere`로 긴 식별자를 셀 안에서 줄바꿈하고 표를 넓히지 않는다. `DataTable`과 `RelationGraph` 표가 따로 두던 같은 규칙은 이 규칙으로 합친다 |
+| FR-CMP-007 | AC-6: 필드 배경은 하나다. `TextField`·`TextArea`·`Select` 트리거·`NumberInput`·`PromptInput`·`Switch`·`Checkbox`·`RadioGroup` 원·`ToggleGroup` 트랙과 `FilterChip`이 모두 `input.background`를 칠한다. `input.background`와 `input.backgroundFocus`는 다크에서 `surface.raised`, 라이트에서 `surface.elevated`다. 포커스는 배경이 아니라 포커스 링이 알린다. 한 폼에 `surface.raised`와 `surface.base` 두 배경이 섞이던 일(DEV-061)이 끝난다. FR-THM-005 AC-8의 placeholder 대비(CP-122·CP-123)는 그대로 4.5:1 이상이다 |
+| FR-CMP-010 | AC-9: 선택된 `DataTable` 행은 채움(`state.selected`)에 더해 첫 셀의 시작 쪽에 `border.width.rail` 두께의 `accent` 레일을 갖는다. 오른쪽→왼쪽 문서에서는 오른쪽에 그린다. 선택이 눌린 행 버튼의 대비에만 기대지 않는다. 강제 색 모드의 안쪽 외곽선(CR-071)은 그대로다 |
+| FR-CMP-011 | AC-7: 노드 라벨은 24칸, 간선 라벨은 20칸을 넘으면 잘리고 `…`로 끝난다. 동아시아 전각·와이드 문자와 그림 문자는 2칸으로 센다. 전체 텍스트는 노드·간선의 `<title>`, 상세 패널, 대체 표에 남는다. 24자 이하 라틴 문자 노드 라벨은 이전과 같다 |
+| FR-CMP-018 | AC-5 (Tree 타이프어헤드): 수정키 없이 누른 글자·숫자 키는 그 글자로 시작하는(대소문자 무시) 다음 보이는 행으로 포커스를 옮기고, 끝에서 처음으로 돈다. 500ms 안에 이어 누른 키는 하나의 접두어가 되고, 같은 글자를 거듭 누르면 그 글자로 시작하는 행들을 돈다. 선택은 바뀌지 않는다. 키 처리는 Headless Tree의 단축키 설정을 거치고, Conductor는 어느 행이 맞는지만 정한다. IME 조합 중인 키와 한 글자가 아닌 키는 무시한다. 예외 처리 열의 "타이프어헤드" 제외를 지운다 |
+
+#### FR-CMP-019 FileUpload
+
+| 항목 | 내용 |
+| --- | --- |
+| 상태 | approved |
+| 우선순위 | Should |
+| 출처 | CR-080 / 2026-11-18 사용자 지시와 질의 응답 |
+| 요구사항 | 시스템은 항상 `FileUpload`를 `@conductor-by-89soone/react` 공개 export와 대응하는 `cdt-file-upload*` 클래스로 제공하고, 파일 선택의 역할·이름·키보드·시스템 선택 창은 브라우저의 `<input type="file">`에 맡겨야 한다. |
+| 수용 기준 | AC-1 (규칙): `accept`는 브라우저 선택 창처럼 확장자(`.pdf`, 대소문자 무시)·정확한 MIME 형식·와일드카드(`image/*`)를 읽고, 비면 모두 받는다. 고르거나 놓은 파일은 형식 → 크기(`maxSize`, 바이트) → 개수(`multiple`이면 `maxFiles`, 아니면 1) 순으로 걸러진다. 걸러진 파일은 이유(`type`·`size`·`count`)와 함께 `onFilesReject`로 오고 `role="status"` 줄에 보이며, 입력의 `aria-describedby`가 그 줄을 가리킨다. `multiple`이 아니면 새로 고른 파일이 이전 파일을 바꾼다. AC-2 (컴포넌트, C-102): 투명한 네이티브 파일 입력이 보이는 "Choose files" 면 위에 놓여 클릭과 키가 입력에 간다. 면의 글자는 보조 기술에서 숨기고, 이름은 `Field`·`aria-label`·`aria-labelledby`가 입력에 준다(셋 다 없으면 개발 빌드가 경고한다). `Field`는 설명·오류·필수·`aria-invalid`를 입력에 잇는다. 놓기 영역은 파일을 끄는 동안 `data-state="dragging"`이다. 고른 파일 목록은 이름·크기·제거 버튼(`Remove <이름>`)을 보이고, 제거하면 포커스가 파일 입력으로 돌아온다. 같은 파일을 다시 고를 수 있도록 선택 뒤 입력 값을 비운다. `files`·`onFilesChange`로 제어하거나 `defaultFiles`로 비제어로 쓴다. 비활성은 입력·놓기·제거를 막는다. 문구는 `labels`(`FileUploadLabels`)로 바꾼다. AC-3: 키보드 경로(입력 → 제거 버튼 Enter)와 기본·비활성·오류 상태의 axe serious 0건을 두 테마에서 브라우저 시험으로 확인한다. 포커스 링은 입력이 키보드 포커스를 가질 때 면에 그린다 |
+| 검증 방법 | test |
+| 관련 화면 | W-020, W-021 |
+| 관련 API/데이터 | API-CMP-016 / ENT-CMP-001 |
+| 예외/실패 처리 | 전송·진행률·재시도·서버 검증은 범위가 아니다. 컴포넌트는 파일 목록만 주고 전송은 소비자가 한다. 폴더 선택, 이미지 미리보기, 붙여 넣기도 범위가 아니다. 목록이 값이므로 네이티브 입력의 `name`으로 폼에 제출되지 않는다(소비자가 `FormData`에 더한다). 새 런타임 의존성은 없다 |
+
+개발 도구 보안 권고 정리(`pnpm audit` 0건)와 런타임 의존성 갱신(Radix 2026-10-12 묶음, `@headless-tree/core` 1.8.0, `react-day-picker` 10.0.2)은 요구사항을 바꾸지 않으며 보안 아키텍처 3.1과 원장에 기록한다. tokens·css·react minor이고, 기존 시각이 바뀌므로 changeset 첫 줄은 `Visual change:`다(OD-006).
+
