@@ -1,6 +1,6 @@
 # Conductor Design System 화면 QA 체크리스트
 
-> 상태: review | 버전: v0.16 | 갱신일: 2026-11-18
+> 상태: review | 버전: v0.17 | 갱신일: 2026-11-20
 
 ## 0. 사용 방법
 
@@ -223,6 +223,7 @@ FR-CMP-001은 공개 컴포넌트 전수가 ref 전달(AC-1), className 병합(A
 - [x] QA-239 TextField·TextArea·Select·NumberInput·PromptInput·Switch·Checkbox·FilterChip의 배경이 두 테마에서 같은 값이다 (FR-CMP-007 AC-6, CR-080)
 - [x] QA-240 선택된 DataTable 행 첫 셀에 시작 쪽 레일이 있고 rtl에서 반대쪽이다 (FR-CMP-010 AC-9, CR-080)
 - [x] QA-241 320px 틀의 Table에서 긴 식별자가 셀 안에서 줄바꿈되어 표가 틀을 넘지 않고, RelationGraph의 긴 라벨(와이드 문자 포함)이 표시 폭으로 잘리고 전체 텍스트는 title에 남는다 (FR-CMP-005 AC-7, FR-CMP-011 AC-7, CR-080)
+- [ ] QA-242 `Visual baselines` 워크플로를 PR 브랜치로 디스패치하면 고정 컨테이너에서 기준 이미지를 갱신·재검증하고, 바뀐 PNG만 그 브랜치에 커밋한 뒤 그 커밋에 CI가 돈다. 기본 브랜치를 주면 거부한다 (FR-QA-004 AC-7, CR-081)
 - [x] QA-190 픽셀 차이가 1%를 초과하면 CI가 실패하고 차이 이미지가 아티팩트로 남는다 (FR-QA-004 AC-2) — 36% 차이 픽스처 exit 1, actual/expected/diff 생성
 - [x] QA-191 기준 이미지 갱신이 `pnpm test:visual --update` 명시적 커맨드로만 가능하다 (FR-QA-004 AC-3)
 - [x] QA-192 `Button` 단독 import gzip 크기가 4KB 이하다(React 제외) (FR-DX-003 AC-3) — `size-limit` 실측 527바이트

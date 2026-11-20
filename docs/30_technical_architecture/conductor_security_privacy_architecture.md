@@ -1,6 +1,6 @@
 # Conductor Design System 보안 및 개인정보 아키텍처
 
-> 상태: review | 버전: v0.11 | 갱신일: 2026-11-18
+> 상태: review | 버전: v0.12 | 갱신일: 2026-11-20
 
 ## 1. 범위 재정의: 이 제품은 공급망 보안 문제다
 
@@ -50,6 +50,7 @@ CR-080(2026-11-18): 개발 도구의 권고 15건(vitest·@vitest/mocker·vite·
 
 - npm 배포 인증은 OIDC 기반 trusted publishing으로 고정한다(ADR-010). 릴리스 워크플로는 `permissions.id-token: write`를 선언하고, `NPM_TOKEN` 형태의 장기 저장 자격증명을 워크플로 파일이나 저장소 시크릿에 두지 않는다. npm 레지스트리는 GitHub Actions가 발급한 OIDC 클레임(저장소 경로, 워크플로 파일 경로, ref)을 검증해 배포를 승인한다.
 - 배포 워크플로는 public source repository의 GitHub-hosted runner에서 npm Trusted Publishing으로 실행해 각 정식 릴리스 아티팩트에 빌드 출처(소스 커밋, 워크플로 실행 ID)를 증명하는 provenance 첨부 문서를 남긴다. npm은 private source repository의 public package에는 provenance를 생성하지 않으므로 release preflight가 private 상태를 차단한다(CR-022). 소비자는 `npm audit signatures`로 이를 검증할 수 있다.
+- 쓰기 권한을 가진 CI 잡은 릴리스(JOB-REL-001)와 시각 기준 이미지 갱신(JOB-CI-008, CR-081) 둘이다. JOB-CI-008은 사람이 `workflow_dispatch`로만 시작하고, 워크플로 기본 권한은 `{}`, 잡에만 `contents: write`·`actions: write`를 준다. 기본 브랜치와 허용 문자 밖의 브랜치 이름을 거부하고, 브랜치 이름은 `run` 스크립트에 식으로 넣지 않고 환경 변수로 넘긴다. 스냅샷 PNG 밖의 파일이 바뀌면 커밋하지 않는다. 시크릿은 쓰지 않는다.
 - 공개 진입점은 각 패키지 `package.json`의 `exports` 필드로만 선언한다(FR-DX-003). 선언되지 않은 내부 경로 import는 런타임 해석 오류를 낸다. 이는 소비자가 검증되지 않은 내부 구현에 결합하는 경로를 차단하는 무결성 통제다.
 - `@conductor-by-89soone/css`는 `sideEffects: ["*.css"]`, `@conductor-by-89soone/react`는 `sideEffects: false`를 선언한다(FR-DX-003 AC-2, AC-3). 이는 번들러의 트리 셰이킹이 의도하지 않은 코드를 산출물에 남기지 않도록 하는 무결성 경계이기도 하다.
 

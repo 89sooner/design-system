@@ -4,6 +4,8 @@ on:
   push:
     branches: [main]
   pull_request:
+  # CR-081: JOB-CI-008 dispatches CI on the commit it pushes; GITHUB_TOKEN pushes do not start pull_request runs.
+  workflow_dispatch:
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}

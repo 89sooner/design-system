@@ -1,6 +1,6 @@
 # Conductor Design System 작업 패키지
 
-> 상태: review | 버전: v0.21 | 갱신일: 2026-11-18
+> 상태: review | 버전: v0.22 | 갱신일: 2026-11-20
 
 ## 1. 목적
 
@@ -913,4 +913,16 @@ design-system/
 - 완료 기준(DoD): 위 AC를 단위·브라우저·시각 시험으로 증명한다. `pnpm audit` 0건. `check:api` 차이는 FileUpload 추가뿐이다. CI 6잡 녹색.
 - 검증 방법: 단위 시험, a11y·component-css 브라우저 시험(axe·키보드 경로), 문서 E2E, 시각 회귀, `pnpm check:api`, `pnpm audit`
 - 기록: 구현 원장 WP-047, CR-080 절, DEV-068
+
+## WP-048 시각 기준 이미지 갱신 CI 잡 (CR-081)
+
+- 릴리스: REL-004 보강 (패키지 변경 없음)
+- 관련 요구사항: FR-QA-004 AC-3·AC-4·AC-7
+- 관련 화면: 없음
+- 선행 WP: WP-026
+- 구현 범위: `.github/workflows/visual-baselines.yml`(JOB-CI-008), `.github/workflows/ci.yml`(`workflow_dispatch` 트리거)
+- 제외: 갱신 대상 필터(전체를 갱신하고 바이트가 같은 PNG는 커밋되지 않는다), Playwright 판 올리기, PR 코멘트 명령(`/update-baselines`)
+- 완료 기준(DoD): actionlint 통과. 병합 뒤 한 브랜치로 실행해 갱신·재검증·커밋(또는 변경 없음)·CI 디스패치가 동작한다. 기본 브랜치를 주면 거부한다.
+- 검증 방법: actionlint, 병합 뒤 실제 실행
+- 기록: 구현 원장 WP-048, CR-081 절
 
