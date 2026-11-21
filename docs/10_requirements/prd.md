@@ -1,6 +1,6 @@
 # Conductor Design System PRD
 
-> 상태: review | 버전: v0.23 | 갱신일: 2026-11-18
+> 상태: review | 버전: v0.24 | 갱신일: 2026-11-20
 
 ## 1. 문서 개요
 
@@ -196,7 +196,7 @@ Conductor Design System(이하 Conductor)은 `agent-ai-platform`의 `packages/we
 | FR-QA-001 | 테마 간 토큰 키 대칭을 검사한다 | Must | F-QA-001 |
 | FR-QA-002 | 컴포넌트 단위 테스트가 AC를 인용한다 | Must | F-QA-002 |
 | FR-QA-003 | axe-core 위반 0건을 CI에서 강제한다 | Must | F-QA-003 |
-| FR-QA-004 | 시각 회귀 차이를 CI에서 보고한다. 공개 컴포넌트 전부 × 두 테마와 오버레이 열린 상태를 비교한다(CR-068). 상태 컴포넌트 9개는 강제 색 모드로도 비교한다(CR-071) | Should | F-QA-004 |
+| FR-QA-004 | 시각 회귀 차이를 CI에서 보고한다. 공개 컴포넌트 전부 × 두 테마와 오버레이 열린 상태를 비교한다(CR-068). 상태 컴포넌트 9개는 강제 색 모드로도 비교한다(CR-071). 기준 이미지는 고정 컨테이너의 수동 CI 잡으로도 갱신한다(CR-081). | Should | F-QA-004  |
 
 ## 8. 비기능 요구사항 요약
 

@@ -1,6 +1,6 @@
 # Conductor Design System CI 잡과 릴리스 파이프라인
 
-> 상태: review | 버전: v0.12 | 갱신일: 2026-10-24
+> 상태: review | 버전: v0.13 | 갱신일: 2026-11-20
 
 ## 0. 문서 재해석
 
@@ -25,6 +25,7 @@ Conductor Design System에는 큐, 워커 런타임, dead letter queue, 사용�
 | JOB-CI-005 | 문서 사이트 E2E (CR-072) | JOB-BUILD-001~004 성공 | 예(그룹 A, 별도 CI 잡) | JOB-BUILD-001~004 | 0회 | 10분 |
 | JOB-CI-006 | 설치 소비자 매트릭스 (CR-075) | JOB-BUILD-001~003 성공 | 예(그룹 A, 별도 CI 잡) | JOB-BUILD-001~003 | 0회 | 15분 |
 | JOB-CI-007 | 브라우저 엔진 스모크 (CR-075) | JOB-BUILD-001~004 성공 | 예(그룹 A, 별도 CI 잡) | JOB-BUILD-001~004 | 0회 | 10분 |
+| JOB-CI-008 | 시각 기준 이미지 갱신 (CR-081) | 사람이 `workflow_dispatch`로 브랜치를 지정 | 아니오(수동) | — | 0회 | 20분 |
 | JOB-REL-001 | npm 배포 | `main` 병합 + 변경 이력 존재 + 수동 승인 | 아니오 | JOB-BUILD-001~004, JOB-CI-001, JOB-CI-002, JOB-CI-004(JOB-CI-003은 활성화 시에만) | 0회 | 5분 |
 
 ### 2.1 JOB-BUILD-001 토큰 빌드
@@ -138,6 +139,19 @@ Conductor Design System에는 큐, 워커 런타임, dead letter queue, 사용�
 | 실패 시 동작 | 실패하면 종료 코드 1. 재시도 없음 |
 | 아티팩트 | 실패 시 `apps/docs/test-results/**`(`cross-browser-results`, 30일) |
 | 배경 | NFR-005의 지원 브라우저 중 Chromium(Edge 포함) 밖의 엔진을 실행하는 잡이 없었다(DEV-065). 픽셀·강제 색 검사는 Chromium 잡이 계속 맡는다 |
+
+### 2.8d JOB-CI-008 시각 기준 이미지 갱신 (CR-081)
+
+| 항목 | 내용 |
+| --- | --- |
+| 트리거 | `.github/workflows/visual-baselines.yml`의 `workflow_dispatch`. 입력은 갱신할 브랜치 하나 |
+| 거부 | 기본 브랜치, `[A-Za-z0-9._/-]` 밖의 문자가 있는 이름 |
+| Worker | JOB-CI-003과 같은 고정 컨테이너(`Dockerfile.visual`, Playwright 1.61.1): `pnpm test:visual --update` 뒤 `pnpm test:visual` |
+| 출력 | 스냅샷 폴더의 바뀐 PNG만 담은 커밋 하나(바뀐 것이 없으면 커밋 없음), 그 커밋에 디스패치한 `ci.yml` 실행 |
+| 실패 시 동작 | 갱신·재검증이 실패하거나 스냅샷 밖의 파일이 바뀌면 종료 코드 1, 커밋하지 않는다 |
+| 권한 | 워크플로 기본 `{}`, 잡에만 `contents: write`(브랜치 push)·`actions: write`(CI 디스패치) |
+| 아티팩트 | 기준 이미지와 차이 이미지(`visual-baselines`, 30일) |
+| 배경 | Docker가 없는 세션이 기준 이미지를 고정 환경 밖에서 만들었다(DEV-045·056·059·068). GITHUB_TOKEN push는 `pull_request` CI를 시작하지 않으므로 `ci.yml`에 `workflow_dispatch`를 더했다 |
 
 ### 2.9 JOB-REL-001 npm 배포
 
