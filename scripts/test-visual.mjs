@@ -24,7 +24,9 @@ const playwrightArgs = [
   "--config",
   "apps/docs/playwright.visual.config.ts",
 ];
-if (args[0] === "--update") playwrightArgs.push("--update-snapshots=all");
+// CR-081: rewrite only snapshots that fail the comparison (or are missing). "all" re-encoded every PNG
+// that came from another environment, turning one changed image into a 186-file diff.
+if (args[0] === "--update") playwrightArgs.push("--update-snapshots=changed");
 
 const result = spawnSync("docker", playwrightArgs, { env: process.env, stdio: "inherit" });
 if (result.error !== undefined) {
