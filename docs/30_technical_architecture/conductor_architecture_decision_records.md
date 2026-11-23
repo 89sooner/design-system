@@ -1,6 +1,6 @@
 # Conductor Design System Architecture Decision Records
 
-> 상태: review | 버전: v0.6 | 갱신일: 2026-11-18
+> 상태: review | 버전: v0.7 | 갱신일: 2026-11-23
 
 ## 1. 목적
 
@@ -418,6 +418,7 @@ changeset 본문에 관련 FR/WP ID를 기재하므로 CHANGELOG 항목이 요�
 
 - 긍정: 버전 계산이 결정적이고 세 패키지의 연동이 명시적이다. 장기 토큰이 없다(NFR-002). CHANGELOG가 FR/WP ID를 인용한다. 롤백이 게시가 아니라 태그 조작이므로 10분 예산을 지킨다.
 - 부정: 기여자가 changeset 파일을 커밋해야 한다. 잊으면 CI가 실패한다.
+- 보강 (2026-11-23, CR-082): 1.0.0부터 세 패키지는 `fixed` 그룹이다(OD-008). 그래서 "변경 이력 항목이 없는 패키지는 버전이 오르지 않는다"는 0.x(`linked`)에만 성립한다. `fixed`에서는 changeset이 없는 패키지도 함께 오르고, 그 CHANGELOG에는 빈 버전 제목이 남는다(리허설로 확인).
 - 완화: `changeset status` 검사의 실패 메시지가 누락된 패키지 목록을 출력한다. 코딩 에이전트의 작업 패키지 DoD에 changeset 생성을 포함한다.
 - 후속: OIDC 신뢰 배포는 npm CLI와 레지스트리 양쪽이 지원하는 버전을 CI 이미지에 고정한다. CR-022에서 현재 최소 조건을 Node 22.14.0/npm 11.5.1로 재검증하고 release job을 Node 22.14.0/npm 11.18.0으로 고정했다. public source repository가 아니면 provenance가 생성되지 않으므로 게시 전 사전 검사로 실패한다. 미게시 패키지는 Trusted Publisher를 등록할 수 없어 최초 1회 `bootstrap` dist-tag 생성 후 패키지별 신뢰 관계를 등록한다.
 

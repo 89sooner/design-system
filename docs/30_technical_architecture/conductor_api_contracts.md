@@ -1,6 +1,6 @@
 # Conductor Design System 패키지 공개 API 계약
 
-> 상태: review | 버전: v0.20 | 갱신일: 2026-11-18
+> 상태: review | 버전: v0.21 | 갱신일: 2026-11-23
 
 ## 0. 문서 재해석
 
@@ -514,7 +514,7 @@ error[<CODE>]: <한 줄 요약>
 
 ## 6. 버저닝
 
-1. **semver.** `MAJOR.MINOR.PATCH`. 3개 패키지는 독립적으로 버전이 오르되, 한 릴리스에서 함께 배포될 수 있다.
+1. **semver.** `MAJOR.MINOR.PATCH`. 0.x 동안 3개 패키지는 독립적으로 버전이 오르되(`linked`), 한 릴리스에서 함께 배포될 수 있다. 1.0.0부터는 항상 같은 버전으로 함께 오른다(5항, CR-082).
 2. **파괴 변경 정의.**
    - 토큰 키 rename/삭제(`conductor_data_model.md` 6절)
    - 컴포넌트 props의 필수 필드 추가, 기존 필드 타입 축소, prop 삭제
@@ -522,7 +522,7 @@ error[<CODE>]: <한 줄 요약>
    - CSS 클래스명(`cdt-*`) 삭제 또는 rename
    - CLI 플래그 삭제, 종료 코드 의미 변경. CLI 플래그와 위치 인자는 각 CLI가 모르는 인자에 출력하는 사용법 줄에서 읽어 **public-surface.txt**의 `bin arguments` 구역이 고정한다(CR-077, FR-DX-006 AC-1 ⑦). 그 구역의 `-` 줄은 이 항의 파괴 변경이다
 3. **비파괴 변경.** 신규 토큰/컴포넌트/props(선택적, 기본값 존재) 추가, 버그 수정으로 인한 시각적 보정(기존 토큰 키 유지).
-4. **deprecation 절차(FR-DX-005).** deprecated 대상에 `@deprecated` JSDoc 태그와 대체 경로를 명시하고 문서 사이트에 지원 종료 표식을 노출한다. 최소 1회의 minor 릴리스 동안 동작을 유지한 뒤, 다음 major에서 제거한다. 제거 시 `CHANGELOG`에 마이그레이션 노트를 포함한다(AC-4). 변경 이력이 없는 패키지는 버전을 올리지 않는다(AC-3).
+4. **deprecation 절차(FR-DX-005).** deprecated 대상에 `@deprecated` JSDoc 태그와 대체 경로를 명시하고 문서 사이트에 지원 종료 표식을 노출한다. 최소 1회의 minor 릴리스 동안 동작을 유지한 뒤, 다음 major에서 제거한다. 제거 시 `CHANGELOG`에 마이그레이션 노트를 포함한다(AC-4). 변경 이력이 없는 패키지는 버전을 올리지 않는다(AC-3, 0.x 한정). React 공개 API의 개발 빌드 경고는 패키지 내부 `warnDeprecated(api, replacement)`로 낸다: API마다 한 번, production 빌드에서는 내지 않는다. `@deprecated` 태그를 단 소스 파일은 그 함수를 불러야 하고 `deprecation.test.ts`가 검사한다(FR-DX-006 AC-3, CR-082). 토큰 JS 키의 경고와 문서 사이트 표식은 첫 폐기 때 정한다.
 
 5. **1.0 이후 (CR-075, FR-DX-006).** 2의 파괴 변경 정의는 0.x에서도 major changeset을 요구하지만, 0.x 동안 의도된 시각 재설계는 minor로 냈다(CR-064·CR-066·CR-067). 1.0 이후 같은 이름의 값·시각 변경은 minor다(OD-006, CR-076). 그 changeset은 본문 첫 줄을 `Visual change:`로 시작하고 같은 PR에 갱신된 시각 기준 이미지를 담는다. 3의 버그 수정 보정은 patch다. 1.0.0부터 세 패키지는 같은 버전을 쓴다(changesets `fixed`, OD-008). 공개 표면 중 API 리포트가 보지 않는 부분(entry point·CLI·`cdt-*` 클래스·`data-*` 선택자·레이어 순서)은 **public-surface.txt**(`etc/`)가 기준이다(WP-041).
 

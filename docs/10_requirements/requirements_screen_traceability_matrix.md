@@ -1,6 +1,6 @@
 # 요구사항-화면 추적 매트릭스
 
-> 상태: review | 버전: v0.25 | 갱신일: 2026-11-20
+> 상태: review | 버전: v0.26 | 갱신일: 2026-11-23
 
 ## 1. 목적
 
@@ -107,8 +107,8 @@ UI가 없는 요구사항은 아래 표면 중 하나에 간접 노출된다.
 | FR-DX-002 | Must | W-021 | SFC-PKG | — | 타입 배포 (props 표가 타입에서 생성) |
 | FR-DX-003 | Must | W-002 | SFC-PKG | — | 진입점/부수효과 |
 | FR-DX-004 | Must | W-002 | SFC-PKG | — | SSR 안전성 |
-| FR-DX-005 | Should | — | SFC-REL | — | 버저닝 |
-| FR-DX-006 | Should | W-002 | SFC-REL, SFC-CI | — | 1.0 안정화 기준 (CR-075); OD-005 ~ OD-008 closed (CR-076); CLI 옵션 검출 (CR-077) |
+| FR-DX-005 | Should | — | SFC-REL | — | 버저닝 (AC-3 0.x 한정, CR-082) |
+| FR-DX-006 | Should | W-002 | SFC-REL, SFC-CI | — | 1.0 안정화 기준 (CR-075); OD-005 ~ OD-008 closed (CR-076); CLI 옵션 검출 (CR-077); 개발 빌드 폐기 경고 (CR-082) |
 | FR-CMP-017 | Should | W-020, W-021 | SFC-PKG | — | Separator·Stack·Grid·Heading·Text·Accordion (CR-076) |
 | FR-CMP-018 | Should | W-020, W-021 | SFC-PKG | — | ContextMenu·Slider·Tree (CR-078), Tree 타이프어헤드 (CR-080) |
 | FR-CMP-019 | Should | W-020, W-021 | SFC-PKG | — | FileUpload (CR-080) |
