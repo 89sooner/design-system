@@ -1,6 +1,6 @@
 # Conductor Design System 작업 패키지
 
-> 상태: review | 버전: v0.22 | 갱신일: 2026-11-20
+> 상태: review | 버전: v0.23 | 갱신일: 2026-11-21
 
 ## 1. 목적
 
@@ -920,7 +920,7 @@ design-system/
 - 관련 요구사항: FR-QA-004 AC-3·AC-4·AC-7
 - 관련 화면: 없음
 - 선행 WP: WP-026
-- 구현 범위: `.github/workflows/visual-baselines.yml`(JOB-CI-008), `.github/workflows/ci.yml`(`workflow_dispatch` 트리거)
+- 구현 범위: `.github/workflows/visual-baselines.yml`(JOB-CI-008), `.github/workflows/ci.yml`(`workflow_dispatch` 트리거), `scripts/test-visual.mjs`(`--update-snapshots=changed`, 첫 실행에서 발견)
 - 제외: 갱신 대상 필터(전체를 갱신하고 바이트가 같은 PNG는 커밋되지 않는다), Playwright 판 올리기, PR 코멘트 명령(`/update-baselines`)
 - 완료 기준(DoD): actionlint 통과. 병합 뒤 한 브랜치로 실행해 갱신·재검증·커밋(또는 변경 없음)·CI 디스패치가 동작한다. 기본 브랜치를 주면 거부한다.
 - 검증 방법: actionlint, 병합 뒤 실제 실행
