@@ -1,6 +1,6 @@
 # Conductor Design System 인프라 및 운영 아키텍처
 
-> 상태: review | 버전: v0.11 | 갱신일: 2026-11-23
+> 상태: review | 버전: v0.12 | 갱신일: 2026-11-24
 
 ## 1. 범위 재정의: 서버가 없는 인프라
 
@@ -65,7 +65,7 @@ Conductor Design System은 서버 런타임, 컴퓨팅 인스턴스, 오토스�
    3. **.changeset/README.md**의 `linked` 설명을 `fixed`로 바꾼다.
    4. 검증 계획 §1.0 준비도 표, 원장, 변경 대장을 갱신한다.
 
-   PR CI의 모든 잡이 녹색이면 병합한다. 그 뒤는 1 ~ 6과 같다: Version packages PR(세 패키지 1.0.0과 CHANGELOG) 병합, 릴리스 워크플로 수동 실행, npm 확인.
+   PR CI의 모든 잡이 녹색이면 병합한다. 그 뒤는 1 ~ 6과 같다: Version packages PR(세 패키지 1.0.0과 CHANGELOG) 병합, 릴리스 워크플로 수동 실행, npm 확인. 그때 이미 열려 있는 Version packages PR(2026-11-24 기준 #113, react 0.21.1 patch)은 1.0 전에 병합하지 않는다. 발행 PR이 병합되면 릴리스 자동화가 같은 PR을 세 패키지 1.0.0으로 갱신하고, 그 patch 항목은 1.0.0 CHANGELOG에 함께 들어간다(2026-11-24 사용자 결정, CR-082).
 
    **리허설 (2026-11-23, 작업 트리에서 실행 뒤 되돌림).** ① `fixed`와 아래 초안 changeset으로 `changeset status`·`changeset version`을 돌리자 세 패키지가 0.21.0에서 1.0.0이 되고, css·react CHANGELOG에는 내부 의존성 갱신 patch 줄이 붙었다. `pnpm check:changesets`는 초안을 통과시키고, `Migration:` 줄을 지운 초안은 거부했다. 처음 초안의 `## Migration` 제목은 CHANGELOG에서 버전 제목(`## 1.0.0`)과 같은 단계로 렌더되어 `Migration:` 줄로 바꿨다. ② `fixed`와 react만 minor인 changeset으로는 세 패키지가 모두 0.22.0이 되고 tokens·css CHANGELOG에는 빈 `## 0.22.0` 제목만 남았다. 1.0.0부터의 정상 동작이다(FR-DX-005 AC-3 정정).
 
