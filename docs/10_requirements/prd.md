@@ -1,6 +1,6 @@
 # Conductor Design System PRD
 
-> 상태: review | 버전: v0.24 | 갱신일: 2026-11-20
+> 상태: review | 버전: v0.25 | 갱신일: 2026-11-23
 
 ## 1. 문서 개요
 
@@ -191,8 +191,8 @@ Conductor Design System(이하 Conductor)은 `agent-ai-platform`의 `packages/we
 | FR-DX-002 | 공개 API에 타입 정의를 배포한다 | Must | F-DX-002 |
 | FR-DX-003 | 공개 진입점과 부수효과를 선언한다 | Must | F-DX-003 |
 | FR-DX-004 | 서버 렌더링 환경에서 동작한다 | Must | F-DX-004 |
-| FR-DX-005 | semver와 변경 이력을 자동 생성한다 | Should | F-DX-005 |
-| FR-DX-006 | 1.0의 공개 계약 범위·검출·폐기 절차·품질 게이트·실사용 검증을 정하고, 1.0 이후 계약 위반은 major로만 낸다(CR-075). CLI 옵션도 공개 표면 기준으로 검출한다(CR-077) | Should | CR-075 |
+| FR-DX-005 | semver와 변경 이력을 자동 생성한다. 변경 없는 패키지의 버전 미상승은 0.x 한정이고 1.0.0부터 세 패키지는 함께 오른다(CR-082) | Should | F-DX-005 |
+| FR-DX-006 | 1.0의 공개 계약 범위·검출·폐기 절차·품질 게이트·실사용 검증을 정하고, 1.0 이후 계약 위반은 major로만 낸다(CR-075). CLI 옵션도 공개 표면 기준으로 검출한다(CR-077). 폐기 API는 개발 빌드에서 한 번 경고한다(CR-082) | Should | CR-075 |
 | FR-QA-001 | 테마 간 토큰 키 대칭을 검사한다 | Must | F-QA-001 |
 | FR-QA-002 | 컴포넌트 단위 테스트가 AC를 인용한다 | Must | F-QA-002 |
 | FR-QA-003 | axe-core 위반 0건을 CI에서 강제한다 | Must | F-QA-003 |

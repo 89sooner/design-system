@@ -1,6 +1,6 @@
 # Conductor Design System 인프라 및 운영 아키텍처
 
-> 상태: review | 버전: v0.10 | 갱신일: 2026-10-24
+> 상태: review | 버전: v0.11 | 갱신일: 2026-11-23
 
 ## 1. 범위 재정의: 서버가 없는 인프라
 
@@ -59,6 +59,51 @@ Conductor Design System은 서버 런타임, 컴퓨팅 인스턴스, 오토스�
 5. 게시 뒤 `pnpm check:release-tags -- --published-before <file>`이 **세 패키지 전부**의 태그가 존재하고 annotated이며 릴리스 HEAD의 조상인지 확인한다. 스냅숏이 면제하는 것은 **"태그 대상이 릴리스 HEAD와 같아야 한다"는 요구 하나뿐이다** — 이번 실행이 게시하지 않은 패키지(스냅숏에 이미 있던 버전)의 태그는 이전 릴리스 커밋을 가리키는 것이 옳다. 세 패키지가 `linked`라도 **함께 오를 때** 같은 번호를 쓸 뿐 항상 함께 오르지는 않는다(CR-038, DEV-040). 로컬 검증 뒤 태그를 push하고 `--remote origin --published-before <file>`으로 원격 tag object가 로컬과 바이트 단위로 같은지 재검증한다. 하나라도 없거나 lightweight tag이면 배포 잡을 실패시킨다(CR-025). **검사의 위치가 실패의 대가를 정한다** — 게시 앞의 검사가 막는 것과 게시 뒤의 검사가 잡는 것은 다르다(DEV-042).
 6. npm 레지스트리는 OIDC 클레임을 검증해 배포를 승인한다(`conductor_security_privacy_architecture.md` 4절, ADR-010). provenance는 public source repository에서만 생성되므로 release job은 저장소가 private이면 게시 전에 실패한다(CR-022).
 7. 파괴 변경(breaking change)이 포함된 changeset은 major 버전을 올리고 CHANGELOG 파일에 마이그레이션 노트 항목을 강제로 요구한다(FR-DX-005 AC-4). 마이그레이션 노트 없이는 changeset이 `major` 유형으로 등록되지 않는다.
+8. **1.0.0 발행 (WP-043, CR-082).** 검증 계획 §1.0 준비도 표가 모두 충족이고 사용자가 발행을 지시한 뒤에만 한다. 발행 PR 하나가 다음을 담는다.
+   1. **.changeset/config.json**의 `linked` 그룹을 `fixed`로 옮기고 `linked`를 빈 배열로 둔다(FR-DX-006 AC-7).
+   2. 아래 초안으로 세 패키지 major changeset을 더한다. 초안 뒤에 들어온 변경이나 사용자가 1.0에 넣기로 한 변경이 있으면 `Migration:` 절에 적는다. `pnpm check:changesets`가 `Migration:` 절을 확인한다.
+   3. **.changeset/README.md**의 `linked` 설명을 `fixed`로 바꾼다.
+   4. 검증 계획 §1.0 준비도 표, 원장, 변경 대장을 갱신한다.
+
+   PR CI의 모든 잡이 녹색이면 병합한다. 그 뒤는 1 ~ 6과 같다: Version packages PR(세 패키지 1.0.0과 CHANGELOG) 병합, 릴리스 워크플로 수동 실행, npm 확인.
+
+   **리허설 (2026-11-23, 작업 트리에서 실행 뒤 되돌림).** ① `fixed`와 아래 초안 changeset으로 `changeset status`·`changeset version`을 돌리자 세 패키지가 0.21.0에서 1.0.0이 되고, css·react CHANGELOG에는 내부 의존성 갱신 patch 줄이 붙었다. `pnpm check:changesets`는 초안을 통과시키고, `Migration:` 줄을 지운 초안은 거부했다. 처음 초안의 `## Migration` 제목은 CHANGELOG에서 버전 제목(`## 1.0.0`)과 같은 단계로 렌더되어 `Migration:` 줄로 바꿨다. ② `fixed`와 react만 minor인 changeset으로는 세 패키지가 모두 0.22.0이 되고 tokens·css CHANGELOG에는 빈 `## 0.22.0` 제목만 남았다. 1.0.0부터의 정상 동작이다(FR-DX-005 AC-3 정정).
+
+   초안(changeset 파일 이름은 **conductor-1-0-0**):
+
+   ```md
+   ---
+   "@conductor-by-89soone/tokens": major
+   "@conductor-by-89soone/css": major
+   "@conductor-by-89soone/react": major
+   ---
+
+   Conductor 1.0: the public contract is stable. Nothing is removed or renamed, so this release ships the same code as the last 0.x release under version 1.0.0.
+
+   Migration:
+
+   - **From 0.21.x:** move all three packages to `1.0.0` together. No code changes.
+   - **From an earlier 0.x:** first read each package's CHANGELOG between your version and 0.21.0. Intended visual redesigns shipped as minors in 0.x; the newer ones start with `Visual change:`. Then do the step above.
+   - **Keep the three packages on one version.** From 1.0.0 they always share a version number (changesets `fixed`). In 0.x a package without changes kept its old number.
+
+   What 1.0 promises:
+
+   - **The public contract** (FR-DX-006 AC-1):
+     - `exports` entry points
+     - React exports and props types
+     - token keys and their `--cdt-*` names
+     - `cdt-*` class names
+     - `data-cdt-theme` and the documented `data-*` attributes
+     - `@layer cdt.*` names and order
+     - CLI names and options
+
+     Markup without a `cdt-` class, and Radix internals, are not part of it.
+   - **Removing or renaming any of these** is a major release with a migration note.
+   - **A new value or look under an existing name** is a minor. Its changelog entry starts with `Visual change:`. A bug-fix correction is a patch.
+   - **Deprecation:** an API due for removal stays for at least one minor. It carries an `@deprecated` JSDoc tag and warns once in development builds. It is removed in the next major. A deprecated class or custom property is announced in the changelog and kept for the same period.
+
+   Refs: CR-082 WP-043 FR-DX-006 FR-DX-005
+   ```
 
 ## 7. 롤백
 

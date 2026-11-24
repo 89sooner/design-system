@@ -1,6 +1,6 @@
 # Conductor Design System 작업 패키지
 
-> 상태: review | 버전: v0.23 | 갱신일: 2026-11-21
+> 상태: review | 버전: v0.24 | 갱신일: 2026-11-23
 
 ## 1. 목적
 
@@ -865,6 +865,7 @@ design-system/
 - 검증 방법: inspection, CI 전 잡, JOB-REL-001 실행 기록
 - 기록: 구현 원장 REL-005, 변경 대장 CR-075 종료
 - 진행 (2026-10-25, CR-077): ① 재정의 13규칙 판정(원장 §5.2), 결함 셋 수정, CLI 옵션 검출, FR-CMP-010~013 원장 §3 이관 — 완료. ② CR-077을 담은 css·react 0.18.0을 1.0 후보로 릴리스 — 2026-10-24 완료. ③ agent-ai-platform이 후보를 적용하고 결함 6규칙을 지웠다(2026-10-25, DS-PILOT-24) — 4주는 2026-11-22까지. ④ `fixed` 전환·세 패키지 major changeset·마이그레이션 노트, 1.0 후보 커밋 전 게이트, 사용자 발행 지시.
+- 준비 (2026-11-23, CR-082): 개발 빌드 폐기 경고 장치(`packages/react/src/deprecation.ts`)와 짝 검사, 1.0 major changeset 초안과 발행 PR 절차(인프라 운영 §6 8항), `fixed` 리허설 — 완료. 발행 PR에는 초안 적용, `fixed` 전환, **.changeset/README.md** 갱신만 남는다.
 
 ## WP-044 레이아웃·타이포그래피·구획 기본 컴포넌트 (CR-076)
 
