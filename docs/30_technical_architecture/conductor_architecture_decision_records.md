@@ -1,6 +1,6 @@
 # Conductor Design System Architecture Decision Records
 
-> 상태: review | 버전: v0.7 | 갱신일: 2026-11-23
+> 상태: review | 버전: v0.8 | 갱신일: 2026-11-24
 
 ## 1. 목적
 
@@ -404,7 +404,7 @@ Changesets 2.x로 버전과 변경 이력을 관리하고, GitHub Actions에서 
 
 semantic-release는 커밋 메시지에서 버전을 도출하므로, 모노레포에서 어느 패키지가 영향을 받았는지 판정하려면 커밋 스코프 규약에 의존한다. 세 패키지가 서로 의존하는 상황에서 `@conductor-by-89soone/tokens`의 패치가 `@conductor-by-89soone/css`와 `@conductor-by-89soone/react`의 버전을 어떻게 움직여야 하는지가 커밋 메시지로 표현되지 않는다.
 
-Changesets는 변경 의도를 `.changeset/*.md` 파일로 커밋한다. 이 파일이 영향받는 패키지와 bump 종류(major/minor/patch)를 명시하므로 세 패키지의 연동 버전이 결정적으로 계산된다. 변경 이력 항목이 없는 패키지는 버전이 오르지 않는다(AC-3). changeset 파일 없이 병합된 변경은 CI의 `changeset status` 검사가 잡아 릴리스를 중단하고 누락 목록을 출력한다(FR-DX-005 예외 처리).
+Changesets는 변경 의도를 `.changeset/*.md` 파일로 커밋한다. 이 파일이 영향받는 패키지와 bump 종류(major/minor/patch)를 명시하므로 세 패키지의 연동 버전이 결정적으로 계산된다. 변경 이력 항목이 없는 패키지는 버전이 오르지 않는다(AC-3). changeset 파일 없이 병합된 변경은 CI의 `changeset status` 검사가 잡아 릴리스를 중단하고 누락 목록을 출력한다(FR-DX-005 예외 처리). 2026-11-24부터 PR CI의 verify 잡도 같은 검사를 기준 브랜치에 대해 돌려 병합 전에 잡는다(CR-082, DEV-069).
 
 파괴 변경 판정의 근거는 커밋 메시지가 아니라 api-extractor의 공개 API 리포트(ADR-008)다. `.api.md`에 차이가 생기면 리뷰어가 major changeset을 요구하고, 마이그레이션 노트를 changeset 본문에 포함시킨다(AC-1, AC-4). 이 노트가 CHANGELOG로 흘러 NFR-004의 "마이그레이션 노트 동반률 100%"를 만족한다.
 

@@ -24,6 +24,9 @@ jobs:
         node-version: [20, 22]
     steps:
       - uses: actions/checkout@v4
+        with:
+          # The changeset gate below compares against the base branch (CR-082, DEV-069).
+          fetch-depth: 0
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -41,6 +44,15 @@ jobs:
 
       # changeset 규약: Refs 줄, major의 마이그레이션 노트 (FR-DX-005 AC-2, AC-4)
       - run: pnpm check:changesets
+
+      # The release job's missing-changeset gate (FR-DX-005), run before merge. It used to run only on
+      # main, so a pull request that changed a package without a changeset turned the Release run red
+      # after merging (DEV-069, CR-082). The bot's version PR consumes changesets, so it is skipped.
+      - name: package changes in this pull request have changesets
+        if: github.event_name == 'pull_request' && github.head_ref != 'changeset-release/main'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: pnpm changeset status --since "origin/$BASE_REF"
 
       - run: pnpm lint
 
