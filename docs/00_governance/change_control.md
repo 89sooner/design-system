@@ -101,6 +101,7 @@
 | CR-080 | 2026-11-18 | scope | 사용자 지시 (2026-11-18): "agent-ai-platform은 그냥 두고 design-systemㄹ 개선하자" + 질의 응답(보안 권고 정리, CR-079 시각 개선 4건, 의존성 갱신과 Tree 타이프어헤드, FileUpload 모두; "지금 하고 기간 재시작") | **개발 도구 보안 권고를 0건으로, 런타임 의존성을 최신 묶음으로 올리고, Tree 타이프어헤드와 FileUpload를 더하고, CR-079가 미룬 시각 개선 4건을 넣는다. 기존 시각이 바뀌어 이 릴리스가 새 1.0 후보다.** FR-CMP-019 신설(C-102), FR-CMP-018 AC-5, FR-CMP-005 AC-7, FR-CMP-007 AC-6, FR-CMP-010 AC-9, FR-CMP-011 AC-7, FR-DX-006 AC-6 보강 | FR-CMP-019(신설), FR-CMP-018, FR-CMP-005, FR-CMP-007, FR-CMP-010, FR-CMP-011, FR-DX-006 | SRS v1.30(§1, §14.1 OD-007 주석, §38 예외 열, §40), PRD v0.23, RTM v0.24, UI 컴포넌트 명세 v0.26(C-102, 결정 3건), 토큰 명세 v0.19, QA 체크리스트 v0.16(QA-236~241), API 계약 v0.20(API-CMP-016), ADR v0.6(ADR-004 보강), 보안 아키텍처 v0.11(3.1, 3.2), 로드맵 v0.10, WP v0.21(WP-047, WP-043 선행), 검증 계획 v0.22, 원장 v0.70(§3, §5, WP-047, WP-043, DEV-068), CLAUDE.md(C-ID 범위), `package.json`, `packages/*`, `apps/docs`, `vitest.a11y.config.ts` | closed |
 | CR-081 | 2026-11-20 | correction | 사용자 지시 (2026-11-20): "1번부터 진행해"(개선 점검의 1순위: 시각 기준 이미지를 CI 고정 컨테이너에서 갱신하는 수동 잡) | **시각 회귀 기준 이미지 갱신을 고정 컨테이너에서 하는 수동 CI 잡(JOB-CI-008)을 둔다.** Docker와 고정 Chromium이 없는 세션이 기준 이미지를 컨테이너 밖에서 만든 일이 네 번(DEV-045·056·059·068) 되풀이됐다. `visual-baselines.yml`(workflow_dispatch, 기본 브랜치 거부, 스냅샷 PNG만 커밋, 새 커밋에 CI 디스패치)과 `ci.yml`의 `workflow_dispatch` 트리거. 패키지 변경 없음 | FR-QA-004 | SRS v1.31(§41), PRD v0.24, RTM v0.25, QA 체크리스트 v0.17(QA-242), 비동기 작업 v0.13(JOB-CI-008), 관측·신뢰성 v0.5(§7 5단계), 보안 아키텍처 v0.12(4절), 로드맵 v0.11, WP v0.22(WP-048), 원장 v0.72(§3 FR-QA-004, WP-048), `.github/workflows/visual-baselines.yml`, `.github/workflows/ci.yml`, `scripts/test-visual.mjs` | closed |
 | CR-082 | 2026-11-23 | implementation | 사용자 지시 (2026-11-23): "2번 진행해"(개선 점검의 2순위: 1.0 발행 준비) | **1.0.0 발행을 미리 준비한다: 개발 빌드 폐기 경고 장치(FR-DX-006 AC-3), 1.0 major changeset의 마이그레이션 노트 초안, `fixed` 전환 절차와 그 리허설.** 리허설에서 `fixed` 그룹은 changeset이 없는 패키지도 함께 올리고 그 CHANGELOG에 빈 버전 제목을 남겼다. FR-DX-005 AC-3("변경 이력 항목이 없는 패키지는 버전이 오르지 않는다")은 OD-008("이후에도 같은 버전으로 낸다")과 1.0.0부터 함께 성립할 수 없어 0.x로 한정한다. 발행 dist는 바이트 단위로 같다 | FR-DX-005, FR-DX-006 | SRS v1.33(FR-DX-005 AC-3, §42), PRD v0.25, RTM v0.26, ADR v0.8(ADR-010), API 계약 v0.21(§6), 인프라 운영 v0.12(§6 8항), 검증 계획 v0.25(§1.0 준비도 AC-3·AC-4·AC-7), WP v0.25(WP-043), 원장 v0.74(§3 FR-DX-005·FR-DX-006, WP-043, CR-082 절), `packages/react/src/deprecation.ts`, `packages/react/src/testing/deprecation.test.ts`, 원장 v0.76(DEV-069, DEV-070), `.changeset/internal-deprecation-helper.md`, `.github/workflows/ci.yml` | closed |
+| CR-083 | 2026-11-25 | correction | 사용자 지시 (2026-11-25): "timeout-minutes PR 진행해" | **교차 브라우저 잡(JOB-CI-007)에 작업 목록의 10분 타임아웃을 건다.** 2026-11-24 main CI #329에서 브라우저 내려받기가 18분 멈췄고, 잡에 제한이 없어 GitHub 기본값 6시간까지 실행기를 붙잡을 수 있었다. 작업 목록의 다른 잡 타임아웃도 워크플로에 걸려 있지 않다(DEV-071) | JOB-CI-007, NFR-005 | 비동기 작업 v0.15(§2.8c), 원장 v0.77(DEV-071, CR-083 절), `.github/workflows/ci.yml` | open |
 
 유형: `scope`(범위 변경), `design`(설계 변경), `implementation`(구현 편차 DEV-### 처리), `correction`(문서 오류 수정)
 
@@ -1036,3 +1037,15 @@ CR-041 구현 cascade와 로컬 검증은 2026-09-14에 종료했다. 사용자�
 | 검증 (로컬) | 원장 CR-082 절 |
 | 병합 뒤 발견 (2026-11-24) | DEV-069: changeset 없이 패키지 디렉터리를 바꿔 main Release run 165의 changeset 검사가 실패했다. react `patch` changeset을 더하고, 같은 검사를 PR CI verify에서 기준 브랜치에 대해 돌린다(봇의 version PR 제외) |
 | CI · 종료 | 1차 PR #111 CI 통과 뒤 병합(`8c74e7d`). 수정 PR #112는 verify(node 22)의 a11y 시험 1건(이 PR과 무관, 메뉴 Escape 닫힘)이 실패한 채 사용자 지시로 병합(`0c77df2`). Release run 166 통과, Version packages PR #113(react 0.21.1) 열림. 사용자 결정(2026-11-24): #113은 1.0까지 열어 두고, WebKit 정지(PR #111 cross-browser)는 DEV-070으로 기록한다. closed |
+
+## CR-083 교차 브라우저 잡 타임아웃 (2026-11-25)
+
+| 항목 | 기록 |
+| --- | --- |
+| 유형 / 상태 | correction / open |
+| 근거 | 작업 목록(비동기 작업 §1)은 JOB-CI-007에 10분 타임아웃을 적었지만 `ci.yml`의 cross-browser 잡에는 `timeout-minutes`가 없었다. 2026-11-24 main CI #329(`0c77df2`)에서 `playwright install --with-deps firefox webkit`이 18분 동안 끝나지 않았고, 취소 뒤 다시 돌리자 설치 1분 8초, 잡 전체 2분 40초에 통과했다 |
+| 설계 | cross-browser 잡에 `timeout-minutes: 10`. 작업 목록 값 그대로이고, 최근 정상 실행(1분 30초 ~ 2분 40초)의 세 배가 넘는다 |
+| 발견 | 작업 목록의 다른 타임아웃도 워크플로에 없다. 그중 JOB-CI-003(3분)과 JOB-CI-005(10분)는 최근 잡 시간(시각 회귀 3분 30초 ~ 4분, 문서 E2E 최대 8분 25초)과 가깝거나 넘는다. 목록 값이 잡 전체인지 시험 단계인지 정해지지 않아 이 CR에서 걸지 않았다(DEV-071) |
+| 경계 | 패키지 변경 없음. 다른 잡은 바꾸지 않는다 |
+| 검증 (로컬) | actionlint 통과 |
+| CI · 종료 | PR CI 통과로 닫는다 |
