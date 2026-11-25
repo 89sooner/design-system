@@ -104,6 +104,7 @@
 | CR-083 | 2026-11-25 | correction | 사용자 지시 (2026-11-25): "timeout-minutes PR 진행해" | **교차 브라우저 잡(JOB-CI-007)에 작업 목록의 10분 타임아웃을 건다.** 2026-11-24 main CI #329에서 브라우저 내려받기가 18분 멈췄고, 잡에 제한이 없어 GitHub 기본값 6시간까지 실행기를 붙잡을 수 있었다. 작업 목록의 다른 잡 타임아웃도 워크플로에 걸려 있지 않다(DEV-071) | JOB-CI-007, NFR-005 | 비동기 작업 v0.15(§2.8c), 원장 v0.77(DEV-071, CR-083 절), `.github/workflows/ci.yml` | closed |
 | CR-084 | 2026-11-25 | correction | 사용자 지시 (2026-11-25): "DEV-071 권장안대로 진행해" | **모든 워크플로 잡에 `timeout-minutes`를 걸고, 작업 목록의 타임아웃을 실제 잡 시간에 맞춘다.** verify 20분, docs e2e 15분, consumers 15분, visual 10분(목록 3분에서), visual-baselines 20분, release version 10분·publish 15분(목록 5분에서), deploy-docs 15분. 문서 E2E는 목록 10분에서 15분. verify 안의 단계 값은 단계 예산으로 명시한다. DEV-071을 닫는다 | JOB-CI-002~008, JOB-REL-001, JOB-BUILD-001~004 | 비동기 작업 v0.16(§2 머리말과 표), 원장 v0.78(DEV-071, CR-084 절), `.github/workflows/ci.yml`·`release.yml`·`deploy-docs.yml`·`visual-baselines.yml` | closed |
 | CR-085 | 2026-11-25 | correction | 사용자 지시 (2026-11-25): "DEV-070 권장안대로 진행해" | **DEV-070을 제품 결함이 아닌 CI 첫 로드 지연으로 정정하고, 교차 브라우저 스모크의 첫 라우트 대기를 15초로 둔다.** PR #111 WebKit 잡에서 첫 라우트가 청크 도착 약 5.3초 뒤에 그려져 5초 대기를 넘겼다(trace 마지막 스냅숏에 `.docs-preview` 7개). 로컬 WebKit 첫 로드 780회(CPU 부하 포함)는 0.4 ~ 0.9초, 멈춤 0회 | DEV-070, JOB-CI-007, NFR-005, FR-DX-006 AC-4 | 비동기 작업 v0.17(§2.8c), 검증 계획 v0.26(AC-4), WP v0.26(WP-043), 원장 v0.80(DEV-070, CR-085 절), `apps/docs/e2e-cross/engines.spec.ts` | closed |
+| CR-086 | 2026-11-25 | correction | 사용자 지시 (2026-11-25): "권장 순서대로 진행해"(개선 점검 1·2순위) | **audit 제외(DEV-049)를 지우고, 메뉴 Escape 접근성 시험의 경쟁 상태를 없앤다.** 제외 없이도 `pnpm audit --audit-level high`가 0건이다. 메뉴 시험은 포커스가 메뉴 안으로 옮겨진 뒤 키를 누른다(#112 node 22에서 Escape 뒤 메뉴가 남은 1회) | NFR-002, FR-A11Y-002, DEV-049 | 보안 아키텍처(4절), 검증 계획 v0.27(§3 audit, AC-4), WP v0.27(WP-043), 원장 v0.82(DEV-049, CR-086 절), `package.json`, `SECURITY.md`, `packages/react/src/testing/a11y.browser.test.tsx`, `.changeset/internal-a11y-menu-test.md` | open |
 
 유형: `scope`(범위 변경), `design`(설계 변경), `implementation`(구현 편차 DEV-### 처리), `correction`(문서 오류 수정)
 
@@ -1074,3 +1075,14 @@ CR-041 구현 cascade와 로컬 검증은 2026-09-14에 종료했다. 사용자�
 | 경계 | 패키지·문서 사이트 코드 변경 없음 |
 | 검증 (로컬) | 교차 브라우저 스위트 WebKit·Chromium 8/8, lint, docs typecheck |
 | CI · 종료 | PR #118 CI(run 45631964958) 6잡 통과, cross-browser 1분 30초. 병합 `8fec26e`. main CI #344(cross-browser 포함), Release run 171, Deploy Docs run 119 통과. closed |
+
+## CR-086 audit 제외 해제(DEV-049)와 메뉴 Escape 시험 경쟁 상태 (2026-11-25)
+
+| 항목 | 기록 |
+| --- | --- |
+| 유형 / 상태 | correction / open |
+| 근거 | ① CR-044가 패치 없는 `braces` 권고 GHSA-vfj7-8cjw-p6xm을 `pnpm.auditConfig.ignoreGhsas`로 제외했다(DEV-049). 2026-11-25 제외를 뺀 채 `pnpm audit --audit-level high`를 돌리니 0건이다. `braces`는 여전히 3.0.3이므로 권고 쪽이 바뀐 것으로 본다 ② PR #112 CI verify(node 22)에서 `DEV-058 … closing the menu without a route change still returns focus to its trigger`가 1회 실패했다(Escape 뒤 1초 넘게 메뉴가 남음). 로컬 30회(CPU 부하 15회 포함)는 모두 통과해 재현하지 못했다 |
+| 설계 | ① `package.json`의 `auditConfig` 블록 삭제. 제외 목록이 비어 릴리스 audit 게이트가 모든 high 이상 권고에서 실패한다 ② 두 메뉴 시험이 `[role="menuitem"]` 등장 대신 포커스가 메뉴 안에 들어온 것을 기다린 뒤 키를 누른다. Radix는 DismissableLayer의 Escape 리스너 등록과 FocusScope의 포커스 이동을 모두 마운트 effect에서 하고, 포커스 이동이 나중이다. 메뉴가 그려지자마자 보낸 Escape는 리스너 등록 전에 도착할 수 있다 |
+| 경계 | 발행 코드 변경 없음. 시험 파일이 `packages/react` 안에 있어 react `patch` changeset을 둔다(DEV-069 규칙). 그 patch는 1.0까지 열어 둔 Version packages PR #113에 합쳐진다 |
+| 검증 (로컬) | audit 0건(제외 없음), DEV-058 시험 3/3, 원장 CR-086 절 |
+| CI · 종료 | PR CI 통과로 닫는다 |

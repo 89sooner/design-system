@@ -243,7 +243,10 @@ describe("DEV-058 a route change from inside an overlay leaves focus on the new 
     const { container } = render(<RoutedShellFixture overlay="menu" />);
     container.querySelector<HTMLButtonElement>("[data-overlay-trigger]")?.focus();
     await userEvent.keyboard("{Enter}");
-    await waitFor(() => expect(document.querySelector('[role="menuitem"]')).not.toBeNull());
+    // The menu is rendered before React runs its effects; Radix registers the Escape listener and moves focus
+    // into the content in those effects, focus last. Waiting for focus inside the menu means a key pressed next is
+    // heard (#112: Escape sent on the first render left the menu open on CI).
+    await waitFor(() => expect(document.activeElement?.closest('[role="menu"]')).not.toBeNull());
     await userEvent.keyboard("{Enter}");
     await waitFor(() => expect(document.querySelector('[role="menu"]')).toBeNull());
     await waitFor(() => expect(document.activeElement?.id).toBe("routed-main"));
@@ -256,7 +259,10 @@ describe("DEV-058 a route change from inside an overlay leaves focus on the new 
     const trigger = container.querySelector<HTMLButtonElement>("[data-overlay-trigger]");
     trigger?.focus();
     await userEvent.keyboard("{Enter}");
-    await waitFor(() => expect(document.querySelector('[role="menuitem"]')).not.toBeNull());
+    // The menu is rendered before React runs its effects; Radix registers the Escape listener and moves focus
+    // into the content in those effects, focus last. Waiting for focus inside the menu means a key pressed next is
+    // heard (#112: Escape sent on the first render left the menu open on CI).
+    await waitFor(() => expect(document.activeElement?.closest('[role="menu"]')).not.toBeNull());
     await userEvent.keyboard("{Escape}");
     await waitFor(() => expect(document.querySelector('[role="menu"]')).toBeNull());
     expect(document.activeElement).toBe(trigger);

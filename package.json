@@ -52,11 +52,6 @@
       "vite@>=7.0.0 <7.3.7": "7.3.7",
       "esbuild@>=0.27.3 <0.28.1": "0.28.2",
       "minimatch@>=7.0.0 <11.0.1": "11.0.9"
-    },
-    "auditConfig": {
-      "ignoreGhsas": [
-        "GHSA-vfj7-8cjw-p6xm"
-      ]
     }
   },
   "devDependencies": {

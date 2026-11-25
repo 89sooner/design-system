@@ -28,4 +28,4 @@ Every release is published from GitHub Actions with npm provenance. To check the
 npm audit signatures
 ```
 
-Runtime dependencies are pinned to exact versions (Radix UI primitives, react-day-picker, downshift, Headless Tree), and the release workflow fails on a high or critical `pnpm audit` finding. The one accepted exception is listed in the implementation ledger (`DEV-049`, a development-only dependency with no patch).
+Runtime dependencies are pinned to exact versions (Radix UI primitives, react-day-picker, downshift, Headless Tree), and the release workflow fails on a high or critical `pnpm audit` finding. No finding is excluded. The last exception, a development-only `braces` advisory (`DEV-049`), was removed on 2026-11-25 when the audit stopped reporting it.
