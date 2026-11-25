@@ -1,4 +1,4 @@
-// Refs: CR-075 WP-042 DEV-065 NFR-005 FR-DX-006 AC-4 FR-CSS-001 FR-CSS-006 FR-THM-001
+// Refs: CR-075 CR-085 WP-042 DEV-065 DEV-070 NFR-005 FR-DX-006 AC-4 FR-CSS-001 FR-CSS-006 FR-THM-001
 import { readFileSync } from "node:fs";
 import { expect, test, type Page } from "@playwright/test";
 import { docsPath } from "../e2e/routes";
@@ -11,9 +11,17 @@ import { docsPath } from "../e2e/routes";
  */
 const PUBLIC_COMPONENTS = (JSON.parse(readFileSync(new URL("../src/generated/component-meta.json", import.meta.url), "utf8")) as { name: string }[]).map((entry) => entry.name);
 
+// DEV-070 · CR-085: a page's first component route can take more than the default 5 s to render on a cold CI
+// runner. In PR #111's WebKit job it rendered about 5.3 s after its chunks arrived (trace), while 780 local
+// cold loads under CPU load took 0.4 – 0.9 s. These tests ask "does it render", not "how fast"; Lighthouse
+// gates speed (NFR-001). So the first route of each page gets 15 s; later routes keep the default.
+const FIRST_ROUTE_TIMEOUT = 15_000;
+const rendered = new WeakSet<Page>();
+
 async function openComponent(page: Page, component: string): Promise<void> {
   await page.goto(docsPath(`/components/${component}`));
-  await expect(page.locator(".docs-preview").first()).toBeVisible();
+  await expect(page.locator(".docs-preview").first()).toBeVisible(rendered.has(page) ? {} : { timeout: FIRST_ROUTE_TIMEOUT });
+  rendered.add(page);
 }
 
 test("NFR-005: every public component page renders without an uncaught error", async ({ page }) => {
