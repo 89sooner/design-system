@@ -223,6 +223,9 @@ jobs:
   cross-browser:
     name: cross-browser (firefox, webkit)
     runs-on: ubuntu-latest
+    # JOB-CI-007's 10-minute budget. Without it a stalled browser download held a runner for 18 minutes
+    # on main CI #329 and would have held it for GitHub's 6-hour default (CR-083).
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
