@@ -103,7 +103,7 @@
 | CR-082 | 2026-11-23 | implementation | 사용자 지시 (2026-11-23): "2번 진행해"(개선 점검의 2순위: 1.0 발행 준비) | **1.0.0 발행을 미리 준비한다: 개발 빌드 폐기 경고 장치(FR-DX-006 AC-3), 1.0 major changeset의 마이그레이션 노트 초안, `fixed` 전환 절차와 그 리허설.** 리허설에서 `fixed` 그룹은 changeset이 없는 패키지도 함께 올리고 그 CHANGELOG에 빈 버전 제목을 남겼다. FR-DX-005 AC-3("변경 이력 항목이 없는 패키지는 버전이 오르지 않는다")은 OD-008("이후에도 같은 버전으로 낸다")과 1.0.0부터 함께 성립할 수 없어 0.x로 한정한다. 발행 dist는 바이트 단위로 같다 | FR-DX-005, FR-DX-006 | SRS v1.33(FR-DX-005 AC-3, §42), PRD v0.25, RTM v0.26, ADR v0.8(ADR-010), API 계약 v0.21(§6), 인프라 운영 v0.12(§6 8항), 검증 계획 v0.25(§1.0 준비도 AC-3·AC-4·AC-7), WP v0.25(WP-043), 원장 v0.74(§3 FR-DX-005·FR-DX-006, WP-043, CR-082 절), `packages/react/src/deprecation.ts`, `packages/react/src/testing/deprecation.test.ts`, 원장 v0.76(DEV-069, DEV-070), `.changeset/internal-deprecation-helper.md`, `.github/workflows/ci.yml` | closed |
 | CR-083 | 2026-11-25 | correction | 사용자 지시 (2026-11-25): "timeout-minutes PR 진행해" | **교차 브라우저 잡(JOB-CI-007)에 작업 목록의 10분 타임아웃을 건다.** 2026-11-24 main CI #329에서 브라우저 내려받기가 18분 멈췄고, 잡에 제한이 없어 GitHub 기본값 6시간까지 실행기를 붙잡을 수 있었다. 작업 목록의 다른 잡 타임아웃도 워크플로에 걸려 있지 않다(DEV-071) | JOB-CI-007, NFR-005 | 비동기 작업 v0.15(§2.8c), 원장 v0.77(DEV-071, CR-083 절), `.github/workflows/ci.yml` | closed |
 | CR-084 | 2026-11-25 | correction | 사용자 지시 (2026-11-25): "DEV-071 권장안대로 진행해" | **모든 워크플로 잡에 `timeout-minutes`를 걸고, 작업 목록의 타임아웃을 실제 잡 시간에 맞춘다.** verify 20분, docs e2e 15분, consumers 15분, visual 10분(목록 3분에서), visual-baselines 20분, release version 10분·publish 15분(목록 5분에서), deploy-docs 15분. 문서 E2E는 목록 10분에서 15분. verify 안의 단계 값은 단계 예산으로 명시한다. DEV-071을 닫는다 | JOB-CI-002~008, JOB-REL-001, JOB-BUILD-001~004 | 비동기 작업 v0.16(§2 머리말과 표), 원장 v0.78(DEV-071, CR-084 절), `.github/workflows/ci.yml`·`release.yml`·`deploy-docs.yml`·`visual-baselines.yml` | closed |
-| CR-085 | 2026-11-25 | correction | 사용자 지시 (2026-11-25): "DEV-070 권장안대로 진행해" | **DEV-070을 제품 결함이 아닌 CI 첫 로드 지연으로 정정하고, 교차 브라우저 스모크의 첫 라우트 대기를 15초로 둔다.** PR #111 WebKit 잡에서 첫 라우트가 청크 도착 약 5.3초 뒤에 그려져 5초 대기를 넘겼다(trace 마지막 스냅숏에 `.docs-preview` 7개). 로컬 WebKit 첫 로드 780회(CPU 부하 포함)는 0.4 ~ 0.9초, 멈춤 0회 | DEV-070, JOB-CI-007, NFR-005, FR-DX-006 AC-4 | 비동기 작업 v0.17(§2.8c), 검증 계획 v0.26(AC-4), WP v0.26(WP-043), 원장 v0.80(DEV-070, CR-085 절), `apps/docs/e2e-cross/engines.spec.ts` | open |
+| CR-085 | 2026-11-25 | correction | 사용자 지시 (2026-11-25): "DEV-070 권장안대로 진행해" | **DEV-070을 제품 결함이 아닌 CI 첫 로드 지연으로 정정하고, 교차 브라우저 스모크의 첫 라우트 대기를 15초로 둔다.** PR #111 WebKit 잡에서 첫 라우트가 청크 도착 약 5.3초 뒤에 그려져 5초 대기를 넘겼다(trace 마지막 스냅숏에 `.docs-preview` 7개). 로컬 WebKit 첫 로드 780회(CPU 부하 포함)는 0.4 ~ 0.9초, 멈춤 0회 | DEV-070, JOB-CI-007, NFR-005, FR-DX-006 AC-4 | 비동기 작업 v0.17(§2.8c), 검증 계획 v0.26(AC-4), WP v0.26(WP-043), 원장 v0.80(DEV-070, CR-085 절), `apps/docs/e2e-cross/engines.spec.ts` | closed |
 
 유형: `scope`(범위 변경), `design`(설계 변경), `implementation`(구현 편차 DEV-### 처리), `correction`(문서 오류 수정)
 
@@ -1067,10 +1067,10 @@ CR-041 구현 cascade와 로컬 검증은 2026-09-14에 종료했다. 사용자�
 
 | 항목 | 기록 |
 | --- | --- |
-| 유형 / 상태 | correction / open |
+| 유형 / 상태 | correction / closed |
 | 근거 | DEV-070은 "WebKit에서 라우트가 Suspense 대체 화면에 멈춘다"는 결함 후보였다. 조사 결과 멈춘 것이 아니라 늦었다. PR #111 cross-browser trace: 라우트 청크 8개가 12.35초까지 200으로 왔고, 17.55초 화면 프레임은 아직 대체 화면, 18.02초 DOM 스냅숏에는 `docs-detail`과 `.docs-preview` 7개가 있다. 그 잡의 첫 시험 페이지였고 새 페이지를 여는 데만 1.9초가 걸렸다 |
 | 조사 (로컬, WebKit 2311) | 교차 브라우저 시험 20회 반복 통과. 새 컨텍스트 첫 로드 300회, CPU 부하 4개와 동시 6개 프로브로 480회: 멈춤 0회. 단계 측정에서 미리보기까지 0.43 ~ 0.85초, 라우트 스타일시트 `load` 이벤트는 삽입 후 약 60ms. fontconfig 캐시를 비운 첫 로드도 약 0.6초. 5초가 넘게 걸린 원인은 재현하지 못했다(CI 첫 실행 비용으로 추정) |
 | 설계 | `e2e-cross/engines.spec.ts`: 각 시험 페이지의 첫 컴포넌트 라우트만 `.docs-preview`를 15초 기다린다. 이후 라우트는 기본 5초. 이 스모크는 "오류 없이 그려지는가"를 보며, 속도는 Lighthouse(NFR-001)가 본다. 정말 그려지지 않으면 여전히 실패한다 |
 | 경계 | 패키지·문서 사이트 코드 변경 없음 |
 | 검증 (로컬) | 교차 브라우저 스위트 WebKit·Chromium 8/8, lint, docs typecheck |
-| CI · 종료 | PR CI 통과로 닫는다 |
+| CI · 종료 | PR #118 CI(run 45631964958) 6잡 통과, cross-browser 1분 30초. 병합 `8fec26e`. main CI #344(cross-browser 포함), Release run 171, Deploy Docs run 119 통과. closed |

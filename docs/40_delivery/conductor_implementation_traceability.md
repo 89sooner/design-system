@@ -1,6 +1,6 @@
 # Conductor Design System 구현 추적 원장
 
-> 상태: review | 버전: v0.80 | 갱신일: 2026-11-25
+> 상태: review | 버전: v0.81 | 갱신일: 2026-11-25
 
 ## 1. 목적과 갱신 규칙
 
@@ -948,3 +948,4 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | 변경 | `apps/docs/e2e-cross/engines.spec.ts` `openComponent`: 페이지의 첫 라우트만 15초 대기 |
 | 검증 (로컬) | 교차 브라우저 스위트 WebKit·Chromium 8/8, lint, docs typecheck, 검증기 `--strict` OK |
 | 1.0 | AC-4 open DEV는 승인 예외 DEV-049뿐이다 |
+| CI · 종료 | PR #118 CI 6잡 통과(cross-browser 1분 30초). 병합 `8fec26e`. main CI #344, Release run 171, Deploy Docs run 119 통과. CR-085 closed |
