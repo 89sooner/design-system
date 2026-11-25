@@ -1,6 +1,6 @@
 # Conductor Design System 구현 추적 원장
 
-> 상태: review | 버전: v0.78 | 갱신일: 2026-11-25
+> 상태: review | 버전: v0.79 | 갱신일: 2026-11-25
 
 ## 1. 목적과 갱신 규칙
 
@@ -923,6 +923,7 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | 변경 | `.github/workflows/ci.yml` cross-browser 잡 `timeout-minutes: 10`(JOB-CI-007 작업 목록 값) |
 | 근거 | main CI #329에서 브라우저 내려받기 18분 정지. 다시 돌리자 설치 1분 8초, 잡 2분 40초 |
 | 남은 일 | DEV-071: 다른 잡의 목록 타임아웃을 잡 전체로 걸지, 목록 값을 고칠지 결정 |
+| CI · 종료 | PR #115 CI 6잡 통과(cross-browser 1분 45초). 병합 `9827f09`(CI 완료 전, 사용자 지시). main CI는 #116 병합으로 취소, `bb8e75b`의 CI #338 통과. DEV-071은 CR-084로 닫혔다. CR-083 closed |
 | 검증 (로컬) | actionlint 통과, 검증기 `--strict` OK |
 
 ### CR-084 모든 워크플로 잡의 타임아웃 (2026-11-25)
@@ -934,4 +935,5 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | 변경 | `ci.yml`: verify 20, docs-e2e 15, consumers 15, visual 10(cross-browser 10은 CR-083). `visual-baselines.yml` update 20. `release.yml` version 10, publish 15. `deploy-docs.yml` deploy 15(분) |
 | 근거 시간 | 2026-11-19 ~ 11-25 실행: verify 4분 30초 ~ 5분, docs e2e 최대 8분 25초, consumers 약 2분, visual 3분 26초 ~ 4분, visual-baselines 6분 57초 ~ 7분 56초, publish 약 1분 30초(run 160), deploy-docs 약 3분 |
 | 문서 | 비동기 작업 v0.16: §2 머리말에 타임아웃 열의 뜻, JOB-CI-003 3→10분, JOB-CI-005 10→15분, JOB-REL-001 5→15분 |
+| CI · 종료 | PR #116 CI 6잡 통과(verify 4분 13초·4분 42초, docs e2e 3분 36초, visual 3분 37초, consumers 1분 48초, cross-browser 2분 31초). 병합 `bb8e75b`(CI 완료 전, 사용자 지시). main CI #338, Release run 169, Deploy Docs run 117 통과. publish·visual-baselines 상한은 다음 실행에서 처음 쓰인다. CR-084 closed |
 | 검증 (로컬) | actionlint 통과(네 워크플로), 검증기 `--strict` OK |
