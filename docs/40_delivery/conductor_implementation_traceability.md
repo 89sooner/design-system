@@ -1,6 +1,6 @@
 # Conductor Design System 구현 추적 원장
 
-> 상태: review | 버전: v0.79 | 갱신일: 2026-11-25
+> 상태: review | 버전: v0.80 | 갱신일: 2026-11-25
 
 ## 1. 목적과 갱신 규칙
 
@@ -275,7 +275,7 @@ PR Search 소비처의 `DEV-380`이 트리거다: 화면 계약이 최대 20계�
 | DEV ID | 발견일 | 유형 | 내용 | 관련 ID | 처리 CR | 상태 |
 | --- | --- | --- | --- | --- | --- | --- |
 | DEV-071 | 2026-11-25 | 문서·구현 불일치 | **작업 목록의 잡 타임아웃이 워크플로에 걸려 있지 않다.** 비동기 작업 §1은 JOB-CI-002(5분)·JOB-CI-003(3분)·JOB-CI-005(10분)·JOB-CI-006(15분)·JOB-CI-007(10분)·JOB-CI-008(20분)·JOB-REL-001(5분)에 타임아웃을 적었지만 `ci.yml`·`visual-baselines.yml`·`release.yml`에는 `timeout-minutes`가 하나도 없었다. 2026-11-24 main CI #329에서 cross-browser 잡이 브라우저 내려받기로 18분 멈췄다. JOB-CI-007은 CR-083으로 걸었다. 나머지는 목록 값이 잡 전체인지 시험 단계인지 정해야 한다. JOB-CI-003(3분)은 최근 잡 시간 3분 30초 ~ 4분보다 짧고, JOB-CI-005(10분)는 최대 8분 25초와 가깝다. CR-084: 사용자가 권장안을 골라 모든 워크플로 잡에 상한을 걸고 목록 값을 맞췄다(JOB-CI-003 10분, JOB-CI-005 15분, JOB-REL-001 15분, verify 20분) | JOB-CI-002~008, JOB-REL-001 | CR-083, CR-084 | closed |
-| DEV-070 | 2026-11-24 | 결함 후보 (원인 미확정) | **WebKit에서 문서 사이트 라우트가 Suspense 대체 화면("Loading…")에서 멈춘 적이 있다.** 2026-11-23 PR #111 CI의 cross-browser 잡(JOB-CI-007)에서 `[webkit] NFR-005: every public component page renders without an uncaught error`가 첫 페이지 `/#/components/Button`에서 실패했다. trace에서 load 이벤트가 오고 라우트 청크(`index-BUcTvsV8.js`, `catalog-Dc_Du9CD.js`와 CSS·`relation`·`overlay`·`guides`·`interaction`·`contrast-report`)가 모두 0.3초 안에 200으로 왔다. 그런데도 `main`은 5초 동안 "Loading…"이었고 `.docs-preview`가 생기지 않았다. 같은 잡의 Firefox와 나머지 7건은 통과했다. 그 PR이 문서 사이트 빌드 102개 파일을 바꾸지 않았고, 같은 입력이 main CI #325에서 통과했으며, 한 번 다시 돌려 통과했다. 그래서 PR 탓은 아니지만 사용자 Safari에서도 일어날 수 있는 결함 후보다. 가설(미확인): Vite의 라우트 preload가 기다리는 스타일시트 `load` 이벤트를 WebKit이 가끔 내지 않아 `lazy()` 프로미스가 끝나지 않는다. 이 세션에는 WebKit이 없어 로컬 재현은 하지 않았다. 다음 단계: WebKit으로 재현하거나, 라우트 로딩에 진단 기록을 붙여 CI에서 관찰한다. 사용자 결정(2026-11-24): "WebKit은 편차로 기록해" | NFR-005, FR-DX-006 AC-4, JOB-CI-007, W-020 | — (조사 전) | open |
+| DEV-070 | 2026-11-24 | CI 첫 로드 지연 (결함 후보에서 정정) | **WebKit에서 문서 사이트 라우트가 Suspense 대체 화면("Loading…")에서 멈춘 적이 있다.** 2026-11-23 PR #111 CI의 cross-browser 잡(JOB-CI-007)에서 `[webkit] NFR-005: every public component page renders without an uncaught error`가 첫 페이지 `/#/components/Button`에서 실패했다. trace에서 load 이벤트가 오고 라우트 청크(`index-BUcTvsV8.js`, `catalog-Dc_Du9CD.js`와 CSS·`relation`·`overlay`·`guides`·`interaction`·`contrast-report`)가 모두 0.3초 안에 200으로 왔다. 그런데도 `main`은 5초 동안 "Loading…"이었고 `.docs-preview`가 생기지 않았다. 같은 잡의 Firefox와 나머지 7건은 통과했다. 그 PR이 문서 사이트 빌드 102개 파일을 바꾸지 않았고, 같은 입력이 main CI #325에서 통과했으며, 한 번 다시 돌려 통과했다. 그래서 PR 탓은 아니지만 사용자 Safari에서도 일어날 수 있는 결함 후보다. 가설(미확인): Vite의 라우트 preload가 기다리는 스타일시트 `load` 이벤트를 WebKit이 가끔 내지 않아 `lazy()` 프로미스가 끝나지 않는다. 이 세션에는 WebKit이 없어 로컬 재현은 하지 않았다. 다음 단계: WebKit으로 재현하거나, 라우트 로딩에 진단 기록을 붙여 CI에서 관찰한다. 사용자 결정(2026-11-24): "WebKit은 편차로 기록해". 조사(2026-11-25, CR-085): 멈춘 것이 아니라 늦었다. trace 마지막 스냅숏(18.02초)에 `.docs-preview` 7개가 있고 17.55초 프레임은 아직 대체 화면이다. 청크 도착 약 5.3초 뒤에 그려졌다. 로컬 WebKit 첫 로드 780회(CPU 부하 포함)는 0.4 ~ 0.9초, 멈춤 0회. 수정: 각 시험 페이지의 첫 라우트 대기를 15초로 | NFR-005, FR-DX-006 AC-4, JOB-CI-007, W-020 | CR-085 | closed |
 | DEV-069 | 2026-11-24 | 구현 결함 | **패키지 디렉터리를 바꾼 PR이 changeset 없이 병합돼 main의 Release 실행이 실패했다.** PR #111(CR-082)이 `packages/react/src`에 내부 함수와 그 시험을 더했다. 발행 dist는 바이트 단위로 같아 changeset을 두지 않았다. 그런데 release.yml version 잡의 "마지막 릴리스 이후 변경에 changeset이 있다" 검사(`changeset status --since <마지막 태그>`)는 dist가 아니라 패키지 디렉터리의 파일 변경을 본다. 그래서 병합 커밋 `8c74e7d`의 Release run 165가 "Some packages have been changed but no changesets were found"로 실패했다. PR CI는 이 검사를 돌리지 않아 병합 전에 드러나지 않았다. 로컬 재현: #111 head `66170ef`에서 `changeset status --since 72a7a57`이 종료 코드 1이다. 수정: ① react `patch` changeset(내부 변경이고 설치되는 코드는 같다고 적는다) ② CI verify가 PR에서 같은 검사를 기준 브랜치에 대해 돌린다(`fetch-depth: 0`, 봇의 version PR은 건너뜀). 확인: PR #112에서 새 검사가 react patch를 보고 통과했고, 병합 `0c77df2`의 Release run 166이 통과해 Version packages PR #113(react 0.21.1)을 열었다 | FR-DX-005, JOB-REL-001, WP-043 | CR-082 | closed |
 | DEV-068 | 2026-11-18 | 검증 편차 | **시각 기준 이미지 셋을 고정 컨테이너 밖에서 만들었다.** FR-QA-004·JOB-CI-003은 `Dockerfile.visual`의 Playwright 1.61.1(Chromium 1228)에서만 기준 이미지를 갱신하도록 정한다. 이 세션에는 Docker 데몬이 없고, Chromium 1228 내려받기는 처음엔 네트워크 정책(cdn.playwright.dev)에, 호스트를 허용한 뒤에는 실행 권한 검사에 막혔다. DEV-045·DEV-056과 같은 방법으로 미리 설치된 Chromium 1243과 Inter를 뺀 fontconfig로 렌더했다. 같은 조건에서 main `5bd3bef`의 기준 190장 중 189장이 1% 안에서 일치했다(CopyButton 라이트 2%: 바꾸지 않은 컴포넌트라 브라우저 판 차이로 보고 갱신하지 않았다). 갱신한 것은 실패한 셋 — 새 `FileUpload-dark`·`FileUpload-light`와 높이가 바뀐 `AllComponents-grayscale-dark`이다. 필드 배경·선택 행 레일·셀 줄바꿈·라벨 맞춤은 기존 기준 이미지의 1% 상한과 픽셀 색 임계 안이라 그 이미지들은 그대로 통과했다. 최종 판정은 PR CI의 visual regression 잡이다. PR #103 head `e7436b8`의 그 잡(Playwright 1.61.1 고정 컨테이너)이 통과했다 | FR-QA-004, DEV-045, DEV-056 | CR-080 | closed |
 | DEV-067 | 2026-10-24 | 검증 편차 | **설치 소비자 검사 스크립트가 낡아 실행하면 실패했다.** `scripts/check-consumer.mjs`는 WP-029 뒤 CI에도 `package.json`에도 연결되지 않아(DEV-065) 아무도 돌리지 않았다. WP-042로 처음 다시 돌리자 ① Popover를 Escape로 닫은 직후 포커스가 트리거에 있다고 즉시 단정해 실패했다 — CR-047의 퇴장 애니메이션 동안 포커스는 아직 닫기 버튼에 있고 600ms 안에 트리거로 돌아온다(감소 모션이면 즉시). 동작은 정상이고 단정이 틀렸다. ② DataTable·DetailInspector·RelationGraph의 접근성 이름이 CR-053으로 영어 기본 문구가 됐는데 스크립트는 한국어 이름을 찾았다. 포커스 복귀를 2초까지 기다리게 하고 이름 다섯을 현재 기본 문구로 고쳤다. 로컬에서 vite18·vite19·next19 3/3 통과, 콘솔 오류 0 | NFR-005, FR-DX-006 AC-4 | CR-075 (WP-042) | closed |
@@ -937,3 +937,14 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | 문서 | 비동기 작업 v0.16: §2 머리말에 타임아웃 열의 뜻, JOB-CI-003 3→10분, JOB-CI-005 10→15분, JOB-REL-001 5→15분 |
 | CI · 종료 | PR #116 CI 6잡 통과(verify 4분 13초·4분 42초, docs e2e 3분 36초, visual 3분 37초, consumers 1분 48초, cross-browser 2분 31초). 병합 `bb8e75b`(CI 완료 전, 사용자 지시). main CI #338, Release run 169, Deploy Docs run 117 통과. publish·visual-baselines 상한은 다음 실행에서 처음 쓰인다. CR-084 closed |
 | 검증 (로컬) | actionlint 통과(네 워크플로), 검증기 `--strict` OK |
+
+### CR-085 DEV-070 정정: WebKit 첫 라우트 지연 (2026-11-25)
+
+| 범위 | 결과 |
+| --- | --- |
+| 지시 | "DEV-070 조사 진행해" → "DEV-070 권장안대로 진행해" |
+| 기준 | main `44bc724` |
+| 조사 | PR #111 cross-browser trace 재분석(마지막 스냅숏에 `.docs-preview` 7개, 청크 도착 약 5.3초 뒤 렌더). 로컬 WebKit 2311: 시험 20회 반복 통과, 첫 로드 300회 + 부하 480회 멈춤 0회, 미리보기 0.43 ~ 0.85초, 스타일시트 `load` 삽입 후 약 60ms, fontconfig 캐시 비운 첫 로드 약 0.6초 |
+| 변경 | `apps/docs/e2e-cross/engines.spec.ts` `openComponent`: 페이지의 첫 라우트만 15초 대기 |
+| 검증 (로컬) | 교차 브라우저 스위트 WebKit·Chromium 8/8, lint, docs typecheck, 검증기 `--strict` OK |
+| 1.0 | AC-4 open DEV는 승인 예외 DEV-049뿐이다 |

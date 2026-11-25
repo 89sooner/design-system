@@ -1,6 +1,6 @@
 # Conductor Design System CI 잡과 릴리스 파이프라인
 
-> 상태: review | 버전: v0.16 | 갱신일: 2026-11-25
+> 상태: review | 버전: v0.17 | 갱신일: 2026-11-25
 
 ## 0. 문서 재해석
 
@@ -141,6 +141,7 @@ Conductor Design System에는 큐, 워커 런타임, dead letter queue, 사용�
 | 실패 시 동작 | 실패하면 종료 코드 1. 재시도 없음 |
 | 아티팩트 | 실패 시 `apps/docs/test-results/**`(`cross-browser-results`, 30일) |
 | 타임아웃 | 잡 전체 10분(`timeout-minutes: 10`, CR-083). 넘기면 GitHub가 잡을 중단한다. 2026-11-24 main CI #329에서 Firefox·WebKit 내려받기가 18분 멈춰 실행기를 붙잡았고, 다시 돌리자 설치 1분·전체 2분 40초에 통과했다 |
+| 첫 라우트 대기 | 각 시험 페이지의 첫 컴포넌트 라우트는 `.docs-preview`를 15초 기다리고, 이후 라우트는 기본 5초다(CR-085, DEV-070). 이 잡은 "그려지는가"를 보고 속도는 Lighthouse(NFR-001)가 본다 |
 | 배경 | NFR-005의 지원 브라우저 중 Chromium(Edge 포함) 밖의 엔진을 실행하는 잡이 없었다(DEV-065). 픽셀·강제 색 검사는 Chromium 잡이 계속 맡는다 |
 
 ### 2.8d JOB-CI-008 시각 기준 이미지 갱신 (CR-081)
