@@ -102,6 +102,7 @@
 | CR-081 | 2026-11-20 | correction | 사용자 지시 (2026-11-20): "1번부터 진행해"(개선 점검의 1순위: 시각 기준 이미지를 CI 고정 컨테이너에서 갱신하는 수동 잡) | **시각 회귀 기준 이미지 갱신을 고정 컨테이너에서 하는 수동 CI 잡(JOB-CI-008)을 둔다.** Docker와 고정 Chromium이 없는 세션이 기준 이미지를 컨테이너 밖에서 만든 일이 네 번(DEV-045·056·059·068) 되풀이됐다. `visual-baselines.yml`(workflow_dispatch, 기본 브랜치 거부, 스냅샷 PNG만 커밋, 새 커밋에 CI 디스패치)과 `ci.yml`의 `workflow_dispatch` 트리거. 패키지 변경 없음 | FR-QA-004 | SRS v1.31(§41), PRD v0.24, RTM v0.25, QA 체크리스트 v0.17(QA-242), 비동기 작업 v0.13(JOB-CI-008), 관측·신뢰성 v0.5(§7 5단계), 보안 아키텍처 v0.12(4절), 로드맵 v0.11, WP v0.22(WP-048), 원장 v0.72(§3 FR-QA-004, WP-048), `.github/workflows/visual-baselines.yml`, `.github/workflows/ci.yml`, `scripts/test-visual.mjs` | closed |
 | CR-082 | 2026-11-23 | implementation | 사용자 지시 (2026-11-23): "2번 진행해"(개선 점검의 2순위: 1.0 발행 준비) | **1.0.0 발행을 미리 준비한다: 개발 빌드 폐기 경고 장치(FR-DX-006 AC-3), 1.0 major changeset의 마이그레이션 노트 초안, `fixed` 전환 절차와 그 리허설.** 리허설에서 `fixed` 그룹은 changeset이 없는 패키지도 함께 올리고 그 CHANGELOG에 빈 버전 제목을 남겼다. FR-DX-005 AC-3("변경 이력 항목이 없는 패키지는 버전이 오르지 않는다")은 OD-008("이후에도 같은 버전으로 낸다")과 1.0.0부터 함께 성립할 수 없어 0.x로 한정한다. 발행 dist는 바이트 단위로 같다 | FR-DX-005, FR-DX-006 | SRS v1.33(FR-DX-005 AC-3, §42), PRD v0.25, RTM v0.26, ADR v0.8(ADR-010), API 계약 v0.21(§6), 인프라 운영 v0.12(§6 8항), 검증 계획 v0.25(§1.0 준비도 AC-3·AC-4·AC-7), WP v0.25(WP-043), 원장 v0.74(§3 FR-DX-005·FR-DX-006, WP-043, CR-082 절), `packages/react/src/deprecation.ts`, `packages/react/src/testing/deprecation.test.ts`, 원장 v0.76(DEV-069, DEV-070), `.changeset/internal-deprecation-helper.md`, `.github/workflows/ci.yml` | closed |
 | CR-083 | 2026-11-25 | correction | 사용자 지시 (2026-11-25): "timeout-minutes PR 진행해" | **교차 브라우저 잡(JOB-CI-007)에 작업 목록의 10분 타임아웃을 건다.** 2026-11-24 main CI #329에서 브라우저 내려받기가 18분 멈췄고, 잡에 제한이 없어 GitHub 기본값 6시간까지 실행기를 붙잡을 수 있었다. 작업 목록의 다른 잡 타임아웃도 워크플로에 걸려 있지 않다(DEV-071) | JOB-CI-007, NFR-005 | 비동기 작업 v0.15(§2.8c), 원장 v0.77(DEV-071, CR-083 절), `.github/workflows/ci.yml` | open |
+| CR-084 | 2026-11-25 | correction | 사용자 지시 (2026-11-25): "DEV-071 권장안대로 진행해" | **모든 워크플로 잡에 `timeout-minutes`를 걸고, 작업 목록의 타임아웃을 실제 잡 시간에 맞춘다.** verify 20분, docs e2e 15분, consumers 15분, visual 10분(목록 3분에서), visual-baselines 20분, release version 10분·publish 15분(목록 5분에서), deploy-docs 15분. 문서 E2E는 목록 10분에서 15분. verify 안의 단계 값은 단계 예산으로 명시한다. DEV-071을 닫는다 | JOB-CI-002~008, JOB-REL-001, JOB-BUILD-001~004 | 비동기 작업 v0.16(§2 머리말과 표), 원장 v0.78(DEV-071, CR-084 절), `.github/workflows/ci.yml`·`release.yml`·`deploy-docs.yml`·`visual-baselines.yml` | open |
 
 유형: `scope`(범위 변경), `design`(설계 변경), `implementation`(구현 편차 DEV-### 처리), `correction`(문서 오류 수정)
 
@@ -1049,3 +1050,14 @@ CR-041 구현 cascade와 로컬 검증은 2026-09-14에 종료했다. 사용자�
 | 경계 | 패키지 변경 없음. 다른 잡은 바꾸지 않는다 |
 | 검증 (로컬) | actionlint 통과 |
 | CI · 종료 | PR CI 통과로 닫는다 |
+
+## CR-084 모든 워크플로 잡의 타임아웃 (2026-11-25)
+
+| 항목 | 기록 |
+| --- | --- |
+| 유형 / 상태 | correction / open |
+| 근거 | DEV-071: 작업 목록의 타임아웃이 워크플로에 걸려 있지 않았고, JOB-CI-003(3분)은 최근 잡 시간보다 짧았다. 사용자가 권장안(넉넉한 잡 상한을 걸고 목록 값을 맞춘다)을 골랐다 |
+| 설계 | 잡 상한은 최근 정상 실행의 두 배 이상이다. verify 20분(4분 30초 ~ 5분), docs e2e 15분(최대 8분 25초), consumers 15분(약 2분), cross-browser 10분(CR-083, 1분 38초 ~ 2분 40초), visual 10분(3분 26초 ~ 4분), visual-baselines 20분(약 7 ~ 8분), release version 10분(약 25초), publish 15분(약 1분 30초), deploy-docs 15분(약 3분). 목록은 JOB-CI-003을 10분, JOB-CI-005를 15분, JOB-REL-001을 15분으로 고치고, verify 안의 단계 값은 단계 예산이라고 적는다 |
+| 경계 | 패키지 변경 없음. publish 잡이 게시 중간에 중단돼도 다시 실행하면 레지스트리에 없는 버전만 게시한다(인프라 운영 §6 4항) |
+| 검증 (로컬) | actionlint 통과(워크플로 네 개), 검증기 `--strict` OK |
+| CI · 종료 | PR CI 통과로 닫는다. release·deploy-docs·visual-baselines의 상한은 다음 실행에서 확인한다 |

@@ -29,6 +29,8 @@ jobs:
   deploy:
     name: build, gate, deploy to GitHub Pages
     runs-on: ubuntu-latest
+    # Job ceiling from the job catalog (async jobs §1, CR-084): a hang fails the job instead of holding a runner.
+    timeout-minutes: 15
     permissions:
       contents: read
       pages: write

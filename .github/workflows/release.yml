@@ -28,6 +28,8 @@ jobs:
     name: version PR (changesets)
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    # Job ceiling from the job catalog (async jobs §1, CR-084): a hang fails the job instead of holding a runner.
+    timeout-minutes: 10
     permissions:
       contents: write
       pull-requests: write
@@ -110,6 +112,8 @@ jobs:
     name: publish to npm (OIDC)
     if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/@conductor-by-89soone/')
     runs-on: ubuntu-latest
+    # Job ceiling from the job catalog (async jobs §1, CR-084): a hang fails the job instead of holding a runner.
+    timeout-minutes: 15
     permissions:
       contents: write # 배포 후 릴리스 태그 push
       id-token: write # npm 신뢰 배포(OIDC), NFR-002
