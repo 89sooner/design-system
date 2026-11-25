@@ -105,6 +105,7 @@
 | CR-084 | 2026-11-25 | correction | 사용자 지시 (2026-11-25): "DEV-071 권장안대로 진행해" | **모든 워크플로 잡에 `timeout-minutes`를 걸고, 작업 목록의 타임아웃을 실제 잡 시간에 맞춘다.** verify 20분, docs e2e 15분, consumers 15분, visual 10분(목록 3분에서), visual-baselines 20분, release version 10분·publish 15분(목록 5분에서), deploy-docs 15분. 문서 E2E는 목록 10분에서 15분. verify 안의 단계 값은 단계 예산으로 명시한다. DEV-071을 닫는다 | JOB-CI-002~008, JOB-REL-001, JOB-BUILD-001~004 | 비동기 작업 v0.16(§2 머리말과 표), 원장 v0.78(DEV-071, CR-084 절), `.github/workflows/ci.yml`·`release.yml`·`deploy-docs.yml`·`visual-baselines.yml` | closed |
 | CR-085 | 2026-11-25 | correction | 사용자 지시 (2026-11-25): "DEV-070 권장안대로 진행해" | **DEV-070을 제품 결함이 아닌 CI 첫 로드 지연으로 정정하고, 교차 브라우저 스모크의 첫 라우트 대기를 15초로 둔다.** PR #111 WebKit 잡에서 첫 라우트가 청크 도착 약 5.3초 뒤에 그려져 5초 대기를 넘겼다(trace 마지막 스냅숏에 `.docs-preview` 7개). 로컬 WebKit 첫 로드 780회(CPU 부하 포함)는 0.4 ~ 0.9초, 멈춤 0회 | DEV-070, JOB-CI-007, NFR-005, FR-DX-006 AC-4 | 비동기 작업 v0.17(§2.8c), 검증 계획 v0.26(AC-4), WP v0.26(WP-043), 원장 v0.80(DEV-070, CR-085 절), `apps/docs/e2e-cross/engines.spec.ts` | closed |
 | CR-086 | 2026-11-25 | correction | 사용자 지시 (2026-11-25): "권장 순서대로 진행해"(개선 점검 1·2순위) | **audit 제외(DEV-049)를 지우고, 메뉴 Escape 접근성 시험의 경쟁 상태를 없앤다.** 제외 없이도 `pnpm audit --audit-level high`가 0건이다. 메뉴 시험은 포커스가 메뉴 안으로 옮겨진 뒤 키를 누른다(#112 node 22에서 Escape 뒤 메뉴가 남은 1회) | NFR-002, FR-A11Y-002, DEV-049 | 보안 아키텍처(4절), 검증 계획 v0.27(§3 audit, AC-4), WP v0.27(WP-043), 원장 v0.82(DEV-049, CR-086 절), `package.json`, `SECURITY.md`, `packages/react/src/testing/a11y.browser.test.tsx`, `.changeset/internal-a11y-menu-test.md` | open |
+| CR-087 | 2026-11-25 | correction | 사용자 지시 (2026-11-25): "권장 순서대로 진행해"(개선 점검 3순위) | **워크플로 액션을 Node 24로 도는 최신 메이저로 올린다.** 모든 잡이 "Node.js 20 is deprecated … forced to run on Node.js 24" 경고를 냈다. checkout v7, setup-node v7, upload-artifact v7, upload-pages-artifact v5, configure-pages v6, deploy-pages v5, pnpm/action-setup v6. changesets/action은 v2의 입력·동작 변경 때문에 v1을 유지한다 | JOB-CI-001~008, JOB-REL-001 | 원장 v0.82(CR-087 절), `.github/workflows/*.yml` | open |
 
 유형: `scope`(범위 변경), `design`(설계 변경), `implementation`(구현 편차 DEV-### 처리), `correction`(문서 오류 수정)
 
@@ -1086,3 +1087,15 @@ CR-041 구현 cascade와 로컬 검증은 2026-09-14에 종료했다. 사용자�
 | 경계 | 발행 코드 변경 없음. 시험 파일이 `packages/react` 안에 있어 react `patch` changeset을 둔다(DEV-069 규칙). 그 patch는 1.0까지 열어 둔 Version packages PR #113에 합쳐진다 |
 | 검증 (로컬) | audit 0건(제외 없음), DEV-058 시험 3/3, 원장 CR-086 절 |
 | CI · 종료 | PR CI 통과로 닫는다 |
+
+## CR-087 워크플로 액션 최신 메이저 (2026-11-25)
+
+| 항목 | 기록 |
+| --- | --- |
+| 유형 / 상태 | correction / open |
+| 근거 | 모든 워크플로 잡이 actions/checkout@v4·setup-node@v4·upload-artifact@v4·pnpm/action-setup@v4(Release·Deploy Docs는 configure-pages@v5·deploy-pages@v4도)에 대해 "Node.js 20 is deprecated" 경고를 냈다. Deploy Docs는 이번 주 deploy-pages@v4의 아티팩트 메타데이터 조회 실패를 두 번 겪었다(run 114·118, 재실행 통과) |
+| 조사 | 각 액션의 공개 releases 페이지와 최신 태그의 action.yml을 읽었다. checkout v7.0.1, setup-node v7.1.0, upload-artifact v7.0.2, configure-pages v6.0.0, deploy-pages v5.0.1, pnpm/action-setup v6.1.1은 `runs.using: node24`다. upload-pages-artifact v5.0.0은 composite로 upload-artifact v7.0.0을 쓴다. 우리에게 닿는 변경: setup-node v7이 `registry-url` 사용 시 가짜 `NODE_AUTH_TOKEN`을 내보내지 않는다(README: "npm Trusted Publishing (OIDC) is not affected" — publish 잡은 OIDC). upload-pages-artifact v4부터 점 파일을 빼지만 문서 사이트 dist에 점 파일이 없다. checkout v7은 `pull_request_target`·`workflow_run`의 포크 체크아웃을 막지만 그 트리거를 쓰지 않는다. pnpm/action-setup v6은 `packageManager`(pnpm@10.4.1)를 읽고 pnpm v12 이하를 지원한다. deploy-pages v5.0.1은 배포 폴링에 backoff와 jitter를 더했다 |
+| 설계 | 위 일곱 액션을 최신 메이저로 올린다. changesets/action은 v2.0.0에서 GitHub API 푸시 기본값, `commit-mode` 입력 교체, `GITHUB_TOKEN` 환경 변수 지원 제거 등이 있어 v1을 유지한다 |
+| 경계 | 패키지 변경 없음. PR CI는 ci.yml만 돈다. release(version·publish), deploy-docs, visual-baselines는 병합 뒤 실행에서 확인한다. publish 잡은 다음 실제 발행 때 처음 쓰인다 |
+| 검증 (로컬) | actionlint 통과(네 워크플로), 문서 사이트 dist 점 파일 0개 |
+| CI · 종료 | PR CI와 병합 뒤 Release·Deploy Docs 실행 통과로 닫는다 |

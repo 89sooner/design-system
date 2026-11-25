@@ -959,3 +959,13 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | 변경 | `package.json` `pnpm.auditConfig` 삭제, `SECURITY.md` 예외 문장, `a11y.browser.test.tsx` 두 메뉴 시험이 메뉴 안 포커스를 기다림, `.changeset/internal-a11y-menu-test.md`(react patch, 발행 코드 동일) |
 | 검증 (로컬) | `pnpm audit --audit-level high` 0건(제외 없음). 수정 전 메뉴 Escape 시험 30회(부하 15회 포함) 모두 통과로 재현 실패. 수정 뒤 DEV-058 시험 3/3 |
 | 1.0 | AC-4 open DEV 0건 |
+
+### CR-087 워크플로 액션 최신 메이저 (2026-11-25)
+
+| 범위 | 결과 |
+| --- | --- |
+| 지시 | "권장 순서대로 진행해" (개선 점검 3순위) |
+| 변경 | `.github/workflows/*.yml`: checkout v4→v7, setup-node v4→v7, upload-artifact v4→v7, upload-pages-artifact v3→v5, configure-pages v5→v6, deploy-pages v4→v5, pnpm/action-setup v4→v6. changesets/action v1 유지 |
+| 근거 | 각 최신 태그의 action.yml `runs.using: node24`(upload-pages-artifact는 composite, 내부 upload-artifact v7.0.0). setup-node v7 README: OIDC 신뢰 배포는 `NODE_AUTH_TOKEN` 제거의 영향을 받지 않는다 |
+| 검증 (로컬) | actionlint 통과, 문서 사이트 dist 점 파일 0개 |
+| 남은 확인 | 병합 뒤 Release(version)·Deploy Docs 실행, 다음 visual-baselines 실행, 다음 publish 실행 |
