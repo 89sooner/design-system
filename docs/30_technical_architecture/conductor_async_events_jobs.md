@@ -1,6 +1,6 @@
 # Conductor Design System CI 잡과 릴리스 파이프라인
 
-> 상태: review | 버전: v0.15 | 갱신일: 2026-11-25
+> 상태: review | 버전: v0.16 | 갱신일: 2026-11-25
 
 ## 0. 문서 재해석
 
@@ -12,6 +12,8 @@ Conductor Design System에는 큐, 워커 런타임, dead letter queue, 사용�
 
 ## 2. Job 카탈로그
 
+**타임아웃 열의 뜻 (CR-084).** 별도 CI 잡으로 도는 JOB-CI-003·005·006·007·008과 JOB-REL-001은 그 잡의 `timeout-minutes`다. 넘기면 GitHub가 잡을 중단하고, 실행기를 붙잡지 않는다. JOB-BUILD-001~004와 JOB-CI-001·002·004는 verify 잡 안의 단계라 열의 값은 단계 예산이다. 단계마다 걸지 않고 verify 잡 전체에 20분을 건다. 목록 밖의 잡도 상한을 둔다: release.yml의 version 잡 10분, deploy-docs.yml 15분. 값은 최근 정상 실행 시간의 두 배 이상이다(원장 CR-084 절).
+
 | Job ID | 작업 | 트리거 | 병렬 가능 | 선행 Job | 재시도 | 타임아웃 |
 | --- | --- | --- | --- | --- | --- | --- |
 | JOB-BUILD-001 | 토큰 빌드 | `pnpm build` 호출 또는 `packages/tokens/src/**` 변경 | 아니오(최초 단계) | 없음 | 0회 | 60초 |
@@ -20,13 +22,13 @@ Conductor Design System에는 큐, 워커 런타임, dead letter queue, 사용�
 | JOB-BUILD-004 | 문서 정적 빌드 | JOB-BUILD-003 성공 | 아니오 | JOB-BUILD-001~003 | 0회 | 120초 |
 | JOB-CI-001 | 대비 검사 | JOB-BUILD-001 성공 | 예(그룹 A) | JOB-BUILD-001 | 0회 | 30초 |
 | JOB-CI-002 | 접근성 검사(axe) | JOB-BUILD-002, JOB-BUILD-003 성공 | 예(그룹 A) | JOB-BUILD-002, JOB-BUILD-003 | 인프라 오류 한정 1회 | 5분 |
-| JOB-CI-003 | 시각 회귀 | JOB-BUILD-002~004 성공, `VISUAL_REGRESSION_ENABLED=true`일 때만 | 예(그룹 A) | JOB-BUILD-002, JOB-BUILD-003, JOB-BUILD-004 | 0회 | 3분 |
+| JOB-CI-003 | 시각 회귀 | JOB-BUILD-002~004 성공, `VISUAL_REGRESSION_ENABLED=true`일 때만 | 예(그룹 A) | JOB-BUILD-002, JOB-BUILD-003, JOB-BUILD-004 | 0회 | 10분 |
 | JOB-CI-004 | 번들 크기 검사 | JOB-BUILD-002, JOB-BUILD-003 성공 | 예(그룹 A) | JOB-BUILD-002, JOB-BUILD-003 | 0회 | 60초 |
-| JOB-CI-005 | 문서 사이트 E2E (CR-072) | JOB-BUILD-001~004 성공 | 예(그룹 A, 별도 CI 잡) | JOB-BUILD-001~004 | 0회 | 10분 |
+| JOB-CI-005 | 문서 사이트 E2E (CR-072) | JOB-BUILD-001~004 성공 | 예(그룹 A, 별도 CI 잡) | JOB-BUILD-001~004 | 0회 | 15분 |
 | JOB-CI-006 | 설치 소비자 매트릭스 (CR-075) | JOB-BUILD-001~003 성공 | 예(그룹 A, 별도 CI 잡) | JOB-BUILD-001~003 | 0회 | 15분 |
 | JOB-CI-007 | 브라우저 엔진 스모크 (CR-075) | JOB-BUILD-001~004 성공 | 예(그룹 A, 별도 CI 잡) | JOB-BUILD-001~004 | 0회 | 10분 |
 | JOB-CI-008 | 시각 기준 이미지 갱신 (CR-081) | 사람이 `workflow_dispatch`로 브랜치를 지정 | 아니오(수동) | — | 0회 | 20분 |
-| JOB-REL-001 | npm 배포 | `main` 병합 + 변경 이력 존재 + 수동 승인 | 아니오 | JOB-BUILD-001~004, JOB-CI-001, JOB-CI-002, JOB-CI-004(JOB-CI-003은 활성화 시에만) | 0회 | 5분 |
+| JOB-REL-001 | npm 배포 | `main` 병합 + 변경 이력 존재 + 수동 승인 | 아니오 | JOB-BUILD-001~004, JOB-CI-001, JOB-CI-002, JOB-CI-004(JOB-CI-003은 활성화 시에만) | 0회 | 15분 |
 
 ### 2.1 JOB-BUILD-001 토큰 빌드
 

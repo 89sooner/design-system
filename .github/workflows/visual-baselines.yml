@@ -27,6 +27,8 @@ jobs:
   update:
     name: update visual baselines (playwright 1.61.1)
     runs-on: ubuntu-latest
+    # Job ceiling from the job catalog (async jobs §1, CR-084): a hang fails the job instead of holding a runner.
+    timeout-minutes: 20
     permissions:
       contents: write
       actions: write
