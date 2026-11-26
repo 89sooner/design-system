@@ -1,6 +1,6 @@
 # Conductor Design System 구현 추적 원장
 
-> 상태: review | 버전: v0.81 | 갱신일: 2026-11-25
+> 상태: review | 버전: v0.82 | 갱신일: 2026-11-25
 
 ## 1. 목적과 갱신 규칙
 
@@ -296,7 +296,7 @@ PR Search 소비처의 `DEV-380`이 트리거다: 화면 계약이 최대 20계�
 | DEV-052 | 2026-10-12 | 구현 편차 (기존) | **W-014가 와이어프레임의 "각 행에서 전환을 재생한다"를 구현하지 않았다.** `/foundations/motion`은 계산된 모션 값 타일과 상태 전환 예시만 보였고 토큰 행마다 재생할 수단이 없었다(`conductor_wireframe_spec.md` W-014 섹션 정의·`reduced_motion` 상태가 재생 버튼을 전제). CR-047의 Playground 패널이 이징을 가진 토큰마다 트랙과 행별 재생 버튼(+전체 재생)을 두어 해소했다 | FR-DOC-002 AC-3, FR-CSS-005 | CR-047 | closed |
 | DEV-051 | 2026-10-12 | 구현 결함 | **눌린 클릭형 카드가 다크 테마에서 윗변에 흰 선을 보였다.** DEV-050과 같은 원인으로 `.cdt-card--interactive:active`의 `inset 0 1px 0 var(--cdt-border-strong)`이 다크 팔레트에서 밝게 칠해졌다(실측 재현). CR-045와 같은 중립 검정 안쪽 그림자로 바꿨고 hover 강조 경계와 포커스 링은 그대로다. 회귀 테스트 `DEV-051` 추가 | FR-CMP-003, FR-A11Y-001 | CR-046 | closed |
 | DEV-050 | 2026-10-12 | 구현 결함 | **눌린 버튼이 다크 테마에서 윗변에 흰 테두리를 보였다.** `:active`의 `inset 0 1px 0 var(--cdt-border-strong)`이 다크 팔레트에서 밝은 `rgba(148,163,184,0.3)`으로 칠해졌다(사용자 보고, 실측 재현). primary·secondary는 중립 검정 안쪽 그림자, ghost는 1px 이동만 남기도록 고쳤고, 명시성을 유지해 키보드 누름 중 포커스 링이 살아남는다. 회귀 테스트 `DEV-050` 추가 | FR-CMP-002, FR-A11Y-001 | CR-045 | closed |
-| DEV-049 | 2026-10-09 | 검증 편차 | **릴리스 audit 게이트가 패치 없는 권고 1건을 제외한 채 통과한다.** `braces` 3.0.3(GHSA-vfj7-8cjw-p6xm, high)은 최신판이고 패치 버전이 없어 overrides로 고칠 수 없다. 개발 도구 전이 의존성(changesets·eslint·vite·tsup 등 34개 경로)에만 있고 입력이 저장소에 고정된 glob이며, tokens·css·react 런타임 트리에는 없다(`pnpm audit --prod` high 0). 사용자 결정으로 `pnpm.auditConfig.ignoreGhsas`에 이 GHSA만 넣었다. 패치가 나오면 overrides로 바꾸고 예외를 지운 뒤 닫는다. 2026-10-25 재확인: `braces` 최신판은 여전히 3.0.3이고 패치가 없어 예외를 유지한다 | NFR-002, JOB-REL-001 | CR-044 | open |
+| DEV-049 | 2026-10-09 | 검증 편차 | **릴리스 audit 게이트가 패치 없는 권고 1건을 제외한 채 통과한다.** `braces` 3.0.3(GHSA-vfj7-8cjw-p6xm, high)은 최신판이고 패치 버전이 없어 overrides로 고칠 수 없다. 개발 도구 전이 의존성(changesets·eslint·vite·tsup 등 34개 경로)에만 있고 입력이 저장소에 고정된 glob이며, tokens·css·react 런타임 트리에는 없다(`pnpm audit --prod` high 0). 사용자 결정으로 `pnpm.auditConfig.ignoreGhsas`에 이 GHSA만 넣었다. 패치가 나오면 overrides로 바꾸고 예외를 지운 뒤 닫는다. 2026-10-25 재확인: `braces` 최신판은 여전히 3.0.3이고 패치가 없어 예외를 유지한다 해제(2026-11-25, CR-086): 제외 없이도 `pnpm audit --audit-level high`가 0건이라 `ignoreGhsas`를 지웠다(`braces`는 3.0.3 그대로) | NFR-002, JOB-REL-001 | CR-044, CR-086 | closed |
 | DEV-048 | 2026-10-09 | 문서 결함 | **검증 계획과 CI가 docs E2E 실행 시점에서 어긋난다.** `conductor_release_validation_plan.md`의 e2e 행은 `pnpm test:e2e`를 PR·main에서 실행한다고 적지만, `.github/workflows/ci.yml`에 그 단계가 없고 루트 `package.json`에도 `test:e2e`가 없다(스크립트는 `apps/docs`에만 있다). `conductor_async_events_jobs.md`의 CI 작업(JOB-CI-001~004)에도 docs E2E 작업이 정의돼 있지 않다. 그래서 DEV-046이 CR-041부터 CR-042까지 드러나지 않았고, CR-042는 E2E 6건 실패를 안은 채 CI green으로 종료할 수 있었다. 해소는 별도 CR이다 — CI에 docs E2E 단계를 더하거나 검증 계획을 실제에 맞춘다 | FR-DOC-001~007, FR-QA-003 | CR-043 (등록) · CR-072 (해소: CI 잡 JOB-CI-005, 2026-10-24) | closed |
 | DEV-047 | 2026-10-09 | 구현 편차 | **`e2e/workspaces.spec.ts`의 FR-QA-003 axe가 light 1280·1536에서 간헐적으로 `color-contrast` serious를 냈다.** CR-042의 `.docs-route` 진입 페이드(opacity 0→1) 도중에 대비를 잰 타이밍 경합이다 — reduce 모션이거나 800ms 뒤에 재면 0건, 즉시 재면 테마 전환 여부와 무관하게 재현된다(대기 없이 31/36, 대기 뒤 0/24). CR-028(DEV-021)과 같이 한 프레임 뒤 문서 타임라인의 실행 중 애니메이션이 끝날 때까지 2초 안에서 기다린 뒤 axe를 실행하고, 남은 애니메이션은 이름으로 실패시킨다(회전 전용 `cdt-spin`만 허용) | FR-QA-003, FR-A11Y-004 | CR-043 | closed |
 | DEV-046 | 2026-10-08 | 구현 결함 (기존) | **W-020 카탈로그의 두 프리뷰가 화면 QA 게이트를 이미 통과하지 못하고 있었다.** CR-042 게이트 실행에서 `e2e/screens.spec.ts`의 QA-001·002(560·800px 클리핑)와 QA-003·004(Tab 순서)가 `/components`에서 실패했고, `origin/main`을 별도 워크트리로 빌드해 같은 측정을 하니 동일하게 재현됐다 — (a) `RelationGraph` 프리뷰의 `근거 보기` 버튼이 560·800px에서 뷰포트 밖으로 나간다(컴포넌트의 표가 자체 가로 스크롤 컨테이너를 갖지 않는다), (b) `Tabs` 프리뷰의 두 트리거가 모두 `tabindex="-1"`이라 검사가 세는 포커스 순서와 실제 Tab 순서가 어긋난다. 둘 다 CR-041이 카탈로그에 더한 프리뷰 안의 문제이며 이번 재설계의 docs CSS는 `.docs-preview` 내부를 건드리지 않는다(브리프 §0.3). 수정 제안: (a) `packages/css`의 `.cdt-relation` 표에 `.cdt-table__scroll`과 같은 가로 스크롤 소유를 주고, (b) 화면 QA 검사가 Radix roving-focus 그룹(`[role=tablist]`)의 `tabindex=-1` 항목을 DOM 순서 비교에서 제외하도록 한다. 이 CR의 범위를 넓히지 않기 위해 여기서는 등록만 한다. **결과 (CR-043, 2026-10-09): 원인은 프리뷰가 아니라 검사였다.** (a)의 가설은 틀렸다 — `RelationGraph`의 관계 목록은 `Table`이고 `Table`은 `.cdt-table__scroll`(`overflow-x: auto`)을 이미 소유한다(FR-CMP-005 AC-1). `packages/css` 수정 제안은 철회한다. (b)는 현상이 맞았으나 항목을 빼는 대신 롤링 그룹을 Tab 정지점 하나로 세고 포커스가 그룹 안 항목에 들어가는지, 방향키로 모든 항목에 닿는지 확인한다. 첫 불일치에서 루프가 멈춰 가려져 있던 검사 결함 둘(`details > summary` 누락, 닫힌 `details` 내용 포함)도 고쳤다. 컴포넌트·CSS·공개 API 변경 없음 | FR-CMP-005, FR-CMP-011, FR-CMP-013, FR-A11Y-002, FR-DOC-003, FR-THM-001, FR-THM-002 | CR-042 (등록) · CR-043 (수정) | closed |
@@ -949,3 +949,23 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | 검증 (로컬) | 교차 브라우저 스위트 WebKit·Chromium 8/8, lint, docs typecheck, 검증기 `--strict` OK |
 | 1.0 | AC-4 open DEV는 승인 예외 DEV-049뿐이다 |
 | CI · 종료 | PR #118 CI 6잡 통과(cross-browser 1분 30초). 병합 `8fec26e`. main CI #344, Release run 171, Deploy Docs run 119 통과. CR-085 closed |
+
+### CR-086 audit 제외 해제와 메뉴 Escape 시험 (2026-11-25)
+
+| 범위 | 결과 |
+| --- | --- |
+| 지시 | "권장 순서대로 진행해" (개선 점검 1·2순위) |
+| 기준 | main `51fbf53` |
+| 변경 | `package.json` `pnpm.auditConfig` 삭제, `SECURITY.md` 예외 문장, `a11y.browser.test.tsx` 두 메뉴 시험이 메뉴 안 포커스를 기다림, `.changeset/internal-a11y-menu-test.md`(react patch, 발행 코드 동일) |
+| 검증 (로컬) | `pnpm audit --audit-level high` 0건(제외 없음). 수정 전 메뉴 Escape 시험 30회(부하 15회 포함) 모두 통과로 재현 실패. 수정 뒤 DEV-058 시험 3/3 |
+| 1.0 | AC-4 open DEV 0건 |
+
+### CR-087 워크플로 액션 최신 메이저 (2026-11-25)
+
+| 범위 | 결과 |
+| --- | --- |
+| 지시 | "권장 순서대로 진행해" (개선 점검 3순위) |
+| 변경 | `.github/workflows/*.yml`: checkout v4→v7, setup-node v4→v7, upload-artifact v4→v7, upload-pages-artifact v3→v5, configure-pages v5→v6, deploy-pages v4→v5, pnpm/action-setup v4→v6. changesets/action v1 유지 |
+| 근거 | 각 최신 태그의 action.yml `runs.using: node24`(upload-pages-artifact는 composite, 내부 upload-artifact v7.0.0). setup-node v7 README: OIDC 신뢰 배포는 `NODE_AUTH_TOKEN` 제거의 영향을 받지 않는다 |
+| 검증 (로컬) | actionlint 통과, 문서 사이트 dist 점 파일 0개 |
+| 남은 확인 | 병합 뒤 Release(version)·Deploy Docs 실행, 다음 visual-baselines 실행, 다음 publish 실행 |

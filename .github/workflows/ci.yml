@@ -25,16 +25,16 @@ jobs:
       matrix:
         node-version: [20, 22]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           # The changeset gate below compares against the base branch (CR-082, DEV-069).
           fetch-depth: 0
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
 
       - name: Install Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node-version }}
           cache: pnpm
@@ -94,7 +94,7 @@ jobs:
 
       - name: upload axe report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: axe-report-node-${{ matrix.node-version }}
           path: test-results/axe-report.json
@@ -111,7 +111,7 @@ jobs:
 
       - name: upload lighthouse report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: lighthouse-report-node-${{ matrix.node-version }}
           path: test-results/lighthouse.json
@@ -120,7 +120,7 @@ jobs:
 
       - name: upload size report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: size-report-node-${{ matrix.node-version }}
           path: size-report.json
@@ -152,13 +152,13 @@ jobs:
     # Job ceiling from the job catalog (async jobs §1, CR-084): a hang fails the job instead of holding a runner.
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
 
       - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: pnpm
@@ -177,7 +177,7 @@ jobs:
 
       - name: upload docs e2e results
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: docs-e2e-results
           path: apps/docs/test-results/**
@@ -190,13 +190,13 @@ jobs:
     # Job ceiling from the job catalog (async jobs §1, CR-084): a hang fails the job instead of holding a runner.
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
 
       - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: pnpm
@@ -217,7 +217,7 @@ jobs:
 
       - name: upload consumer results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: consumer-results
           path: |
@@ -233,13 +233,13 @@ jobs:
     # on main CI #329 and would have held it for GitHub's 6-hour default (CR-083).
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
 
       - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: pnpm
@@ -256,7 +256,7 @@ jobs:
 
       - name: upload cross-browser results
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: cross-browser-results
           path: apps/docs/test-results/**
@@ -269,13 +269,13 @@ jobs:
     # Job ceiling from the job catalog (async jobs §1, CR-084): a hang fails the job instead of holding a runner.
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
 
       - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 20
 
@@ -286,7 +286,7 @@ jobs:
 
       - name: upload visual baselines and differences
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: visual-report
           path: |

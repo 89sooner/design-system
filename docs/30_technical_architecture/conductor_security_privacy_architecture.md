@@ -1,6 +1,6 @@
 # Conductor Design System 보안 및 개인정보 아키텍처
 
-> 상태: review | 버전: v0.12 | 갱신일: 2026-11-20
+> 상태: review | 버전: v0.13 | 갱신일: 2026-11-25
 
 ## 1. 범위 재정의: 이 제품은 공급망 보안 문제다
 
@@ -38,6 +38,8 @@ Conductor의 의존성은 두 종류로 나뉜다.
 빌드 도구 체인(타입 컴파일러, 번들러, 테스트 러너, 린터)은 `pnpm-lock.yaml`에 정확한 버전으로 고정한다(ADR-009 테스트 스택이 도구 선택을 확정한다). CI는 `pnpm install --frozen-lockfile`로 실행해 lockfile과 `package.json`이 어긋나면 설치 단계에서 실패한다. 이 의존성은 산출물에 포함되지 않으므로 소비자 런타임 위험은 아니지만, CI 실행 환경을 오염시킬 수 있는 공급망 경로이므로 3.3의 취약점 게이트 대상에 포함한다.
 
 CR-080(2026-11-18): 개발 도구의 권고 15건(vitest·@vitest/mocker·vite·esbuild·postcss·fast-uri·brace-expansion·minimatch)을 정리해 `pnpm audit`가 0건이다. vitest는 4.1.12로 올리고(브라우저 공급자는 `@vitest/browser-playwright`), tsup 8.5.1이 쓰는 esbuild는 overrides로 0.28.2, api-extractor가 고정한 minimatch는 overrides로 11.0.9를 쓴다. 두 overrides는 선언 범위 밖이지만 발행 dist가 갱신 전과 바이트 단위로 같고 `check:api`가 그대로 통과했다. 배포 2주가 안 된 downshift 9.5.0은 올리지 않았다. DEV-049(braces, 패치 없음)는 그대로다.
+
+CR-086(2026-11-25): CR-044가 `pnpm.auditConfig.ignoreGhsas`로 제외하던 `braces` 3.0.3 권고(GHSA-vfj7-8cjw-p6xm)를 지웠다. 제외 없이도 `pnpm audit --audit-level high`가 0건이다(`braces`는 그대로 3.0.3). 이제 제외 목록이 비어 있고, 릴리스 audit 게이트는 모든 high 이상 권고에서 실패한다(DEV-049 closed).
 
 ### 3.3 취약점 게이트
 

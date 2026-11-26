@@ -39,17 +39,17 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           # Manual runs can deploy an explicit rollback ref. Push runs must build
           # the exact triggering commit, not the default branch's later HEAD.
           ref: ${{ inputs.ref || github.sha }}
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
 
       - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 20
           cache: pnpm
@@ -66,7 +66,7 @@ jobs:
 
       - name: upload lighthouse report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: lighthouse-report
           path: test-results/lighthouse.json
@@ -78,14 +78,14 @@ jobs:
       # 생성된 404 fallback이 /design-system/#/…로 정규화한다.
       - run: DOCS_BASE=/design-system/ pnpm --filter docs run build:pages
 
-      - uses: actions/configure-pages@v5
+      - uses: actions/configure-pages@v6
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: apps/docs/dist
 
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
 
       # CR-070: `pnpm lighthouse` serves text assets gzip-encoded because Pages does. Check
       # the deployed stylesheet so the gate stops matching production the day Pages stops.
