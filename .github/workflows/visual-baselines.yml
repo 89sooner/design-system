@@ -58,7 +58,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version: 22
 
       # The only way to rewrite baselines (FR-QA-004 AC-3), inside the pinned image (AC-4).
       - run: pnpm test:visual --update

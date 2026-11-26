@@ -1,6 +1,6 @@
 # Conductor Design System CI 잡과 릴리스 파이프라인
 
-> 상태: review | 버전: v0.17 | 갱신일: 2026-11-25
+> 상태: review | 버전: v0.18 | 갱신일: 2026-11-26
 
 ## 0. 문서 재해석
 
@@ -125,7 +125,8 @@ Conductor Design System에는 큐, 워커 런타임, dead letter queue, 사용�
 | 항목 | 내용 |
 | --- | --- |
 | Worker | `scripts/check-consumer.mjs`(`pnpm check:consumer`), Playwright Chromium |
-| 입력 | 세 패키지의 `pnpm pack` tarball. Vite+React 18.3.1, Vite+React 19.2.8, Next 16.3.1+React 19.2.8 소비자를 격리 디렉터리에 만든다 |
+| 입력 | 세 패키지의 `pnpm pack` tarball(Node 22로 빌드). Vite+React 18.3.1, Vite+React 19.2.8, Next 16.3.1+React 19.2.8 소비자를 격리 디렉터리에 만든다 |
+| Node | 빌드 뒤 Node 20으로 바꿔 토큰 CLI(`pnpm lint:tokens`, `pnpm check:contrast`)와 소비자 매트릭스를 돈다. NFR-005의 소비자 하한 Node 20을 재는 곳이 이 잡이다. verify 매트릭스는 Node 22·24다(CR-088) |
 | 출력 | 소비자별 설치·typecheck·빌드·브라우저 구동(hydration, 오버레이 포커스 복귀, 탭 키보드, 관계 근거, 테마 전환) 결과 `results.json` |
 | 실패 시 동작 | 단계 하나라도 실패하면 종료 코드 1. 재시도 없음 |
 | 아티팩트 | 항상 `results.json`과 단계별 로그(`consumer-results`, 30일) |

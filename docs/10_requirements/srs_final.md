@@ -1,6 +1,6 @@
 # Conductor Design System 최종 요구사항 정의서
 
-> 상태: baseline | 버전: v1.33 | 갱신일: 2026-11-23
+> 상태: baseline | 버전: v1.34 | 갱신일: 2026-11-26
 
 ## 1. 문서 개요
 
@@ -958,7 +958,7 @@ OD-001(2026-07-10 종결)이 확정한 정책이다. 소스 팔레트를 실측�
 | --- | --- | --- | --- |
 | 브라우저 지원 | Chrome/Firefox/Safari/Edge 최근 2개 메이저 | Browserslist + CI 매트릭스 | `@layer`와 `:focus-visible` 지원 필요 |
 | React 버전 | 18 및 19 | peer dependency 범위 + CI 매트릭스 | — |
-| Node 버전 | 20 이상 | `engines` 필드 + CI 매트릭스 | 빌드 환경 |
+| Node 버전 | 20 이상 | 소비자 CI 잡(JOB-CI-006)이 패키지 tarball과 토큰 CLI를 Node 20에서 실행 | 소비자 환경. 저장소 개발·빌드는 Node 22·24(CR-088) |
 
 ## 13. 우선순위와 릴리스 전략
 
@@ -1292,7 +1292,7 @@ v1.24 baseline 이력을 유지한다. 사용자가 2026-10-24 품질 재평가�
 | 우선순위 | Should |
 | 출처 | CR-075 / 2026-10-24 사용자 실행 지시, 품질 재평가 권고 3 |
 | 요구사항 | 세 패키지의 1.0.0을 발행하기 전에, 시스템은 AC-1의 공개 계약을 검출 가능하게 고정하고 AC-4의 품질 게이트와 AC-5의 실사용 검증을 충족하여야 하며, 1.0.0 이후 공개 계약의 제거·이름 변경·의미 변경은 major 릴리스로만 내야 한다. |
-| 수용 기준 | AC-1 (공개 계약): ① 세 패키지 `package.json`의 `exports` 진입점, ② `@conductor-by-89soone/react`의 공개 export와 props 타입, ③ `@conductor-by-89soone/tokens`의 JS 키와 그 값이 가리키는 `--cdt-*` 커스텀 프로퍼티 이름, ④ 스타일시트의 `cdt-*` 클래스 이름, ⑤ `data-cdt-theme`과 문서화된 `data-*` 상태 속성, ⑥ `@layer cdt.*` 레이어 이름과 순서, ⑦ CLI 이름과 옵션. `cdt-` 클래스가 없는 DOM 구조와 Radix 내부 마크업은 계약이 아니다. 같은 이름의 토큰 값·시각 변경은 minor이고, 그 changeset은 본문 첫 줄을 `Visual change:`로 시작하며 같은 PR에 기준 이미지 갱신을 담는다(OD-006, CR-076). AC-2 (검출): ①은 패키지별 `exports` 시험, ②·③은 `pnpm check:api`의 커밋된 API 리포트, ④는 커밋된 클래스 목록 기준과의 대조로 CI가 잡는다. 제거나 이름 변경이 major changeset 없이 들어오면 CI가 실패한다. AC-3 (폐기): 지울 공개 API는 최소 한 minor 동안 `@deprecated` JSDoc과 개발 빌드 1회 경고로 남기고, 다음 major에서 지운다. 클래스·커스텀 프로퍼티의 폐기는 changeset과 CHANGELOG에 적고 같은 기간 동안 유지한다. AC-4 (품질 게이트): 1.0 후보 커밋에서 CI의 verify(Node 20·22)·docs e2e·visual regression이 녹색이고, NFR-005 호환성 매트릭스(React 18·19, 지원 브라우저)가 CI에서 실행돼 통과하고, Must·Should FR이 모두 원장에서 `검증됨`이고, open DEV가 0건이다. 사용자가 명시적으로 예외를 승인한 DEV는 원장에 그 결정과 함께 남긴다. AC-5 (실사용 검증): agent-ai-platform이 1.0 후보 버전을 main에서 4주 이상 쓰고, Conductor 클래스·값을 덮어쓴 로컬 재정의가 0건이거나 남은 각 항목이 앱 고유 스타일로 원장에 판정돼 있다. 재정의가 컴포넌트 결함을 가리키면 1.0 전에 고친다(OD-005, CR-076). AC-6 (범위): 1.0 컴포넌트 범위는 지금의 공개 컴포넌트와 FR-CMP-017(Separator·Stack·Grid·Heading·Text·Accordion)이다. Slider·FileUpload·Tree·ContextMenu 등 그 밖의 컴포넌트는 1.0 이후 minor로 더한다(OD-007, CR-076). AC-7 (버전 정렬): 1.0.0부터 세 패키지는 changesets `fixed` 그룹으로 같은 버전을 쓴다. 0.x 동안은 `linked`다(OD-008, CR-076). |
+| 수용 기준 | AC-1 (공개 계약): ① 세 패키지 `package.json`의 `exports` 진입점, ② `@conductor-by-89soone/react`의 공개 export와 props 타입, ③ `@conductor-by-89soone/tokens`의 JS 키와 그 값이 가리키는 `--cdt-*` 커스텀 프로퍼티 이름, ④ 스타일시트의 `cdt-*` 클래스 이름, ⑤ `data-cdt-theme`과 문서화된 `data-*` 상태 속성, ⑥ `@layer cdt.*` 레이어 이름과 순서, ⑦ CLI 이름과 옵션. `cdt-` 클래스가 없는 DOM 구조와 Radix 내부 마크업은 계약이 아니다. 같은 이름의 토큰 값·시각 변경은 minor이고, 그 changeset은 본문 첫 줄을 `Visual change:`로 시작하며 같은 PR에 기준 이미지 갱신을 담는다(OD-006, CR-076). AC-2 (검출): ①은 패키지별 `exports` 시험, ②·③은 `pnpm check:api`의 커밋된 API 리포트, ④는 커밋된 클래스 목록 기준과의 대조로 CI가 잡는다. 제거나 이름 변경이 major changeset 없이 들어오면 CI가 실패한다. AC-3 (폐기): 지울 공개 API는 최소 한 minor 동안 `@deprecated` JSDoc과 개발 빌드 1회 경고로 남기고, 다음 major에서 지운다. 클래스·커스텀 프로퍼티의 폐기는 changeset과 CHANGELOG에 적고 같은 기간 동안 유지한다. AC-4 (품질 게이트): 1.0 후보 커밋에서 CI의 verify(Node 22·24)·docs e2e·visual regression이 녹색이고, NFR-005 호환성 매트릭스(React 18·19, 소비자 Node 20, 지원 브라우저)가 CI에서 실행돼 통과하고, Must·Should FR이 모두 원장에서 `검증됨`이고, open DEV가 0건이다. 사용자가 명시적으로 예외를 승인한 DEV는 원장에 그 결정과 함께 남긴다. AC-5 (실사용 검증): agent-ai-platform이 1.0 후보 버전을 main에서 4주 이상 쓰고, Conductor 클래스·값을 덮어쓴 로컬 재정의가 0건이거나 남은 각 항목이 앱 고유 스타일로 원장에 판정돼 있다. 재정의가 컴포넌트 결함을 가리키면 1.0 전에 고친다(OD-005, CR-076). AC-6 (범위): 1.0 컴포넌트 범위는 지금의 공개 컴포넌트와 FR-CMP-017(Separator·Stack·Grid·Heading·Text·Accordion)이다. Slider·FileUpload·Tree·ContextMenu 등 그 밖의 컴포넌트는 1.0 이후 minor로 더한다(OD-007, CR-076). AC-7 (버전 정렬): 1.0.0부터 세 패키지는 changesets `fixed` 그룹으로 같은 버전을 쓴다. 0.x 동안은 `linked`다(OD-008, CR-076). |
 | 검증 방법 | inspection, test |
 | 관련 화면 | 없음(간접 노출: CHANGELOG, W-002) |
 | 관련 API/데이터 | API-PKG-001 ~ API-PKG-003, API-CMP-001 ~ API-CMP-013 / JOB-REL-001 |
@@ -1414,3 +1414,12 @@ v1.32 baseline 이력을 유지한다. 2026-11-23 사용자가 개선 점검의 
 | --- | --- |
 | FR-DX-005 | AC-3 정정: 0.x(`linked`) 동안에만 변경 이력 항목이 없는 패키지는 버전이 오르지 않는다. 1.0.0부터는 FR-DX-006 AC-7이 우선한다. 세 패키지가 항상 함께 오르고, 변경이 없는 패키지의 CHANGELOG에는 그 버전 제목만 남는다 |
 | FR-DX-006 | AC-3 보강: React 공개 API의 개발 빌드 경고는 패키지 내부 함수 `warnDeprecated(api, replacement)` 하나로 낸다. `[conductor] <api> is deprecated and will be removed in the next major version. <replacement>`를 API마다 페이지당 한 번(SSR이면 서버 프로세스당 한 번) 출력하고, `NODE_ENV=production`이면 출력하지 않는다. 공개 export가 아니다. `@deprecated` JSDoc을 단 소스 파일이 그 함수를 부르지 않으면 단위 시험이 실패한다. 토큰 JS 키의 경고 방식과 문서 사이트의 지원 종료 표식은 첫 폐기 때 정한다 |
+
+## 43. CR-088 정정 (baseline)
+
+v1.33 baseline 이력을 유지한다. 2026-11-26 사용자가 개발 도구 메이저 업그레이드 중 Node 22 이상만 지원하는 도구(vitest 5, tsup 9, changesets 3, jsdom 31, size-limit 14)의 처리로 "소비자는 Node 20 유지"를 골랐다. Node 20은 2026-04-30에 지원이 끝났다. 소비자 약속(§5.1 가정 1, NFR-005 "Node 20 이상")은 그대로 두고, 그 측정 방법과 저장소 개발 환경만 바꾼다. 새 FR과 패키지 변경은 없다
+
+| 대상 | 변경 |
+| --- | --- |
+| NFR-005 Node 버전 | 측정 방법 정정: 저장소를 Node 20으로 빌드하는 대신, 소비자 CI 잡(JOB-CI-006)이 Node 22로 만든 패키지 tarball을 Node 20에서 설치·typecheck·빌드·브라우저 구동하고 토큰 CLI(`conductor-lint-tokens`, `conductor-check-contrast`)를 Node 20에서 실행한다. 저장소 개발·빌드·verify 매트릭스는 Node 22·24다 |
+| FR-DX-006 | AC-4 정정: 1.0 후보 커밋의 verify 매트릭스는 Node 22·24다. 소비자 Node 20은 NFR-005 호환성 매트릭스에 들어간다 |

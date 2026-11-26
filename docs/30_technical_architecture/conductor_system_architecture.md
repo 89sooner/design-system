@@ -1,6 +1,6 @@
 # Conductor Design System 시스템 아키텍처
 
-> 상태: review | 버전: v0.4 | 갱신일: 2026-10-24
+> 상태: review | 버전: v0.5 | 갱신일: 2026-11-26
 
 ## 1. 목적과 범위
 
@@ -44,7 +44,7 @@ Conductor는 실행되는 서버 애플리케이션이 아니다. 배포 산출�
 
 | 컨테이너 | 실행 주체 | 입력 | 출력 | 관련 잡 |
 | --- | --- | --- | --- | --- |
-| 토큰 빌더 | Node 20 또는 22, `buildTokens` CLI | `packages/tokens/src/**` (TypeScript 토큰 소스) | `tokens.css`, `tokens.js`/`.d.ts`, `tokens.json` | JOB-BUILD-001 |
+| 토큰 빌더 | 저장소 빌드는 Node 22 또는 24, 배포된 CLI는 Node 20 이상(CR-088), `buildTokens` CLI | `packages/tokens/src/**` (TypeScript 토큰 소스) | `tokens.css`, `tokens.js`/`.d.ts`, `tokens.json` | JOB-BUILD-001 |
 | 대비 검사기 | Node, `checkContrast` CLI | `tokens.json`, `contrast-pairs.ts` | 종료 코드 + `contrast-report.json` | JOB-CI-001 |
 | CSS 번들러 | lightningcss 1.x | `packages/css/src/**.css` + `tokens.css` | 레이어 진입점별 `.css` 산출물 | JOB-BUILD-002 |
 | React 번들러 | tsup 8.x (esbuild + dts) | `packages/react/src/**` | ESM/CJS 번들 + `.d.ts` | JOB-BUILD-003 |

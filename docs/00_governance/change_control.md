@@ -106,6 +106,7 @@
 | CR-085 | 2026-11-25 | correction | 사용자 지시 (2026-11-25): "DEV-070 권장안대로 진행해" | **DEV-070을 제품 결함이 아닌 CI 첫 로드 지연으로 정정하고, 교차 브라우저 스모크의 첫 라우트 대기를 15초로 둔다.** PR #111 WebKit 잡에서 첫 라우트가 청크 도착 약 5.3초 뒤에 그려져 5초 대기를 넘겼다(trace 마지막 스냅숏에 `.docs-preview` 7개). 로컬 WebKit 첫 로드 780회(CPU 부하 포함)는 0.4 ~ 0.9초, 멈춤 0회 | DEV-070, JOB-CI-007, NFR-005, FR-DX-006 AC-4 | 비동기 작업 v0.17(§2.8c), 검증 계획 v0.26(AC-4), WP v0.26(WP-043), 원장 v0.80(DEV-070, CR-085 절), `apps/docs/e2e-cross/engines.spec.ts` | closed |
 | CR-086 | 2026-11-25 | correction | 사용자 지시 (2026-11-25): "권장 순서대로 진행해"(개선 점검 1·2순위) | **audit 제외(DEV-049)를 지우고, 메뉴 Escape 접근성 시험의 경쟁 상태를 없앤다.** 제외 없이도 `pnpm audit --audit-level high`가 0건이다. 메뉴 시험은 포커스가 메뉴 안으로 옮겨진 뒤 키를 누른다(#112 node 22에서 Escape 뒤 메뉴가 남은 1회) | NFR-002, FR-A11Y-002, DEV-049 | 보안 아키텍처(4절), 검증 계획 v0.27(§3 audit, AC-4), WP v0.27(WP-043), 원장 v0.82(DEV-049, CR-086 절), `package.json`, `SECURITY.md`, `packages/react/src/testing/a11y.browser.test.tsx`, `.changeset/internal-a11y-menu-test.md` | closed |
 | CR-087 | 2026-11-25 | correction | 사용자 지시 (2026-11-25): "권장 순서대로 진행해"(개선 점검 3순위) | **워크플로 액션을 Node 24로 도는 최신 메이저로 올린다.** 모든 잡이 "Node.js 20 is deprecated … forced to run on Node.js 24" 경고를 냈다. checkout v7, setup-node v7, upload-artifact v7, upload-pages-artifact v5, configure-pages v6, deploy-pages v5, pnpm/action-setup v6. changesets/action은 v2의 입력·동작 변경 때문에 v1을 유지한다 | JOB-CI-001~008, JOB-REL-001 | 원장 v0.82(CR-087 절), `.github/workflows/*.yml` | closed |
+| CR-088 | 2026-11-26 | correction | 사용자 결정 (2026-11-26): 개발 도구 메이저 중 Node 22 이상만 지원하는 도구의 처리로 "소비자는 Node 20 유지" | **소비자 Node 20 약속은 두고, 저장소 개발·verify 매트릭스를 Node 22·24로 옮긴다.** vitest 5, tsup 9, changesets 3, jsdom 31, size-limit 14의 `engines.node`가 Node 22 이상이다. NFR-005의 Node 20 측정은 consumers 잡(JOB-CI-006)이 Node 22로 만든 tarball과 토큰 CLI를 Node 20에서 돌리는 방식으로 바꾼다 | NFR-005, FR-DX-006 AC-4, JOB-CI-006 | SRS v1.34(NFR-005, §43), RTM v0.27, 시스템 아키텍처 v0.5, 인프라 운영 v0.13(§4), 비동기 작업 v0.18(§2.8b), 검증 계획 v0.28, 원장 v0.84(CR-088 절), `.github/workflows/*.yml`, `package.json` `engines`, `README.md` | open |
 
 유형: `scope`(범위 변경), `design`(설계 변경), `implementation`(구현 편차 DEV-### 처리), `correction`(문서 오류 수정)
 
@@ -1099,3 +1100,15 @@ CR-041 구현 cascade와 로컬 검증은 2026-09-14에 종료했다. 사용자�
 | 경계 | 패키지 변경 없음. PR CI는 ci.yml만 돈다. release(version·publish), deploy-docs, visual-baselines는 병합 뒤 실행에서 확인한다. publish 잡은 다음 실제 발행 때 처음 쓰인다 |
 | 검증 (로컬) | actionlint 통과(네 워크플로), 문서 사이트 dist 점 파일 0개 |
 | CI · 종료 | PR #120 CI 6잡 통과(ci.yml). 병합 `0249321` 뒤 main CI #351, Release run 173(version), Deploy Docs run 121이 새 액션으로 통과했다. Deploy Docs는 upload-pages-artifact v5·deploy-pages v5 첫 실행이며 첫 시도에 통과했다(v4에서는 run 114·118·120이 아티팩트 조회에 실패). 한 번의 통과라 조회 실패가 해소됐다고 단정하지 않고 이후 배포에서 계속 본다. visual-baselines·publish는 다음 실행에서 처음 쓰인다. closed |
+
+## CR-088 저장소 Node 22·24, 소비자 Node 20 (2026-11-26)
+
+| 항목 | 기록 |
+| --- | --- |
+| 유형 / 상태 | correction / open |
+| 근거 | 개발 도구 메이저 업그레이드(개선 점검 4순위)를 조사하니 vitest 5(`^22.12.0 \|\| ^24 \|\| >=26`), tsup 9(`^22.18.0 \|\| ^24.11.0 \|\| >=26`), @changesets/cli 3(`^22.11 \|\| ^24 \|\| >=26`), jsdom 31(`^22.22.2 \|\| ^24.15.0 \|\| >=26`), size-limit 14(`^22.19.0 \|\| ^24.5.0 \|\| >=26`)가 Node 20을 지원하지 않는다. CI verify 매트릭스가 Node 20을 포함해 이 도구들은 올릴 수 없다. Node 20은 2026-04-30에 지원이 끝났다. eslint 10, vite 8, TypeScript 7, Playwright 1.65는 Node 20도 지원한다 |
+| 결정 | 사용자 결정(2026-11-26): "소비자는 Node 20 유지". SRS §5.1 가정 1과 NFR-005 목표 "Node 20 이상", 패키지 README의 "Node.js 20 or newer"는 바꾸지 않는다 |
+| 설계 | ① `ci.yml` verify 매트릭스 `[20, 22]` → `[22, 24]` ② consumers 잡: Node 22로 설치·빌드한 뒤 Node 20으로 바꿔 토큰 CLI(`pnpm lint:tokens`, `pnpm check:contrast`)와 `pnpm check:consumer`(세 tarball 소비자의 설치·typecheck·빌드·브라우저 구동)를 실행한다 ③ Node 20을 쓰던 나머지 잡(visual 래퍼, release version, deploy-docs, visual-baselines)은 Node 22 ④ 루트 `engines.node` `>=20` → `>=22.12.0`(저장소 개발 환경), README에 개발 Node 22.12+와 패키지 Node 20+를 나눠 적는다 |
+| 경계 | 패키지 변경 없음(패키지 `package.json`에는 `engines`가 없고 이번에도 넣지 않는다). 개발 도구 버전은 바꾸지 않는다. 도구별 메이저 업그레이드는 이 CR 뒤 도구마다 PR 하나로 한다. publish 잡의 Node 22.14.0 고정(CR-022)은 그대로다 |
+| 검증 (로컬) | 원장 CR-088 절 |
+| CI · 종료 | PR CI 통과로 닫는다 |
