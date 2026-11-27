@@ -1122,5 +1122,6 @@ CR-041 구현 cascade와 로컬 검증은 2026-09-14에 종료했다. 사용자�
 | 근거 | 개선 점검 4순위. 개발 도구 10여 개가 한 메이저 이상 뒤처져 있다(`pnpm outdated -r`, 2026-11-26). Node 22 이상만 지원하는 도구는 CR-088이 저장소 Node를 22·24로 옮겨 올릴 수 있게 됐다 |
 | 설계 | 도구마다 PR 하나. 각 PR은 ① 그 도구의 변경 노트에서 우리에게 닿는 항목을 확인하고 ② 게이트를 돌리고 ③ 빌드·시험 도구라면 세 패키지 `dist`가 바이트 단위로 같음을 보인다. TypeScript 7은 typescript-eslint 8.74의 peer 범위(`>=4.8.4 <6.1.0`)와 api-extractor 호환을 먼저 확인한다. Playwright 1.65는 `Dockerfile.visual` 이미지와 기준 이미지 갱신(JOB-CI-008)을 같이 한다 |
 | 경계 | 패키지 런타임 의존성(lucide-react 1.x 등)과 공개 API는 이 CR 밖이다. 발행 산출물이 바뀌는 도구 갱신은 그 PR에서 멈추고 따로 묻는다 |
+| PR 2 · vite 8 | 문서 사이트 vite 8.4.0, @vitejs/plugin-react 6.3.0. 발행 `dist` 동일. Lightning CSS가 `:dir(rtl)`을 `:lang()` 목록으로 낮춰 RTL 미러링이 깨져(DEV-072) 문서 사이트 `vite.config.ts`에서 `Features.DirSelector`를 제외한다. 소비자 영향은 DEV-072에서 사용자 결정을 기다린다 |
 | PR 1 · eslint 10 | eslint 9.39.4 → 10.15.0, @eslint/js 9.39.4 → 10.0.1, globals 15.15.0 → 17.14.0, typescript-eslint 8.73.0 → 8.74.0(eslint 10 peer 지원). 설정 파일 변경 없음. 검사 대상 229개 파일이 9와 같고 지적 0건. `pnpm audit --audit-level high` 0건. lockfile 변경은 eslint 계열 트리뿐이다 |
 | CI · 종료 | 마지막 도구 PR의 CI 통과로 닫는다 |

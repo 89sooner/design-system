@@ -1,6 +1,6 @@
 # Conductor Design System 릴리스 검증 계획
 
-> 상태: review | 버전: v0.28 | 갱신일: 2026-11-26
+> 상태: review | 버전: v0.29 | 갱신일: 2026-11-27
 
 ## 1. 목적과 범위
 
@@ -156,7 +156,7 @@ build 후 typecheck; test/lint/lint:deps/lint:tokens/check:contrast/test:a11y/te
 | AC-4 CI 잡 | verify(Node 20·22)·docs e2e·visual regression 녹색(PR #88·#90). WP-042가 consumers·cross-browser 잡을 더한다. CR-088부터 verify는 Node 22·24이고 소비자 Node 20은 consumers 잡이 잰다 | 충족 | 1.0 후보 커밋에서 다시 |
 | AC-4 NFR-005 매트릭스 | consumers 잡(JOB-CI-006)이 Vite+React 18.3.1, Vite+React 19.2.8, Next 16.3.1+React 19.2.8 소비자를 설치·typecheck·빌드·브라우저 구동한다. cross-browser 잡(JOB-CI-007)이 Firefox·WebKit에서 엔진 스모크 4건씩, 8/8 통과(PR #91 첫 실행). Edge는 Chromium 엔진이다 | 충족 | — |
 | AC-4 FR 상태 | 원장 §3 매핑 표의 FR은 FR-DX-006(진행 중)을 빼고 `검증됨`이다. FR-CMP-010 ~ FR-CMP-013을 CR-041 WP 표에서 §3 표로 옮겼다(CR-077). FR-DX-006은 이 표가 모두 충족되고 1.0을 발행할 때 닫힌다 | 충족 (FR-DX-006 제외) | 1.0 후보 커밋에서 다시 |
-| AC-4 open DEV | 0건. DEV-065는 WP-042로, DEV-069는 CR-082로, DEV-071은 CR-084로, DEV-070은 CR-085로, DEV-049는 CR-086으로 닫혔다. DEV-049는 audit 제외 목록의 `braces` 권고였고, 2026-11-25 제외 없이도 `pnpm audit --audit-level high`가 0건이다 | 충족 | 1.0 후보 커밋에서 다시 |
+| AC-4 open DEV | 1건: DEV-072(Vite 8 소비자 빌드의 `:dir(rtl)` 하향, 2026-11-27, CR-089). DEV-065는 WP-042로, DEV-069는 CR-082로, DEV-071은 CR-084로, DEV-070은 CR-085로, DEV-049는 CR-086으로 닫혔다. DEV-049는 audit 제외 목록의 `braces` 권고였고, 2026-11-25 제외 없이도 `pnpm audit --audit-level high`가 0건이다 | 미충족 | 1.0 후보 커밋에서 다시 |
 | AC-5 실사용 검증 | 기준 확정(OD-005). agent-ai-platform이 1.0 후보 0.18.0을 2026-10-25에 main에 병합했다(그 저장소의 DS-PILOT-24, PR #27 `d4e8e04`). 결함 6규칙을 지웠고 남은 재정의는 앱 고유 `.cdt-btn` 배치 7규칙이다(원장 §5.2). 같은 날 15 경로 × 두 테마 비교에서 Thread의 참여자 말풍선 2장 말고는 0.17.0과 같았다. 새 후보 0.21.0을 2026-11-19에 main에 병합했다(DS-PILOT-25, PR #28 `c323530`). 앱 코드·스타일 변경 0, 남은 재정의는 같은 7규칙이고, 15 경로 × 두 테마에서 20장이 같고 10장은 필드 배경 통일만 달랐다 | 진행 중 (2026-11-19 ~ 2026-12-17) | 2026-12-17 이후 재정의 목록을 다시 받아 판정 |
 | AC-6 컴포넌트 범위 | 기준 확정(OD-007)과 보강(CR-078): 공개 컴포넌트 67개 + FR-CMP-017 6종(0.17.0 배포) + FR-CMP-018 ContextMenu·Slider·Tree(WP-045, 0.19.0 배포) + FR-CMP-019 FileUpload(WP-047, CR-080). OD-007 후보가 모두 들어갔다 | 충족 (병합·배포 후) | WP-047 릴리스 |
 | AC-7 버전 정렬 | 기준 확정(OD-008): 1.0.0부터 `fixed`. 지금은 tokens·css·react 0.21.0(`linked`, 2026-11-19 CR-080 릴리스. CR-079부터 세 패키지가 같은 번호다) | 1.0 발행 PR에서 | WP-043에서 `fixed`로 전환. 절차와 changeset 초안은 인프라 운영 §6 8항. 2026-11-23 리허설에서 세 패키지가 1.0.0으로 함께 올랐다. `fixed`에서는 변경 없는 패키지도 오르므로 FR-DX-005 AC-3을 0.x로 한정했다(CR-082). react 0.21.1 patch의 Version packages PR #113은 사용자 결정으로 1.0까지 열어 둔다(2026-11-24) |
