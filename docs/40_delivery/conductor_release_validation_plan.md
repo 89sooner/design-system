@@ -1,6 +1,6 @@
 # Conductor Design System 릴리스 검증 계획
 
-> 상태: review | 버전: v0.27 | 갱신일: 2026-11-25
+> 상태: review | 버전: v0.28 | 갱신일: 2026-11-26
 
 ## 1. 목적과 범위
 
@@ -20,7 +20,7 @@ Conductor Design System은 `@conductor-by-89soone/tokens`, `@conductor-by-89soon
 | 성능 (번들 크기, Lighthouse CI) | NFR-001, FR-DX-003 AC-3, JOB-CI-004 | `pnpm size` + Lighthouse CI | `Button` 단독 import gzip 4KB 이하(React 제외). `@conductor-by-89soone/css` 전체 gzip 20KB 이하. 문서 사이트 LCP p75 2.5초 이하(로컬 프로덕션 빌드, Fast 3G 스로틀, 배포와 같은 gzip 전송 — CR-070). 테마 전환 후 재페인트 완료 100ms 이하 | PR(번들 크기), release(Lighthouse) | System Maintainer |
 | 시각 회귀 | FR-QA-004, JOB-CI-003 | `pnpm test:visual` (`--update`는 기준 이미지 갱신 전용 명령으로만 허용) | 공개 컴포넌트 전부 × 테마 2종과 오버레이 열린 상태 11개 × 2, 상태 컴포넌트 9개의 강제 색 렌더를 비교하고(CR-068·CR-071) 픽셀 차이 1% 초과 시 실패, 차이 이미지를 아티팩트로 남긴다 | PR (REL-004 이후 매 PR) | QA |
 | 보안 (pnpm audit, 시크릿 스캔) | NFR-002 | `pnpm audit --audit-level high` + 시크릿 스캐너 CI 잡 | 의존성 취약점 severity high 이상 0건. 산출물에 포함된 비밀값 0건. npm 배포 인증이 OIDC 기반이며 장기 토큰을 사용하지 않는다 | 시크릿 스캔: PR. audit·OIDC 검사: release | System Maintainer |
-| 호환성 (React 18·19, Node 20·22, 브라우저 엔진) | NFR-005 | verify 매트릭스(Node 20·22), consumers 잡 JOB-CI-006(React 18·19·Next tarball 소비자), cross-browser 잡 JOB-CI-007(Firefox·WebKit) (CR-075 WP-042) | 매트릭스 전 조합에서 build·test, 세 소비자의 설치·typecheck·빌드·브라우저 구동, 두 엔진의 스모크 시험이 통과한다 | PR | Coding Agent |
+| 호환성 (React 18·19, 소비자 Node 20, 브라우저 엔진) | NFR-005 | verify 매트릭스(Node 22·24), consumers 잡 JOB-CI-006(React 18·19·Next tarball 소비자와 토큰 CLI를 Node 20에서, CR-088), cross-browser 잡 JOB-CI-007(Firefox·WebKit) (CR-075 WP-042) | 매트릭스 전 조합에서 build·test, 세 소비자의 설치·typecheck·빌드·브라우저 구동, 두 엔진의 스모크 시험이 통과한다 | PR | Coding Agent |
 | 운영 (릴리스 리허설, 롤백 리허설) | NFR-004, JOB-REL-001 | §4 롤아웃 절차 리허설 + §5 롤백 절차 리허설 | 릴리스 리허설이 실행 순서대로 완주한다. 롤백 리허설이 10분 이내에 완료된다. 순환 패키지 의존 0건. 파괴 변경 릴리스의 마이그레이션 노트 동반률 100% | release | System Maintainer |
 
 ## 3. REL 게이트 체크리스트
@@ -153,7 +153,7 @@ build 후 typecheck; test/lint/lint:deps/lint:tokens/check:contrast/test:a11y/te
 | AC-1·AC-2 ④ `cdt-*` 클래스 이름 | `pnpm check:api`가 빌드된 세 스타일시트(index·component·agent)의 클래스 목록을 기준과 대조한다. dist에서 `cdt-badge__dismiss`를 `cdt-badge__close`로 바꾼 변이에서 `SURFACE-DRIFT`로 실패하고 지운 이름(-)과 더한 이름(+)을 보였다(WP-041) | 충족 | — |
 | AC-1 ⑤ `data-*`, ⑥ `@layer`, ⑦ CLI | 같은 기준이 스타일시트 선택자의 `data-*` 속성 이름, 레이어 순서 문장, tokens CLI 이름 셋과 그 옵션·위치 인자 8줄(`bin arguments`)을 담는다. 옵션은 각 CLI가 모르는 인자에 출력하는 사용법 줄에서 읽는다. dist에서 `--watch`를 사용법에서 지운 변이에서 `SURFACE-DRIFT`로 실패하고 지운 줄을 `-`로 보였다(CR-077) | 충족 | — |
 | AC-3 폐기 절차 | API 계약 §6.4가 절차를 정한다. `@deprecated`가 붙은 공개 API는 0건이다. React 공개 API의 개발 빌드 경고 장치 `warnDeprecated`와, `@deprecated` 소스가 그 장치를 부르는지 보는 시험이 있다(CR-082). 부르는 곳이 없어 발행 dist에는 들어가지 않는다 | 충족 (React 공개 API) | 토큰 JS 키 경고·문서 사이트 표식은 첫 폐기 때 |
-| AC-4 CI 잡 | verify(Node 20·22)·docs e2e·visual regression 녹색(PR #88·#90). WP-042가 consumers·cross-browser 잡을 더한다 | 충족 | 1.0 후보 커밋에서 다시 |
+| AC-4 CI 잡 | verify(Node 20·22)·docs e2e·visual regression 녹색(PR #88·#90). WP-042가 consumers·cross-browser 잡을 더한다. CR-088부터 verify는 Node 22·24이고 소비자 Node 20은 consumers 잡이 잰다 | 충족 | 1.0 후보 커밋에서 다시 |
 | AC-4 NFR-005 매트릭스 | consumers 잡(JOB-CI-006)이 Vite+React 18.3.1, Vite+React 19.2.8, Next 16.3.1+React 19.2.8 소비자를 설치·typecheck·빌드·브라우저 구동한다. cross-browser 잡(JOB-CI-007)이 Firefox·WebKit에서 엔진 스모크 4건씩, 8/8 통과(PR #91 첫 실행). Edge는 Chromium 엔진이다 | 충족 | — |
 | AC-4 FR 상태 | 원장 §3 매핑 표의 FR은 FR-DX-006(진행 중)을 빼고 `검증됨`이다. FR-CMP-010 ~ FR-CMP-013을 CR-041 WP 표에서 §3 표로 옮겼다(CR-077). FR-DX-006은 이 표가 모두 충족되고 1.0을 발행할 때 닫힌다 | 충족 (FR-DX-006 제외) | 1.0 후보 커밋에서 다시 |
 | AC-4 open DEV | 0건. DEV-065는 WP-042로, DEV-069는 CR-082로, DEV-071은 CR-084로, DEV-070은 CR-085로, DEV-049는 CR-086으로 닫혔다. DEV-049는 audit 제외 목록의 `braces` 권고였고, 2026-11-25 제외 없이도 `pnpm audit --audit-level high`가 0건이다 | 충족 | 1.0 후보 커밋에서 다시 |

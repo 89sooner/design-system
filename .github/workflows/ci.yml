@@ -23,7 +23,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [20, 22]
+        # The repository's own toolchain runs on maintained Node lines. Consumers' Node 20 floor (NFR-005)
+        # is checked by the consumers job against the packed packages, not by building the repo on 20 (CR-088).
+        node-version: [22, 24]
     steps:
       - uses: actions/checkout@v7
         with:
@@ -207,6 +209,19 @@ jobs:
 
       - run: pnpm exec playwright install --with-deps chromium
 
+      # NFR-005 promises consumers Node 20 or newer (srs_final.md §5.1). The repository builds on 22, but
+      # what ships (the packed packages and the tokens CLIs) runs here on 20 (CR-088).
+      - name: Install Node.js 20 (consumer floor)
+        uses: actions/setup-node@v7
+        with:
+          node-version: 20
+
+      - name: tokens CLIs run on the consumer floor
+        run: |
+          node --version
+          pnpm lint:tokens
+          pnpm check:contrast
+
       # JOB-CI-006: packs the three packages and installs the tarballs into isolated Vite + React 18,
       # Vite + React 19 and Next.js + React 19 apps, then typechecks, builds and drives each one in a
       # browser. NFR-005 promised React 18 in a CI matrix, but the repository itself builds against
@@ -277,7 +292,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version: 22
 
       # JOB-CI-003 runs only in the exact browser/font image declared by
       # Dockerfile.visual. The wrapper has no retry path and normal runs cannot

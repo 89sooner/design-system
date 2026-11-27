@@ -1,6 +1,6 @@
 # Conductor Design System 구현 추적 원장
 
-> 상태: review | 버전: v0.83 | 갱신일: 2026-11-26
+> 상태: review | 버전: v0.84 | 갱신일: 2026-11-26
 
 ## 1. 목적과 갱신 규칙
 
@@ -971,3 +971,15 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | 검증 (로컬) | actionlint 통과, 문서 사이트 dist 점 파일 0개 |
 | CI · 종료 | PR #120 CI 6잡 통과. 병합 `0249321` 뒤 main CI #351, Release run 173, Deploy Docs run 121 통과(upload-pages-artifact v5·deploy-pages v5 첫 실행, 첫 시도 통과). CR-087 closed |
 | 남은 확인 | 다음 visual-baselines 실행, 다음 publish 실행, 이후 배포의 아티팩트 조회 |
+
+### CR-088 저장소 Node 22·24, 소비자 Node 20 (2026-11-26)
+
+| 범위 | 결과 |
+| --- | --- |
+| 지시 | "권장 순서대로 진행해"(개선 점검 4순위, 개발 도구 메이저) → Node 하한 질문에 "소비자는 Node 20 유지" |
+| 기준 | main `b158447` |
+| 변경 | `ci.yml` verify 매트릭스 Node 22·24, consumers 잡이 빌드 뒤 Node 20으로 바꿔 토큰 CLI와 `check:consumer` 실행. visual·release version·deploy-docs·visual-baselines Node 20 → 22. 루트 `engines.node` `>=22.12.0`, README 개발·패키지 Node 구분 |
+| 검증 (로컬, Node 20.20.2) | Node 22로 빌드한 뒤 `pnpm lint:tokens`(128개 파일, 위반 0), `pnpm check:contrast`(244쌍 실패 0), `pnpm check:consumer` vite18·vite19·next19 설치·typecheck·빌드·브라우저 구동 모두 통과(1분 4초). pnpm이 루트 `engines` 불일치 경고를 한 줄 낸다(실패 아님) |
+| 검증 (로컬, Node 24.22.3) | `pnpm build`, `typecheck`, `test`(58개 파일 968건), `check:api`, `test:a11y`(422건 통과·1건 skip), `size`(Button 1.33 KiB, CSS 16.12 KiB) 통과 |
+| 검증 (로컬) | actionlint 통과, 검증기 `--strict` OK |
+| 남은 일 | 이 CR 뒤 Node 22가 필요한 도구(vitest 5, tsup 9, changesets 3, jsdom 31, size-limit 14)와 나머지 도구를 하나씩 올린다 |

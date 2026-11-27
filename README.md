@@ -23,7 +23,7 @@ Dependency direction is strictly `tokens → css → react → docs`. A reverse 
 | `pnpm lint`      | ESLint                                                                        |
 | `pnpm lint:deps` | Fails if a package declares a dependency outside the allowed direction        |
 
-Requires Node 20+ and pnpm 10+.
+Developing in this repository requires Node 22.12+ and pnpm 10+. The published packages support Node 20+.
 
 ## Using Conductor in production
 

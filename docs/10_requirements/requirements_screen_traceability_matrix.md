@@ -1,6 +1,6 @@
 # 요구사항-화면 추적 매트릭스
 
-> 상태: review | 버전: v0.26 | 갱신일: 2026-11-23
+> 상태: review | 버전: v0.27 | 갱신일: 2026-11-26
 
 ## 1. 목적
 
@@ -127,7 +127,7 @@ NFR은 화면 하나에 귀속되지 않는다. 각 NFR이 어디서 측정되�
 | NFR-002 보안 | 없음 | SFC-CI, SFC-REL | `pnpm audit`, 시크릿 스캔, 배포 산출물 네트워크 요청 관찰 | JOB-REL-001 |
 | NFR-003 접근성 | W-050 | SFC-CI, SFC-CLI | 대비 리포트, axe 결과, 키보드 경로 테스트 | JOB-CI-001, JOB-CI-002 |
 | NFR-004 운영성 | 없음 | SFC-REL, SFC-CI | CI 소요 시간, 롤백 리허설, 공개 API 추출 리포트 | JOB-REL-001 |
-| NFR-005 호환성 | W-002 | SFC-PKG, SFC-CI | React 18·19 및 Node 20·22 CI 매트릭스, Browserslist | JOB-BUILD-003 |
+| NFR-005 호환성 | W-002 | SFC-PKG, SFC-CI | React 18·19와 소비자 Node 20(JOB-CI-006, CR-088), 저장소 Node 22·24 verify 매트릭스, Browserslist | JOB-BUILD-003, JOB-CI-006 |
 
 ## 6. 화면 → 요구사항 역매트릭스
 

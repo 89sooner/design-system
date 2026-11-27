@@ -1,6 +1,6 @@
 # Conductor Design System 인프라 및 운영 아키텍처
 
-> 상태: review | 버전: v0.12 | 갱신일: 2026-11-24
+> 상태: review | 버전: v0.13 | 갱신일: 2026-11-26
 
 ## 1. 범위 재정의: 서버가 없는 인프라
 
@@ -33,7 +33,7 @@ Conductor Design System은 서버 런타임, 컴퓨팅 인스턴스, 오토스�
 | 통제 | 결정 | 근거 |
 | --- | --- | --- |
 | 패키지 관리자 lockfile | `pnpm-lock.yaml`을 저장소에 커밋하고, CI는 `pnpm install --frozen-lockfile`로만 설치한다 | lockfile 없이 설치하면 전이 의존성 버전이 실행마다 달라져 빌드 재현성이 깨진다 |
-| Node 버전 매트릭스 | CI는 Node 20과 Node 22 두 버전으로 빌드·테스트 매트릭스를 실행해 NFR-005("Node 20 이상")를 검증한다. 릴리스 빌드(JOB-REL-001)는 npm Trusted Publishing 최소 버전인 Node 22.14.0과 npm 11.18.0으로 고정한다(CR-022) | 매트릭스는 소비자 호환성 범위를 검증하고, 릴리스 고정 버전은 OIDC 토큰 교환의 현재 최소 조건과 배포 산출물 재현성을 보장한다 |
+| Node 버전 매트릭스 | CI verify는 Node 22와 Node 24 두 버전으로 빌드·테스트 매트릭스를 실행한다. NFR-005("Node 20 이상")는 consumers 잡(JOB-CI-006)이 Node 22로 만든 패키지를 Node 20에서 설치·빌드·구동하고 토큰 CLI를 Node 20에서 실행해 검증한다(CR-088). 개발 도구(vitest 5, tsup 9 등)가 Node 22 이상을 요구하고 Node 20은 2026-04-30에 지원이 끝났다. 릴리스 빌드(JOB-REL-001)는 npm Trusted Publishing 최소 버전인 Node 22.14.0과 npm 11.18.0으로 고정한다(CR-022) | 매트릭스는 소비자 호환성 범위를 검증하고, 릴리스 고정 버전은 OIDC 토큰 교환의 현재 최소 조건과 배포 산출물 재현성을 보장한다 |
 | 빌드 컨테이너 이미지 | CI 잡은 `node:20-bookworm-slim`과 `node:22-bookworm-slim` 이미지를 다이제스트(`sha256:`) 단위로 고정해 사용한다 | 부동 태그(`node:20`)는 베이스 이미지가 갱신될 때 빌드 환경이 통보 없이 바뀌어 시각 회귀 검사(JOB-CI-003)의 재현성을 해친다(R-2와 연결) |
 | pnpm 버전 고정 | `package.json`의 `packageManager` 필드로 pnpm 버전을 고정한다 | pnpm 10 이상 가정(`../10_requirements/srs_final.md` 5.1)을 CI와 로컬 환경에서 동일하게 강제한다 |
 
