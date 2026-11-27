@@ -1,6 +1,6 @@
 # Conductor Design System 구현 추적 원장
 
-> 상태: review | 버전: v0.84 | 갱신일: 2026-11-26
+> 상태: review | 버전: v0.85 | 갱신일: 2026-11-27
 
 ## 1. 목적과 갱신 규칙
 
@@ -982,4 +982,14 @@ CR-042가 등록한 DEV-046을 재현·측정해, W-020의 화면 QA 실패 6건
 | 검증 (로컬, Node 20.20.2) | Node 22로 빌드한 뒤 `pnpm lint:tokens`(128개 파일, 위반 0), `pnpm check:contrast`(244쌍 실패 0), `pnpm check:consumer` vite18·vite19·next19 설치·typecheck·빌드·브라우저 구동 모두 통과(1분 4초). pnpm이 루트 `engines` 불일치 경고를 한 줄 낸다(실패 아님) |
 | 검증 (로컬, Node 24.22.3) | `pnpm build`, `typecheck`, `test`(58개 파일 968건), `check:api`, `test:a11y`(422건 통과·1건 skip), `size`(Button 1.33 KiB, CSS 16.12 KiB) 통과 |
 | 검증 (로컬) | actionlint 통과, 검증기 `--strict` OK |
-| 남은 일 | 이 CR 뒤 Node 22가 필요한 도구(vitest 5, tsup 9, changesets 3, jsdom 31, size-limit 14)와 나머지 도구를 하나씩 올린다 |
+| CI · 종료 | PR #122 CI 6잡 통과(verify node 22·24, consumers 잡의 Node v20.20.2 단계 포함). 병합 `0c87869` 뒤 main CI #357, Release #175, Deploy Docs #123 통과. CR-088 closed |
+| 남은 일 | Node 22가 필요한 도구(vitest 5, tsup 9, changesets 3, jsdom 31, size-limit 14)와 나머지 도구는 CR-089가 하나씩 올린다 |
+
+### CR-089 개발 도구 최신 메이저 (2026-11-27)
+
+| 범위 | 결과 |
+| --- | --- |
+| 지시 | "권장 순서대로 진행해" (개선 점검 4순위) |
+| 기준 | main `0c87869` |
+| PR 1 · eslint 10 | eslint 10.15.0, @eslint/js 10.0.1, globals 17.14.0, typescript-eslint 8.74.0. 검사 파일 229개(9.39.4와 같음), 지적 0건, `pnpm audit --audit-level high` 0건. lockfile 변경은 eslint 계열 트리뿐이다 |
+| 남은 도구 | vite 8·@vitejs/plugin-react 6, vitest 5(@vitest/browser-playwright 5), tsup 9, TypeScript 7(typescript-eslint 8.74 peer `<6.1.0` 먼저 확인), Playwright 1.65(`Dockerfile.visual`·기준 이미지), @changesets/cli 3, size-limit 14, jsdom 31, @types/node |
