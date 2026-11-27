@@ -1,6 +1,6 @@
 # Conductor Design System 보안 및 개인정보 아키텍처
 
-> 상태: review | 버전: v0.13 | 갱신일: 2026-11-25
+> 상태: review | 버전: v0.14 | 갱신일: 2026-11-27
 
 ## 1. 범위 재정의: 이 제품은 공급망 보안 문제다
 
@@ -40,6 +40,8 @@ Conductor의 의존성은 두 종류로 나뉜다.
 CR-080(2026-11-18): 개발 도구의 권고 15건(vitest·@vitest/mocker·vite·esbuild·postcss·fast-uri·brace-expansion·minimatch)을 정리해 `pnpm audit`가 0건이다. vitest는 4.1.12로 올리고(브라우저 공급자는 `@vitest/browser-playwright`), tsup 8.5.1이 쓰는 esbuild는 overrides로 0.28.2, api-extractor가 고정한 minimatch는 overrides로 11.0.9를 쓴다. 두 overrides는 선언 범위 밖이지만 발행 dist가 갱신 전과 바이트 단위로 같고 `check:api`가 그대로 통과했다. 배포 2주가 안 된 downshift 9.5.0은 올리지 않았다. DEV-049(braces, 패치 없음)는 그대로다.
 
 CR-086(2026-11-25): CR-044가 `pnpm.auditConfig.ignoreGhsas`로 제외하던 `braces` 3.0.3 권고(GHSA-vfj7-8cjw-p6xm)를 지웠다. 제외 없이도 `pnpm audit --audit-level high`가 0건이다(`braces`는 그대로 3.0.3). 이제 제외 목록이 비어 있고, 릴리스 audit 게이트는 모든 high 이상 권고에서 실패한다(DEV-049 closed).
+
+CR-089(2026-11-27): 개발 도구를 최신 메이저로 도구마다 하나씩 올린다. 각 갱신은 lockfile 변경이 그 도구의 트리에 머무는지, `pnpm audit --audit-level high`가 0건인지, 빌드 도구라면 발행 `dist`가 바뀌지 않는지를 확인한다. 첫 갱신은 eslint 10이다(원장 CR-089 절).
 
 ### 3.3 취약점 게이트
 

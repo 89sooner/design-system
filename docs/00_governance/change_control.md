@@ -107,6 +107,7 @@
 | CR-086 | 2026-11-25 | correction | 사용자 지시 (2026-11-25): "권장 순서대로 진행해"(개선 점검 1·2순위) | **audit 제외(DEV-049)를 지우고, 메뉴 Escape 접근성 시험의 경쟁 상태를 없앤다.** 제외 없이도 `pnpm audit --audit-level high`가 0건이다. 메뉴 시험은 포커스가 메뉴 안으로 옮겨진 뒤 키를 누른다(#112 node 22에서 Escape 뒤 메뉴가 남은 1회) | NFR-002, FR-A11Y-002, DEV-049 | 보안 아키텍처(4절), 검증 계획 v0.27(§3 audit, AC-4), WP v0.27(WP-043), 원장 v0.82(DEV-049, CR-086 절), `package.json`, `SECURITY.md`, `packages/react/src/testing/a11y.browser.test.tsx`, `.changeset/internal-a11y-menu-test.md` | closed |
 | CR-087 | 2026-11-25 | correction | 사용자 지시 (2026-11-25): "권장 순서대로 진행해"(개선 점검 3순위) | **워크플로 액션을 Node 24로 도는 최신 메이저로 올린다.** 모든 잡이 "Node.js 20 is deprecated … forced to run on Node.js 24" 경고를 냈다. checkout v7, setup-node v7, upload-artifact v7, upload-pages-artifact v5, configure-pages v6, deploy-pages v5, pnpm/action-setup v6. changesets/action은 v2의 입력·동작 변경 때문에 v1을 유지한다 | JOB-CI-001~008, JOB-REL-001 | 원장 v0.82(CR-087 절), `.github/workflows/*.yml` | closed |
 | CR-088 | 2026-11-26 | correction | 사용자 결정 (2026-11-26): 개발 도구 메이저 중 Node 22 이상만 지원하는 도구의 처리로 "소비자는 Node 20 유지" | **소비자 Node 20 약속은 두고, 저장소 개발·verify 매트릭스를 Node 22·24로 옮긴다.** vitest 5, tsup 9, changesets 3, jsdom 31, size-limit 14의 `engines.node`가 Node 22 이상이다. NFR-005의 Node 20 측정은 consumers 잡(JOB-CI-006)이 Node 22로 만든 tarball과 토큰 CLI를 Node 20에서 돌리는 방식으로 바꾼다 | NFR-005, FR-DX-006 AC-4, JOB-CI-006 | SRS v1.34(NFR-005, §43), RTM v0.27, 시스템 아키텍처 v0.5, 인프라 운영 v0.13(§4), 비동기 작업 v0.18(§2.8b), 검증 계획 v0.28, 원장 v0.84(CR-088 절), `.github/workflows/*.yml`, `package.json` `engines`, `README.md` | open |
+| CR-089 | 2026-11-27 | correction | 사용자 지시 (2026-11-25): "권장 순서대로 진행해"(개선 점검 4순위, 개발 도구 메이저) | **개발 도구를 최신 메이저로 올린다. 도구마다 PR 하나로 하고, 각 PR은 발행 산출물(`dist`)이 바뀌지 않음을 보인다.** 첫 PR은 eslint 10(@eslint/js 10, globals 17, typescript-eslint 8.74). 이어서 vite 8·@vitejs/plugin-react 6, vitest 5, tsup 9, TypeScript 7, Playwright 1.65, changesets 3, size-limit 14, jsdom 31, @types/node | NFR-002, NFR-005, ADR-009 | 보안 아키텍처 §3.2, 원장 v0.85(CR-089 절), `package.json`, `pnpm-lock.yaml` | open |
 
 유형: `scope`(범위 변경), `design`(설계 변경), `implementation`(구현 편차 DEV-### 처리), `correction`(문서 오류 수정)
 
@@ -1112,3 +1113,14 @@ CR-041 구현 cascade와 로컬 검증은 2026-09-14에 종료했다. 사용자�
 | 경계 | 패키지 변경 없음(패키지 `package.json`에는 `engines`가 없고 이번에도 넣지 않는다). 개발 도구 버전은 바꾸지 않는다. 도구별 메이저 업그레이드는 이 CR 뒤 도구마다 PR 하나로 한다. publish 잡의 Node 22.14.0 고정(CR-022)은 그대로다 |
 | 검증 (로컬) | 원장 CR-088 절 |
 | CI · 종료 | PR CI 통과로 닫는다 |
+
+## CR-089 개발 도구 최신 메이저 (2026-11-27)
+
+| 항목 | 기록 |
+| --- | --- |
+| 유형 / 상태 | correction / open |
+| 근거 | 개선 점검 4순위. 개발 도구 10여 개가 한 메이저 이상 뒤처져 있다(`pnpm outdated -r`, 2026-11-26). Node 22 이상만 지원하는 도구는 CR-088이 저장소 Node를 22·24로 옮겨 올릴 수 있게 됐다 |
+| 설계 | 도구마다 PR 하나. 각 PR은 ① 그 도구의 변경 노트에서 우리에게 닿는 항목을 확인하고 ② 게이트를 돌리고 ③ 빌드·시험 도구라면 세 패키지 `dist`가 바이트 단위로 같음을 보인다. TypeScript 7은 typescript-eslint 8.74의 peer 범위(`>=4.8.4 <6.1.0`)와 api-extractor 호환을 먼저 확인한다. Playwright 1.65는 `Dockerfile.visual` 이미지와 기준 이미지 갱신(JOB-CI-008)을 같이 한다 |
+| 경계 | 패키지 런타임 의존성(lucide-react 1.x 등)과 공개 API는 이 CR 밖이다. 발행 산출물이 바뀌는 도구 갱신은 그 PR에서 멈추고 따로 묻는다 |
+| PR 1 · eslint 10 | eslint 9.39.4 → 10.15.0, @eslint/js 9.39.4 → 10.0.1, globals 15.15.0 → 17.14.0, typescript-eslint 8.73.0 → 8.74.0(eslint 10 peer 지원). 설정 파일 변경 없음. 검사 대상 229개 파일이 9와 같고 지적 0건. `pnpm audit --audit-level high` 0건. lockfile 변경은 eslint 계열 트리뿐이다 |
+| CI · 종료 | 마지막 도구 PR의 CI 통과로 닫는다 |
